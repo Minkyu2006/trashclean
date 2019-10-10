@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<head>
+	<script>
+
+		$(function(){
+
+			$("#btnSearch").on('click',function(){
+				callList(1);
+			});
+
+		});
+
+		function callList(page){
+			page = page - 1;
+			if (page < 0) page = 0
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+			var $schList = $('#schList');
+			var $totalCnt = $('#totalCnt');
+			var params = {
+				username:$("#s_username").val(),
+				startdate:$("#sdate").val(),
+				enddate:$("#edate").val()
+			};
+
+			$schList.empty().append('<tr ><td colspan="8" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+
+			$.ajax({
+				url:'/api/account/approvallist?size='+ perPage + '&page=' + page,
+				type : 'post',
+				//dataType: json,
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+
+					if (totCnt == 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="8" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+
+					$totalCnt.text(totCnt);
+
+
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+						html += '<td >'+ echoNull2Blank(value.userid) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.username) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.cellphone) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.email) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.role) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.insertDateTime) +'</td>';
+						html += '<td ><button class="c-button c-button--small c-button--point" id ="okbtn_'+ echoNull2Blank(value.userid) +'"' +
+								'onclick="callApproval(\''+ echoNull2Blank(value.userid) +'\',\'AT02\');">승인</button></td>';
+						html += '<td><button class="c-button c-button--small" id ="rebtn_'+ echoNull2Blank(value.userid) + '"' +
+								'onclick="callApproval(\''+ echoNull2Blank(value.userid) +'\',\'AT03\');">거절</button></td>';
+
+						html += '</tr>';
+					});
+					$schList.html(html);
+
+				}
+
+			});
+
+
+
+		}
+
+		function callApproval(userid,approvaltype) {
+			//alert (userid + '/' + approvaltype);
+			if (($("#okbtn_"+userid).html() != "승인") && ($("#rebtn_"+userid).html() != "거절") ){
+				alert("이미 승인(반려) 처리가 완료되었습니다.");
+				return false;
+			}
+
+			if (approvaltype=='AT02') {
+				$("#okbtn_"+userid).html("승인완료");
+				$("#rebtn_"+userid).html("승인완료");
+			}else{
+				$("#okbtn_"+userid).html("거절완료");
+				$("#rebtn_"+userid).html("거절완료");
+			}
+
+
+
+			var params = {
+				userid:userid,
+				approvaltype:approvaltype
+			};
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/account/approval',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+
+
+
+
+				}
+
+			});
+
+		}
+
+	</script>
+</head>
+
+
+<div layout:fragment="content" class="content">
+	<section class="section">
+		<h2 class="section__heading">회원가입 승인처리</h2>
+		<article class="article">
+			<table class="c-table c-table--non-border">
+				<colgroup>
+					<col style="width: 100px;" />
+					<col />
+					<col style="width: 100px;" />
+					<col />
+					<col style="width:60px;" />
+				</colgroup>
+				<tbody>
+					<tr>
+						<th>이름</th>
+						<td>
+							<div class="c-text"><input type="text" class="c-text__input" id ="s_username" name = "s_username"/></div>
+						</td>
+						<th>가입날짜</th>
+						<td>
+							<div class="c-calendar-layout">
+								<div class="c-date">
+									<div class="c-date__input-box">
+										<div class="c-date__result" id="sdate" name="ts_start_date" value=""><span></span></div>
+										<button type="button" class="c-date__button">
+											<img src="/assets/images/icon__calendar.svg" alt="달력" title="달력">
+										</button>
+									</div>
+									<div class="c-date__calendar"></div>
+								</div>
+								<span>-</span>
+								<div class="c-date">
+									<div class="c-date__input-box">
+										<div class="c-date__result"  id="edate" name="ts_end_date" value=""><span></span></div>
+										<button type="button" class="c-date__button">
+											<img src="/assets/images/icon__calendar.svg" alt="달력" title="달력">
+										</button>
+									</div>
+									<div class="c-date__calendar"></div>
+								</div>
+							</div>
+							<!-- <div class="c-calendar-layout">
+	                            <div class="c-calendar">
+	                                <input type="text" class="c-calendar__input hasDatepicker" id="sdate" name="ts_start_date" value="">
+	                                <button type="button" class="ui-datepicker-trigger">
+	                                	<img src="/assets/images/icon__calendar.svg" alt="달력" title="달력">
+	                                </button>
+	                            </div>
+	                            <span>-</span>
+	                            <div class="c-calendar">
+	                                <input type="text" class="c-calendar__input hasDatepicker" id="edate" name="ts_end_date" value="">
+	                                <button type="button" class="ui-datepicker-trigger">
+	                                	<img src="/assets/images/icon__calendar.svg" alt="달력" title="달력">
+	                                </button>
+	                            </div>
+	                        </div> -->
+						</td>
+						<td>
+							<button class="c-button c-button--point" id ="btnSearch">조회</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+		<article class="article">
+			<table class="c-table">
+				<colgroup>
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col style="width: 60px" />
+					<col style="width: 60px" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>아이디</th>
+						<th>이름</th>
+						<th>전화번호</th>
+						<th>이메일</th>
+						<th>요청권한</th>
+						<th>가입일시</th>
+						<th>승인</th>
+						<th>반려</th>
+					</tr>
+				</thead>
+				<tbody id="schList">
+
+				</tbody>
+			</table>
+
+			<div class="c-pager">
+				<div class="c-paging" id ="paging1">
+					<!-- 페이징 처리되는곳   -->
+				</div>
+				<div class="c-paging__total">
+					<div class="c-paging__total-group">
+						Total
+					</div>
+					<div class="c-paging__total-group" id ="totalCnt">0</div>
+				</div>
+			</div>
+
+		</article>
+	</section>
+
+</div>
+</html>

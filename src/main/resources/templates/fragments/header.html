@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+
+<header th:fragment="headerFragment" class="header">
+	<div class="header__inner">
+		<div class="nav-icon" sec:authorize="isAuthenticated()">
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</div>
+		<a href="/" class="logo"><img src="/assets/images/logo--w.png" alt="iEchoProc" /></a>
+
+		<nav class="nav" sec:authorize="isAuthenticated()">
+			<h2 class="nav__heading"><a href="/"><img src="/assets/images/logo--w.png" alt="KICT 건설 119" /></a></h2>
+			<ul class="nav__list">
+
+
+				<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
+					<a href="#" class="nav__link toggle">플랫폼 관리</a>
+					<ul class="nav__list-depth">
+						<li><a href="/admin/teamreg" class="nav__link">부서등록</a></li>
+						<li><a href="/admin/mastercodereg" class="nav__link">마스터코드등록</a></li>
+					</ul>
+				</li>
+
+				<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
+					<a href="" class="nav__link toggle">사용자관리</a>
+					<ul class="nav__list-depth">
+						<li><a href="/admin/accountapproval" class="nav__link">사용자승인</a></li>
+						<li><a href="/admin/accountreg" class="nav__link">사용자관리</a></li>
+					</ul>
+				</li>
+
+			</ul>
+		</nav>
+
+		<div class="info" sec:authorize="isAuthenticated()">
+			<ul>
+				<li>
+<!--					<a href="/mypage" class="info__btn"><span th:text="${session.username}"></span></a>-->
+					<a href="/mypage" class="info__btn"><div sec:authentication="name"></div></a>
+
+				</li>
+				<li>
+					<form th:action="@{/logout}" method="post">
+				        <input type="submit" class="info__btn info__btn--logout" value="로그아웃" title="로그아웃" />
+				    </form>
+				</li>
+			</ul>
+		</div>
+		<div class="info" sec:authorize="!isAuthenticated()">
+			<ul>
+				<li>
+					<a href="/login" class="info__btn info__btn--login" title="로그인">로그인</a>
+				</li>
+
+			</ul>
+		</div>
+	</div>
+</header>
+
+</html>

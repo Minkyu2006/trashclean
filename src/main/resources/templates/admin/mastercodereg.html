@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<head>
+	<script>
+		$(function(){
+			$("#btnSave").on('click',function(){
+				save();
+			});
+
+			$("#btnSearch").on('click',function(){
+				callList(1);
+			});
+
+			$("#btnNew").on('click',function(){
+				init();
+			});
+			$("#btnDel").on('click',function(){
+				del();
+			});
+
+
+		});
+
+		function save(){
+
+			if ($("#codeType").val().trim() == '') {
+				alert("대분류를 선택하세요");
+				return false;
+			}
+
+			if ($("#code").val().trim() == '') {
+				alert("코드를입력하세요");
+				return false;
+			}
+
+			if ($("#name").val().trim() == '') {
+				alert("코드명을 입력하세요");
+				return false;
+			}
+
+			var $form = $('form[name="frmreg"]');
+
+			var params = $form.serialize();
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/mastercode/reg',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert('저장되었습니다. ');
+					init();
+					callList(1);
+
+
+				}
+
+			});
+
+		}
+
+		function init(){
+			//화면 초기화
+			$("#code").val('');
+			$("#name").val('');
+			$("#remark").val('');
+			$("#code").removeAttr("readonly");
+			$("#codeType").removeAttr("readonly");
+
+		}
+
+		function callList(page) {
+			page = page - 1;
+			if (page < 0) page = 0
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+
+
+			var $schList = $('#schList');
+			var $totalCnt = $('#totalCnt');
+			var params = {
+				codetype:$('#s_codeType').val(),
+				code:$('#s_code').val(),
+				name:$('#s_name').val()
+			};
+
+			$schList.empty().append('<tr ><td colspan="5" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+
+			$.ajax({
+				url:'/api/mastercode/list?size='+ perPage + '&page=' + page,
+				type : 'post',
+				//dataType: json,
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+
+					if (totCnt == 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+
+					$totalCnt.text(totCnt);
+
+
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+						html += '<td >'+ echoNull2Blank(value.codeType) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.code) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.name) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.remark) +'</td>';
+						html += '<td ><button class="c-button" onclick="javascript:callinfo(\''+ echoNull2Blank(value.id) +'\');">수정</button></td>';
+						html += '</tr>';
+					});
+					$schList.html(html);
+
+				}
+
+			});
+
+		}
+
+		function callinfo(id) {
+
+			var params = {
+				id:id
+			};
+
+			init();
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/mastercode/mastercode',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+
+					$("#codeType").val(res.data.datarow.codeType);
+					$("#code").val(res.data.datarow.code);
+					$("#name").val(res.data.datarow.name);
+					$("#remark").val(res.data.datarow.remark);
+					$("#codeType").attr("readonly",true);
+					$("#code").attr("readonly",true);
+				}
+
+			});
+
+		}
+
+		function del(){
+
+			if ($("#codeType").attr("readonly") != "readonly"){
+
+				alert("삭제하고자하는 코드를 하단에서 선택 후 삭제하세요.");
+				return false;
+			}
+
+
+			if (confirm("정말 삭제하시겠습니까??") == false){
+				return false;
+			}
+
+
+			var params = {
+				codetype:$("#codeType").val(),
+				code:$("#code").val()
+			};
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/mastercode/del',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert('삭제되었습니다. ');
+					init();
+					callList(1);
+
+
+
+				}
+
+			});
+
+		}
+
+	</script>
+
+</head>
+
+
+
+	<div layout:fragment="content" class="content">
+		<section class="section">
+			<h2 class="section__heading">관리코드등록</h2>
+			<article class="article">
+				<div class="code">
+					<form name="frmreg">
+						<div class="code__category">
+							<div class="c-select">
+								<label for="codeType" class="c-select__label">대분류</label>
+								<select class="c-select__input" id="codeType" name="codeType">
+									<option th:each ="codetype : ${codetypes}"
+											th:value="${codetype.getCode()}"
+											th:text="${codetype.getDesc()}"></option>
+
+								</select>
+							</div>
+						</div>
+						<ul class="code__detail">
+							<li class="code__detail-item">
+								<div class="c-text">
+									<label for="code" class="c-text__label">코드</label>
+									<input type="text" class="c-text__input" id="code" name="code" />
+								</div>
+							</li>
+							<li class="code__detail-item">
+								<div class="c-text">
+									<label for="name" class="c-text__label">코드명</label>
+									<input type="text" class="c-text__input" id="name" name="name" />
+								</div>
+							</li>
+							<li class="code__detail-item">
+								<label for="remark" class="c-textarea__label">비고</label>
+								<textarea class="c-textarea" id="remark" name="remark"></textarea>
+							</li>
+						</ul>
+					</form>
+					<div class="c-function">
+						<div class="c-function__group c-function__group--right">
+							<div class="c-function__item">
+								<button class="c-button c-button--point" id="btnNew">신규</button>
+							</div>
+							<div class="c-function__item">
+								<button class="c-button c-button--point" id ="btnSave">저장</button>
+							</div>
+							<div class="c-function__item">
+								<button class="c-button" id="btnDel">삭제</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+		</section>
+		
+		<section class="section">
+			<article class="article">
+				<table class="c-table">
+					<colgroup>
+						<col style="width: 150px;" />
+						<col />
+						<col style="width: 150px;" />
+						<col />
+						<col style="width: 60px;" />
+					</colgroup>
+					<tbody>
+						<tr>
+							<th>대분류</th>
+							<td>
+
+								<select class="c-select__input" id="s_codeType" name="s_codeType">
+									<option value ="">전체</option>
+									<option th:each ="codetype : ${codetypes}"
+											th:value="${codetype.getCode()}"
+											th:text="${codetype.getDesc()}"></option>
+
+								</select>
+							</td>
+							<th>코드</th>
+							<td>
+								<div class="c-text"><input type="text" class="c-text__input"  id="s_code" name="s_code"/></div>
+							</td>
+							<th>코드명</th>
+							<td>
+								<div class="c-text"><input type="text" class="c-text__input" id="s_name" name="s_name"/></div>
+							</td>
+							<td>
+								<button class="c-button c-button--point" id="btnSearch">조회</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</article>
+			<article class="article">
+				<table class="c-table">
+					<colgroup>
+						<col />
+						<col />
+						<col />
+						<col />
+						<col />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>대분류</th>
+							<th>코드</th>
+							<th>코드명</th>
+							<th>비고</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody id ="schList">
+
+
+					</tbody>
+				</table>
+
+				<div class="c-pager">
+					<div class="c-paging" id ="paging1">
+						<!-- 페이징 처리되는곳   -->
+					</div>
+					<div class="c-paging__total">
+						<div class="c-paging__total-group">
+							Total
+						</div>
+						<div class="c-paging__total-group" id ="totalCnt">0</div>
+					</div>
+				</div>
+			</article>
+		</section>
+	    
+	</div>
+</html>

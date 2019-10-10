@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/loginlayout">
+
+<head>
+	<script>
+
+		$(function(){
+
+			$("#btnSave").on('click',function(){
+				save();
+			});
+
+		});
+
+		function save(){
+			if ($("#userid").val().trim() == '') {
+				alert("아이디를 입력하세요. 아이디는 중복되지 않도록 확인 후 입력하세요");
+				$("#userid").trigger('focus');
+				return false;
+			}
+
+			if ($("#username").val().trim() == '') {
+				alert("이름을 입력하세요.");
+				$("#username").trigger('focus');
+				return false;
+			}
+
+			if ($("#password").val().trim() == '') {
+				alert("비밀번호를 입력하세요.");
+				$("#password").trigger('focus');
+				return false;
+			}
+
+			if ($("#password").val().trim() != $("#password2").val().trim()) {
+				alert("입력한 비밀번호가 다릅니다.");
+				$("#password").trigger('focus');
+				return false;
+			}
+
+			if ($("#cellphone").val().trim() == '') {
+				alert("전화번호를 입력하세요.\n메세지 알림을 받기 위해서는 필수입니다.");
+				return false;
+			}
+
+			if ($("#email").val().trim() == '') {
+				alert("이메일 입력하세요.\n알림메일을 받기위해서는 필수입니다.");
+				return false;
+			}
+
+			var $form = $('form[name="frmreg"]');
+
+			var params = $form.serialize();
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/account/signup',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert('회원가입 요청이 되었습니다. 관리자의 승인 이후에 로그인이 가능합니다. ');
+					location.href="/";
+
+
+
+				}
+
+			});
+		}
+
+
+
+	</script>
+
+</head>
+
+
+
+<div layout:fragment="content" class="login-wrap">
+
+    <div class="join">
+    	
+    	<div class="join__box">
+    		<h1 class="login__logo">
+    			<a href="/"><img src="/assets/images/logo.png" alt="KICT건설119" /></a>
+    		</h1>
+    		<h3 class="join__title">회원가입</h3>
+
+    		<div class="join__form">
+				<form name="frmreg">
+					<div class="join__form-item">
+						<label for="userid" class="join__label">아이디</label>
+						<input type="text" class="join__input" id="userid" name="userid" />
+					</div>
+					<div class="join__form-item">
+						<label for="username" class="join__label"  >이름</label>
+						<input type="text" class="join__input" id="username" name="username" />
+					</div>
+					<div class="join__form-item">
+						<label for="password" class="join__label" >비밀번호</label>
+						<input type="password" class="join__input" id="password" name="password" />
+					</div>
+					<div class="join__form-item">
+						<label for="password2" class="join__label" >비밀번호확인</label>
+						<input type="password" class="join__input" id="password2" name="password2" />
+					</div>
+					<div class="join__form-item">
+						<label for="cellphone" class="join__label">전화번호</label>
+						<input type="text" class="join__input" id="cellphone" name="cellphone" />
+					</div>
+					<div class="join__form-item">
+						<label for="email" class="join__label" >이메일</label>
+						<input type="text" class="join__input"  id="email" name="email"/>
+					</div>
+					<div class="join__form-item">
+						<div class="c-select">
+							<label for="teamcode" class="join__label">부서</label>
+							<select name="teamcode" id="teamcode" class="c-select__input">
+								<option th:each ="team : ${teams}"
+										th:value="${team.teamcode}"
+										th:text="${team.teamname}"></option>
+
+							</select>
+						</div>
+					</div>
+					<div class="join__form-item">
+						<div class="c-select">
+							<label for="positionid" class="join__label">직급</label>
+							<select name="positionid" id="positionid" class="c-select__input">
+								<option th:each ="position : ${positions}"
+										th:value="${position.id}"
+										th:text="${position.name}"></option>
+
+							</select>
+						</div>
+					</div>
+					<div class="join__form-item">
+						<div class="c-select">
+							<label for="role" class="join__label">권한</label>
+							<select name="role" id="role" class="c-select__input">
+								<option th:each ="role : ${roles}"
+										th:value="${role.code}"
+										th:text="${role.desc}"></option>
+							</select>
+						</div>
+					</div>
+				</form>
+
+    			<button class="join__submit" id ="btnSave">회원가입</button>
+    		</div>
+    	</div>
+    </div>
+    
+</div>
+</html>

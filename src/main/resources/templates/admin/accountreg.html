@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+<head>
+	<script>
+		$(function(){
+
+
+			$("#btnSearch").on('click',function(){
+				callList(1);
+			});
+			$("#btnClear").click(function(){
+				searchclear();
+			});
+
+			$("#btnSave1").on('click',function(){
+				save1();
+			});
+
+			$("#btnPassword").on('click',function(){
+				savepassword();
+			});
+
+
+			$("#btnCancel").on('click',function(){
+				cancel();
+			});
+
+			$("#btnDel").on('click',function(){
+				del();
+			});
+
+			$('.btn__member').on('click', function(e) {
+				$('#pop-member').addClass('open');
+				
+				e.preventDefault();
+			});
+			
+			$('.l-popup__close').on('click', function(e) {
+				$('.l-popup').removeClass('open');
+				
+				e.preventDefault();
+			});
+
+
+
+		})
+
+		function cancel() {
+			$('.l-popup').removeClass('open');
+			init();
+
+
+		}
+
+		function del(){
+
+			if ($("#userid").attr("readonly") != "readonly"){
+
+				alert("삭제하고자하는 사용자를 하단에서 선택 후 삭제하세요.");
+				return false;
+			}
+
+			if ($("#userid").val().trim() == '') {
+				alert("삭제하고자하는 사용자를를 하단에서 선택 후 삭제하세요.");
+				$("#userid").trigger('focus');
+				return false;
+			}
+
+
+
+			var params = {
+				userid:$("#userid").val()
+			};
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/account/del',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert('삭제되었습니다. ');
+					init();
+					callList(1);
+
+
+
+				}
+
+			});
+
+		}
+
+		function init(){
+			//화면 초기화
+			$("#userid").val('');
+			$("#password").val('');
+			$("#username").val('');
+			$("#email").val('');
+			$("#cellphone").val('');
+			$("#role").val('ROLE_USER');
+
+
+		}
+
+		function save1(){
+
+
+			if ($("#userid").val().trim() == '') {
+				alert("수정할 아이디를 먼저 선택하세요.");
+				$("#userid").trigger('focus');
+				return false;
+			}
+
+			if ($("#username").val().trim() == '') {
+				alert("이름을 입력하세요.");
+				$("#username").trigger('focus');
+				return false;
+			}
+
+
+			var $form = $('form[name="frmreg"]');
+
+			var params = $form.serialize();
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/account/modifyReg',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert('수정되었습니다. ');
+					$('.l-popup').removeClass('open');
+					init();
+					callList(1);
+
+
+
+				}
+
+			});
+
+
+
+
+
+		}
+
+		function savepassword(){
+
+
+			if ($("#userid").val().trim() == '') {
+				alert("수정할 아이디를 먼저 선택하세요.");
+				return false;
+			}
+
+			if ($("#password").val().trim() == '') {
+				alert("수정할 패스워드를 입력하세요.");
+				$("#password").trigger('focus');
+				return false;
+			}
+
+
+			var $form = $('form[name="frmreg"]');
+
+			var params = $form.serialize();
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/account/modifyAdminPassword',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert('수정되었습니다. ');
+					$('.l-popup').removeClass('open');
+					init();
+					callList(1);
+
+
+
+				}
+
+			});
+
+
+
+
+
+		}
+
+		function searchclear(){
+			$("#s_userid").val('');
+			$("#s_username").val('');
+			$("#s_email").val('');
+
+
+		}
+
+
+		function callList(page){
+
+			page = page - 1;
+			if (page < 0) page = 0
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+
+
+			var $schList = $('#schList');
+			var $totalCnt = $('#totalCnt');
+			var params = {
+				userid:$("#s_userid").val(),
+				username:$("#s_username").val(),
+				email:$("#s_email").val()
+			};
+
+			$schList.empty().append('<tr ><td colspan="8" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+
+			$.ajax({
+				url:'/api/account/list?size='+ perPage + '&page=' + page,
+				type : 'post',
+				//dataType: json,
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+
+					if (totCnt == 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="8" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+
+					$totalCnt.text(totCnt);
+
+
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						// html += '<tr onclick="javascript:callinfo(\''+ echoNull2Blank(value.userid) +'\');">';
+						html += '<tr>';
+						html += '<td >'+ echoNull2Blank(value.userid) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.username) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.positionname) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.teamname) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.cellphone) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.email) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.role) +'</td>';
+
+
+						html += '<td ><button class="c-button c-button--point btn__member" onclick="javascript:callinfo(\''+ echoNull2Blank(value.userid) +'\');">수정</button></td>';
+
+						html += '</tr>';
+					});
+					$schList.html(html);
+
+				}
+
+			});
+
+
+		}
+
+		function callinfo(userid) {
+
+			$('#pop-member').addClass('open');
+			var params = {
+				userid:userid
+			};
+
+			init();
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/account/account',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+
+					$("#userid").val(res.data.datarow.userid);
+					$("#username").val(res.data.datarow.username);
+					$("#password").val('');
+					$("#email").val(res.data.datarow.email);
+					$("#cellphone").val(res.data.datarow.cellphone);
+					$("#role").val(res.data.datarow.role);
+					$("#teamcode").val(res.data.datarow.team.teamcode);
+					$("#positionid").val(res.data.datarow.position.id);
+
+
+
+
+
+				}
+
+			});
+
+		}
+
+
+
+	</script>
+
+</head>
+
+<div layout:fragment="content" class="content">
+	
+	<section class="section">
+		<h2 class="section__heading">사용자조회</h2>
+		<article class="article">
+			<div class="l-float-heading">
+				<div class="l-float-heading--left">
+					<h4 class="article__head">검색조건</h4>
+				</div>
+				<div class="l-float-heading--right"><button class="c-button c-button--small" id="btnClear" >조건 초기화</button></div>
+			</div>
+			<table class="c-table c-tabe--non-border">
+				<colgroup>
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 60px;" />
+				</colgroup>
+				<tbody>
+					<tr>
+						<th>아이디</th>
+						<td>
+							<div class="c-text"><input type="text" class="c-text__input" id="s_userid" /></div>
+						</td>
+						<th>이름</th>
+						<td>
+							<div class="c-text"><input type="text" class="c-text__input" id="s_username" /></div>
+						</td>
+						<th>이메일</th>
+						<td>
+							<div class="c-text"><input type="text" class="c-text__input" id="s_email" /></div>
+						</td>
+						<td>
+							<button class="c-button c-button--point" id="btnSearch">조회</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article class="article">
+			<table class="c-table c-table--hover">
+				<colgroup>
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col style="width: 60px;" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>아이디</th>
+						<th>이름</th>
+						<th>직급</th>
+						<th>부서</th>
+						<th>전화번호</th>
+						<th>이메일</th>
+						<th>권한</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="schList">
+
+				</tbody>
+			</table>
+			<div class="c-pager">
+				<div class="c-paging" id ="paging1">
+					<!-- 페이징 처리되는곳   -->
+				</div>
+				<div class="c-paging__total">
+					<div class="c-paging__total-group">
+						Total
+					</div>
+					<div class="c-paging__total-group" id ="totalCnt">0</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+    <div class="l-popup" id="pop-member">
+    	<div class="l-popup__container" style="width: 300px;">
+    		<div class="l-popup__head">
+    			<h3 class="l-popup__heading">회원정보 수정</h3>
+    		</div>
+    		<div class="l-popup__content">
+    			<div class="l-popup__section">
+    				<div class="member">
+						<form name="frmreg">
+							<div class="member__form-item">
+								<label for="userid" class="join__label">아이디</label>
+								<input type="text" class="join__input" readonly id="userid" name ="userid" />
+							</div>
+							<div class="member__form-item">
+								<label for="username" class="join__label">이름</label>
+								<input type="text" class="join__input" id="username" name ="username" />
+							</div>
+							<div class="member__form-item">
+								<label for="password" class="join__label">비밀번호</label>
+								<input type="password" class="join__input" id="password" name ="password" />
+							</div>
+							<div class="member__form-item">
+								<label for="cellphone" class="join__label">전화번호</label>
+								<input type="text" class="join__input" id="cellphone" name ="cellphone" />
+							</div>
+							<div class="member__form-item">
+								<label for="email" class="join__label">e-mail</label>
+								<input type="text" class="join__input" id="email" name ="email" />
+							</div>
+
+							<div class="member__form-item">
+								<label for="teamcode" class="join__label">부서</label>
+								<select name="teamcode" id="teamcode" class="c-select__input">
+									<option th:each ="team : ${teams}"
+											th:value="${team.teamcode}"
+											th:text="${team.teamname}"></option>
+
+								</select>
+							</div>
+							<div class="member__form-item">
+								<label for="positionid" class="join__label">직급</label>
+								<select name="positionid" id="positionid" class="c-select__input">
+									<option th:each ="position : ${positions}"
+											th:value="${position.id}"
+											th:text="${position.name}"></option>
+
+								</select>
+							</div>
+
+							<div class="member__form-item">
+								<label for="role" class="join__label">권한</label>
+								<div class="c-select">
+									<select class="c-select__input" id="role" name="role">
+										<option th:each ="role : ${roles}"
+												th:value="${role.getCode()}"
+												th:text="${role.getDesc()}"></option>
+
+									</select>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="c-function">
+						<div class="c-function__group c-function__group--right">
+							<div class="c-function__item"><button class="c-button c-button--point" id="btnSave1">일반정보수정</button></div>
+							<div class="c-function__item"><button class="c-button c-button--point" id="btnPassword">비밀번호수정</button></div>
+							<div class="c-function__item"><button class="c-button" id="btnCancel">취소</button></div>
+						</div>
+					</div>
+    			</div>
+    		</div>
+    		<a href="#" class="l-popup__close">팝업닫기</a>
+    	</div>
+    </div>
+
+</div>
+</html>

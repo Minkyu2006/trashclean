@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<!--    <head th:replace="fragments/config :: configFragment"></head>-->
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+        <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+        <!-- default header name is X-CSRF-TOKEN -->
+        <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+
+
+        <!-- 공통으로 쓰이는 css파일을넣는다.-->
+        <link rel="stylesheet" href="/assets/css/main.css" />
+        <link rel="stylesheet" href="/assets/css/component.css" />
+        <link rel="stylesheet" href="/assets/css/common.css" />
+        <link rel="stylesheet" href="/assets/js/charts/Chart.min.css" />
+        <link rel="stylesheet" href="/assets/js/c3/c3.css" />
+
+        <!-- 공통으로 쓰이는 js파일을넣는다.-->
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/jquery-ui.min.js"></script>
+        <script src="/assets/js/broadwave.common.js"></script>
+        <script src="/assets/js/common-pc.js"></script>
+        <script src="/assets/js/broadwave.ajax.js"></script>
+        <script src="/assets/js/charts/Chart.min.js"></script>
+        <script src="/assets/js/d3/d3.js"></script>
+        <script src="/assets/js/c3/c3.js"></script>
+
+    </head>
+
+
+
+    <div layout:fragment="content"></div>
+
+
+
+</html>

@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+<head>
+	<script type="text/javascript">
+
+		$(function(){
+
+
+
+			$("#btnSave").on('click',function(){
+				save();
+			});
+
+			$("#btnNew").on('click',function(){
+				init();
+			});
+
+			$("#btnSearch").on('click',function(){
+				callList(1);
+			});
+
+			$("#btnDel").on('click',function(){
+				del();
+			});
+			$("#btnExcelDown").on('click',function(){
+				exceldown();
+			});
+
+
+		});
+
+		function exceldown(){
+			var teamcode = $("#s_teamcode").val();
+			var teamname = $("#s_teamname").val();
+
+			document.location.href = '/admin/teamlist.xls?teamcode=' + teamcode +"&teamname=" + teamname;
+		}
+		function del(){
+
+			if ($("#teamcode").attr("readonly") != "readonly"){
+
+				alert("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
+				return false;
+			}
+
+			if ($("#teamcode").val().trim() == '') {
+				alert("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
+				$("#teamcode").trigger('focus');
+				return false;
+			}
+
+
+
+			var params = {
+				teamcode:$("#teamcode").val()
+			};
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/team/del',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert('삭제되었습니다. ');
+					init();
+					callList(1);
+
+
+
+				}
+
+			});
+
+		}
+		function init(){
+			//화면 초기화
+			$("#teamcode").val('');
+			$("#teamname").val('');
+			$("#remark").val('');
+			$("#mode").val('N');
+			$("#teamcode").removeAttr("readonly");
+
+		}
+
+		function save(){
+
+
+			if ($("#teamcode").val().trim() == '') {
+				alert("부서코드를 입력하세요. 부서코드는 중복되지 않도록 확인 후 입력하세요");
+				$("#teamcode").trigger('focus');
+				return false;
+			}
+
+			if ($("#teamname").val().trim() == '') {
+				alert("부서명을 입력하세요.");
+				$("#teamname").trigger('focus');
+				return false;
+			}
+
+			var $form = $('form[name="frmreg"]');
+
+			var params = $form.serialize();
+
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/team/reg',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert('저장되었습니다. ');
+					init();
+					callList(1);
+
+
+				}
+
+			});
+
+
+
+
+
+		}
+
+
+		function callList(page){
+
+			page = page - 1;
+			if (page < 0) page = 0
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+
+
+			var $schList = $('#schList');
+			var $totalCnt = $('#totalCnt');
+			var params = {
+				teamcode:$("#s_teamcode").val(),
+				teamname:$("#s_teamname").val()
+			};
+
+			$schList.empty().append('<tr ><td colspan="3" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+
+			$.ajax({
+				url:'/api/team/list?size='+ perPage + '&page=' + page,
+				type : 'post',
+				//dataType: json,
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+
+					if (totCnt == 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="3" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+
+					$totalCnt.text(totCnt);
+
+
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr onclick="javascript:callinfo(\''+ echoNull2Blank(value.teamcode) +'\');">';
+						html += '<td >'+ echoNull2Blank(value.teamcode) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.teamname) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.remark) +'</td>';
+
+						html += '</tr>';
+					});
+					$schList.html(html);
+
+				}
+
+			});
+
+
+		}
+		function callinfo(teamcode) {
+
+			var params = {
+				teamcode:teamcode
+			};
+
+			init();
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/team/team',
+				type : 'post',
+				//dataType: 'html',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+
+					$("#teamcode").val(res.data.datarow.teamcode);
+					$("#teamname").val(res.data.datarow.teamname);
+					$("#remark").val(res.data.datarow.remark);
+					$("#mode").val('U');
+					$("#teamcode").attr("readonly",true);
+
+
+
+
+				}
+
+			});
+
+		}
+
+	</script>
+
+</head>
+
+<div layout:fragment="content"  class="content">
+	<section class="section">
+		<h2 class="section__heading">부서등록 및 조회</h2>
+		<article class="article">
+			<h3 class="article__heading">부서 등록</h3>
+			<form name="frmreg">
+				<table class="c-table c-table--non-border">
+					<colgroup>
+						<col style="width: 130px;" />
+						<col />
+						<col style="width: 130px;" />
+						<col />
+					</colgroup>
+					<tbody>
+						<tr>
+							<th>부서코드</th>
+							<input type="hidden" class="c-text__input" id="mode" name="mode" value = "N" />
+							<td>
+								<div class="c-text"><input type="text" class="c-text__input" id="teamcode" name="teamcode"/></div>
+							</td>
+							<th>부서명</th>
+							<td>
+								<div class="c-text"><input type="text" class="c-text__input"  id="teamname" name="teamname"/></div>
+							</td>
+						</tr>
+						<tr>
+							<th>비고</th>
+							<td colspan="3">
+								<textarea class="c-textarea" id ="remark" name="remark"></textarea>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+
+
+			
+			<div class="c-function">
+				<div class="c-function__group c-function__group--right">
+					<div class="c-function__item"><button class="c-button c-button--point" id="btnNew">신규</button></div>
+					<div class="c-function__item"><button class="c-button c-button--point" id="btnSave">저장</button></div>
+					<div class="c-function__item"><button class="c-button" id="btnDel">삭제</button></div>
+				</div>
+			</div>
+		</article>
+	</section>
+	
+	<section class="section">
+		<article class="article">
+			<h3 class="article__heading">팀 조회</h3>
+			<div class="l-float-heading">
+				<div class="l-float-heading--left">
+					<h4 class="article__heading">검색조건<span class="article__head-caption">(수정하려면 조회후 해당라인을 클릭하세요)</span></h4>
+				</div>
+				<div class="l-float-heading--right"><button class="c-button c-button--small">조건 초기화</button></div>
+			</div>
+			<table class="c-table c-table--non-border">
+				<colgroup>
+					<col style="width: 130px;" />
+					<col />
+					<col style="width: 130px;" />
+					<col />
+					<col style="width: 120px;" />
+					<col style="width: 60px;" />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td>부서코드</td>
+						<td>
+							<div class="c-text"><input type="text" class="c-text__input" id="s_teamcode" /></div>
+						</td>
+						<td>부서명</td>
+						<td>
+							<div class="c-text"><input type="text" class="c-text__input" id="s_teamname"/></div>
+						</td>
+						<td>
+							<button class="c-button" id="btnExcelDown">XLS 다운로드</button>
+						</td>
+						<td>
+							<button class="c-button c-button--point" id="btnSearch">조회</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article class="article">
+			<table class="c-table c-table--hover">
+				<colgroup>
+					<col style="width: 100px;" />
+					<col style="width: 150px;]" />
+					<col />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>부서코드</th>
+						<th>부서명</th>
+						<th>비고</th>
+					</tr>
+				</thead>
+				<tbody id="schList">
+
+				</tbody>
+			</table>
+
+			<div class="c-pager">
+				<div class="c-paging" id ="paging1">
+					<!-- 페이징 처리되는곳   -->
+				</div>
+				<div class="c-paging__total">
+					<div class="c-paging__total-group">
+						Total
+					</div>
+					<div class="c-paging__total-group" id ="totalCnt">0</div>
+				</div>
+			</div>
+
+		</article>
+	</section>
+</div>
+</html>

@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/default}">
+
+
+<!-- 사용자 CSS 추가 -->
+<th:block layout:fragment="css">
+
+</th:block>
+
+<!-- 사용자 스크립트 추가 -->
+<th:block layout:fragment="script">
+
+
+</th:block>
+
+
+
+<div layout:fragment="content" class="login-wrap">
+
+	<div class="login">
+		<h1 class="login__logo">
+			<a href="/"><img src="/assets/images/logo.png" alt="KICT 건설 119"></a>
+		</h1>
+		<div class="login__form-box">
+			<form th:action="@{/login}" method="post">
+		        <div>
+		        	<label><input type="text" class="login__input" name="username" placeholder="아이디를 입력하세요." required ></label>
+	        	</div>
+		        <div>
+		        	<label><input type="password" class="login__input" name="password" placeholder="패스워드를 입력하세요." required></label>
+	        	</div>
+		        <div><input type="submit" class="login__btn" value="로그인"/></div>
+		        <div th:if="${param.error}" class="login__message">
+			        아이디 또는 비밀번호가 잘못되었습니다.
+			    </div>
+		    </form>
+		
+		    
+		</div>
+	</div>
+
+    
+
+
+</div>
+</html>
+
