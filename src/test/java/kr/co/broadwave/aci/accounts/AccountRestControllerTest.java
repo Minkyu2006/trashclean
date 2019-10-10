@@ -71,7 +71,7 @@ public class AccountRestControllerTest {
         masterCodeRepository.save(p1);
 
         Team t1 = Team.builder()
-                .teamcode("A001")
+                .teamcode("WA001")
                 .teamname("TestTeam1")
                 .remark("비고").build();
         teamRepository.save(t1);
@@ -153,7 +153,7 @@ public class AccountRestControllerTest {
 
         //given
         Team t1 = Team.builder()
-                .teamcode("AA001")
+                .teamcode("WAA001")
                 .teamname("TestTeam1")
                 .remark("비고").build();
         teamRepository.save(t1);
@@ -178,7 +178,7 @@ public class AccountRestControllerTest {
                 .param("username","테스트유저")
                 .param("password","112233")
                 .param("email","test@mail.com")
-                .param("teamcode","AA001")
+                .param("teamcode","WAA001")
                 .param("positionid",p1.getId().toString())
                 .param("mode","N")
                 .param("role","ROLE_USER ")
@@ -199,7 +199,7 @@ public class AccountRestControllerTest {
                 .with(csrf())
                 .param("userid","testcis2")
                 .param("email","modifytest@mail.com")
-                .param("teamcode","AA001")
+                .param("teamcode","WAA001")
                 .param("positionid",p1.getId().toString())
                 .param("mode","N")
                 .param("role","ROLE_USER ")
@@ -222,7 +222,7 @@ public class AccountRestControllerTest {
                 .param("userid","testcis2")
                 .param("email","modifytest@mail.com")
                 .param("username","이름수정테스트")
-                .param("teamcode","AA001")
+                .param("teamcode","WAA001")
                 .param("positionid",p1.getId().toString())
                 .param("role","ROLE_USER ")
         )
@@ -273,7 +273,7 @@ public class AccountRestControllerTest {
         masterCodeRepository.save(p1);
 
         Team t1 = Team.builder()
-                .teamcode("A001")
+                .teamcode("WWWA001")
                 .teamname("TestTeam1")
                 .remark("비고").build();
         teamRepository.save(t1);

@@ -51,7 +51,7 @@ public class AccountRepositoryCustomImplTest {
 
 
         Team t1 = Team.builder()
-                .teamcode("A001")
+                .teamcode("QA001")
                 .teamname("TestTeam1")
                 .remark("비고").build();
         teamRepository.save(t1);
@@ -143,7 +143,7 @@ public class AccountRepositoryCustomImplTest {
                 .build();
         masterCodeRepository.save(p1);
         Team t1 = Team.builder()
-                .teamcode("A001")
+                .teamcode("QQA001")
                 .teamname("TestTeam1")
                 .remark("비고").build();
         teamRepository.save(t1);
@@ -227,7 +227,7 @@ public class AccountRepositoryCustomImplTest {
                 .build();
         masterCodeRepository.save(p1);
         Team t1 = Team.builder()
-                .teamcode("A001")
+                .teamcode("QQQA001")
                 .teamname("TestTeam1")
                 .remark("비고").build();
         teamRepository.save(t1);
