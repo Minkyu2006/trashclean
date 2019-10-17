@@ -31,7 +31,7 @@ import java.util.Optional;
 public class TeamRestController {
 
     private AjaxResponse res = new AjaxResponse();
-    HashMap<String, Object> data = new HashMap<>();
+    private HashMap<String, Object> data = new HashMap<>();
 
 
 
