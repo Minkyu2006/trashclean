@@ -31,7 +31,7 @@ public class DashboardRestController {
         data.put("datarow1",result.toString());
         res.addResponse("data",data);
 
-        log.info("단일부서 조회 성공 ");
+        log.info("모니터링 조회 성공 ");
         return ResponseEntity.ok(res.success());
 
     }
