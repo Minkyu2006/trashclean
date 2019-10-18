@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate ="~{layout/default}">
+<head>
+    <script>
+        var timerId = null;
+        var timeInterval = 1000;
+        var timeprogress = 0;
+
+        $(function(){
+
+            $("#btnStart").on('click',function(){
+                callStart();
+            });
+            $("#btnStop").on('click',function(){
+                callStop();
+            });
+
+
+
+        })
+
+        function callStats() {
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+            var params = {
+                timeinterval:$("#timeinterval").val()
+            };
+
+            $.ajax({
+                url:'/api/dashboard/monitering',
+                type : 'post',
+                //dataType: json,
+                data : params,
+                cache:false,
+                error:function(request,status,error){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    //화면 출력
+                    resultstring1= res.data.datarow1;
+                    $('#curstatus').html(resultstring1);
+
+                }
+
+            });
+
+
+
+        }
+        function progresssDisplay(){
+
+
+            timeprogress += 1;
+            if( timeprogress * 100  >= timeInterval){
+                timeprogress = 0;
+                callStats();
+            }
+            var progressrate = timeprogress * 10000  / timeInterval;
+
+            $('#progressbar').css("width",progressrate+"%")
+            $('#progress').html(timeprogress);
+
+
+        }
+        function callStart() {
+
+            if(timerId != null) {
+                clearInterval(timerId);
+            }
+            timeInterval = $("#timeinterval").val();
+
+            progresssDisplay();
+            timerId = setInterval(progresssDisplay, 100);
+
+
+
+
+        }
+
+        function callStop() {
+
+            if(timerId != null) {
+                clearInterval(timerId);
+
+            }
+            $('#curstatus').html('End');
+
+        }
+
+
+    </script>
+
+</head>
+
+<div layout:fragment="content" class="content">
+
+    <section class="section">
+        <h2 class="section__heading">모니터링</h2>
+        <article class="article">
+            <div class="l-float-heading">
+                <div class="l-float-heading--left">
+                    <h4 class="article__head" id="curstatus">Normal</h4>
+                    <h4 class="article__head" id="progress">0</h4>
+
+                </div>
+            </div>
+            <div class="l-float-heading">
+                <div class="l-float-heading--left">
+                    <h4 class="article__head" >진행상태</h4>
+                    <div style="height:20px; background-color: darkblue; width:100%" id="progressbar"></div>
+                </div>
+            </div>
+            <div>
+                Time Interval <input type="text" id="timeinterval" value = "1000" />
+            </div>
+            <button class="c-button c-button--point" id="btnStart">시작</button>
+            <button class="c-button c-button--point" id="btnStop">종료</button>
+
+        </article>
+    </section>
+
+
+</div>
+</html>
