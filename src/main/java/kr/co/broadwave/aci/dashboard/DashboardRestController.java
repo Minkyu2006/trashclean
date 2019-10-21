@@ -2,13 +2,13 @@ package kr.co.broadwave.aci.dashboard;
 
 import kr.co.broadwave.aci.common.AjaxResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.Random;
 
 /**
  * @author InSeok
@@ -22,13 +22,22 @@ public class DashboardRestController {
     private AjaxResponse res = new AjaxResponse();
     private HashMap<String, Object> data = new HashMap<>();
 
+    private final DashboardService dashboardService;
+
+    @Autowired
+    public DashboardRestController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
+
+
     @PostMapping("monitering")
     public ResponseEntity team(){
         log.info("모니터링 조회 시작");
-        Double result = Math.random() * 100;
 
+
+        String resData = dashboardService.getMoniteringAllData();
         data.clear();
-        data.put("datarow1",result.toString());
+        data.put("datarow1",resData);
         res.addResponse("data",data);
 
         log.info("모니터링 조회 성공 ");
