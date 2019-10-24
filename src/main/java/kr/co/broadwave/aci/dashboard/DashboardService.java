@@ -1,14 +1,17 @@
 package kr.co.broadwave.aci.dashboard;
 
-import kr.co.broadwave.aci.common.HeaderRequestInterceptor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author InSeok
@@ -24,39 +27,88 @@ public class DashboardService {
     @Value("${aci.aws.api.baseurl}")
     private String ACIAWSAPIBASEURL;
 
-
-    public String getMoniteringAllData(){
-
-        final String uri = ACIAWSAPIBASEURL + "/api/v1/isolarbins";
+    private final ObjectMapper objectMapper;
 
 
-        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<ClientHttpRequestInterceptor>();
-        interceptors.add(new HeaderRequestInterceptor("Accept", MediaType.APPLICATION_JSON_VALUE));
-        interceptors.add(new HeaderRequestInterceptor("x-api-key", ACIAWSAPIKEY));
+
+
+    @Autowired
+    public DashboardService(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+
+    //장비목록 가져오기(Dynamodb)
+    public HashMap getDeviceList(String deviceType){
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/isolarbins?devicetype=ISOL";
 
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setInterceptors(interceptors);
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        headers.add("x-api-key",aciAWSApiKey);
 
-//
-//        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(headers);
-//        Map<String, String> params = new HashMap<>();
-//        params.put("name", "jaeyeon");
-
-        //ResponseEntity<String> result = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
-        //String result = restTemplate.postForObject(uri, entity, String.class);
-        //restTemplate.getForObject(uri, entity, String.class);
-        ResponseEntity<String> res = restTemplate.getForEntity(uri,  String.class);
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
 
 
-        //System.out.println(res.getBody());
+        HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
+        //queryParams
+        Map<String, String> params = new HashMap<>();
+        params.put("devicetype", deviceType);
+
+        ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
+
+
+        return getHashMap(res);
+    }
+
+    //restTemplate 호출후 받은결과값을 반환해주는 함수
+    private HashMap getHashMap(ResponseEntity<String> res) {
         if (res.getStatusCode() == HttpStatus.OK) {
-            return res.getBody();
+
+            String bodystr = res.getBody();
+            try{
+                HashMap resultMap = objectMapper.readValue(bodystr, HashMap.class);
+                return resultMap;
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+                return null;
+            }
+
         }
         return null;
+    }
+
+    //요청한장비의 마지막 상태 가져오기(Dynamodb)
+    public HashMap getDeviceLastestState(String jsonDeviceList){
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/isolarbins/";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        //request body Example
+//        String jsonParam = "{\n" +
+//                "  \"deviceids\": [\n" +
+//                "    \"ISOL-KR-SEOUL-0001\",\n" +
+//                "    \"ISOL-KR-SEOUL-0003\"\n" +
+//                "  ]\n" +
+//                "}";
+
+
+        HttpEntity<String> entity = new HttpEntity<>(jsonDeviceList,headers);
+
+
+        ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+
+        return getHashMap(res);
     }
 
 }

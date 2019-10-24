@@ -31,16 +31,39 @@ public class DashboardRestController {
 
 
     @PostMapping("monitering")
-    public ResponseEntity team(){
+    public ResponseEntity monitering(){
         log.info("모니터링 조회 시작");
 
 
-        String resData = dashboardService.getMoniteringAllData();
+        String jsonParam = "{\n" +
+                "  \"deviceids\": [\n" +
+                "    \"ISOL-KR-SEOUL-0001\",\n" +
+                "    \"ISOL-KR-SEOUL-0002\"\n" +
+                "  ]\n" +
+                "}";
+
+        HashMap<String, Object> resData = dashboardService.getDeviceLastestState(jsonParam);
         data.clear();
-        data.put("datarow1",resData);
+        data.put("statusCode",resData.get("statusCode"));
+        data.put("datarow1",resData.get("data"));
         res.addResponse("data",data);
 
         log.info("모니터링 조회 성공 ");
+        return ResponseEntity.ok(res.success());
+
+    }
+    @PostMapping("devicelist")
+    public ResponseEntity devicelist(){
+        log.info("Device목록가져오기 시작");
+
+
+        HashMap<String, Object> resData = dashboardService.getDeviceList("ISOL");
+        data.clear();
+        data.put("statusCode",resData.get("statusCode"));
+        data.put("datarow1",resData.get("data"));
+        res.addResponse("data",data);
+
+        log.info("Device목록가져오기 성공 ");
         return ResponseEntity.ok(res.success());
 
     }

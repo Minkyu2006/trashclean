@@ -24,8 +24,21 @@ public class DashboardServiceTest {
 
 
     @Test
-    @Ignore
-    public void getMoniteringData() {
-        dashboardService.getMoniteringAllData();
+    //@Ignore
+    public void getDeviceList() {
+        dashboardService.getDeviceList("ISOL");
+    }
+
+    @Test
+    //@Ignore
+    public void getDeviceLastestState(){
+                String jsonParam = "{\n" +
+                "  \"deviceids\": [\n" +
+                "    \"ISOL-KR-SEOUL-0001\",\n" +
+                "    \"ISOL-KR-SEOUL-0002\"\n" +
+                "  ]\n" +
+                "}";
+
+        dashboardService.getDeviceLastestState(jsonParam);
     }
 }
