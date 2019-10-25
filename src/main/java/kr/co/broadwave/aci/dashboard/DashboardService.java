@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.lang.reflect.Array;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,7 +43,7 @@ public class DashboardService {
     //장비목록 가져오기(Dynamodb)
     public HashMap getDeviceList(String deviceType){
 
-        final String url = ACIAWSAPIBASEURL + "/api/v1/isolarbins?devicetype=ISOL";
+        final String url = ACIAWSAPIBASEURL + "/api/v1/isolarbins";
 
         RestTemplate restTemplate = new RestTemplate();
 
@@ -52,11 +54,16 @@ public class DashboardService {
 
 
         HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
-        //queryParams
-        Map<String, String> params = new HashMap<>();
-        params.put("devicetype", deviceType);
 
-        ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.GET, entity, String.class, params);
+        //queryParams
+        URI uri = UriComponentsBuilder.fromUriString(url)
+                .queryParam("devicetype", deviceType)
+                .build()
+                .toUri();
+
+
+
+        ResponseEntity<String> res = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
 
 
         return getHashMap(res);
@@ -107,6 +114,41 @@ public class DashboardService {
 
         ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
+
+        return getHashMap(res);
+    }
+
+    //특정장비의 history 가져오기(Dynamodb)
+    public HashMap getDeviceHistory(String deviceid,String intervaltime){
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/isolarbins/{id}" ;
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        //params
+        Map<String, String> params = new HashMap<>();
+        params.put("id", deviceid);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(url)
+                .buildAndExpand(params)
+                .toUri();
+        //queryParams
+        uri = UriComponentsBuilder
+                .fromUri(uri)
+                .queryParam("intervalhour",intervaltime)
+                .build()
+                .toUri();
+
+
+        ResponseEntity<String> res = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
 
         return getHashMap(res);
     }
