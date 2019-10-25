@@ -1,14 +1,15 @@
 package kr.co.broadwave.aci.dashboard;
 
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.*;
+import java.util.HashMap;
+
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /**
  * @author InSeok
@@ -24,13 +25,15 @@ public class DashboardServiceTest {
 
 
     @Test
-    //@Ignore
     public void getDeviceList() {
-        dashboardService.getDeviceList("ISOL");
+        HashMap res = dashboardService.getDeviceList("ISOL");
+        assertThat(res.get("statusCode")).as("Dashboard Get DeviceList [expect 200]").isEqualTo(200);
+
+
+
     }
 
     @Test
-    //@Ignore
     public void getDeviceLastestState(){
                 String jsonParam = "{\n" +
                 "  \"deviceids\": [\n" +
@@ -39,6 +42,13 @@ public class DashboardServiceTest {
                 "  ]\n" +
                 "}";
 
-        dashboardService.getDeviceLastestState(jsonParam);
+        HashMap res = dashboardService.getDeviceLastestState(jsonParam);
+        assertThat(res.get("statusCode")).as("Dashboard Get DeviceLastestState [expect 200]").isEqualTo(200);
+    }
+
+    @Test
+    public void getDeviceHistory(){
+        HashMap res = dashboardService.getDeviceHistory("ISOL-KR-SEOUL-0002", "72");
+        assertThat(res.get("statusCode")).as("Dashboard Get DeviceHistory [expect 200]").isEqualTo(200);
     }
 }
