@@ -29,8 +29,12 @@
 				<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 					<a href="#" class="nav__link toggle">플랫폼 관리</a>
 					<ul class="nav__list-depth">
-						<li><a href="/admin/teamreg" class="nav__link">부서등록</a></li>
+
 						<li><a href="/admin/mastercodereg" class="nav__link">마스터코드등록</a></li>
+						<li><a href="/admin/teamreg" class="nav__link">부서등록</a></li>
+						<li><a href="/admin/compreg" class="nav__link">업체등록</a></li>
+						<li><a href="/admin/equipreg" class="nav__link">장비등록</a></li>
+
 					</ul>
 				</li>
 
