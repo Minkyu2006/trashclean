@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.accounts.AccountRole;
+import kr.co.broadwave.aci.awsiot.ACIIoTService;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
@@ -26,8 +27,9 @@ public class AdminController {
     private final MasterCodeService masterCodeService;
     private final TeamService teamService;
 
+
     @Autowired
-    public AdminController( MasterCodeService masterCodeService, TeamService teamService) {
+    public AdminController(MasterCodeService masterCodeService, TeamService teamService) {
 
         this.masterCodeService = masterCodeService;
         this.teamService = teamService;
@@ -58,6 +60,19 @@ public class AdminController {
     public String masterCodeReg(Model model){
         model.addAttribute("codetypes", CodeType.values());
         return "admin/mastercodereg";
+    }
+
+    //업체등록
+    @RequestMapping("compreg")
+    public String compReg(){
+        return "admin/compreg";
+    }
+
+    //장비등록
+    @RequestMapping("equipreg")
+    public String equipreg(){
+
+        return "admin/equipmentreg";
     }
 
 
