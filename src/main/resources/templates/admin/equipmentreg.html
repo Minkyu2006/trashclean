@@ -13,6 +13,325 @@
 </head>
 
 <div layout:fragment="content"  class="content">
-    장비등록화면
+	<section class="section">
+		<article class="article">
+			<h2 class="article__heading">장비 조회</h2>
+			<div class="l-float-heading">
+				<div class="l-float-heading--left">
+					<h4 class="article__head">검색조건<span class="article__head-caption">(수정하려면 조회 후 초기화 버튼을 클릭하세요.)</span></h4>
+				</div>
+				<div class="l-float-heading--right"><button class="c-button c-button--small">조건 초기화</button></div>
+			</div>
+			<table class="c-table">
+				<tr>
+					<th>장비 번호</th>
+					<td>
+						<div class="c-text">
+							<input type="text" class="c-text__input" />
+						</div>
+					</td>
+					<th>장비 명칭</th>
+					<td>
+						<div class="c-text">
+							<input type="text" class="c-text__input" />
+						</div>
+					</td>
+					<th>장비 타입</th>
+					<td>
+						<div class="c-select">
+							<select name="" id="" class="c-select__input">
+								<option value="">전체</option>
+								<option value="">iTainer</option>
+								<option value="">iSolarbin</option>
+								<option value="">iNetbin</option>
+							</select>
+						</div>
+					</td>
+					<th>현재상태</th>
+					<td>
+						<div class="c-select">
+							<select name="" id="" class="c-select__input">
+								<option value="">전체</option>
+								<option value="">운영</option>
+								<option value="">대기</option>
+								<option value="">고장</option>
+								<option value="">폐기</option>
+							</select>
+						</div>
+					</td>
+					<td style="width: 60px;">
+						<button class="c-button c-button--point">조회</button>
+					</td>
+				</tr>
+			</table>
+		</article>
+		<article class="article">
+			<table class="c-table">
+				<thead>
+					<tr>
+						<th>장비 번호</th>
+						<th>장비 시리얼 번호</th>
+						<th>장비 명칭</th>
+						<th>장비 타임</th>
+						<th>AWS상 Device ID</th>
+						<th>임베디드 기판 번호</th>
+						<th>현재상태</th>
+						<th>소속운영사</th>
+						<th style="width: 40px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>00000000</td>
+						<td>00000000</td>
+						<td>iTainer0001</td>
+						<td>iTainer</td>
+						<td>idididid</td>
+						<td>00000000</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000001</td>
+						<td>00000001</td>
+						<td>iSolarbin0001</td>
+						<td>iSolarbin</td>
+						<td>idididid</td>
+						<td>00000001</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000002</td>
+						<td>00000002</td>
+						<td>iNetbin0001</td>
+						<td>iNetbin</td>
+						<td>idididid</td>
+						<td>00000002</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000000</td>
+						<td>00000000</td>
+						<td>iTainer0001</td>
+						<td>iTainer</td>
+						<td>idididid</td>
+						<td>00000000</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000001</td>
+						<td>00000001</td>
+						<td>iSolarbin0001</td>
+						<td>iSolarbin</td>
+						<td>idididid</td>
+						<td>00000001</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000002</td>
+						<td>00000002</td>
+						<td>iNetbin0001</td>
+						<td>iNetbin</td>
+						<td>idididid</td>
+						<td>00000002</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000000</td>
+						<td>00000000</td>
+						<td>iTainer0001</td>
+						<td>iTainer</td>
+						<td>idididid</td>
+						<td>00000000</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000001</td>
+						<td>00000001</td>
+						<td>iSolarbin0001</td>
+						<td>iSolarbin</td>
+						<td>idididid</td>
+						<td>00000001</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000002</td>
+						<td>00000002</td>
+						<td>iNetbin0001</td>
+						<td>iNetbin</td>
+						<td>idididid</td>
+						<td>00000002</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000000</td>
+						<td>00000000</td>
+						<td>iTainer0001</td>
+						<td>iTainer</td>
+						<td>idididid</td>
+						<td>00000000</td>
+						<td>운영</td>
+						<td>운영사명</td>
+						<td>
+							<button class="c-button c-button--point c-button--small">조회</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div class="c-pager">
+				<div class="c-paging" id="paging1">
+					<div class="c-paging__wrapper">
+						<div class="c-paging__group">
+							<a href="javascript:callList(1);" class="c-paging__item check">1</a>
+						</div>
+						<div class="c-paging__group">
+							<a href="javascript:callList(2);" class="c-paging__item">2</a>
+						</div>
+					</div>
+				</div>
+				<div class="c-paging__total">
+					<div class="c-paging__total-group">
+						Total
+					</div>
+					<div class="c-paging__total-group" id="totalCnt">11</div>
+				</div>
+			</div>
+		</article>
+	</section>
+	
+	<section class="section">
+		
+		<article class="article">
+			<h2 class="article__heading">장비 등록</h2>
+			<table class="c-table">
+				<tbody>
+					<tr>
+						<th>장비 번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" readonly="readonly" />
+							</div>
+						</td>
+						<th>장비 시리얼 번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>장비 명칭</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+						<th>장비 타입</th>
+						<td>
+							<div class="c-select">
+								<select name="" id="" class="c-select__input">
+									<option value="">iTainer</option>
+									<option value="">iSolarbin</option>
+									<option value="">iNetbin</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>AWS상 Device ID</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+						<th>임베디드 기판 번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>현재상태</th>
+						<td>
+							<div class="c-select">
+								<select name="" id="" class="c-select__input">
+									<option value="">운영</option>
+									<option value="">대기</option>
+									<option value="">고장</option>
+									<option value="">폐기</option>
+								</select>
+							</div>
+						</td>
+						<th>소속운영사</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<!-- 
+					<tr>
+						<th>최초 등록자 ID</th>
+						<td>admin</td>
+						<th>최초 등록일시</th>
+						<td>2019.10.31 14:03</td>
+					</tr>
+					<tr>
+						<th>수정 등록자ID</th>
+						<td>admin</td>
+						<th>수정 등록일시</th>
+						<td>2019.10.31 14:04</td>
+					</tr>
+					 -->
+				</tbody>
+			</table>
+			
+			<div class="c-function">
+				<div class="c-function__group c-function__group--right">
+					<div class="c-function__item">
+						<button class="c-button c-button--point">저장</button>
+					</div>
+				</div>
+			</div>
+		</article>
+		
+	</section>
 </div>
 </html>

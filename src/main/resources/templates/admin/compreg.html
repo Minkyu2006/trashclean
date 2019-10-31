@@ -13,6 +13,326 @@
 </head>
 
 <div layout:fragment="content"  class="content">
-    업체등록화면
+	<section class="section">
+		<article class="article">
+			<h2 class="article__heading">업체 조회</h2>
+			<div class="l-float-heading">
+				<div class="l-float-heading--left">
+					<h4 class="article__head">검색조건<span class="article__head-caption">(수정하려면 조회 후 초기화 버튼을 클릭하세요.)</span></h4>
+				</div>
+				<div class="l-float-heading--right"><button class="c-button c-button--small">조건 초기화</button></div>
+			</div>
+			<table class="c-table">
+				<tr>
+					<th>관리코드</th>
+					<td>
+						<div class="c-text">
+							<input type="text" class="c-text__input" />
+						</div>
+					</td>
+					<th>운영사명</th>
+					<td>
+						<div class="c-text">
+							<input type="text" class="c-text__input" />
+						</div>
+					</td>
+					<th>업체구분</th>
+					<td>
+						<div class="c-select">
+							<select name="" id="" class="c-select__input">
+								<option value="">전체</option>
+								<option value="">운영사</option>
+								<option value="">지자체</option>
+							</select>
+						</div>
+					</td>
+					<th>운영권역</th>
+					<td>
+						<div class="c-select">
+							<select name="" id="" class="c-select__input">
+								<option value="">전체</option>
+								<option value="">제주 1구역</option>
+							</select>
+						</div>
+					</td>
+					<td style="width: 60px;">
+						<button class="c-button c-button--point">조회</button>
+					</td>
+				</tr>
+			</table>
+		</article>
+		<article class="article">
+			<table class="c-table">
+				<thead>
+					<tr>
+						<th>관리코드</th>
+						<th>운영사명</th>
+						<th>업체구분</th>
+						<th>운영권역</th>
+						<th>대표자</th>
+						<th>사업자번호</th>
+						<th>담당자</th>
+						<th>전화번호</th>
+						<th>팩스번호</th>
+						<th style="width: 40px;"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>00000000</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 1구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000001</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 2구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000002</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 3구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000003</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 4구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000004</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 5구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000005</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 6구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000006</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 7구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000007</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 8구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000008</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 9구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+					<tr>
+						<td>00000009</td>
+						<td>제주특별자치도</td>
+						<td>지자체</td>
+						<td>제주 10구역</td>
+						<td>000</td>
+						<td>000-00-00000</td>
+						<td>000</td>
+						<td>000-0000-0000</td>
+						<td>000-0000-0000</td>
+						<td>
+							<button class="c-button c-button--small c-button--point">조회</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div class="c-pager">
+				<div class="c-paging" id="paging1">
+					<div class="c-paging__wrapper">
+						<div class="c-paging__group">
+							<a href="javascript:callList(1);" class="c-paging__item check">1</a>
+						</div>
+						<div class="c-paging__group">
+							<a href="javascript:callList(2);" class="c-paging__item">2</a>
+						</div>
+					</div>
+				</div>
+				<div class="c-paging__total">
+					<div class="c-paging__total-group">
+						Total
+					</div>
+					<div class="c-paging__total-group" id="totalCnt">11</div>
+				</div>
+			</div>
+		</article>
+	</section>
+	
+	<section class="section">
+		<article class="article">
+			<h2 class="article__heading">업체 등록</h2>
+			<table class="c-table">
+				<tbody>
+					<tr>
+						<th>관리코드</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" readonly="readonly" />
+							</div>
+						</td>
+						<th>업체구분</th>
+						<td>
+							<div class="c-select">
+								<select name="" id="" class="c-select__input">
+									<option value="">운영사</option>
+									<option value="">지자체</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>운영사명</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+						<th>운영사명(약칭)</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>운영권역</th>
+						<td>
+							<div class="c-select">
+								<select name="" id="" class="c-select__input">
+									<option value="">제주 1구역</option>
+								</select>
+							</div>
+						</td>
+						<th>대표자</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>사업자번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+						<th>담당자</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>전화번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+						<th>팩스번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<div class="c-function">
+				<div class="c-function__group c-function__group--right">
+					<div class="c-function__item">
+						<button class="c-button c-button--point">저장</button>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
 </div>
 </html>
