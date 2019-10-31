@@ -67,14 +67,17 @@ public class CompanyRestController {
                     ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }
 
-        CompanyDto optionalCompany = companyService.findByCsNumber(company.getCsNumber());
-
+//        CompanyDto optionalCompany = companyService.findByCsNumber(company.getCsNumber());
+        Optional<Company> optionalCompany = companyService.findByCsNumber(company.getCsNumber());
         //신규 및 수정여부
-        if (!optionalCompany.equals(null)){
+        if (optionalCompany.isPresent()){
             //수정
-            company.setId(optionalCompany.getId());
-            company.setInsert_id(optionalCompany.getInsert_id());
-            company.setInsertDateTime(optionalCompany.getInsertDateTime());
+            company.setId(optionalCompany.get().getId());
+            company.setInsert_id(optionalCompany.get().getInsert_id());
+            company.setInsertDateTime(optionalCompany.get().getInsertDateTime());
+//            company.setId(optionalCompany.getId());
+//            company.setInsert_id(optionalCompany.getInsert_id());
+//            company.setInsertDateTime(optionalCompany.getInsertDateTime());
             company.setModify_id(currentuserid);
             company.setModifyDateTime(LocalDateTime.now());
         }else{

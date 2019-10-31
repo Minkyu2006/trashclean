@@ -6,7 +6,114 @@
 <head>
     <script type="text/javascript">
 
+		$(function() {
+			//업체 등록
+			$("#compSaveBtn").on('click',function(){
+				save();
+			});
+		});
 
+		function save() {
+			var $form = $('form[name="compreg"]');
+
+			var params = $form.serialize();
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/company/reg',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alert("저장되었습니다.")
+					location.href="/admin/compreg";
+					// callList(1);
+					// Swal.fire({
+					// 	text: '저장되었습니다.',
+					// 	type: "success"
+					// }).then(function () {
+					// 	callList(1);
+					// })
+				}
+			});
+		}
+
+		// 업체 리스트보기
+		function callList(page) {
+			page = page - 1;
+			if (page < 0) page = 0
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+			var $schList = $('#schList');
+			var $totalCnt = $('#totalCnt');
+
+			var params = {
+				s_csNumber:$('#s_csNumber').val(),
+				s_csOperator:$('#s_csOperator').val()
+				s_csDivision:$('#s_csDivision').val(),
+				s_csRegional:$('#s_csRegional').val()
+			};
+
+			$schList.empty().append('<tr ><td colspan="11" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/company/list?size='+ perPage + '&page=' + page,
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+					if (totCnt == 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="11" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+					$totalCnt.text(totCnt);
+					var html = '';
+					// $.each(res.data.datalist, function(key, value){
+					// 	html += '<tr >';
+					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
+					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
+					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
+					// 	html += '<td >'+ echoNull2Blank(value.) +'m'+'</td>';
+					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
+					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
+					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
+					// 	html += '<td >'+ echoNull2Blank(value.)+'년'+'</td>';
+					// 	html += '<td >'+ echoNull2Blank(value.)+'년'+'</td>';
+					//
+					// 	html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callInfo(\''+ echoNull2Blank(value.id) +'\');">조회</button></td>';
+					// 	html += '</tr>';
+					// });
+					$schList.html(html);
+				}
+			});
+		}
 
     </script>
 
@@ -27,31 +134,33 @@
 					<th>관리코드</th>
 					<td>
 						<div class="c-text">
-							<input type="text" class="c-text__input" />
+							<input type="text" id="s_csNumber" class="c-text__input" />
 						</div>
 					</td>
 					<th>운영사명</th>
 					<td>
 						<div class="c-text">
-							<input type="text" class="c-text__input" />
+							<input type="text" id="s_csOperator" class="c-text__input" />
 						</div>
 					</td>
 					<th>업체구분</th>
 					<td>
 						<div class="c-select">
-							<select name="" id="" class="c-select__input">
+							<select id="s_csDivision" class="c-select__input">
 								<option value="">전체</option>
-								<option value="">운영사</option>
-								<option value="">지자체</option>
+								<option value="운영사">운영사</option>
+								<option value="지자체">지자체</option>
 							</select>
 						</div>
 					</td>
 					<th>운영권역</th>
 					<td>
 						<div class="c-select">
-							<select name="" id="" class="c-select__input">
+							<select name="" id="s_csRegional" class="c-select__input">
 								<option value="">전체</option>
-								<option value="">제주 1구역</option>
+								<option value="제주 1구역">제주 1구역</option>
+								<option value="제주 2구역">제주 2구역</option>
+								<option value="제주 3구역">제주 3구역</option>
 							</select>
 						</div>
 					</td>
@@ -92,151 +201,17 @@
 							<button class="c-button c-button--small c-button--point">조회</button>
 						</td>
 					</tr>
-					<tr>
-						<td>00000001</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 2구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
-					<tr>
-						<td>00000002</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 3구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
-					<tr>
-						<td>00000003</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 4구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
-					<tr>
-						<td>00000004</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 5구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
-					<tr>
-						<td>00000005</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 6구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
-					<tr>
-						<td>00000006</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 7구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
-					<tr>
-						<td>00000007</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 8구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
-					<tr>
-						<td>00000008</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 9구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
-					<tr>
-						<td>00000009</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 10구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-0000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
 				</tbody>
 			</table>
 			
 			<div class="c-pager">
 				<div class="c-paging" id="paging1">
-					<div class="c-paging__wrapper">
-						<div class="c-paging__group">
-							<a href="javascript:callList(1);" class="c-paging__item check">1</a>
-						</div>
-						<div class="c-paging__group">
-							<a href="javascript:callList(2);" class="c-paging__item">2</a>
-						</div>
-					</div>
 				</div>
 				<div class="c-paging__total">
 					<div class="c-paging__total-group">
 						Total
 					</div>
-					<div class="c-paging__total-group" id="totalCnt">11</div>
+					<div class="c-paging__total-group" id="totalCnt">0</div>
 				</div>
 			</div>
 		</article>
@@ -245,21 +220,22 @@
 	<section class="section">
 		<article class="article">
 			<h2 class="article__heading">업체 등록</h2>
+			<form name="compreg">
 			<table class="c-table">
 				<tbody>
 					<tr>
 						<th>관리코드</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" readonly="readonly" />
+								<input type="text" class="c-text__input" id="csNumber" name="csNumber" readonly="readonly" />
 							</div>
 						</td>
 						<th>업체구분</th>
 						<td>
 							<div class="c-select">
-								<select name="" id="" class="c-select__input">
-									<option value="">운영사</option>
-									<option value="">지자체</option>
+								<select name="csDivision" id="csDivision" class="c-select__input">
+									<option value="운영사">운영사</option>
+									<option value="지자체">지자체</option>
 								</select>
 							</div>
 						</td>
@@ -268,13 +244,13 @@
 						<th>운영사명</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input type="text" id="csOperator" name="csOperator" class="c-text__input" />
 							</div>
 						</td>
 						<th>운영사명(약칭)</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input type="text" id="csOperatorSub" name="csOperatorSub" class="c-text__input" />
 							</div>
 						</td>
 					</tr>
@@ -282,15 +258,17 @@
 						<th>운영권역</th>
 						<td>
 							<div class="c-select">
-								<select name="" id="" class="c-select__input">
-									<option value="">제주 1구역</option>
+								<select name="csRegional" id="csRegional" class="c-select__input">
+									<option value="제주 1구역">제주 1구역</option>
+									<option value="제주 2구역">제주 2구역</option>
+									<option value="제주 3구역">제주 3구역</option>
 								</select>
 							</div>
 						</td>
 						<th>대표자</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input type="text" id="csRepresentative" name="csRepresentative" class="c-text__input" />
 							</div>
 						</td>
 					</tr>
@@ -298,13 +276,13 @@
 						<th>사업자번호</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input type="text" id="csBuisnessNumber" name="csBuisnessNumber" class="c-text__input" />
 							</div>
 						</td>
 						<th>담당자</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input type="text" id="csManager" name="csManager" class="c-text__input" />
 							</div>
 						</td>
 					</tr>
@@ -312,23 +290,23 @@
 						<th>전화번호</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input type="text" id="csTelephone" name="csTelephone"class="c-text__input" />
 							</div>
 						</td>
 						<th>팩스번호</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input type="text" id="csFax" name="csFax" class="c-text__input" />
 							</div>
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			
+			</form>
 			<div class="c-function">
 				<div class="c-function__group c-function__group--right">
 					<div class="c-function__item">
-						<button class="c-button c-button--point">저장</button>
+						<button class="c-button c-button--point" id="compSaveBtn">저장</button>
 					</div>
 				</div>
 			</div>

@@ -38,14 +38,14 @@ public class CompanyService {
     }
 
 
-    public CompanyDto findByCsNumber(String csNumber) {
-        Optional<CompanyDto> optionalCompany = companyRepository.findByCsNumber(csNumber);
-        if (optionalCompany.isPresent()) {
-            return modelMapper.map(optionalCompany.get(),CompanyDto.class);
-        } else {
-            return null;
-        }
-    }
+//    public CompanyDto findByCsNumber(String csNumber) {
+//        Optional<CompanyDto> optionalCompany = companyRepository.findByCsNumber(csNumber);
+//        if (optionalCompany.isPresent()) {
+//            return modelMapper.map(optionalCompany.get(),CompanyDto.class);
+//        } else {
+//            return null;
+//        }
+//    }
 
     public Company save(Company company) {
         if ( company.getCsNumber() == null || company.getCsNumber().isEmpty()){
@@ -57,4 +57,7 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
+    public Optional<Company> findByCsNumber(String csNumber) {
+        return companyRepository.findByCsNumber(csNumber);
+    }
 }
