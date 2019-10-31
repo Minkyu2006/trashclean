@@ -1,5 +1,6 @@
-package kr.co.broadwave.aci.accounts;
+package kr.co.broadwave.aci.company;
 
+import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.teams.Team;
@@ -9,10 +10,10 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * @author InSeok
- * Date : 2019-03-25
- * Time : 09:31
- * Remark : 사용자정보 클래스
+ * @author Minkyu
+ * Date : 2019-10-31
+ * Time : 16:45
+ * Remark : 업체등록 클래스
  */
 @Entity
 @Getter
@@ -22,45 +23,43 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name="bs_account")
-public class Account {
+@Table(name="cs_company")
+public class Company {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ID")
-    private Long id;
+    @Column(name="cs_id")
+    private Long id; // 업체관리 고유ID
 
-    @Column(unique = true,name="user_id")
-    private String userid;
+    @Column(unique = true,name="cs_number")
+    private String csNumber; // 관리코드
 
-    @Column(name="user_name")
-    private String username;
+    @Column(name="cs_operator")
+    private String csOperator; // 운영사명
 
-    @Column(name="user_password")
-    private String password;
+    @Column(name="cs_operator_sub")
+    private String csOperatorSub; // 운영사명(약칭)
 
-    @Column(name="user_email")
-    private String email;
+    @Column(name="cs_division")
+    private String csDivision; // 업체구분
 
-    @Column(name="user_cellphone")
-    private String cellphone;
+    @Column(name="cs_regional")
+    private String csRegional; // 운영권역
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="user_role")
-    private AccountRole role;
+    @Column(name="cs_representative")
+    private String csRepresentative; // 대표자
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="user_approval_type")
-    private ApprovalType approvalType;
+    @Column(name="cs_buisness_number")
+    private String csBuisnessNumber; // 사업자번호
 
-    @ManyToOne(targetEntity = Team.class,fetch = FetchType.LAZY)
-    @JoinColumn(name="team_id")
-    private Team team;
+    @Column(name="cs_manager")
+    private String csManager; // 담당자
 
-    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.LAZY)
-    @JoinColumn(name="position_id")
-    private MasterCode position;
+    @Column(name="cs_telephone")
+    private String csTelephone; // 전화번호
 
+    @Column(name="cs_fax")
+    private String csFax; // 팩스번호
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
@@ -73,19 +72,5 @@ public class Account {
 
     @Column(name="modify_id")
     private String modify_id;
-
-    @Column(name="approval_date")
-    private LocalDateTime approvalDateTime;
-
-    @Column(name="approval_id")
-    private String approval_id;
-
-
-
-
-
-
-
-
 
 }

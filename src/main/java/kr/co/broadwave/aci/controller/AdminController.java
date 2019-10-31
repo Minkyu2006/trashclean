@@ -66,13 +66,14 @@ public class AdminController {
 
     //업체등록
     @RequestMapping("compreg")
-    public String compReg(){
+    public String compReg(Model model){
+
         return "admin/compreg";
     }
 
     //장비등록
     @RequestMapping("equipreg")
-    public String equipreg(){
+    public String equipreg(Model model){
 
         return "admin/equipmentreg";
     }

@@ -1,9 +1,14 @@
-package kr.co.broadwave.aci.teams;
+package kr.co.broadwave.aci.company;
 
+import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
+import kr.co.broadwave.aci.teams.Team;
+import kr.co.broadwave.aci.teams.TeamDto;
+import kr.co.broadwave.aci.teams.TeamMapperDto;
+import kr.co.broadwave.aci.teams.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,148 +32,73 @@ import java.util.Optional;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/team")
-public class TeamRestController {
+@RequestMapping("/api/company")
+public class CompanyRestController {
 
     private AjaxResponse res = new AjaxResponse();
     private HashMap<String, Object> data = new HashMap<>();
 
-
-
-    private final TeamService teamService;
-    private final AccountService accountService;
     private final ModelMapper modelMapper;
+    private final CompanyService companyService;
+    private final AccountService accountService;
 
     @Autowired
-    public TeamRestController(TeamService teamService, AccountService accountService, ModelMapper modelMapper) {
-        this.teamService = teamService;
+    public CompanyRestController(ModelMapper modelMapper,
+                                 AccountService accountService,
+                                 CompanyService companyService) {
         this.accountService = accountService;
+        this.companyService = companyService;
         this.modelMapper = modelMapper;
     }
 
-    @PostMapping ("team")
-    public ResponseEntity team(@RequestParam (value="teamcode", defaultValue="") String teamcode
-                            ){
-        log.info("단일부서조회  / teamcode: '" + teamcode +"'");
-        Optional<Team> optionalTeam = teamService.findByTeamcode(teamcode);
-
-        if (!optionalTeam.isPresent()){
-            log.info("단일부서조회실패 : 조회할 데이터가 존재하지않음 , 조회대상 teamcode: '" + teamcode +"'");
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(),ResponseErrorCode.E004.getDesc()));
-        }
-        Team team = optionalTeam.get();
-
-        data.clear();
-        data.put("datarow",team);
-        res.addResponse("data",data);
-
-        log.info("단일부서 조회 성공 : " + team.toString() );
-        return ResponseEntity.ok(res.success());
-
-    }
-
-
     @PostMapping ("reg")
-    public ResponseEntity teamreg(@ModelAttribute TeamMapperDto teamMapperDto,HttpServletRequest request){
+    public ResponseEntity companyReg(@ModelAttribute CompanyDtoMapperDto companyDtoMapperDto,HttpServletRequest request){
 
-
-        Team team = modelMapper.map(teamMapperDto, Team.class);
-
+        Company company = modelMapper.map(companyDtoMapperDto, Company.class);
 
         String currentuserid = CommonUtils.getCurrentuser(request);
 
-        Optional<Team> optionalTeam = teamService.findByTeamcode(team.getTeamcode());
-        //신규일때
-        if ( teamMapperDto.getMode().equals("N")) {
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
 
-            //부서코드가 중복되면 에러메세지 반환
-            if (optionalTeam.isPresent()) {
-                log.info("부서저장실패(부서코드중복) 부서코드: '" + team.getTeamcode() + "'");
-                return ResponseEntity.ok(res.fail(ResponseErrorCode.E001.getCode(), ResponseErrorCode.E001.getDesc()));
-            }
-            team.setInsertDateTime(LocalDateTime.now());
-            team.setInsert_id(currentuserid);
-        }else{//수정일때
-            if (!optionalTeam.isPresent()) {
-                log.info("부서정보수정실패 : 부서코드: '" + team.getTeamcode() + "'");
-                return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
-
-            }else{
-                team.setId(optionalTeam.get().getId()); // 수정하고자하는 팀에 ID부여
-                team.setInsertDateTime(optionalTeam.get().getInsertDateTime());
-                team.setInsert_id(optionalTeam.get().getInsert_id());
-                team.setModifyDateTime(LocalDateTime.now());
-                team.setModify_id(currentuserid);
-
-            }
-
+        //로그인한 사람 아이디가존재하지않으면 에러처리
+        if (!optionalAccount.isPresent()) {
+            log.info("출동일지 저장한 사람 아이디 미존재 : '" + currentuserid + "'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(),
+                    ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }
 
+        CompanyDto optionalCompany = companyService.findByCsNumber(company.getCsNumber());
 
-        Team teamSave = teamService.tesmSave(team);
-        data.put("datarow",teamSave);
-        res.addResponse("data",data);
-
-        log.info("부서 저장 성공 : " + teamSave.toString() );
-        return ResponseEntity.ok(res.success());
-
-
-    }
-
-    @PostMapping("del")
-    public ResponseEntity teamdel(@RequestParam (value="teamcode", defaultValue="") String teamcode
-                                   ){
-
-        log.info("부서 삭제 / teamcode: " + teamcode );
-        Optional<Team> optionalTeam = teamService.findByTeamcode(teamcode);
-        //정보가있는지 체크
-        if (!optionalTeam.isPresent()){
-            log.info("부서삭제실패 : 삭제할 데이터가 존재하지않음 , 삭제대상 teamcode : " + teamcode);
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(),ResponseErrorCode.E003.getDesc()));
-        }
-        Team team = optionalTeam.get();
-        //사용중인지 체크
-        if (accountService.countByTeam(team) > 0){
-            log.info("부서삭제실패 : Account에서 사용중인데이터 , 삭제대상 teamcode : " + teamcode);
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E002.getCode(),ResponseErrorCode.E002.getDesc()));
-        }
-
-        teamService.delete(team);
-        return ResponseEntity.ok(res.success());
-    }
-
-    @PostMapping("list")
-    public ResponseEntity teamlist(@RequestParam (value="teamcode", defaultValue="") String teamcode,
-                                   @RequestParam (value="teamname", defaultValue="") String teamname ,
-                                   @PageableDefault Pageable pageable){
-
-
-
-        log.info("부서 리스트 조회 / 조회조건 : teamcode / '" + teamcode + "', teamname / '" + teamname + "'");
-        Page<TeamDto> teams = teamService.findAllBySearchStrings(teamcode,teamname, pageable);
-
-        return CommonUtils.ResponseEntityPage(teams);
-    }
-
-
-
-    @RequestMapping("listold")
-    public ResponseEntity teamlistold(@RequestParam(value="teamname", defaultValue="") String teamname){
-
-        log.info("부서 리스트(List)조회 / 조회조건 : " + teamname );
-
-        List<Team> teams = teamService.findAll();
-
-        if(teams.size()> 0 ){
-            res.addResponse("datalist",teams);
-            res.addResponse("total_rows",teams.size());
-
+        //신규 및 수정여부
+        if (!optionalCompany.equals(null)){
+            //수정
+            company.setId(optionalCompany.getId());
+            company.setInsert_id(optionalCompany.getInsert_id());
+            company.setInsertDateTime(optionalCompany.getInsertDateTime());
+            company.setModify_id(currentuserid);
+            company.setModifyDateTime(LocalDateTime.now());
         }else{
-            res.addResponse("total_rows",teams.size());
-
-
+            //신규
+            company.setInsert_id(currentuserid);
+            company.setInsertDateTime(LocalDateTime.now());
+            company.setModify_id(currentuserid);
+            company.setModifyDateTime(LocalDateTime.now());
         }
 
+        Company save = companyService.save(company);
+
+        log.info("업체등록 데이터 : "+save.toString());
         return ResponseEntity.ok(res.success());
     }
+
+//    @PostMapping("list")
+//    public ResponseEntity companyList(@RequestParam (value="", defaultValue="") String 1,
+//                                   @RequestParam (value="", defaultValue="") String  2,
+//                                   @PageableDefault Pageable pageable){
+//
+//        Page<Dto> s = Service.(1,2, pageable);
+//
+//        return CommonUtils.ResponseEntityPage(s);
+//    }
+
 }

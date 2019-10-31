@@ -1,11 +1,6 @@
 package kr.co.broadwave.aci.company;
 
-import kr.co.broadwave.aci.accounts.AccountRole;
-import kr.co.broadwave.aci.bscodes.ApprovalType;
 import lombok.*;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @author Minkyu
@@ -19,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 @ToString
 @Getter
 @Setter
-public class CompanyDto {
+public class CompanyDtoMapperDto {
 
     private String csNumber; // 관리코드
 

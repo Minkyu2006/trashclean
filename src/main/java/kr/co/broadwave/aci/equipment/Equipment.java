@@ -1,4 +1,4 @@
-package kr.co.broadwave.aci.company;
+package kr.co.broadwave.aci.equipment;
 
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
@@ -10,10 +10,10 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * @author InSeok
- * Date : 2019-03-25
- * Time : 09:31
- * Remark : 사용자정보 클래스
+ * @author Minkyu
+ * Date : 2019-10-31
+ * Time : 16:45
+ * Remark : 장비등록 클래스
  */
 @Entity
 @Getter
@@ -23,45 +23,37 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name="bs_account")
-public class Company {
+@Table(name="em_equipment")
+public class Equipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="ID")
-    private Long id;
+    @Column(name="em_id")
+    private Long id; // 장비관리 고유ID
 
-    @Column(unique = true,name="user_id")
-    private String userid;
+    @Column(unique = true,name="em_number")
+    private String emNumber; // 장비 번호
 
-    @Column(name="user_name")
-    private String username;
+    @Column(name="em_cereal_number")
+    private String emCerealNumber; // 장비 시리얼 번호
 
-    @Column(name="user_password")
-    private String password;
+    @Column(name="em_designation")
+    private String emDesignation; // 장비명칭
 
-    @Column(name="user_email")
-    private String email;
+    @Column(name="em_type")
+    private String emType; // 장비타입
 
-    @Column(name="user_cellphone")
-    private String cellphone;
+    @Column(name="em_aws_number")
+    private String emAwsNumber; // AWS상 Device ID
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="user_role")
-    private AccountRole role;
+    @Column(name="em_agency")
+    private String emAgency; // 통신사정보(생략)
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="user_approval_type")
-    private ApprovalType approvalType;
+    @Column(name="em_embedded_number")
+    private String emEmbeddedNumber; // 임베디드 기판 번호
 
-    @ManyToOne(targetEntity = Team.class,fetch = FetchType.LAZY)
-    @JoinColumn(name="team_id")
-    private Team team;
-
-    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.LAZY)
-    @JoinColumn(name="position_id")
-    private MasterCode position;
-
+    @Column(name="em_now_state")
+    private String emNowState; // 현재상태
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
@@ -74,19 +66,4 @@ public class Company {
 
     @Column(name="modify_id")
     private String modify_id;
-
-    @Column(name="approval_date")
-    private LocalDateTime approvalDateTime;
-
-    @Column(name="approval_id")
-    private String approval_id;
-
-
-
-
-
-
-
-
-
 }

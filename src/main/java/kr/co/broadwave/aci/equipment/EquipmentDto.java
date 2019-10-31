@@ -1,62 +1,38 @@
-package kr.co.broadwave.aci.company;
+package kr.co.broadwave.aci.equipment;
 
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * @author InSeok
- * Date : 2019-07-25
- * Remark :
+ * @author Minkyu
+ * Date : 2019-10-31
+ * Time : 16:45
+ * Remark : 장비등록 클래스 Dto
  */
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class CompanyDto {
-    private String userid;
-    private String username;
-    private String email;
-    private String cellphone;
-    private AccountRole role;
-    private ApprovalType approvalType;
+@Getter
+@Setter
+public class EquipmentDto {
+
+    private String emNumber; // 장비 번호
+
+    private String emCerealNumber; // 장비 시리얼 번호
+    private String emDesignation; // 장비명칭
+    private String emType; // 장비타입
+    private String emAwsNumber; // AWS상 Device ID
+    private String emAgency; // 통신사정보(생략)
+    private String emEmbeddedNumber; // 임베디드 기판 번호
+    private String emNowState; // 현재상태
+
     private LocalDateTime insertDateTime;
-
-    public String getUserid() {
-        return userid;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getCellphone() {
-        return cellphone;
-    }
-
-    public String getRole() {
-        return role.getDesc();
-    }
-
-    public String getApprovalType() {
-        return approvalType.getCode();
-    }
-
-    public String getInsertDateTime() {
-        if (this.insertDateTime == null){
-            return null;
-        }
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return insertDateTime.format(dateTimeFormatter);
-    }
+    private String insert_id;
+    private LocalDateTime modifyDateTime;
+    private String modify_id;
 }
