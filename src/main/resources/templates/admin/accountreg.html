@@ -6,8 +6,6 @@
 <head>
 	<script>
 		$(function(){
-
-
 			$("#btnSearch").on('click',function(){
 				callList(1);
 			});
@@ -43,22 +41,16 @@
 				
 				e.preventDefault();
 			});
-
-
-
 		})
 
 		function cancel() {
 			$('.l-popup').removeClass('open');
 			init();
-
-
 		}
 
 		function del(){
 
 			if ($("#userid").attr("readonly") != "readonly"){
-
 				alert("삭제하고자하는 사용자를 하단에서 선택 후 삭제하세요.");
 				return false;
 			}
@@ -69,12 +61,9 @@
 				return false;
 			}
 
-
-
 			var params = {
 				userid:$("#userid").val()
 			};
-
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -97,13 +86,8 @@
 					alert('삭제되었습니다. ');
 					init();
 					callList(1);
-
-
-
 				}
-
 			});
-
 		}
 
 		function init(){
@@ -114,12 +98,9 @@
 			$("#email").val('');
 			$("#cellphone").val('');
 			$("#role").val('ROLE_USER');
-
-
 		}
 
 		function save1(){
-
 
 			if ($("#userid").val().trim() == '') {
 				alert("수정할 아이디를 먼저 선택하세요.");
@@ -133,11 +114,9 @@
 				return false;
 			}
 
-
 			var $form = $('form[name="frmreg"]');
 
 			var params = $form.serialize();
-
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -161,21 +140,11 @@
 					$('.l-popup').removeClass('open');
 					init();
 					callList(1);
-
-
-
 				}
-
 			});
-
-
-
-
-
 		}
 
 		function savepassword(){
-
 
 			if ($("#userid").val().trim() == '') {
 				alert("수정할 아이디를 먼저 선택하세요.");
@@ -188,11 +157,9 @@
 				return false;
 			}
 
-
 			var $form = $('form[name="frmreg"]');
 
 			var params = $form.serialize();
-
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -216,25 +183,14 @@
 					$('.l-popup').removeClass('open');
 					init();
 					callList(1);
-
-
-
 				}
-
 			});
-
-
-
-
-
 		}
 
 		function searchclear(){
 			$("#s_userid").val('');
 			$("#s_username").val('');
 			$("#s_email").val('');
-
-
 		}
 
 
@@ -246,8 +202,6 @@
 			var perPage = 10;
 			var perArea = 5;
 			var totCnt = 0;
-
-
 
 			var $schList = $('#schList');
 			var $totalCnt = $('#totalCnt');
@@ -263,7 +217,6 @@
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-
 
 			$.ajax({
 				url:'/api/account/list?size='+ perPage + '&page=' + page,
@@ -291,7 +244,6 @@
 
 					$totalCnt.text(totCnt);
 
-
 					var html = '';
 					$.each(res.data.datalist, function(key, value){
 						// html += '<tr onclick="javascript:callinfo(\''+ echoNull2Blank(value.userid) +'\');">';
@@ -303,19 +255,15 @@
 						html += '<td >'+ echoNull2Blank(value.cellphone) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.email) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.role) +'</td>';
-
+						html += '<td >'+ echoNull2Blank(value.approvalType) +'</td>';
 
 						html += '<td ><button class="c-button c-button--point btn__member" onclick="javascript:callinfo(\''+ echoNull2Blank(value.userid) +'\');">수정</button></td>';
 
 						html += '</tr>';
 					});
 					$schList.html(html);
-
 				}
-
 			});
-
-
 		}
 
 		function callinfo(userid) {
@@ -342,7 +290,6 @@
 					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 				},
 				success: function(res){
-
 					$("#userid").val(res.data.datarow.userid);
 					$("#username").val(res.data.datarow.username);
 					$("#password").val('');
@@ -351,18 +298,10 @@
 					$("#role").val(res.data.datarow.role);
 					$("#teamcode").val(res.data.datarow.team.teamcode);
 					$("#positionid").val(res.data.datarow.position.id);
-
-
-
-
-
+					$("#approvalType").val(res.data.datarow.approvalType);
 				}
-
 			});
-
 		}
-
-
 
 	</script>
 
@@ -421,6 +360,7 @@
 					<col />
 					<col />
 					<col />
+					<col />
 					<col style="width: 60px;" />
 				</colgroup>
 				<thead>
@@ -432,6 +372,7 @@
 						<th>전화번호</th>
 						<th>이메일</th>
 						<th>권한</th>
+						<th>상태</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -479,7 +420,7 @@
 								<input type="text" class="join__input" id="cellphone" name ="cellphone" />
 							</div>
 							<div class="member__form-item">
-								<label for="email" class="join__label">e-mail</label>
+								<label for="email" class="join__label">이메일</label>
 								<input type="text" class="join__input" id="email" name ="email" />
 							</div>
 
@@ -488,8 +429,8 @@
 								<select name="teamcode" id="teamcode" class="c-select__input">
 									<option th:each ="team : ${teams}"
 											th:value="${team.teamcode}"
-											th:text="${team.teamname}"></option>
-
+											th:text="${team.teamname}">
+									</option>
 								</select>
 							</div>
 							<div class="member__form-item">
@@ -497,8 +438,8 @@
 								<select name="positionid" id="positionid" class="c-select__input">
 									<option th:each ="position : ${positions}"
 											th:value="${position.id}"
-											th:text="${position.name}"></option>
-
+											th:text="${position.name}">
+									</option>
 								</select>
 							</div>
 
@@ -508,11 +449,24 @@
 									<select class="c-select__input" id="role" name="role">
 										<option th:each ="role : ${roles}"
 												th:value="${role.getCode()}"
-												th:text="${role.getDesc()}"></option>
-
+												th:text="${role.getDesc()}">
+										</option>
 									</select>
 								</div>
 							</div>
+
+							<div class="member__form-item">
+								<label for="approvalType" class="join__label">상태</label>
+								<div class="c-select">
+									<select class="c-select__input" id="approvalType" name="approvalType">
+										<option th:each ="approvalType : ${approvalTypes}"
+												th:value="${approvalType.getCode()}"
+												th:text="${approvalType.getDesc()}">
+										</option>
+									</select>
+								</div>
+							</div>
+
 						</form>
 					</div>
 					<div class="c-function">

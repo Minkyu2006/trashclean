@@ -44,11 +44,11 @@ public class AccountRepositoryCustomImpl extends QuerydslRepositorySupport imple
                         qAccount.cellphone,
                         qAccount.email,
                         qAccount.role,
+                        qAccount.approvalType,
                         qTeam.teamcode,
                         qTeam.teamname,
                         qMasterCode.code,
                         qMasterCode.name
-
                 ));
 
 
@@ -73,7 +73,6 @@ public class AccountRepositoryCustomImpl extends QuerydslRepositorySupport imple
     public Page<AccountDto> findAllByApproval(String username, String startDate, String endDate,Pageable pageable) {
         QAccount account  = QAccount.account;
 
-
         JPQLQuery<AccountDto> query = from(account)
                 .select(Projections.constructor(AccountDto.class,
                         account.userid,
@@ -84,8 +83,6 @@ public class AccountRepositoryCustomImpl extends QuerydslRepositorySupport imple
                         account.approvalType,
                         account.insertDateTime
                 ));
-
-
 
         if (username != null && !username.isEmpty()){
             query.where(account.username.containsIgnoreCase(username));
@@ -128,7 +125,6 @@ public class AccountRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 .set(qAccount.approval_id,loginId)
                 .set(qAccount.approvalDateTime,LocalDateTime.now())
                 .execute();
-
-
     }
+
 }

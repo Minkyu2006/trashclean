@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.accounts;
 
+import kr.co.broadwave.aci.bscodes.ApprovalType;
 import lombok.*;
 
 /**
@@ -18,6 +19,7 @@ public class AccountDtoWithTeam {
     private String email;
     private String cellphone;
     private AccountRole role;
+    private ApprovalType approvalType;
     private String teamcode;
     private String teamname;
     private String positioncode;
@@ -69,6 +71,14 @@ public class AccountDtoWithTeam {
 
     public void setRole(AccountRole role) {
         this.role = role;
+    }
+
+    public String getApprovalType() {
+        return approvalType.getDesc();
+    }
+
+    public void setApprovalType(ApprovalType approvalType) {
+        this.approvalType = approvalType;
     }
 
     public String getTeamcode() {

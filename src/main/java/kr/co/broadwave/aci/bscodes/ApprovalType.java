@@ -9,8 +9,7 @@ public enum ApprovalType {
     AT01("AT01", "미처리"),
     AT02("AT02", "승인"),
     AT03("AT03", "거절"),
-
-    ;
+    AT04("AT04", "사용중지");
 
     private String code;
     private String desc;

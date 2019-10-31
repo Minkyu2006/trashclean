@@ -123,8 +123,6 @@ public class AccountRestController {
 
         }
 
-
-
         Account accountSave =  this.accountService.saveAccount(account);
 
         log.info("사용자 저장 성공 : '" + accountMapperDto.getUserid() +"'" );
@@ -134,7 +132,6 @@ public class AccountRestController {
 
     @PostMapping("modifyReg")
     public ResponseEntity accountModifySave(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
-
 
         Account account = modelMapper.map(accountMapperDto, Account.class);
         Optional<Team> optionalTeam = teamService.findByTeamcode(accountMapperDto.getTeamcode());
@@ -154,6 +151,7 @@ public class AccountRestController {
             Team team = optionalTeam.get();
             account.setTeam(team);
         }
+
         //직급코드가 존재하지않으면
         if (!optionalPositionCode.isPresent()) {
             log.info(" 선택한 직급 DB 존재 여부 체크.  직급코드: '" + accountMapperDto.getPositionid() +"'");
@@ -162,13 +160,8 @@ public class AccountRestController {
             account.setPosition(optionalPositionCode.get());
         }
 
-
         Optional<Account> optionalAccount = accountService.findByUserid(account.getUserid());
-
         String currentuserid = CommonUtils.getCurrentuser(request);
-
-
-
 
         //수정일때
         if(!optionalAccount.isPresent()){
@@ -179,16 +172,11 @@ public class AccountRestController {
             account.setInsert_id(optionalAccount.get().getInsert_id());
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
             account.setPassword(optionalAccount.get().getPassword());
-            account.setApprovalType(optionalAccount.get().getApprovalType());
         }
         account.setModify_id(currentuserid);
         account.setModifyDateTime(LocalDateTime.now());
 
-
-
-
-
-        Account accountSave =  this.accountService.saveAccount(account);
+        Account accountSave =  this.accountService.updateAccount(account);
 
         log.info("사용자 관리자(일반정보) 수정 성공 '" + accountMapperDto.getUserid() +"'" );
         return ResponseEntity.ok(res.success());
@@ -209,14 +197,9 @@ public class AccountRestController {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E007.getCode(), ResponseErrorCode.E007.getDesc()));
         }
 
-
-
         Optional<Account> optionalAccount = accountService.findByUserid(account.getUserid());
 
         String currentuserid = CommonUtils.getCurrentuser(request);
-
-
-
 
         //수정일때
         if(!optionalAccount.isPresent()){
@@ -236,7 +219,6 @@ public class AccountRestController {
         }
         account.setModify_id(currentuserid);
         account.setModifyDateTime(LocalDateTime.now());
-
 
         Account accountSave =  this.accountService.saveAccount(account);
 

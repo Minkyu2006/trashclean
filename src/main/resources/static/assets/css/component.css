@@ -108,7 +108,7 @@
 }
 
 .c-table.c-table--small {
-	
+
 }
 .c-table.c-table--small th {
 	padding: 4px 5px;
@@ -544,7 +544,7 @@
 	height: 24px;
 }
 .c-text.c-text--label {
-	
+
 }
 .c-text.c-text--label:before {
 	content: " ";
@@ -692,7 +692,7 @@
 	font-size: 12px;
 }
 .c-date.c-date--small .c-date__calendar {
-	
+
 }
 
 .c-date .ui-datepicker-inline {
@@ -1203,7 +1203,7 @@ a.c-button {
 /* input-list */
 .c-input-list:before {
 	content: " ";
-	display: table; 
+	display: table;
 }
 .c-input-list:after {
 	content: " ";
@@ -1220,7 +1220,7 @@ a.c-button {
 	margin-right: 0;
 }
 .c-input-list.c-input-list--button-right {
-	
+
 }
 .c-input-list.c-input-list--button-right li {
 	width: 50%;
@@ -1247,7 +1247,7 @@ a.c-button {
 }
 
 @media(max-width: 720px) {
-	
+
 }
 
 
@@ -1315,7 +1315,7 @@ a.c-button {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  
+
   border-radius: 3px;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
@@ -2147,7 +2147,7 @@ input[type=text]:-ms-clear {
     box-sizing: border-box;
 }
 .c-searchtable__title {
-	
+
 }
 .c-searchtable__button {
 	width: 60px;
@@ -2229,7 +2229,7 @@ input[type=text]:-ms-clear {
 		white-space: normal;
 		text-align: left;
 	}
-		
+
 	.c-searchtext {
 		padding-top: 20px;
 	}

@@ -2,6 +2,7 @@ package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.awsiot.ACIIoTService;
+import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
@@ -44,6 +45,7 @@ public class AdminController {
         model.addAttribute("roles", AccountRole.values());
         model.addAttribute("positions", positions);
         model.addAttribute("teams", teams);
+        model.addAttribute("approvalTypes", ApprovalType.values());
 
         return "admin/accountreg";
     }

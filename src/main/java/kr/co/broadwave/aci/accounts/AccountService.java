@@ -46,6 +46,10 @@ public class AccountService implements UserDetailsService {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         return this.accountRepository.save(account);
     }
+    public Account updateAccount(Account account){
+        return this.accountRepository.save(account);
+    }
+
     @Transactional
     public Account modifyAccount(Account account){
         //password notencoding
