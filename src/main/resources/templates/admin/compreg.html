@@ -184,7 +184,7 @@
 
 		//삭제버튼 실행
 		function del() {
-			if ($("#csNumber").val() == '') {
+			if ($("#csNumber").val().trim() == '') {
 				Swal.fire({text:"삭제하고자하는 업체를 선택하세요."});
 				return false;
 			}

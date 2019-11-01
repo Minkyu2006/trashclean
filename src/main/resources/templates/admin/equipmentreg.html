@@ -178,12 +178,12 @@
 
 		//삭제버튼 실행
 		function del() {
-			if ($("#csNumber").val() == '') {
-				Swal.fire({text:"삭제하고자하는 업체를 선택하세요."});
+			if ($("#emNumber").val().trim() == '') {
+				Swal.fire({text:"삭제하고자하는 장비를 선택하세요."});
 				return false;
 			}
 			Swal.fire({
-				title: '업체를 삭제하시겠습니까?',
+				title: '장비를 삭제하시겠습니까?',
 				type: 'warning',
 				showCancelButton: true,
 				confirmButtonColor: '#3085d6',
@@ -214,7 +214,7 @@
 								return;
 							}
 							Swal.fire({
-								title: '업체가 삭제 되었습니다.',
+								title: '장비가 삭제 되었습니다.',
 								type: "success"
 							}).then(function () {
 								init();
