@@ -2,8 +2,7 @@ package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.awsiot.ACIIoTService;
-import kr.co.broadwave.aci.bscodes.ApprovalType;
-import kr.co.broadwave.aci.bscodes.CodeType;
+import kr.co.broadwave.aci.bscodes.*;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import kr.co.broadwave.aci.teams.TeamDto;
@@ -68,12 +67,18 @@ public class AdminController {
     @RequestMapping("compreg")
     public String compReg(Model model){
 
+        model.addAttribute("DivisionTypes", DivisionType.values());
+        model.addAttribute("RegionalTypes", RegionalType.values());
+
         return "admin/compreg";
     }
 
     //장비등록
     @RequestMapping("equipreg")
     public String equipreg(Model model){
+
+        model.addAttribute("EmTypes", EmType.values());
+        model.addAttribute("NowStateTypes", NowStateType.values());
 
         return "admin/equipmentreg";
     }

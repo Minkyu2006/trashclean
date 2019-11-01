@@ -2,11 +2,14 @@ package kr.co.broadwave.aci.company;
 
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
+import kr.co.broadwave.aci.bscodes.DivisionType;
+import kr.co.broadwave.aci.bscodes.RegionalType;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.teams.Team;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.swing.plaf.synth.Region;
 import java.time.LocalDateTime;
 
 /**
@@ -23,7 +26,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name="cs_company")
+@Table(name="bs_company")
 public class Company {
 
     @Id
@@ -40,11 +43,13 @@ public class Company {
     @Column(name="cs_operator_sub")
     private String csOperatorSub; // 운영사명(약칭)
 
+    @Enumerated(EnumType.STRING)
     @Column(name="cs_division")
-    private String csDivision; // 업체구분
+    private DivisionType csDivision; // 업체구분
 
+    @Enumerated(EnumType.STRING)
     @Column(name="cs_regional")
-    private String csRegional; // 운영권역
+    private RegionalType csRegional; // 운영권역
 
     @Column(name="cs_representative")
     private String csRepresentative; // 대표자

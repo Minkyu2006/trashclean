@@ -1,5 +1,7 @@
 package kr.co.broadwave.aci.company;
 
+import kr.co.broadwave.aci.bscodes.DivisionType;
+import kr.co.broadwave.aci.bscodes.RegionalType;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -22,8 +24,8 @@ public class CompanyDto {
 
     private String csOperator; // 운영사명
     private String csOperatorSub; // 운영사명(약칭)
-    private String csDivision; // 업체구분
-    private String csRegional; // 운영권역
+    private DivisionType csDivision; // 업체구분
+    private RegionalType csRegional; // 운영권역
     private String csRepresentative; // 대표자
     private String csBuisnessNumber; // 사업자번호
     private String csManager; // 담당자

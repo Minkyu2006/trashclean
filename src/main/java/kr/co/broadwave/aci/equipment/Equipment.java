@@ -2,6 +2,8 @@ package kr.co.broadwave.aci.equipment;
 
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
+import kr.co.broadwave.aci.bscodes.EmType;
+import kr.co.broadwave.aci.bscodes.NowStateType;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.teams.Team;
 import lombok.*;
@@ -23,7 +25,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name="em_equipment")
+@Table(name="bs_equipment")
 public class Equipment {
 
     @Id
@@ -40,20 +42,22 @@ public class Equipment {
     @Column(name="em_designation")
     private String emDesignation; // 장비명칭
 
+    @Enumerated(EnumType.STRING)
     @Column(name="em_type")
-    private String emType; // 장비타입
+    private EmType emType; // 장비타입
 
     @Column(name="em_aws_number")
     private String emAwsNumber; // AWS상 Device ID
 
-    @Column(name="em_agency")
-    private String emAgency; // 통신사정보(생략)
-
     @Column(name="em_embedded_number")
     private String emEmbeddedNumber; // 임베디드 기판 번호
 
+    @Enumerated(EnumType.STRING)
     @Column(name="em_now_state")
-    private String emNowState; // 현재상태
+    private NowStateType emNowState; // 현재상태
+
+    @Column(name="em_agency")
+    private String emAgency; // 소속운영사
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;

@@ -11,8 +11,43 @@
 			$("#compSaveBtn").on('click',function(){
 				save();
 			});
+			$("#btnSearch").on('click',function(){
+				callList(1);
+			});
+			$("#btnDel").on('click',function(){
+				del();
+			});
+			$("#btnNew").on('click',function(){
+				init();
+			});
+			$("#btnReset").on('click',function(){
+				reset();
+			});
 		});
 
+		// 조건초기화
+		function reset() {
+			$("#s_csNumber").val('');
+			$("#s_csOperator").val('');
+			$("#s_csDivision").val('');
+			$("#s_csRegional").val('');
+		}
+
+		// 신규작성
+		function init(){
+			$("#csNumber").val('');
+			$("#csOperator").val('');
+			$("#csOperatorSub").val('');
+			$("#csDivision").val('DT0001');
+			$("#csRegional").val('RT0001');
+			$("#csRepresentative").val('');
+			$("#csBuisnessNumber").val('');
+			$("#csManager").val('');
+			$("#csTelephone").val('');
+			$("#csFax").val('');
+		}
+
+		// 업제저장
 		function save() {
 			var $form = $('form[name="compreg"]');
 
@@ -34,15 +69,13 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert("저장되었습니다.")
-					location.href="/admin/compreg";
-					// callList(1);
-					// Swal.fire({
-					// 	text: '저장되었습니다.',
-					// 	type: "success"
-					// }).then(function () {
-					// 	callList(1);
-					// })
+					Swal.fire({
+						text: '저장되었습니다.',
+						type: "success"
+					}).then(function () {
+						init();
+						callList(1);
+					})
 				}
 			});
 		}
@@ -60,10 +93,10 @@
 			var $totalCnt = $('#totalCnt');
 
 			var params = {
-				s_csNumber:$('#s_csNumber').val(),
-				s_csOperator:$('#s_csOperator').val()
-				s_csDivision:$('#s_csDivision').val(),
-				s_csRegional:$('#s_csRegional').val()
+				csNumber:$('#s_csNumber').val(),
+				csOperator:$('#s_csOperator').val(),
+				csDivision:$('#s_csDivision').val(),
+				csRegional:$('#s_csRegional').val()
 			};
 
 			$schList.empty().append('<tr ><td colspan="11" align = "center">조회 중</td></tr>');
@@ -95,28 +128,111 @@
 					}
 					$totalCnt.text(totCnt);
 					var html = '';
-					// $.each(res.data.datalist, function(key, value){
-					// 	html += '<tr >';
-					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
-					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
-					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
-					// 	html += '<td >'+ echoNull2Blank(value.) +'m'+'</td>';
-					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
-					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
-					// 	html += '<td >'+ echoNull2Blank(value.) +'</td>';
-					// 	html += '<td >'+ echoNull2Blank(value.)+'년'+'</td>';
-					// 	html += '<td >'+ echoNull2Blank(value.)+'년'+'</td>';
-					//
-					// 	html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callInfo(\''+ echoNull2Blank(value.id) +'\');">조회</button></td>';
-					// 	html += '</tr>';
-					// });
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+						html += '<td >'+ echoNull2Blank(value.csNumber) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csOperator) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csDivision) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csRegional) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csRepresentative) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csBuisnessNumber) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csManager) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csTelephone)+'</td>';
+						html += '<td >'+ echoNull2Blank(value.csFax)+'</td>';
+
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callInfo(\''+ echoNull2Blank(value.id) +'\');">조회</button></td>';
+						html += '</tr>';
+					});
 					$schList.html(html);
 				}
 			});
 		}
 
-    </script>
+		// 업체정보보기
+		function callInfo(id) {
 
+			var params = {
+				id:id
+			}
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/company/info',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request, status, error) {
+					alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+				success: function (res) {
+					$("#csNumber").val(res.data.company.csNumber);
+					$("#csOperator").val(res.data.company.csOperator);
+					$("#csOperatorSub").val(res.data.company.csOperatorSub);
+					$("#csDivision").val(res.data.company.csDivision);
+					$("#csRegional").val(res.data.company.csRegional);
+					$("#csRepresentative").val(res.data.company.csRepresentative);
+					$("#csBuisnessNumber").val(res.data.company.csBuisnessNumber);
+					$("#csManager").val(res.data.company.csManager);
+					$("#csTelephone").val(res.data.company.csTelephone);
+					$("#csFax").val(res.data.company.csFax);
+				}
+			});
+		}
+
+		//삭제버튼 실행
+		function del() {
+			if ($("#csNumber").val() == '') {
+				Swal.fire({text:"삭제하고자하는 업체를 선택하세요."});
+				return false;
+			}
+			Swal.fire({
+				title: '업체를 삭제하시겠습니까?',
+				type: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'OK'
+			}).then(function (result) {
+				if (result.value) {
+					var params = {
+						csNumber: $("#csNumber").val()
+					};
+
+					var token = $("meta[name='_csrf']").attr("content");
+					var header = $("meta[name='_csrf_header']").attr("content");
+					$(document).ajaxSend(function (e, xhr) {
+						xhr.setRequestHeader(header, token);
+					});
+
+					$.ajax({
+						url: '/api/company/del',
+						type: 'post',
+						data: params,
+						cache: false,
+						error: function (request) {
+							ajaxErrorMsg(request);
+						},
+						success: function (res) {
+							if (!Ajax.checkResult(res)) {
+								return;
+							}
+							Swal.fire({
+								title: '업체가 삭제 되었습니다.',
+								type: "success"
+							}).then(function () {
+								init();
+								callList(1);
+							})
+						}
+					})
+				}
+			});
+		}
+
+</script>
 </head>
 
 <div layout:fragment="content"  class="content">
@@ -127,7 +243,7 @@
 				<div class="l-float-heading--left">
 					<h4 class="article__head">검색조건<span class="article__head-caption">(수정하려면 조회 후 초기화 버튼을 클릭하세요.)</span></h4>
 				</div>
-				<div class="l-float-heading--right"><button class="c-button c-button--small">조건 초기화</button></div>
+				<div class="l-float-heading--right"><button class="c-button c-button--small" id="btnReset">조건 초기화</button></div>
 			</div>
 			<table class="c-table">
 				<tr>
@@ -148,24 +264,27 @@
 						<div class="c-select">
 							<select id="s_csDivision" class="c-select__input">
 								<option value="">전체</option>
-								<option value="운영사">운영사</option>
-								<option value="지자체">지자체</option>
+								<option th:each ="DivisionType : ${DivisionTypes}"
+										th:value="${DivisionType.getCode()}"
+										th:text="${DivisionType.getDesc()}">
+								</option>
 							</select>
 						</div>
 					</td>
 					<th>운영권역</th>
 					<td>
 						<div class="c-select">
-							<select name="" id="s_csRegional" class="c-select__input">
+							<select id="s_csRegional" class="c-select__input">
 								<option value="">전체</option>
-								<option value="제주 1구역">제주 1구역</option>
-								<option value="제주 2구역">제주 2구역</option>
-								<option value="제주 3구역">제주 3구역</option>
+								<option th:each ="RegionalType : ${RegionalTypes}"
+										th:value="${RegionalType.getCode()}"
+										th:text="${RegionalType.getDesc()}">
+								</option>
 							</select>
 						</div>
 					</td>
 					<td style="width: 60px;">
-						<button class="c-button c-button--point">조회</button>
+						<button class="c-button c-button--point" id="btnSearch">조회</button>
 					</td>
 				</tr>
 			</table>
@@ -186,21 +305,8 @@
 						<th style="width: 40px;"></th>
 					</tr>
 				</thead>
-				<tbody>
-					<tr>
-						<td>00000000</td>
-						<td>제주특별자치도</td>
-						<td>지자체</td>
-						<td>제주 1구역</td>
-						<td>000</td>
-						<td>000-00-00000</td>
-						<td>000</td>
-						<td>000-0000-0000</td>
-						<td>000-0000-000</td>
-						<td>
-							<button class="c-button c-button--small c-button--point">조회</button>
-						</td>
-					</tr>
+				<tbody id="schList">
+
 				</tbody>
 			</table>
 			
@@ -234,8 +340,10 @@
 						<td>
 							<div class="c-select">
 								<select name="csDivision" id="csDivision" class="c-select__input">
-									<option value="운영사">운영사</option>
-									<option value="지자체">지자체</option>
+									<option th:each ="DivisionType : ${DivisionTypes}"
+											th:value="${DivisionType.getCode()}"
+											th:text="${DivisionType.getDesc()}">
+									</option>
 								</select>
 							</div>
 						</td>
@@ -259,9 +367,10 @@
 						<td>
 							<div class="c-select">
 								<select name="csRegional" id="csRegional" class="c-select__input">
-									<option value="제주 1구역">제주 1구역</option>
-									<option value="제주 2구역">제주 2구역</option>
-									<option value="제주 3구역">제주 3구역</option>
+									<option th:each ="RegionalType : ${RegionalTypes}"
+											th:value="${RegionalType.getCode()}"
+											th:text="${RegionalType.getDesc()}">
+									</option>
 								</select>
 							</div>
 						</td>
@@ -306,7 +415,13 @@
 			<div class="c-function">
 				<div class="c-function__group c-function__group--right">
 					<div class="c-function__item">
-						<button class="c-button c-button--point" id="compSaveBtn">저장</button>
+						<button class="c-button c-button--point" id="btnNew">신규</button>
+					</div>
+					<div class="c-function__item">
+						<button class="c-button c-button--point" id ="compSaveBtn">저장</button>
+					</div>
+					<div class="c-function__item">
+						<button class="c-button" id="btnDel">삭제</button>
 					</div>
 				</div>
 			</div>

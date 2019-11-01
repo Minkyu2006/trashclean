@@ -2,6 +2,8 @@ package kr.co.broadwave.aci.company;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.bscodes.DivisionType;
+import kr.co.broadwave.aci.bscodes.RegionalType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
@@ -25,9 +27,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author InSeok
- * Date : 2019-04-02
- * Time : 14:09
+ * @author Minkyu
+ * Date : 2019-10-31
+ * Time : 14:22
  * Remark : Ajax 용 Rest Controller
  */
 @Slf4j
@@ -51,10 +53,11 @@ public class CompanyRestController {
         this.modelMapper = modelMapper;
     }
 
+    // 업체 저장
     @PostMapping ("reg")
-    public ResponseEntity companyReg(@ModelAttribute CompanyDtoMapperDto companyDtoMapperDto,HttpServletRequest request){
+    public ResponseEntity companyReg(@ModelAttribute CompanyMapperDto companyMapperDto,HttpServletRequest request){
 
-        Company company = modelMapper.map(companyDtoMapperDto, Company.class);
+        Company company = modelMapper.map(companyMapperDto, Company.class);
 
         String currentuserid = CommonUtils.getCurrentuser(request);
 
@@ -62,7 +65,7 @@ public class CompanyRestController {
 
         //로그인한 사람 아이디가존재하지않으면 에러처리
         if (!optionalAccount.isPresent()) {
-            log.info("출동일지 저장한 사람 아이디 미존재 : '" + currentuserid + "'");
+            log.info("업제등록 저장한 사람 아이디 미존재 : '" + currentuserid + "'");
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(),
                     ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }
@@ -75,9 +78,6 @@ public class CompanyRestController {
             company.setId(optionalCompany.get().getId());
             company.setInsert_id(optionalCompany.get().getInsert_id());
             company.setInsertDateTime(optionalCompany.get().getInsertDateTime());
-//            company.setId(optionalCompany.getId());
-//            company.setInsert_id(optionalCompany.getInsert_id());
-//            company.setInsertDateTime(optionalCompany.getInsertDateTime());
             company.setModify_id(currentuserid);
             company.setModifyDateTime(LocalDateTime.now());
         }else{
@@ -94,14 +94,53 @@ public class CompanyRestController {
         return ResponseEntity.ok(res.success());
     }
 
-//    @PostMapping("list")
-//    public ResponseEntity companyList(@RequestParam (value="", defaultValue="") String 1,
-//                                   @RequestParam (value="", defaultValue="") String  2,
-//                                   @PageableDefault Pageable pageable){
-//
-//        Page<Dto> s = Service.(1,2, pageable);
-//
-//        return CommonUtils.ResponseEntityPage(s);
-//    }
+    // 업체 리스트
+    @PostMapping("list")
+    public ResponseEntity companyList(@RequestParam (value="csNumber", defaultValue="") String csNumber,
+                                                        @RequestParam (value="csOperator", defaultValue="") String  csOperator,
+                                                        @RequestParam (value="csDivision", defaultValue="") String  csDivision,
+                                                        @RequestParam (value="csRegional", defaultValue="") String  csRegional,
+                                                        @PageableDefault Pageable pageable){
+
+        DivisionType csDivisionType = null;
+        if (!csDivision.equals("")){
+            csDivisionType = DivisionType.valueOf(csDivision);
+        }
+
+        RegionalType csRegionalType = null;
+        if (!csRegional.equals("")){
+            csRegionalType = RegionalType.valueOf(csRegional);
+        }
+
+        Page<CompanyListDto> companyDtos = companyService.findByCompanySearch(csNumber,csOperator,csDivisionType,csRegionalType,pageable);
+
+        return CommonUtils.ResponseEntityPage(companyDtos);
+    }
+
+    // 업체 정보 보기
+    @PostMapping ("info")
+    public ResponseEntity companyInfo(@RequestParam (value="id", defaultValue="") Long id){
+
+        CompanyDto company = companyService.findById(id);
+
+        data.clear();
+        data.put("company",company);
+        res.addResponse("data",data);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 업체 삭제
+    @PostMapping("del")
+    public ResponseEntity companyDel(@RequestParam(value="csNumber", defaultValue="") String csNumber){
+
+        Optional<Company> optionalCompany = companyService.findByCsNumber(csNumber);
+
+        if (!optionalCompany.isPresent()){
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+        }
+        companyService.delete(optionalCompany.get());
+        return ResponseEntity.ok(res.success());
+    }
 
 }

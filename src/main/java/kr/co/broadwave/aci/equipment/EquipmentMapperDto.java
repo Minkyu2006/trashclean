@@ -1,19 +1,16 @@
 package kr.co.broadwave.aci.equipment;
 
-import kr.co.broadwave.aci.accounts.AccountRole;
-import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.EmType;
 import kr.co.broadwave.aci.bscodes.NowStateType;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @author Minkyu
- * Date : 2019-10-31
- * Time : 16:45
- * Remark : 장비등록 클래스 Dto
+ * Date : 2019-11-01
+ * Time : 14:18
+ * Remark : 장비등록 클래스 MapperDto
  */
 @Builder
 @NoArgsConstructor
@@ -21,8 +18,8 @@ import java.time.format.DateTimeFormatter;
 @ToString
 @Getter
 @Setter
-public class EquipmentDto {
-    private Long id; // 장비 고유ID
+public class EquipmentMapperDto {
+
     private String emNumber; // 장비 번호
 
     private String emCerealNumber; // 장비 시리얼 번호
@@ -33,8 +30,4 @@ public class EquipmentDto {
     private NowStateType emNowState; // 현재상태
     private String emAgency; // 소속운영사
 
-    private LocalDateTime insertDateTime;
-    private String insert_id;
-    private LocalDateTime modifyDateTime;
-    private String modify_id;
 }
