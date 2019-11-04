@@ -8,7 +8,9 @@ package kr.co.broadwave.aci.bscodes;
 public enum CodeType {
     C0001("C0001", "직급"),
     C0002("C0002", "관련부처"),
-    C0003("C0003", "출동일지완료후메일수신자");
+    C0003("C0003", "장비타입"),
+    C0004("C0004", "국가"),
+    C0005("C0005", "지역");
 
     private String code;
     private String desc;

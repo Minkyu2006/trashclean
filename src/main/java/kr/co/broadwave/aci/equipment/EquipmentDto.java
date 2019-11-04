@@ -4,6 +4,7 @@ import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.EmType;
 import kr.co.broadwave.aci.bscodes.NowStateType;
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -27,10 +28,11 @@ public class EquipmentDto {
 
     private String emCerealNumber; // 장비 시리얼 번호
     private String emDesignation; // 장비명칭
-    private EmType emType; // 장비타입
+    private String emType; // 장비타입
+    private String emCountry; // 국가
+    private String emLocation; // 지역
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
-    private NowStateType emNowState; // 현재상태
     private String emAgency; // 소속운영사
 
     private LocalDateTime insertDateTime;

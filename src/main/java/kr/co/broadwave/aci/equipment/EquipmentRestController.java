@@ -2,12 +2,16 @@ package kr.co.broadwave.aci.equipment;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.bscodes.EmType;
 import kr.co.broadwave.aci.bscodes.NowStateType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.company.*;
+import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
+import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -39,12 +44,15 @@ public class EquipmentRestController {
     private final ModelMapper modelMapper;
     private final EquipmentService equipmentService;
     private final AccountService accountService;
+    private final MasterCodeService masterCodeService;
 
     @Autowired
     public EquipmentRestController(ModelMapper modelMapper,
                                    AccountService accountService,
+                                   MasterCodeService masterCodeService,
                                    EquipmentService equipmentService) {
         this.accountService = accountService;
+        this.masterCodeService = masterCodeService;
         this.equipmentService = equipmentService;
         this.modelMapper = modelMapper;
     }
@@ -54,6 +62,11 @@ public class EquipmentRestController {
     public ResponseEntity equipmentReg(@ModelAttribute EquipmentMapperDto equipmentMapperDto,HttpServletRequest request){
 
         Equipment equipment = modelMapper.map(equipmentMapperDto, Equipment.class);
+
+        // 장비타입/국가/지역 가져오기
+        Optional<MasterCode> optionalEmType = masterCodeService.findById(equipmentMapperDto.getEmType());
+        Optional<MasterCode> optionalEmCountry = masterCodeService.findById(equipmentMapperDto.getEmCountry());
+        Optional<MasterCode> optionalEmLocation = masterCodeService.findById(equipmentMapperDto.getEmLocation());
 
         String currentuserid = CommonUtils.getCurrentuser(request);
 
@@ -65,7 +78,19 @@ public class EquipmentRestController {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(),
                     ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }
+        //관련부처가 존재하지않으면
+        if (!optionalEmType.isPresent() || !optionalEmCountry.isPresent() || !optionalEmLocation.isPresent()) {
+            log.info(" 선택한 코드 DB 존재 여부 체크.  코드 : '" + equipmentMapperDto.getEmType() +"'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E016.getCode(),
+                    ResponseErrorCode.E016.getDesc()));
+        }else{
+            // 장비타입/국가/지역 저장
+            equipment.setEmType(optionalEmType.get());
+            equipment.setEmCountry(optionalEmCountry.get());
+            equipment.setEmLocation(optionalEmLocation.get());
+        }
 
+        // 장비번호 가져오기(유니크값)
         Optional<Equipment> optionalEquipment = equipmentService.findByEmNumber(equipment.getEmNumber());
 
         //신규 및 수정여부
@@ -94,21 +119,15 @@ public class EquipmentRestController {
     @PostMapping("list")
     public ResponseEntity equipmentList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
                                                         @RequestParam (value="emDesignation", defaultValue="") String  emDesignation,
-                                                        @RequestParam (value="emType", defaultValue="") String  emType,
-                                                        @RequestParam (value="emNowState", defaultValue="") String  emNowState,
+//                                                        @RequestParam (value="emType", defaultValue="")Long emType,
                                                         @PageableDefault Pageable pageable){
 
-        EmType emTypes = null;
-        if (!emType.equals("")){
-            emTypes = EmType.valueOf(emType);
-        }
+//        MasterCode emTypes = null;
+//        if (!emType.equals("")){
+//            emTypes.getCode();
+//        }
 
-        NowStateType nowStateType = null;
-        if (!emNowState.equals("")){
-            nowStateType = NowStateType.valueOf(emNowState);
-        }
-
-        Page<EquipmentListDto> equipmentListDtos = equipmentService.findByEquipmentSearch(emNumber,emDesignation,emTypes,nowStateType,pageable);
+        Page<EquipmentListDto> equipmentListDtos = equipmentService.findByEquipmentSearch(emNumber,emDesignation,pageable);
 
         return CommonUtils.ResponseEntityPage(equipmentListDtos);
     }

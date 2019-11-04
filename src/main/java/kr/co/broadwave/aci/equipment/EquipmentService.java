@@ -1,11 +1,10 @@
 package kr.co.broadwave.aci.equipment;
 
-import kr.co.broadwave.aci.bscodes.DivisionType;
-import kr.co.broadwave.aci.bscodes.EmType;
-import kr.co.broadwave.aci.bscodes.NowStateType;
-import kr.co.broadwave.aci.bscodes.RegionalType;
+import kr.co.broadwave.aci.bscodes.*;
 import kr.co.broadwave.aci.company.*;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
+import kr.co.broadwave.aci.mastercode.MasterCode;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +21,7 @@ import java.util.Optional;
  * Time : 16:56
  * Remark : Equipment Service
  */
+@Slf4j
 @Service
 public class EquipmentService {
     private final ModelMapper modelMapper;
@@ -42,10 +42,13 @@ public class EquipmentService {
 
     public Equipment save(Equipment equipment) {
         if ( equipment.getEmNumber() == null || equipment.getEmNumber().isEmpty()){
-            Date now = new Date();
-            SimpleDateFormat yyMM = new SimpleDateFormat("yyMM");
-            String emNumber = keyGenerateService.keyGenerate("bs_equipment", yyMM.format(now), equipment.getModify_id());
-            equipment.setEmNumber(emNumber);
+
+            log.info("장비타입 코드값 : "+equipment.getEmType().getCode());
+            String emTypeCode = equipment.getEmType().getCode();
+            String emCountryCode = equipment.getEmCountry().getCode();
+            String emLocationCode = equipment.getEmLocation().getCode();
+            String emNumber = keyGenerateService.keyGenerate("bs_equipment",equipment.getModify_id());
+            equipment.setEmNumber(emTypeCode+'-'+emCountryCode+'-'+emLocationCode+'-'+emNumber);
         }
         return equipmentRepository.save(equipment);
     }
@@ -54,8 +57,8 @@ public class EquipmentService {
         return equipmentRepository.findByEmNumber(emNumber);
     }
 
-    public Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation, EmType emTypes, NowStateType nowStateType, Pageable pageable) {
-        return equipmentRepositoryCystom.findByEquipmentSearch(emNumber,emDesignation,emTypes,nowStateType,pageable);
+    public Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation,Pageable pageable) {
+        return equipmentRepositoryCystom.findByEquipmentSearch(emNumber,emDesignation,pageable);
     }
 
 

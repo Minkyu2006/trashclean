@@ -44,9 +44,7 @@ public class CompanyService {
 
     public Company save(Company company) {
         if ( company.getCsNumber() == null || company.getCsNumber().isEmpty()){
-            Date now = new Date();
-            SimpleDateFormat yyMM = new SimpleDateFormat("yyMM");
-            String csNumber = keyGenerateService.keyGenerate("bs_company", yyMM.format(now), company.getModify_id());
+            String csNumber = keyGenerateService.keyGenerate("bs_company", company.getModify_id());
             company.setCsNumber(csNumber);
         }
         return companyRepository.save(company);

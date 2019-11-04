@@ -76,9 +76,13 @@ public class AdminController {
     //장비등록
     @RequestMapping("equipreg")
     public String equipreg(Model model){
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+        List<MasterCodeDto> equipdLocations = masterCodeService.findCodeList(CodeType.C0005);
 
-        model.addAttribute("EmTypes", EmType.values());
-        model.addAttribute("NowStateTypes", NowStateType.values());
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+        model.addAttribute("equipdLocations", equipdLocations);
 
         return "admin/equipmentreg";
     }

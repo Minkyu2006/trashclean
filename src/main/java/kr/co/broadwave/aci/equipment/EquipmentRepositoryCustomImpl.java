@@ -2,14 +2,12 @@ package kr.co.broadwave.aci.equipment;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import kr.co.broadwave.aci.bscodes.DivisionType;
-import kr.co.broadwave.aci.bscodes.EmType;
-import kr.co.broadwave.aci.bscodes.NowStateType;
-import kr.co.broadwave.aci.bscodes.RegionalType;
+import kr.co.broadwave.aci.bscodes.*;
 import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.company.CompanyRepositoryCystom;
 import kr.co.broadwave.aci.company.QCompany;
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +29,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
     }
 
     @Override
-    public Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation, EmType emTypes, NowStateType nowStateType, Pageable pageable){
+    public Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
 
@@ -42,9 +40,10 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                         equipment.emCerealNumber,
                         equipment.emDesignation,
                         equipment.emType,
+                        equipment.emCountry,
+                        equipment.emLocation,
                         equipment.emAwsNumber,
                         equipment.emEmbeddedNumber,
-                        equipment.emNowState,
                         equipment.emAgency
                 ));
 
@@ -56,12 +55,9 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         if (emDesignation != null && !emDesignation.isEmpty()){
             query.where(equipment.emDesignation.containsIgnoreCase(emDesignation));
         }
-        if (emTypes != null){
-            query.where(equipment.emType.eq(emTypes));
-        }
-        if (nowStateType != null){
-            query.where(equipment.emNowState.eq(nowStateType));
-        }
+//        if (emTypes != null){
+//            query.where(equipment.emType.containsIgnoreCase(emTypes));
+//        }
 
         query.orderBy(equipment.id.desc());
 

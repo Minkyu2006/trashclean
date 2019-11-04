@@ -37,8 +37,9 @@
 			$("#emNumber").val('');
 			$("#emCerealNumber").val('');
 			$("#emDesignation").val('');
-			$("#emType").val('ET0001');
-			$("#emNowState").val('ST0001');
+			$("#emType").val('4');
+			$("#emCountry").val('7');
+			$("#emLocation").val('10');
 			$("#emAwsNumber").val('');
 			$("#emEmbeddedNumber").val('');
 			$("#emAgency").val('');
@@ -132,8 +133,8 @@
 						html += '<td >'+ echoNull2Blank(value.emDesignation) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.emAwsNumber) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.emCountry)+'-'+echoNull2Blank(value.emLocation)+'</td>';
 						html += '<td >'+ echoNull2Blank(value.emEmbeddedNumber) +'</td>';
-						html += '<td >'+ echoNull2Blank(value.emNowState) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.emAgency)+'</td>';
 
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callInfo(\''+ echoNull2Blank(value.id) +'\');">조회</button></td>';
@@ -169,8 +170,9 @@
 					$("#emDesignation").val(res.data.equipment.emDesignation);
 					$("#emType").val(res.data.equipment.emType);
 					$("#emAwsNumber").val(res.data.equipment.emAwsNumber);
+					$("#emCountry").val(res.data.equipment.emCountry);
+					$("#emLocation").val(res.data.equipment.emLocation);
 					$("#emEmbeddedNumber").val(res.data.equipment.emEmbeddedNumber);
-					$("#emNowState").val(res.data.equipment.emNowState);
 					$("#emAgency").val(res.data.equipment.emAgency);
 				}
 			});
@@ -259,25 +261,15 @@
 						<div class="c-select">
 							<select id="s_emType" class="c-select__input">
 								<option value="">전체</option>
-								<option th:each ="EmType : ${EmTypes}"
-										th:value="${EmType.getCode()}"
-										th:text="${EmType.getDesc()}">
-								</option>
+								<option th:each ="equipdType : ${equipdTypes}"
+										th:value="${equipdType.id}"
+										th:text="${equipdType.name}"
+								></option>
 							</select>
 						</div>
 					</td>
-					<th>현재상태</th>
-					<td>
-						<div class="c-select">
-							<select id="s_emNowState" class="c-select__input">
-								<option value="">전체</option>
-								<option th:each ="NowStateType : ${NowStateTypes}"
-										th:value="${NowStateType.getCode()}"
-										th:text="${NowStateType.getDesc()}">
-								</option>
-							</select>
-						</div>
-					</td>
+					<th></th>
+					<td></td>
 					<td style="width: 60px;">
 						<button class="c-button c-button--point" id="btnSearch">조회</button>
 					</td>
@@ -288,13 +280,13 @@
 			<table class="c-table">
 				<thead>
 					<tr>
-						<th>장비 번호</th>
+						<th style="width: 125px;">장비 번호</th>
 						<th>장비 시리얼 번호</th>
 						<th>장비 명칭</th>
-						<th>장비 타임</th>
+						<th>장비 타입</th>
 						<th>AWS상 Device ID</th>
+						<th>국가/지역</th>
 						<th>임베디드 기판 번호</th>
-						<th>현재상태</th>
 						<th>소속운영사</th>
 						<th style="width: 40px;"></th>
 					</tr>
@@ -348,10 +340,10 @@
 						<td>
 							<div class="c-select">
 								<select name="emType" id="emType" class="c-select__input">
-									<option th:each ="EmType : ${EmTypes}"
-											th:value="${EmType.getCode()}"
-											th:text="${EmType.getDesc()}">
-									</option>
+									<option th:each ="equipdType : ${equipdTypes}"
+											th:value="${equipdType.id}"
+											th:text="${equipdType.name}"
+									></option>
 								</select>
 							</div>
 						</td>
@@ -363,23 +355,37 @@
 								<input type="text" name="emAwsNumber" id="emAwsNumber" class="c-text__input" />
 							</div>
 						</td>
+						<th>국가/지역</th>
+						<td>
+							<ul class="c-input-list">
+								<li>
+									<div class="c-select" style="width: 125px;">
+										<select name="emCountry" id="emCountry" class="c-select__input" >
+											<option th:each ="equipdCountry : ${equipdCountrys}"
+													th:value="${equipdCountry.id}"
+													th:text="${equipdCountry.name}">
+											</option>
+										</select>
+									</div>
+								</li>
+								<li>
+									<div class="c-select" style="width: 125px;">
+										<select name="emLocation" id="emLocation" class="c-select__input" >
+											<option th:each ="equipdLocation : ${equipdLocations}"
+													th:value="${equipdLocation.id}"
+													th:text="${equipdLocation.name}">
+											</option>
+										</select>
+									</div>
+								</li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
 						<th>임베디드 기판 번호</th>
 						<td>
 							<div class="c-text">
 								<input type="text" name="emEmbeddedNumber" id="emEmbeddedNumber" class="c-text__input" />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>현재상태</th>
-						<td>
-							<div class="c-select">
-								<select name="emNowState" id="emNowState" class="c-select__input">
-									<option th:each ="NowStateType : ${NowStateTypes}"
-											th:value="${NowStateType.getCode()}"
-											th:text="${NowStateType.getDesc()}">
-									</option>
-								</select>
 							</div>
 						</td>
 						<th>소속운영사</th>
@@ -389,20 +395,6 @@
 							</div>
 						</td>
 					</tr>
-					<!-- 
-					<tr>
-						<th>최초 등록자 ID</th>
-						<td>admin</td>
-						<th>최초 등록일시</th>
-						<td>2019.10.31 14:03</td>
-					</tr>
-					<tr>
-						<th>수정 등록자ID</th>
-						<td>admin</td>
-						<th>수정 등록일시</th>
-						<td>2019.10.31 14:04</td>
-					</tr>
-					 -->
 				</tbody>
 			</table>
 			</form>

@@ -14,5 +14,4 @@ import java.util.Optional;
 public interface MasterCodeRepository extends JpaRepository<MasterCode,Long> {
     Optional<MasterCode> findByAndCodeTypeAndCode(CodeType codeType,String code);
     List<MasterCode> findByAndCodeType(CodeType codeType);
-
 }

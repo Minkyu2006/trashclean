@@ -2,6 +2,7 @@ package kr.co.broadwave.aci.equipment;
 
 import kr.co.broadwave.aci.bscodes.EmType;
 import kr.co.broadwave.aci.bscodes.NowStateType;
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -24,10 +25,11 @@ public class EquipmentListDto {
 
     private String emCerealNumber; // 장비 시리얼 번호
     private String emDesignation; // 장비명칭
-    private EmType emType; // 장비타입
+    private MasterCode emType; // 장비타입
+    private MasterCode emCountry; // 국가
+    private MasterCode emLocation; // 지역
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
-    private NowStateType emNowState; // 현재상태
     private String emAgency; // 소속운영사
 
     public Long getId() {
@@ -47,7 +49,15 @@ public class EquipmentListDto {
     }
 
     public String getEmType() {
-        return emType.getDesc();
+        return emType.getName();
+    }
+
+    public String getEmCountry() {
+        return emCountry.getName();
+    }
+
+    public String getEmLocation() {
+        return emLocation.getName();
     }
 
     public String getEmAwsNumber() {
@@ -56,10 +66,6 @@ public class EquipmentListDto {
 
     public String getEmEmbeddedNumber() {
         return emEmbeddedNumber;
-    }
-
-    public String getEmNowState() {
-        return emNowState.getDesc();
     }
 
     public String getEmAgency() {

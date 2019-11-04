@@ -33,7 +33,8 @@ public class Equipment {
     @Column(name="em_id")
     private Long id; // 장비관리 고유ID
 
-    @Column(unique = true,name="em_number")
+//    @Column(unique = true,name="em_number")
+    @Column(name="em_number")
     private String emNumber; // 장비 번호
 
     @Column(name="em_cereal_number")
@@ -42,19 +43,23 @@ public class Equipment {
     @Column(name="em_designation")
     private String emDesignation; // 장비명칭
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="em_type")
-    private EmType emType; // 장비타입
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="em_type")
+    private MasterCode emType; // 장비타입
+
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="em_country")
+    private MasterCode emCountry; // 국가
+
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="em_location")
+    private MasterCode emLocation; // 지역
 
     @Column(name="em_aws_number")
     private String emAwsNumber; // AWS상 Device ID
 
     @Column(name="em_embedded_number")
     private String emEmbeddedNumber; // 임베디드 기판 번호
-
-    @Enumerated(EnumType.STRING)
-    @Column(name="em_now_state")
-    private NowStateType emNowState; // 현재상태
 
     @Column(name="em_agency")
     private String emAgency; // 소속운영사
