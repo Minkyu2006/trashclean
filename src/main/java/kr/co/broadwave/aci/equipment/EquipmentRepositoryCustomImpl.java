@@ -2,12 +2,9 @@ package kr.co.broadwave.aci.equipment;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import kr.co.broadwave.aci.bscodes.*;
 import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.company.CompanyListDto;
-import kr.co.broadwave.aci.company.CompanyRepositoryCystom;
-import kr.co.broadwave.aci.company.QCompany;
 import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.QMasterCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +12,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Minkyu
@@ -29,9 +27,11 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
     }
 
     @Override
-    public Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation, Pageable pageable){
+    public Page<EquipmentListDto> findByEquipmentSearch
+            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
+        QMasterCode masterCode = QMasterCode.masterCode;
 
         JPQLQuery<EquipmentListDto> query = from(equipment)
                 .select(Projections.constructor(EquipmentListDto.class,
@@ -44,7 +44,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                         equipment.emLocation,
                         equipment.emAwsNumber,
                         equipment.emEmbeddedNumber,
-                        equipment.emAgency
+                        equipment.company
                 ));
 
 
@@ -55,9 +55,12 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         if (emDesignation != null && !emDesignation.isEmpty()){
             query.where(equipment.emDesignation.containsIgnoreCase(emDesignation));
         }
-//        if (emTypes != null){
-//            query.where(equipment.emType.containsIgnoreCase(emTypes));
-//        }
+        if (emTypeId != null ){
+            query.where(equipment.emType.id.eq(emTypeId));
+        }
+        if (emCountryId != null ){
+            query.where(equipment.emCountry.id.eq(emCountryId));
+        }
 
         query.orderBy(equipment.id.desc());
 

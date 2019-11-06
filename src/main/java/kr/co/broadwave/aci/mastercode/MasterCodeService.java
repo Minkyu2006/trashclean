@@ -53,6 +53,7 @@ public class MasterCodeService {
     public void delete(MasterCode masterCode) {
         masterCodeRepository.delete(masterCode);
     }
+
     public List<MasterCodeDto> findCodeList(CodeType codeType){
         List<MasterCode> masterCodes = masterCodeRepository.findByAndCodeType(codeType);
 
@@ -61,5 +62,13 @@ public class MasterCodeService {
                 ).collect(Collectors.toList());
     }
 
+
+    public List<MasterCode> findAllByCodeTypeEqualsAndBcRef1(CodeType codeType, String emCountry) {
+        return masterCodeRepository.findAllByCodeTypeEqualsAndBcRef1(codeType,emCountry);
+    }
+
+    public Optional<MasterCode> findByCode(String emCountry) {
+        return masterCodeRepository.findByCode(emCountry);
+    }
 
 }

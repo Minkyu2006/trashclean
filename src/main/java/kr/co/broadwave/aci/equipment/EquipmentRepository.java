@@ -15,8 +15,10 @@ import java.util.Optional;
  * Remark : Equipment Repository
  */
 public interface EquipmentRepository extends JpaRepository<Equipment,Long>, QuerydslPredicateExecutor<Equipment> {
-    Optional<Equipment> findByEmNumber(String emNumber);
 
-//    @Query("select a from Equipment a join fetch a.emType where a.equipment = :equipment")
-//    Equipment save(Equipment equipment);
+//    @Transactional
+//    @Query("select a from Equipment a join fetch a.company where a.company = :company")
+//    Optional<Equipment> findById(Company company);
+
+    Optional<Equipment> findByEmNumber(String emNumber);
 }

@@ -2,6 +2,7 @@ package kr.co.broadwave.aci.company;
 
 import kr.co.broadwave.aci.bscodes.DivisionType;
 import kr.co.broadwave.aci.bscodes.RegionalType;
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -23,8 +24,8 @@ public class CompanyListDto {
     private String csNumber; // 관리코드
 
     private String csOperator; // 운영사명
-    private DivisionType csDivision; // 업체구분
-    private RegionalType csRegional; // 운영권역
+    private MasterCode csDivision; // 업체구분
+    private MasterCode csRegional; // 운영권역
     private String csRepresentative; // 대표자
     private String csBuisnessNumber; // 사업자번호
     private String csManager; // 담당자
@@ -44,11 +45,11 @@ public class CompanyListDto {
     }
 
     public String getCsDivision() {
-        return csDivision.getDesc();
+        return csDivision.getName();
     }
 
     public String getCsRegional() {
-        return csRegional.getDesc();
+        return csRegional.getName();
     }
 
     public String getCsRepresentative() {

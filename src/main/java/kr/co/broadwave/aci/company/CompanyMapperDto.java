@@ -22,8 +22,8 @@ public class CompanyMapperDto {
 
     private String csOperator; // 운영사명
     private String csOperatorSub; // 운영사명(약칭)
-    private DivisionType csDivision; // 업체구분
-    private RegionalType csRegional; // 운영권역
+    private Long csDivision; // 업체구분
+    private Long csRegional; // 운영권역
     private String csRepresentative; // 대표자
     private String csBuisnessNumber; // 사업자번호
     private String csManager; // 담당자

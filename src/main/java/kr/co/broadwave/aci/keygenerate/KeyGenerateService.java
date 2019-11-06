@@ -22,20 +22,22 @@ public class KeyGenerateService {
     private EntityManager em;
 
     @Transactional
-    public String keyGenerate(String autokey,String userid){
+    public String keyGenerate(String autokey,String prefix,String userid){
         StoredProcedureQuery proc = em.createStoredProcedureQuery("proc_autonum");
 
 
         proc.registerStoredProcedureParameter("autokey", String.class, ParameterMode.IN);
+        proc.registerStoredProcedureParameter("prefix", String.class, ParameterMode.IN);
         proc.registerStoredProcedureParameter("userid", String.class, ParameterMode.IN);
         proc.registerStoredProcedureParameter("keycode", String.class, ParameterMode.OUT);
 
         proc.setParameter("autokey",autokey);
+        proc.setParameter("prefix",prefix);
         proc.setParameter("userid",userid);
         proc.execute();
 
         String keycode = (String) proc.getOutputParameterValue("keycode");
-        log.info("키생성호출 autokey = '" + autokey + "' userid ='" + userid + " 생성된키 : +" + keycode + "'");
+        log.info("키생성호출 autokey = '" + autokey + "' prefix = '" + prefix + "' userid ='" + userid + " 생성된키 : =" + keycode + "' ");
         return keycode;
     }
 }

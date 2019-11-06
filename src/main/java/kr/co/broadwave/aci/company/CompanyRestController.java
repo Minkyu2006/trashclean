@@ -7,6 +7,8 @@ import kr.co.broadwave.aci.bscodes.RegionalType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
+import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import kr.co.broadwave.aci.teams.Team;
 import kr.co.broadwave.aci.teams.TeamDto;
 import kr.co.broadwave.aci.teams.TeamMapperDto;
@@ -43,12 +45,15 @@ public class CompanyRestController {
     private final ModelMapper modelMapper;
     private final CompanyService companyService;
     private final AccountService accountService;
+    private final MasterCodeService masterCodeService;
 
     @Autowired
     public CompanyRestController(ModelMapper modelMapper,
                                  AccountService accountService,
+                                 MasterCodeService masterCodeService,
                                  CompanyService companyService) {
         this.accountService = accountService;
+        this.masterCodeService = masterCodeService;
         this.companyService = companyService;
         this.modelMapper = modelMapper;
     }
@@ -70,7 +75,6 @@ public class CompanyRestController {
                     ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }
 
-//        CompanyDto optionalCompany = companyService.findByCsNumber(company.getCsNumber());
         Optional<Company> optionalCompany = companyService.findByCsNumber(company.getCsNumber());
         //신규 및 수정여부
         if (optionalCompany.isPresent()){
@@ -88,6 +92,26 @@ public class CompanyRestController {
             company.setModifyDateTime(LocalDateTime.now());
         }
 
+        // 업체구분/운영권역 가져오기
+        Optional<MasterCode> optionalCsDivision = masterCodeService.findById(companyMapperDto.getCsDivision());
+        Optional<MasterCode> optionalCsRegional = masterCodeService.findById(companyMapperDto.getCsRegional());
+        //업체구분이 존재하지않으면
+        if (!optionalCsDivision.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E018.getCode(),
+                    ResponseErrorCode.E018.getDesc()));
+        }else{
+            // 업체구분 저장
+            company.setCsDivision(optionalCsDivision.get());
+        }
+        //운영권역이 존재하지않으면
+        if (!optionalCsRegional.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E019.getCode(),
+                    ResponseErrorCode.E019.getDesc()));
+        }else{
+            // 운영권역 저장
+            company.setCsRegional(optionalCsRegional.get());
+        }
+
         Company save = companyService.save(company);
 
         log.info("업체등록 데이터 : "+save.toString());
@@ -102,14 +126,16 @@ public class CompanyRestController {
                                                         @RequestParam (value="csRegional", defaultValue="") String  csRegional,
                                                         @PageableDefault Pageable pageable){
 
-        DivisionType csDivisionType = null;
-        if (!csDivision.equals("")){
-            csDivisionType = DivisionType.valueOf(csDivision);
-        }
+        Long csDivisionType = null;
+        Long csRegionalType = null;
 
-        RegionalType csRegionalType = null;
-        if (!csRegional.equals("")){
-            csRegionalType = RegionalType.valueOf(csRegional);
+        if(!csDivision.equals("")){
+            Optional<MasterCode> csDivisions = masterCodeService.findByCode(csDivision);
+            csDivisionType = csDivisions.get().getId();
+        }
+        if(!csRegional.equals("")){
+            Optional<MasterCode> csRegionals = masterCodeService.findByCode(csRegional);
+            csRegionalType = csRegionals.get().getId();
         }
 
         Page<CompanyListDto> companyDtos = companyService.findByCompanySearch(csNumber,csOperator,csDivisionType,csRegionalType,pageable);

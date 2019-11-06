@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.equipment;
 
+import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
@@ -25,7 +26,7 @@ public class EquipmentMapperDto {
     private Long emLocation; // 지역
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
-    private String emAgency; // 소속운영사
+    private String operator;
 
     public String getEmNumber() {
         return emNumber;
@@ -59,7 +60,7 @@ public class EquipmentMapperDto {
         return emEmbeddedNumber;
     }
 
-    public String getEmAgency() {
-        return emAgency;
+    public String getOperator() {
+        return operator;
     }
 }

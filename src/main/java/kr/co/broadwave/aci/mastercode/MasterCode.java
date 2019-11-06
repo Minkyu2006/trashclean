@@ -56,9 +56,16 @@ public class MasterCode {
     @Column(name="modify_id")
     private String modify_id;
 
+    @Column(name="bc_ref_1")
+    private String bcRef1;
 
+    @Column(name="bc_ref_2")
+    private String bcRef2;
 
+    @Column(name="bc_ref_3")
+    private String bcRef3;
 
-
+    @Column(name="bc_ref_4")
+    private String bcRef4;
 
 }

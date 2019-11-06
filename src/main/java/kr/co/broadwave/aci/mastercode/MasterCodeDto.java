@@ -39,4 +39,5 @@ public class MasterCodeDto {
     public String getRemark() {
         return remark;
     }
+
 }

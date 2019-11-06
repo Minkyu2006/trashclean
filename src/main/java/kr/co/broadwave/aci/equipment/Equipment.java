@@ -4,6 +4,7 @@ import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.EmType;
 import kr.co.broadwave.aci.bscodes.NowStateType;
+import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.teams.Team;
 import lombok.*;
@@ -33,8 +34,7 @@ public class Equipment {
     @Column(name="em_id")
     private Long id; // 장비관리 고유ID
 
-//    @Column(unique = true,name="em_number")
-    @Column(name="em_number")
+    @Column(unique = true,name="em_number")
     private String emNumber; // 장비 번호
 
     @Column(name="em_cereal_number")
@@ -61,8 +61,9 @@ public class Equipment {
     @Column(name="em_embedded_number")
     private String emEmbeddedNumber; // 임베디드 기판 번호
 
-    @Column(name="em_agency")
-    private String emAgency; // 소속운영사
+    @ManyToOne(targetEntity = Company.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="cs_id")
+    private Company company; // 소속운영사
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
@@ -75,4 +76,5 @@ public class Equipment {
 
     @Column(name="modify_id")
     private String modify_id;
+
 }

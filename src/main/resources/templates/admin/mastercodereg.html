@@ -22,8 +22,6 @@
 			$("#btnDel").on('click',function(){
 				del();
 			});
-
-
 		});
 
 		function save(){
@@ -81,6 +79,7 @@
 			$("#code").val('');
 			$("#name").val('');
 			$("#remark").val('');
+			$("#bcRef1").val('');
 			$("#code").removeAttr("readonly");
 			$("#codeType").removeAttr("readonly");
 
@@ -183,6 +182,7 @@
 					$("#code").val(res.data.datarow.code);
 					$("#name").val(res.data.datarow.name);
 					$("#remark").val(res.data.datarow.remark);
+					$("#bcRef1").val(res.data.datarow.bcRef1);
 					$("#codeType").attr("readonly",true);
 					$("#code").attr("readonly",true);
 				}
@@ -259,7 +259,6 @@
 									<option th:each ="codetype : ${codetypes}"
 											th:value="${codetype.getCode()}"
 											th:text="${codetype.getDesc()}"></option>
-
 								</select>
 							</div>
 						</div>
@@ -279,6 +278,32 @@
 							<li class="code__detail-item">
 								<label for="remark" class="c-textarea__label">비고</label>
 								<textarea class="c-textarea" id="remark" name="remark"></textarea>
+							</li>
+						</ul>
+						<ul class="code__detail">
+							<li>
+								<div class="c-text">
+									<label for="name" class="c-text__label">레퍼런스1</label>
+									<input type="text" class="c-text__input" id="bcRef1" name="bcRef1" />
+								</div>
+							</li>
+							<li>
+								<div class="c-text">
+									<label for="name" class="c-text__label">레퍼런스2</label>
+									<input type="text" class="c-text__input" id="bcRef2" name="bcRef2" />
+								</div>
+							</li>
+							<li>
+								<div class="c-text">
+									<label for="name" class="c-text__label">레퍼런스3</label>
+									<input type="text" class="c-text__input" id="bcRef3" name="bcRef3" />
+								</div>
+							</li>
+							<li>
+								<div class="c-text">
+									<label for="name" class="c-text__label">레퍼런스4</label>
+									<input type="text" class="c-text__input" id="bcRef4" name="bcRef4" />
+								</div>
 							</li>
 						</ul>
 					</form>

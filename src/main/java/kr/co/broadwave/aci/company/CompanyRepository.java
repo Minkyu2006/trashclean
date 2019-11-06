@@ -14,5 +14,6 @@ import java.util.Optional;
  */
 public interface CompanyRepository extends JpaRepository<Company,Long>, QuerydslPredicateExecutor<Company> {
     Optional<Company> findByCsNumber(String csNumber);
-//    Optional<CompanyDto> findByCsNumber(String csNumber);
+
+    Optional<Company> findByCsOperator(String company);
 }

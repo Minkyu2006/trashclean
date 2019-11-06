@@ -60,15 +60,18 @@ public class AdminController {
     @RequestMapping("mastercodereg")
     public String masterCodeReg(Model model){
         model.addAttribute("codetypes", CodeType.values());
+
         return "admin/mastercodereg";
     }
 
     //업체등록
     @RequestMapping("compreg")
     public String compReg(Model model){
+        List<MasterCodeDto> compDivisions = masterCodeService.findCodeList(CodeType.C0006);
+        List<MasterCodeDto> compcsRegionals = masterCodeService.findCodeList(CodeType.C0007);
 
-        model.addAttribute("DivisionTypes", DivisionType.values());
-        model.addAttribute("RegionalTypes", RegionalType.values());
+        model.addAttribute("compDivisions", compDivisions);
+        model.addAttribute("compcsRegionals", compcsRegionals);
 
         return "admin/compreg";
     }
@@ -78,11 +81,9 @@ public class AdminController {
     public String equipreg(Model model){
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
-        List<MasterCodeDto> equipdLocations = masterCodeService.findCodeList(CodeType.C0005);
 
         model.addAttribute("equipdTypes", equipdTypes);
         model.addAttribute("equipdCountrys", equipdCountrys);
-        model.addAttribute("equipdLocations", equipdLocations);
 
         return "admin/equipmentreg";
     }

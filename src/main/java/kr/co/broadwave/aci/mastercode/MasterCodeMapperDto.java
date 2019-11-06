@@ -20,4 +20,9 @@ public class MasterCodeMapperDto {
     private String code;
     private String name;
     private String remark;
+    private String bcRef1;
+    private String bcRef2;
+    private String bcRef3;
+    private String bcRef4;
+
 }

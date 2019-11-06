@@ -17,5 +17,7 @@ import java.util.Optional;
  */
 public interface CompanyRepositoryCystom{
 
-    Page<CompanyListDto> findByCompanySearch(String csNumber, String csOperator, DivisionType csDivisionType, RegionalType csRegionalType, Pageable pageable);
+    Page<CompanyListDto> findByCompanySearch(String csNumber, String csOperator, Long csDivisionType, Long csRegionalType, Pageable pageable);
+
+    Page<CompanyListDto> findByAgencySearch(String csNumber, String csOperator, Pageable pageable);
 }

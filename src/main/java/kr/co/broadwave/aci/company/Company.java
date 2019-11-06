@@ -43,13 +43,13 @@ public class Company {
     @Column(name="cs_operator_sub")
     private String csOperatorSub; // 운영사명(약칭)
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="cs_division")
-    private DivisionType csDivision; // 업체구분
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="cs_division")
+    private MasterCode csDivision; // 업체구분
 
-    @Enumerated(EnumType.STRING)
-    @Column(name="cs_regional")
-    private RegionalType csRegional; // 운영권역
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="cs_regional")
+    private MasterCode csRegional; // 운영권역
 
     @Column(name="cs_representative")
     private String csRepresentative; // 대표자

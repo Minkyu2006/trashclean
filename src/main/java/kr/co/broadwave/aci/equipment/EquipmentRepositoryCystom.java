@@ -1,10 +1,10 @@
 package kr.co.broadwave.aci.equipment;
 
-import kr.co.broadwave.aci.bscodes.*;
-import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 /**
  * @author Minkyu
@@ -13,5 +13,6 @@ import org.springframework.data.domain.Pageable;
  * Remark : EquipmentRepositoryCystom
  */
 public interface EquipmentRepositoryCystom {
-    Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation, Pageable pageable);
+    Page<EquipmentListDto> findByEquipmentSearch
+            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable);
 }

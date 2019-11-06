@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +45,11 @@ public class CompanyService {
 
     public Company save(Company company) {
         if ( company.getCsNumber() == null || company.getCsNumber().isEmpty()){
-            String csNumber = keyGenerateService.keyGenerate("bs_company", company.getModify_id());
+            String csDivision = company.getCsDivision().getCode();
+
+            Date now = new Date();
+            SimpleDateFormat yyMM = new SimpleDateFormat("yyMM");
+            String csNumber = keyGenerateService.keyGenerate("bs_company", csDivision, company.getModify_id());
             company.setCsNumber(csNumber);
         }
         return companyRepository.save(company);
@@ -55,7 +60,7 @@ public class CompanyService {
     }
 
 
-    public Page<CompanyListDto> findByCompanySearch(String csNumber, String csOperator, DivisionType csDivisionType, RegionalType csRegionalType, Pageable pageable) {
+    public Page<CompanyListDto> findByCompanySearch(String csNumber, String csOperator,  Long csDivisionType, Long csRegionalType, Pageable pageable) {
         return companyRepositoryCystom.findByCompanySearch(csNumber,csOperator,csDivisionType,csRegionalType,pageable);
     }
 
@@ -70,5 +75,10 @@ public class CompanyService {
 
     public void delete(Company company) {
         companyRepository.delete(company);
+    }
+
+    //운영사명으로 장비등록 아이디저장하기
+    public Optional<Company> findByCsOperator(String company) {
+        return companyRepository.findByCsOperator(company);
     }
 }

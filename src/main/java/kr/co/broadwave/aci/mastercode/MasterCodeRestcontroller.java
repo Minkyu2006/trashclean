@@ -64,6 +64,10 @@ public class MasterCodeRestcontroller {
 
         String currentuserid = CommonUtils.getCurrentuser(request);
 
+        if(!masterCode.getCodeType().getCode().equals("C0005")){
+            masterCode.setBcRef1(null);
+        }
+
         //이미값이 존재하는지 확인
         Optional<MasterCode> optionalMasterCode = masterCodeService.findByCoAndCodeTypeAndCode(masterCode.getCodeType(), masterCode.getCode());
         if (optionalMasterCode.isPresent()){

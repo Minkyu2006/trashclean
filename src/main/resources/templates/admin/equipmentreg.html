@@ -6,6 +6,20 @@
 <head>
     <script type="text/javascript">
 		$(function() {
+			//자동실행
+			LocationSetting();
+
+			$('.pop__list').on('click', function(e) {
+				$('#pop__list').addClass('open');
+
+				e.preventDefault();
+			});
+			$('.l-popup__close').on('click', function(e) {
+				$('.l-popup').removeClass('open');
+
+				e.preventDefault();
+			});
+
 			//업체 등록
 			$("#equSaveBtn").on('click',function(){
 				save();
@@ -22,6 +36,10 @@
 			$("#btnReset").on('click',function(){
 				reset();
 			});
+			$("#agencyBtnSearch").on('click',function(){
+				agencyCallList(1);
+			});
+
 		});
 
 		// 조건초기화
@@ -29,7 +47,7 @@
 			$("#s_emNumber").val('');
 			$("#s_emDesignation").val('');
 			$("#s_emType").val('');
-			$("#s_emNowState").val('');
+			$("#s_emCountry").val('');
 		}
 
 		// 신규작성
@@ -38,15 +56,26 @@
 			$("#emCerealNumber").val('');
 			$("#emDesignation").val('');
 			$("#emType").val('4');
-			$("#emCountry").val('7');
-			$("#emLocation").val('10');
 			$("#emAwsNumber").val('');
 			$("#emEmbeddedNumber").val('');
-			$("#emAgency").val('');
+			$("#csNum").val('');
+			$("#operator").val('');
+
+			$("#emTypeView").hide();
+			$("#emCountryView").hide();
+			$("#emLocationView").hide();
+			$("#emType").show();
+			$("#emCountry").show();
+			$("#emLocation").show();
 		}
 
 		// 장비저장
 		function save() {
+			if ($("#operator").val().trim() == '') {
+				Swal.fire({text:"소속 운영사를 선택해주세요."});
+				return false;
+			}
+
 			var $form = $('form[name="equreg"]');
 
 			var params = $form.serialize();
@@ -72,14 +101,74 @@
 						type: "success"
 					}).then(function () {
 						init();
+						LocationSetting();
 						callList(1);
 					})
 				}
 			});
 		}
 
+		// 운영사 리스트보기
+		function agencyCallList(page) {
+			page = page - 1;
+			if (page < 0) page = 0
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+			var $schList = $('#agencySchList');
+			var $totalCnt = $('#agencyTotalCnt');
+			var params = {
+				csNumber:$('#s_csnumber').val(),
+				csOperator:$('#s_csoperator').val(),
+			};
+
+			$schList.empty().append('<tr ><td colspan="5" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/equipment/agencyList?size='+ perPage + '&page=' + page,
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+					if (totCnt == 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+					$totalCnt.text(totCnt);
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+						html += '<td >'+ echoNull2Blank(value.csNumber) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csOperator) +'</td>';
+
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callName(\''+ echoNull2Blank(value.id) +'\');">선택</button></td>';
+						html += '</tr>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+
 		// 업체 리스트보기
 		function callList(page) {
+
 			page = page - 1;
 			if (page < 0) page = 0
 
@@ -94,10 +183,10 @@
 				emNumber:$('#s_emNumber').val(),
 				emDesignation:$('#s_emDesignation').val(),
 				emType:$('#s_emType').val(),
-				emNowState:$('#s_emNowState').val()
+				emCountry:$('#s_emCountry').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="11" align = "center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
 			$totalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -121,7 +210,7 @@
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
 					if (totCnt == 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="11" align="center">조회된 데이터가 없습니다.</td></tr>');
+						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 					$totalCnt.text(totCnt);
@@ -135,9 +224,9 @@
 						html += '<td >'+ echoNull2Blank(value.emAwsNumber) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.emCountry)+'-'+echoNull2Blank(value.emLocation)+'</td>';
 						html += '<td >'+ echoNull2Blank(value.emEmbeddedNumber) +'</td>';
-						html += '<td >'+ echoNull2Blank(value.emAgency)+'</td>';
+						html += '<td >'+ echoNull2Blank(value.company) +'</td>';
 
-						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callInfo(\''+ echoNull2Blank(value.id) +'\');">조회</button></td>';
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callInfo(\''+ echoNull2Blank(value.id) +'\');">보기</button></td>';
 						html += '</tr>';
 					});
 					$schList.html(html);
@@ -168,12 +257,47 @@
 					$("#emNumber").val(res.data.equipment.emNumber);
 					$("#emCerealNumber").val(res.data.equipment.emCerealNumber);
 					$("#emDesignation").val(res.data.equipment.emDesignation);
-					$("#emType").val(res.data.equipment.emType);
 					$("#emAwsNumber").val(res.data.equipment.emAwsNumber);
-					$("#emCountry").val(res.data.equipment.emCountry);
-					$("#emLocation").val(res.data.equipment.emLocation);
 					$("#emEmbeddedNumber").val(res.data.equipment.emEmbeddedNumber);
-					$("#emAgency").val(res.data.equipment.emAgency);
+					$("#csNum").val(res.data.equipment.company.csNumber);
+					$("#operator").val(res.data.equipment.company.csOperator);
+
+					$("#emType").hide();
+					$("#emCountry").hide();
+					$("#emLocation").hide();
+
+					$("#emTypeView").show();
+					$("#emCountryView").show();
+					$("#emLocationView").show();
+
+					$("#emTypeView").val(res.data.equipment.emType);
+					$("#emCountryView").val(res.data.equipment.emCountry);
+					$("#emLocationView").val(res.data.equipment.emLocation);
+				}
+			});
+		}
+
+		// 운영사 넣기
+		function callName(id) {
+			var params = {
+				id:id
+			}
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/equipment/agencyInfo',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request, status, error) {
+					alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+				success: function (res) {
+					$("#csNum").val(res.data.company.csNumber);
+					$("#operator").val(res.data.company.csOperator);
+					$('.l-popup__close').click();
 				}
 			});
 		}
@@ -228,6 +352,39 @@
 			});
 		}
 
+		function LocationSetting() {
+			var params = {
+				emCountry: $("#emCountry").val()
+			};
+
+			var $schList = $('#emLocation');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/equipment/location',
+				type: 'post',
+				data: params,
+				cache: false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var html = '';
+					$.each(res.data.dataselect, function (key, value) {
+						html += '<option value ="' + echoNull2Blank(value.id) + '">' + echoNull2Blank(value.name)+ '</option>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+
     </script>
 
 </head>
@@ -262,14 +419,24 @@
 							<select id="s_emType" class="c-select__input">
 								<option value="">전체</option>
 								<option th:each ="equipdType : ${equipdTypes}"
-										th:value="${equipdType.id}"
+										th:value="${equipdType.code}"
 										th:text="${equipdType.name}"
 								></option>
 							</select>
 						</div>
 					</td>
-					<th></th>
-					<td></td>
+					<th>국가</th>
+					<td>
+						<div class="c-select">
+							<select id="s_emCountry" class="c-select__input" >
+								<option value="">전체</option>
+								<option th:each ="equipdCountry : ${equipdCountrys}"
+										th:value="${equipdCountry.code}"
+										th:text="${equipdCountry.name}">
+								</option>
+							</select>
+						</div>
+					</td>
 					<td style="width: 60px;">
 						<button class="c-button c-button--point" id="btnSearch">조회</button>
 					</td>
@@ -280,7 +447,7 @@
 			<table class="c-table">
 				<thead>
 					<tr>
-						<th style="width: 125px;">장비 번호</th>
+						<th style="width: 135px;">장비 번호</th>
 						<th>장비 시리얼 번호</th>
 						<th>장비 명칭</th>
 						<th>장비 타입</th>
@@ -339,6 +506,7 @@
 						<th>장비 타입</th>
 						<td>
 							<div class="c-select">
+								<input id="emTypeView" class="c-text__input" style="display:none;" readonly="readonly" />
 								<select name="emType" id="emType" class="c-select__input">
 									<option th:each ="equipdType : ${equipdTypes}"
 											th:value="${equipdType.id}"
@@ -360,7 +528,8 @@
 							<ul class="c-input-list">
 								<li>
 									<div class="c-select" style="width: 125px;">
-										<select name="emCountry" id="emCountry" class="c-select__input" >
+										<input id="emCountryView" class="c-text__input" style="display:none;" readonly="readonly" />
+										<select name="emCountry" id="emCountry" class="c-select__input" onchange="LocationSetting()">
 											<option th:each ="equipdCountry : ${equipdCountrys}"
 													th:value="${equipdCountry.id}"
 													th:text="${equipdCountry.name}">
@@ -370,11 +539,8 @@
 								</li>
 								<li>
 									<div class="c-select" style="width: 125px;">
+										<input id="emLocationView" class="c-text__input" style="display:none;" readonly="readonly" />
 										<select name="emLocation" id="emLocation" class="c-select__input" >
-											<option th:each ="equipdLocation : ${equipdLocations}"
-													th:value="${equipdLocation.id}"
-													th:text="${equipdLocation.name}">
-											</option>
 										</select>
 									</div>
 								</li>
@@ -390,8 +556,10 @@
 						</td>
 						<th>소속운영사</th>
 						<td>
-							<div class="c-text">
-								<input type="text" name="emAgency" id="emAgency" class="c-text__input" />
+							<div class="c-text c-text--duo">
+								<input type="text" class="c-text__input only-child" name="operator" id="operator" readonly="readonly" />
+								<input type="text" id="csNum" class="c-text__input only-child" readonly="readonly" />
+								<button class="c-text__button pop__list">검색</button>
 							</div>
 						</td>
 					</tr>
@@ -413,5 +581,78 @@
 			</div>
 		</article>
 	</section>
+
+	<div class="l-popup" id="pop__list">
+		<div class="l-popup__container">
+			<div class="l-popup__head">
+				<h3 class="l-popup__heading">운영사 조회</h3>
+			</div>
+			<div class="l-popup__content">
+				<div class="l-popup__section">
+					<table class="c-table c-table--non-border">
+						<colgroup>
+							<col style="width: 100px;" />
+							<col />
+							<col style="width: 100px;" />
+							<col />
+							<col style="width: 60px;" />
+						</colgroup>
+						<tbody>
+						<tr>
+							<th>관리코드</th>
+							<td>
+								<div class="c-text">
+									<input type="text" class="c-text__input" id="s_csnumber" name="s_csnumber"/>
+								</div>
+							</td>
+							<th>운영사명</th>
+							<td>
+								<div class="c-text">
+									<input type="text" class="c-text__input" id="s_csoperator" name="s_csoperator"/>
+								</div>
+							</td>
+							<td>
+								<button class="c-button c-button--point" id="agencyBtnSearch">조회</button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="l-popup__section">
+					<table class="c-table">
+						<colgroup>
+							<col />
+							<col />
+							<col style="width: 60px;" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th>관리코드</th>
+							<th>운영사명</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody id ="agencySchList">
+
+						</tbody>
+					</table>
+
+					<div class="c-pager">
+						<div class="c-paging" id ="agencyPaging">
+							<!-- 페이징 처리되는곳   -->
+						</div>
+						<div class="c-paging__total">
+							<div class="c-paging__total-group">
+								Total
+							</div>
+							<div class="c-paging__total-group" id ="agencyTotalCnt">0</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="l-popup__close">팝업닫기</a>
+		</div>
+	</div>
 </div>
 </html>

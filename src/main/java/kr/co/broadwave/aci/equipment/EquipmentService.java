@@ -28,27 +28,35 @@ public class EquipmentService {
     private final EquipmentRepository equipmentRepository;
     private final KeyGenerateService keyGenerateService;
     private final EquipmentRepositoryCystom equipmentRepositoryCystom;
+    private final CompanyRepositoryCystom companyRepositoryCystom;
 
     @Autowired
     public EquipmentService(EquipmentRepository equipmentRepository,
                             KeyGenerateService keyGenerateService,
+                            CompanyRepositoryCystom companyRepositoryCystom,
                             EquipmentRepositoryCystom equipmentRepositoryCystom,
                             ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        this.companyRepositoryCystom = companyRepositoryCystom;
         this.equipmentRepositoryCystom = equipmentRepositoryCystom;
         this.equipmentRepository = equipmentRepository;
         this.keyGenerateService = keyGenerateService;
     }
 
     public Equipment save(Equipment equipment) {
+        //장비코드 가공하기
         if ( equipment.getEmNumber() == null || equipment.getEmNumber().isEmpty()){
 
-            log.info("장비타입 코드값 : "+equipment.getEmType().getCode());
             String emTypeCode = equipment.getEmType().getCode();
             String emCountryCode = equipment.getEmCountry().getCode();
             String emLocationCode = equipment.getEmLocation().getCode();
-            String emNumber = keyGenerateService.keyGenerate("bs_equipment",equipment.getModify_id());
-            equipment.setEmNumber(emTypeCode+'-'+emCountryCode+'-'+emLocationCode+'-'+emNumber);
+
+            Date now = new Date();
+            SimpleDateFormat yyMM = new SimpleDateFormat("yyMM");
+            String emNumber = keyGenerateService.keyGenerate("bs_equipment",emTypeCode+'-'+emCountryCode+'-'+emLocationCode+'-',equipment.getModify_id());
+
+             //고유 장비번호 저장이름 바꾸기 : 장비타입-국가-지역-순번
+            equipment.setEmNumber(emNumber);
         }
         return equipmentRepository.save(equipment);
     }
@@ -57,8 +65,9 @@ public class EquipmentService {
         return equipmentRepository.findByEmNumber(emNumber);
     }
 
-    public Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation,Pageable pageable) {
-        return equipmentRepositoryCystom.findByEquipmentSearch(emNumber,emDesignation,pageable);
+    public Page<EquipmentListDto> findByEquipmentSearch
+            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable) {
+        return equipmentRepositoryCystom.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,pageable);
     }
 
 
@@ -75,4 +84,7 @@ public class EquipmentService {
         equipmentRepository.delete(equipment);
     }
 
+    public Page<CompanyListDto> findByAgencySearch(String csNumber, String csOperator, Pageable pageable) {
+        return companyRepositoryCystom.findByAgencySearch(csNumber,csOperator,pageable);
+    }
 }
