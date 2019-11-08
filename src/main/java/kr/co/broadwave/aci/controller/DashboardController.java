@@ -11,9 +11,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/dashboard")
 public class DashboardController {
-    //사용자승인
+
     @RequestMapping("monitering")
-    public String accountApproval(){
+    public String monitering(){
         return "dashboard/monitering";
+    }
+
+    @RequestMapping("graph")
+    public String graph(){
+        return "dashboard/graph";
+    }
+
+    @RequestMapping("layout")
+    public String layout(){
+        return "dashboard/layout";
     }
 }
