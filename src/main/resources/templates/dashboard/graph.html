@@ -1,10 +1,67 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-<h1>그래프</h1>
-</body>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/default}">
+	<head>
+		<style>
+			#map {
+				height: 400px;
+			}
+		</style>
+		
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback=initMap" async defer></script>
+		<script>
+			var locations = [
+				['명동', 37.563576, 126.983431],
+	            ['가로수길', 37.520300, 127.023008],
+	            ['광화문', 37.575268, 126.976896],
+	            ['남산', 37.550925, 126.990945],
+	            ['이태원', 37.540223, 126.994005]
+			]
+		
+			var map;
+			
+			function initMap() {
+				map = new google.maps.Map(document.getElementById('map'), {
+					center: {lat: 37.14450, lng: 127.03312},
+					zoom: 8,
+					mapTypeControl: false,
+					streetViewControl: false
+				});
+				
+				var marker, i;
+				
+				var infowindow = new google.maps.InfoWindow();
+				
+				for (i = 0; i < locations.length; i++) {
+					marker = new google.maps.Marker({
+						position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+						map: map
+					});
+					
+					google.maps.event.addListener(marker, 'click', (function(marker, i) {
+						var content = '<div class="iw-container" id="iw-container">' +
+							'<h2>' + (locations[i][0]) + '</h2>' +
+							'<dl>' +
+								'<dt>위치정보</dt>' +
+								'<dd>00시00구00동</dd>' +
+							'</dl>' +
+						'</div>'
+				        return function() {
+				          infowindow.setContent(content);
+				          infowindow.open(map, marker);
+				        }
+				      })(marker, i));
+				}
+				
+				
+			}
+		</script>
+	
+	</head>
+
+	<div layout:fragment="content" class="content">
+		<div class="map" id="map"></div>
+	</div>
 </html>
