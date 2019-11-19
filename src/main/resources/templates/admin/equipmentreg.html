@@ -9,11 +9,6 @@
 			//자동실행
 			LocationSetting();
 
-            // 오직 숫자만 입력할수있게하는 제이쿼리
-            $("input:text[numberOnly]").on("keyup", function() {
-                $(this).val($(this).val().replace(/[^0-9]/g,""));
-            });
-
 			$('.pop__list').on('click', function(e) {
 				$('#pop__list').addClass('open');
 
@@ -65,6 +60,7 @@
 			$("#emEmbeddedNumber").val('');
 			$("#csNum").val('');
 			$("#operator").val('');
+			$("#emMaximumPayload").val('');
 
 			$("#emTypeView").hide();
 			$("#emCountryView").hide();
@@ -111,6 +107,25 @@
 					})
 				}
 			});
+		}
+
+		function isNumberKey(evt) { // 숫자를 제외한 값을 입력하지 못하게 한다.
+			var charCode = (evt.which) ? evt.which : event.keyCode;
+			// Textbox value
+			var _value = event.srcElement.value;
+
+			if (event.keyCode < 48 || event.keyCode > 57) {
+				if (event.keyCode != 46) { //숫자와 . 만 입력가능하도록함
+					return false;
+				}
+			}
+			// 소수점(.)이 두번 이상 나오지 못하게
+			var _pattern0 = /^\d*[.]\d*$/; // 현재 value값에 소수점(.) 이 있으면 . 입력불가
+			if (_pattern0.test(_value)) {
+				if (charCode == 46) {
+					return false;
+				}
+			}
 		}
 
 		// 운영사 리스트보기
@@ -589,7 +604,7 @@
 							<ul class="c-input-list">
 								<li>
 									<div class="c-select" style="width: 170px;">
-										<input name="emMaximumPayload" id="emMaximumPayload" class="c-text__input" numberOnly />
+										<input name="emMaximumPayload" id="emMaximumPayload" class="c-text__input" onkeypress="return isNumberKey(event)" />
 									</div>
 								</li>
 								<li>

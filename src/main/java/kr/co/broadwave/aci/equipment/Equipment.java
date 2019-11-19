@@ -66,7 +66,7 @@ public class Equipment {
     private Company company; // 소속운영사
 
     @Column(name="em_maximum_payload")
-    private Long emMaximumPayload; // 최대적재량
+    private Double emMaximumPayload; // 최대적재량
 
     @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
     @JoinColumn(name="em_unit")

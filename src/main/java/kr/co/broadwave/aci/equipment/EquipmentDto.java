@@ -37,7 +37,7 @@ public class EquipmentDto {
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
     private Company company; // 소속운영사
-    private Long emMaximumPayload; // 최대적재량
+    private Double emMaximumPayload; // 최대적재량
     private MasterCode emUnit; // 단위
 
     private LocalDateTime insertDateTime;
@@ -85,7 +85,7 @@ public class EquipmentDto {
         return emLocationName.getName();
     }
 
-    public Long getEmMaximumPayload() {
+    public Double getEmMaximumPayload() {
         return emMaximumPayload;
     }
 
