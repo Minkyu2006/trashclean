@@ -9,6 +9,11 @@
 			//자동실행
 			LocationSetting();
 
+            // 오직 숫자만 입력할수있게하는 제이쿼리
+            $("input:text[numberOnly]").on("keyup", function() {
+                $(this).val($(this).val().replace(/[^0-9]/g,""));
+            });
+
 			$('.pop__list').on('click', function(e) {
 				$('#pop__list').addClass('open');
 
@@ -261,6 +266,8 @@
 					$("#emEmbeddedNumber").val(res.data.equipment.emEmbeddedNumber);
 					$("#csNum").val(res.data.equipment.company.csNumber);
 					$("#operator").val(res.data.equipment.company.csOperator);
+					$("#emMaximumPayload").val(res.data.equipment.emMaximumPayload);
+					$("#emUnit").val(res.data.equipment.emUnit);
 
 					$("#emType").hide();
 					$("#emCountry").hide();
@@ -270,11 +277,24 @@
 					$("#emCountryView").show();
 					$("#emLocationView").show();
 
-					$("#emTypeView").val(res.data.equipment.emType);
-					$("#emCountryView").val(res.data.equipment.emCountry);
-					$("#emLocationView").val(res.data.equipment.emLocation);
+					// 보기버튼 클릭시 나라/지역 변경
+					$("#emTypeView").val(res.data.equipment.emTypeName);
+					$("#emCountryView").val(res.data.equipment.emCountryName);
+					$("#emLocationView").val(res.data.equipment.emLocationName);
+
+					//console.log("지역타입 ID값 : "+res.data.equipment.emLocationId);
+
+					$("#emType").val(res.data.equipment.emTypeId)
+					$("#emCountry").val(res.data.equipment.emCountryId)
+					LocationSetting();
+
+					selectBoxLocation(res.data.equipment.emLocationId)
 				}
 			});
+		}
+
+		function selectBoxLocation(value){
+			$("#emLocation").val(value);
 		}
 
 		// 운영사 넣기
@@ -357,7 +377,7 @@
 				emCountry: $("#emCountry").val()
 			};
 
-			var $schList = $('#emLocation');
+			var $schList = $("#emLocation");
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -562,6 +582,30 @@
 								<button class="c-text__button pop__list">검색</button>
 							</div>
 						</td>
+					</tr>
+					<tr>
+						<th>최대적재랑/단위</th>
+						<td>
+							<ul class="c-input-list">
+								<li>
+									<div class="c-select" style="width: 170px;">
+										<input name="emMaximumPayload" id="emMaximumPayload" class="c-text__input" numberOnly />
+									</div>
+								</li>
+								<li>
+									<div class="c-select" style="width: 80px;">
+										<select name="emUnit" id="emUnit" class="c-select__input" >
+											<option th:each ="equipdUnit : ${equipdUnits}"
+													th:value="${equipdUnit.id}"
+													th:text="${equipdUnit.name}">
+											</option>
+										</select>
+									</div>
+								</li>
+							</ul>
+						</td>
+						<th></th>
+						<td></td>
 					</tr>
 				</tbody>
 			</table>

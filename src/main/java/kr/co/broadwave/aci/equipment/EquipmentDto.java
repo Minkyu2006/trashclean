@@ -28,12 +28,17 @@ public class EquipmentDto {
 
     private String emCerealNumber; // 장비 시리얼 번호
     private String emDesignation; // 장비명칭
-    private MasterCode emType; // 장비타입
-    private MasterCode emCountry; // 국가
-    private MasterCode emLocation; // 지역
+    private MasterCode emTypeId; // 장비타입(Id값)
+    private MasterCode emTypeName; // 장비타입(Name값)
+    private MasterCode emCountryId; // 국가(Id값)
+    private MasterCode emCountryName; // 국가(Name값)
+    private MasterCode emLocationId; // 지역(Id값)
+    private MasterCode emLocationName; // 지역(Name값)
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
-    private Company company;
+    private Company company; // 소속운영사
+    private Long emMaximumPayload; // 최대적재량
+    private MasterCode emUnit; // 단위
 
     private LocalDateTime insertDateTime;
     private String insert_id;
@@ -56,16 +61,36 @@ public class EquipmentDto {
         return emDesignation;
     }
 
-    public String getEmType() {
-        return emType.getName();
+    public Long getEmTypeId() {
+        return emTypeId.getId();
     }
 
-    public String getEmCountry() {
-        return emCountry.getName();
+    public String getEmTypeName() {
+        return emTypeName.getName();
     }
 
-    public String getEmLocation() {
-        return emLocation.getName();
+    public Long getEmCountryId() {
+        return emCountryId.getId();
+    }
+
+    public String getEmCountryName() {
+        return emCountryName.getName();
+    }
+
+    public Long getEmLocationId() {
+        return emLocationId.getId();
+    }
+
+    public String getEmLocationName() {
+        return emLocationName.getName();
+    }
+
+    public Long getEmMaximumPayload() {
+        return emMaximumPayload;
+    }
+
+    public Long getEmUnit() {
+        return emUnit.getId();
     }
 
     public String getEmAwsNumber() {

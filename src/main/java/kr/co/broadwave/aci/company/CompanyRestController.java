@@ -103,7 +103,7 @@ public class CompanyRestController {
             // 업체구분 저장
             company.setCsDivision(optionalCsDivision.get());
         }
-        //운영권역이 존재하지않으면
+        //운영권역이 존재하지않으면sd
         if (!optionalCsRegional.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E019.getCode(),
                     ResponseErrorCode.E019.getDesc()));

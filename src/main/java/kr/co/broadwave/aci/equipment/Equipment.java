@@ -65,6 +65,13 @@ public class Equipment {
     @JoinColumn(name="cs_id")
     private Company company; // 소속운영사
 
+    @Column(name="em_maximum_payload")
+    private Long emMaximumPayload; // 최대적재량
+
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="em_unit")
+    private MasterCode emUnit; // 단위
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 

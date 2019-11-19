@@ -77,6 +77,8 @@ public class EquipmentRestController {
         Optional<MasterCode> optionalEmType = masterCodeService.findById(equipmentMapperDto.getEmType());
         Optional<MasterCode> optionalEmCountry = masterCodeService.findById(equipmentMapperDto.getEmCountry());
         Optional<MasterCode> optionalEmLocation = masterCodeService.findById(equipmentMapperDto.getEmLocation());
+        Optional<MasterCode> optionalEmUnit = masterCodeService.findById(equipmentMapperDto.getEmUnit());
+
         //장비타입/국가/지역코드가 존재하지않으면
         if (!optionalEmType.isPresent() || !optionalEmCountry.isPresent() || !optionalEmLocation.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E016.getCode(),
@@ -86,6 +88,7 @@ public class EquipmentRestController {
             equipment.setEmType(optionalEmType.get());
             equipment.setEmCountry(optionalEmCountry.get());
             equipment.setEmLocation(optionalEmLocation.get());
+            equipment.setEmUnit(optionalEmUnit.get());
         }
 
         // 장비번호 가져오기(고유값)

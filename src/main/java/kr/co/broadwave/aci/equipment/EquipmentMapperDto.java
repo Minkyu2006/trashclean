@@ -27,6 +27,8 @@ public class EquipmentMapperDto {
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
     private String operator;
+    private Long emMaximumPayload;
+    private Long emUnit;
 
     public String getEmNumber() {
         return emNumber;
@@ -62,5 +64,13 @@ public class EquipmentMapperDto {
 
     public String getOperator() {
         return operator;
+    }
+
+    public Long getEmMaximumPayload() {
+        return emMaximumPayload;
+    }
+
+    public Long getEmUnit() {
+        return emUnit;
     }
 }

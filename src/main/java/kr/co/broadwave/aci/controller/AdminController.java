@@ -81,9 +81,11 @@ public class AdminController {
     public String equipreg(Model model){
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+        List<MasterCodeDto> equipdUnits = masterCodeService.findCodeList(CodeType.C0008);
 
         model.addAttribute("equipdTypes", equipdTypes);
         model.addAttribute("equipdCountrys", equipdCountrys);
+        model.addAttribute("equipdUnits", equipdUnits);
 
         return "admin/equipmentreg";
     }
