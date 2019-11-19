@@ -61,6 +61,7 @@
 			$("#csNum").val('');
 			$("#operator").val('');
 			$("#emMaximumPayload").val('');
+			$("#addSell").val('');
 
 			$("#emTypeView").hide();
 			$("#emCountryView").hide();
@@ -298,8 +299,6 @@
 					$("#emCountryView").val(res.data.equipment.emCountryName);
 					$("#emLocationView").val(res.data.equipment.emLocationName);
 
-					//console.log("지역타입 ID값 : "+res.data.equipment.emLocationId);
-
 					$("#emType").val(res.data.equipment.emTypeId)
 					$("#emCountry").val(res.data.equipment.emCountryId)
 					$("#addSell").val(res.data.equipment.emLocationId)
@@ -310,9 +309,8 @@
 
 		function selectBoxLocation(){
 			if($("#addSell").val() != '') {
-				var addressSelect = $("#addSell").val();
-				console.log("받아온 ID값 : " + addressSelect);
-				$("#emLocation").val(addressSelect);
+				var addLocationSelect = $("#addSell").val();
+				$("#emLocation").val(addLocationSelect);
 			}
 		}
 
@@ -420,7 +418,7 @@
 						html += '<option value ="' + echoNull2Blank(value.id) + '">' + echoNull2Blank(value.name)+ '</option>';
 					});
 					$schList.html(html);
-					selectBoxLocation()
+					selectBoxLocation();
 				}
 			});
 		}
