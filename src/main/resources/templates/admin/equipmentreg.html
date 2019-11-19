@@ -109,6 +109,7 @@
 			});
 		}
 
+		// 소수점한개로 제한한 실수값입력할수있게하는 함수
 		function isNumberKey(evt) { // 숫자를 제외한 값을 입력하지 못하게 한다.
 			var charCode = (evt.which) ? evt.which : event.keyCode;
 			// Textbox value
@@ -301,15 +302,18 @@
 
 					$("#emType").val(res.data.equipment.emTypeId)
 					$("#emCountry").val(res.data.equipment.emCountryId)
+					$("#addSell").val(res.data.equipment.emLocationId)
 					LocationSetting();
-
-					selectBoxLocation(res.data.equipment.emLocationId)
 				}
 			});
 		}
 
-		function selectBoxLocation(value){
-			$("#emLocation").val(value);
+		function selectBoxLocation(){
+			if($("#addSell").val() != '') {
+				var addressSelect = $("#addSell").val();
+				console.log("받아온 ID값 : " + addressSelect);
+				$("#emLocation").val(addressSelect);
+			}
 		}
 
 		// 운영사 넣기
@@ -416,6 +420,7 @@
 						html += '<option value ="' + echoNull2Blank(value.id) + '">' + echoNull2Blank(value.name)+ '</option>';
 					});
 					$schList.html(html);
+					selectBoxLocation()
 				}
 			});
 		}
@@ -575,6 +580,7 @@
 								<li>
 									<div class="c-select" style="width: 125px;">
 										<input id="emLocationView" class="c-text__input" style="display:none;" readonly="readonly" />
+										<input id="addSell" class="c-text__input" style="display:none;" readonly="readonly" />
 										<select name="emLocation" id="emLocation" class="c-select__input" >
 										</select>
 									</div>

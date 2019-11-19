@@ -24,8 +24,10 @@ public class CompanyDto {
 
     private String csOperator; // 운영사명
     private String csOperatorSub; // 운영사명(약칭)
-    private MasterCode csDivision; // 업체구분
-    private MasterCode csRegional; // 운영권역
+    private MasterCode csDivisionId; // 업체구분(Id)
+    private MasterCode csDivisionName; // 업체구분(Name)
+    private MasterCode csRegionalId; // 운영권역(Id)
+    private MasterCode csRegionalName; // 운영권역(Name)
     private String csRepresentative; // 대표자
     private String csBuisnessNumber; // 사업자번호
     private String csManager; // 담당자
@@ -53,12 +55,20 @@ public class CompanyDto {
         return csOperatorSub;
     }
 
-    public String getCsDivision() {
-        return csDivision.getName();
+    public Long getCsDivisionId() {
+        return csDivisionId.getId();
     }
 
-    public String getCsRegional() {
-        return csRegional.getName();
+    public String getCsDivisionName() {
+        return csDivisionName.getName();
+    }
+
+    public Long getCsRegionalId() {
+        return csRegionalId.getId();
+    }
+
+    public String getCsRegionalName() {
+        return csRegionalName.getName();
     }
 
     public String getCsRepresentative() {

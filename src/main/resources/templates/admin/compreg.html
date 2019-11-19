@@ -176,16 +176,19 @@
 					$("#csNumber").val(res.data.company.csNumber);
 					$("#csOperator").val(res.data.company.csOperator);
 					$("#csOperatorSub").val(res.data.company.csOperatorSub);
-					$("#csDivisionView").val(res.data.company.csDivision);
-					$("#csRegionalView").val(res.data.company.csRegional);
 					$("#csRepresentative").val(res.data.company.csRepresentative);
 					$("#csBuisnessNumber").val(res.data.company.csBuisnessNumber);
 					$("#csManager").val(res.data.company.csManager);
 					$("#csTelephone").val(res.data.company.csTelephone);
 					$("#csFax").val(res.data.company.csFax);
 
+					$("#csDivisionView").val(res.data.company.csDivisionName);
+					$("#csRegionalView").val(res.data.company.csRegionalName);
 					$("#csDivisionView").show();
 					$("#csRegionalView").show();
+
+					$("#csDivision").val(res.data.company.csDivisionId);
+					$("#csRegional").val(res.data.company.csRegionalId);
 					$("#csDivision").hide();
 					$("#csRegional").hide();
 				}
