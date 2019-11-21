@@ -26,4 +26,10 @@ public class DashboardController {
     public String layout(){
         return "dashboard/layout";
     }
+
+    @RequestMapping("dashboardTestPage")
+    public String dashboardTestPage(){
+        return "dashboard/dashboardTestPage";
+    }
+
 }
