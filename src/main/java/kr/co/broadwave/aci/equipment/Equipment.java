@@ -72,6 +72,9 @@ public class Equipment {
     @JoinColumn(name="em_unit")
     private MasterCode emUnit; // 단위
 
+    @Column(name="em_install_date")
+    private String emInstallDate; // 설치일자
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 

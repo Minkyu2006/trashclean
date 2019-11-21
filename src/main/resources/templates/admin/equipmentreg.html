@@ -62,6 +62,7 @@
 			$("#operator").val('');
 			$("#emMaximumPayload").val('');
 			$("#addSell").val('');
+			$("#emInstallDate").val('');
 
 			$("#emTypeView").hide();
 			$("#emCountryView").hide();
@@ -77,6 +78,21 @@
 				Swal.fire({text:"소속 운영사를 선택해주세요."});
 				return false;
 			}
+			if ($("#emInstallDate").val().trim() == '') {
+				Swal.fire({text:"설치일자를 선택해주세요."});
+				return false;
+			}
+
+			// 날짜저장 VIEW(YYYY-MM-DD) -> DATABASE(YYYYMMDD)
+			if($("#emInstallDate").val() != "") {
+				var install = $('#emInstallDate').val();
+				var installArray = install.split("");
+				for(var i = 0; i<2; i++) {
+					installArray.splice(installArray.indexOf("-"), 1);
+				}
+				var realinstall = installArray.join("");
+				$("#emInstallDate").val(realinstall);
+			};
 
 			var $form = $('form[name="equreg"]');
 
@@ -285,6 +301,12 @@
 					$("#operator").val(res.data.equipment.company.csOperator);
 					$("#emMaximumPayload").val(res.data.equipment.emMaximumPayload);
 					$("#emUnit").val(res.data.equipment.emUnit);
+
+					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
+					var install = res.data.equipment.emInstallDate
+					var install2 = [install[0],install[1],install[2],install[3],"-",install[4],install[5],"-",install[6],install[7]];
+					var installArray = install2.join('');
+					$("#emInstallDate").val(installArray);
 
 					$("#emType").hide();
 					$("#emCountry").hide();
@@ -623,8 +645,20 @@
 								</li>
 							</ul>
 						</td>
-						<th></th>
-						<td></td>
+						<th>설치일자</th>
+						<td>
+							<div class="c-calendar-layout">
+								<div class="c-date">
+									<div class="c-date__input-box">
+										<input type="text" class="c-date__result" id="emInstallDate" name="emInstallDate" />
+										<button type="button" class="c-date__button">
+											<img src="/assets/images/icon__calendar.svg" alt="달력" title="달력">
+										</button>
+									</div>
+									<div class="c-date__calendar"></div>
+								</div>
+							</div>
+						</td>
 					</tr>
 				</tbody>
 			</table>

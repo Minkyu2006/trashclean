@@ -29,6 +29,7 @@ public class EquipmentMapperDto {
     private String operator;
     private Double emMaximumPayload;
     private Long emUnit;
+    private String emInstallDate;
 
     public String getEmNumber() {
         return emNumber;
@@ -72,5 +73,9 @@ public class EquipmentMapperDto {
 
     public Long getEmUnit() {
         return emUnit;
+    }
+
+    public String getEmInstallDate() {
+        return emInstallDate;
     }
 }
