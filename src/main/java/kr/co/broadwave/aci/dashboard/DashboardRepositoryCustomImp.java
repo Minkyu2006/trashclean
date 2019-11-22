@@ -35,6 +35,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
                         equipment.emNumber,
                         equipment.emType,
                         equipment.emMaximumPayload,
+                        equipment.emUnit,
                         equipment.company,
                         equipment.emLocation,
                         equipment.emCountry,

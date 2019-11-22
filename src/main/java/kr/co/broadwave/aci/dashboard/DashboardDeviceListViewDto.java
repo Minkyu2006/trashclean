@@ -20,6 +20,7 @@ public class DashboardDeviceListViewDto {
     private String emNumber; // 장비 번호
     private MasterCode emType; // 장비타입
     private Double emMaximumPayload; // 최대적재량
+    private MasterCode emUnit; // 단위
     private Company company; // 소속운영사
     private MasterCode emLocation; // 지역
     private MasterCode emCountry; // 국가
@@ -41,6 +42,10 @@ public class DashboardDeviceListViewDto {
         return emMaximumPayload;
     }
 
+    public String getEmUnit() {
+        return emUnit.getName();
+    }
+
     public String getCompany() {
         return company.getCsOperator();
     }
@@ -54,10 +59,7 @@ public class DashboardDeviceListViewDto {
     }
 
     public String getEmInstallDate() {
-//        String startInstall = [emInstallDate.,startInstall[1],startInstall[2],startInstall[3],"-",startInstall[4],startInstall[5],"-",startInstall[6],startInstall[7]];
-//        String installArray = startInstall.join("");
-//        String installArray = emInstallDate;
-//        System.out.println("emInstallDate 받아온 설치일자 : "+emInstallDate);
-        return emInstallDate;
+        String installDate = emInstallDate.substring(0,4)+"년 "+emInstallDate.substring(4,6)+"월 "+emInstallDate.substring(6,8)+"일";
+        return installDate;
     }
 }

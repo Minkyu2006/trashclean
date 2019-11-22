@@ -59,8 +59,9 @@
 
 		<script type="text/javascript">
 			$(function() {
-				//자동실행
-				deviceListView(1);
+				$("#btnSearch").on('click',function(){
+					deviceListView(1);
+				});
 			});
 
 			function deviceListView(page) {
@@ -107,7 +108,7 @@
 							html += '<tr >';
 							html += '<td >'+ echoNull2Blank(value.emNumber) +'</td>';
 							html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
-							html += '<td >'+ echoNull2Blank(value.emMaximumPayload) +'</td>';
+							html += '<td >'+ echoNull2Blank(value.emMaximumPayload)+' '+echoNull2Blank(value.emUnit)+'</td>';
 							html += '<td >'+ echoNull2Blank(value.company) +'</td>';
 							html += '<td >'+ echoNull2Blank(value.emLocation) +'</td>';
 							html += '<td >'+ echoNull2Blank(value.emCountry) +'</td>';
@@ -124,25 +125,49 @@
 
 	<div layout:fragment="content" class="content">
 
+<!--		구글지도-->
 		<div class="map" id="map"></div>
 
-		<article class="article">
-			<table class="c-table">
-				<tbody id="deviceList">
+		<br/>
+		<section class="section">
+			<article class="article">
+				<h2 class="article__heading">장비 조회</h2>
+				<table class="c-table">
+					<tr>
+						<th></th>
+						<td></td>
+						<th></th>
+						<td></td>
+						<th></th>
+						<td></td>
+						<th></th>
+						<td></td>
+						<td style="width: 60px;">
+							<button class="c-button c-button--point" id="btnSearch">조회</button>
+						</td>
+					</tr>
+				</table>
+			</article>
 
-				</tbody>
-			</table>
+			<article class="article">
+				<table class="c-table">
+					<tbody id="deviceList">
 
-			<div class="c-pager">
-				<div class="c-paging" id="paging1">
-				</div>
-				<div class="c-paging__total">
-					<div class="c-paging__total-group">
-						Total
+					</tbody>
+				</table>
+
+				<div class="c-pager">
+					<div class="c-paging" id="paging1">
 					</div>
-					<div class="c-paging__total-group" id="totalCnt">0</div>
+					<div class="c-paging__total">
+						<div class="c-paging__total-group">
+							Total
+						</div>
+						<div class="c-paging__total-group" id="totalCnt">0</div>
+					</div>
 				</div>
-			</div>
-		</article>
+			</article>
+		</section>
+
 	</div>
 </html>
