@@ -56,6 +56,76 @@
 				      })(marker, i));
 				}
 			}
+			
+			
+			$(function() {
+				var piechart = c3.generate({
+					bindto: "#pie_chart",
+					data: {
+						columns: [
+							['정상', 6],
+							['관심', 3],
+							['심각', 1]
+						],
+						type: 'pie'
+					},
+					tooltip: {
+						format: {
+							value: function (value) {
+								return value + '개';
+							}
+						}
+					},
+					color: {
+						pattern: ['#007e37', '#ffc600', '#e35f5f']
+					}
+				});
+				
+				
+				var barchart = c3.generate({
+					bindto: "#bar_chart",
+					data: {
+						columns: [
+							['쓰레기양', 80, 70, 20, 50, 60, 10, 90, 30, 40, 80]
+						],
+						type: "bar"
+					},
+					tooltip: {
+						format: {
+							value: function (value) {
+								return value + '%'
+							}
+						}
+					},
+					axis: {
+						x: {
+							label: {
+								text: '장비명',
+								position: 'outer-center'
+							},
+							type: 'category',
+							categories: ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10'],
+							tick: {
+								centered: true
+							}
+						},
+						y: {
+							label: {
+								text: '쓰레기양',
+								position: 'outer-middle'
+							},
+							max: 100,
+							min: 10
+						}
+					},
+					legend: {
+						hide: true
+					},
+					color: {
+						pattern: ['#007e37']
+					}
+				})
+			})
 		</script>
 
 		<script type="text/javascript">
@@ -169,6 +239,13 @@
 				</div>
 			</article>
 		</section>
+		
+		
+		<div class="stat">
+			<div class="stat__circle" id="pie_chart"></div>
+			
+			<div class="stat__bar" id="bar_chart"></div>
+		</div>
 
 	</div>
 </html>
