@@ -1,6 +1,8 @@
 package kr.co.broadwave.aci.dashboard;
 
 import kr.co.broadwave.aci.common.AjaxResponse;
+import kr.co.broadwave.aci.equipment.EquipmentDto;
+import kr.co.broadwave.aci.equipment.EquipmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +26,13 @@ public class DashboardRestController {
     private HashMap<String, Object> data = new HashMap<>();
 
     private final DashboardService dashboardService;
+    private final EquipmentService equipmentService;
 
     @Autowired
-    public DashboardRestController(DashboardService dashboardService) {
+    public DashboardRestController(DashboardService dashboardService,
+                                                    EquipmentService equipmentService) {
         this.dashboardService = dashboardService;
+        this.equipmentService = equipmentService;
     }
 
 
@@ -81,6 +86,19 @@ public class DashboardRestController {
         log.info("Device History 가져오기 성공 ");
         return ResponseEntity.ok(res.success());
 
+    }
+
+
+    // 업체 정보 보기
+    @PostMapping ("infoList")
+    public ResponseEntity dashboardDeviceInfo(){
+
+
+        data.clear();
+//        data.put("dashboardDevice",dashboardDevice);
+        res.addResponse("data",data);
+
+        return ResponseEntity.ok(res.success());
     }
 
 }

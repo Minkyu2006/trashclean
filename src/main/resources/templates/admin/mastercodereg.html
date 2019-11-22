@@ -80,6 +80,9 @@
 			$("#name").val('');
 			$("#remark").val('');
 			$("#bcRef1").val('');
+			$("#bcRef2").val('');
+			$("#bcRef3").val('');
+			$("#bcRef4").val('');
 			$("#code").removeAttr("readonly");
 			$("#codeType").removeAttr("readonly");
 
@@ -183,6 +186,9 @@
 					$("#name").val(res.data.datarow.name);
 					$("#remark").val(res.data.datarow.remark);
 					$("#bcRef1").val(res.data.datarow.bcRef1);
+					$("#bcRef2").val(res.data.datarow.bcRef2);
+					$("#bcRef3").val(res.data.datarow.bcRef3);
+					$("#bcRef4").val(res.data.datarow.bcRef4);
 					$("#codeType").attr("readonly",true);
 					$("#code").attr("readonly",true);
 				}

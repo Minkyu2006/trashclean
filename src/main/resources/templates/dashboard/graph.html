@@ -10,11 +10,11 @@
 			}
 		</style>
 		
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback=initMap" async defer></script>
+		<script  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback=initMap" async defer></script>
 		<script>
 			var locations = [
 				['명동', 37.563576, 126.983431],
-	            ['가로수길', 37.520300, 127.023008],
+				['가로수길', 37.520300, 127.023008],
 	            ['광화문', 37.575268, 126.976896],
 	            ['남산', 37.550925, 126.990945],
 	            ['이태원', 37.540223, 126.994005]
@@ -54,14 +54,108 @@
 				        }
 				      })(marker, i));
 				}
-				
-				
 			}
 		</script>
-	
+
+		<script type="text/javascript">
+			$(function() {
+				//자동실행
+				deviceListView();
+			});
+
+			function deviceListView() {
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url: '/api/dashboard/infoList',
+					type: 'post',
+					data: params,
+					cache: false,
+					error: function (request, status, error) {
+						alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+					},
+					success: function (res) {
+
+
+						// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
+						var install = res.data.equipment.emInstallDate
+						var install2 = [install[0],install[1],install[2],install[3],"-",install[4],install[5],"-",install[6],install[7]];
+						var installArray = install2.join('');
+						$("#emInstallDate").val(installArray);
+						
+					}
+				});
+			}
+		</script>
+
 	</head>
 
 	<div layout:fragment="content" class="content">
+
 		<div class="map" id="map"></div>
+
+		<table class="c-table">
+			<tbody>
+			<tr>
+				<th>장비 ID : </th>
+				<td>
+					<div class="c-text">
+						<input type="text" id="emNumber" class="c-text__input" readonly="readonly" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>장비타입 : </th>
+				<td>
+					<div class="c-text">
+						<input type="text" id="emType" class="c-text__input" readonly="readonly" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>최대적재량 : </th>
+				<td>
+					<div class="c-text">
+						<input type="text" id="emMaximumPayload" class="c-text__input" readonly="readonly" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>운영사</th>
+				<td>
+					<div class="c-text">
+						<input type="text" id="company" class="c-text__input" readonly="readonly" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>지역</th>
+				<td>
+					<div class="c-text">
+						<input type="text" id="emLocation" class="c-text__input" readonly="readonly" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>국가</th>
+				<td>
+					<div class="c-text">
+						<input type="text" id="emCountry" class="c-text__input" readonly="readonly" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<th>설치일자</th>
+				<td>
+					<div class="c-text">
+						<input type="text" id="emEmbeddedNumber" class="c-text__input" readonly="readonly" />
+					</div>
+				</td>
+			</tr>
+			</tbody>
+		</table>
 	</div>
 </html>

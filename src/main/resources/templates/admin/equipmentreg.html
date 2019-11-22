@@ -577,10 +577,18 @@
 						</td>
 					</tr>
 					<tr>
-						<th>AWS상 Device ID</th>
+						<th>설치일자</th>
 						<td>
-							<div class="c-text">
-								<input type="text" name="emAwsNumber" id="emAwsNumber" class="c-text__input" />
+							<div class="c-calendar-layout">
+								<div class="c-date">
+									<div class="c-date__input-box">
+										<input type="text" class="c-date__result" id="emInstallDate" name="emInstallDate" />
+										<button type="button" class="c-date__button">
+											<img src="/assets/images/icon__calendar.svg" alt="달력" title="달력">
+										</button>
+									</div>
+									<div class="c-date__calendar"></div>
+								</div>
 							</div>
 						</td>
 						<th>국가/지역</th>
@@ -645,18 +653,10 @@
 								</li>
 							</ul>
 						</td>
-						<th>설치일자</th>
+						<th>AWS상 Device ID</th>
 						<td>
-							<div class="c-calendar-layout">
-								<div class="c-date">
-									<div class="c-date__input-box">
-										<input type="text" class="c-date__result" id="emInstallDate" name="emInstallDate" />
-										<button type="button" class="c-date__button">
-											<img src="/assets/images/icon__calendar.svg" alt="달력" title="달력">
-										</button>
-									</div>
-									<div class="c-date__calendar"></div>
-								</div>
+							<div class="c-text">
+								<input type="text" name="emAwsNumber" id="emAwsNumber" class="c-text__input" />
 							</div>
 						</td>
 					</tr>
