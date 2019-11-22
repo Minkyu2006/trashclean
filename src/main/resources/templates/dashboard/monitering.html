@@ -25,6 +25,11 @@
             $("#btnDevicehistory").on('click',function(){
                 callDeviceHistory();
             });
+            $("#btnAllSearch").on('click',function(){
+                calldevicelist();
+                callDeviceHistory();
+            });
+
 
 
 
@@ -40,7 +45,7 @@
             $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
 
             var deviceIds = new Array();
-            deviceIds.push("ISOL-KR-SEL-0001");
+            deviceIds.push("ISOL-KR-SEL-0002");
             deviceIds.push("ISOL-KR-SEL-0004");
 
             var itemJson = new Object();
@@ -187,20 +192,20 @@
                 error:function(request,status,error){
                     ajaxErrorMsg(request);
                 },
-                success: function(res){
+                success: function(res2){
                     //화면 출력
-                    statuscode= res.data.statusCode;
+                    statuscode= res2.data.statusCode;
                     if (statuscode ===200) {
 
-                        var html = '';
+                        var html2 = '';
 
-                        $.each(res.data.datarow1, function(key, value){
+                        $.each(res2.data.datarow1, function(key, value2){
 
-                            html += '<li>'+ echoNull2Blank(value.timestamp) + '(온도):' + echoNull2Blank(value.temp_brd) +'℃</li>';
+                            html2 += '<li>'+ echoNull2Blank(value2.timestamp) + '(온도2):' + echoNull2Blank(value2.temp_brd) +'℃</li>';
 
                         });
 
-                        $("#historylist").html(html);
+                        $("#historylist").html(html2);
 
                     }
 
@@ -257,7 +262,7 @@
 
             <br/>============================================<br/>
             <div>
-                대상장비 <input type="text" id="deviceid" value = "ISOL-KR-SEOUL-0002" />
+                대상장비 <input type="text" id="deviceid" value = "ISOL-KR-SEL-0004" />
             </div>
             <div>
                 이력조회시간 <input type="text" id="intervaltime" value = "72" />
@@ -277,7 +282,7 @@
                 </div>
             </div>
 
-
+            <button class="c-button c-button--point" id="btnAllSearch">동시조회</button>
         </article>
     </section>
 
