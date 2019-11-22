@@ -22,8 +22,7 @@ import java.util.HashMap;
 @RequestMapping("/api/dashboard")
 @Slf4j
 public class DashboardRestController {
-    private AjaxResponse res = new AjaxResponse();
-    private HashMap<String, Object> data = new HashMap<>();
+
 
     private final DashboardService dashboardService;
     private final EquipmentService equipmentService;
@@ -40,7 +39,8 @@ public class DashboardRestController {
     public ResponseEntity monitering(@RequestParam(value="deviceids", defaultValue="") String deviceids
                             ){
         log.info("모니터링 조회 시작");
-
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         //Sample of deviceids variable : {"deviceids":["ISOL-KR-SEOUL-0001","ISOL-KR-SEOUL-0002"]}
 
@@ -56,6 +56,8 @@ public class DashboardRestController {
     }
     @PostMapping("devicelist")
     public ResponseEntity devicelist(){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
         log.info("Device목록가져오기 시작");
 
 
@@ -74,6 +76,8 @@ public class DashboardRestController {
     public ResponseEntity devicehistory(@RequestParam(value="deviceid", defaultValue="") String deviceid
                                         ,@RequestParam(value="intervaltime", defaultValue="") String intervaltime
     ){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
         log.info("Device History 가져오기 시작");
 
 
@@ -93,7 +97,8 @@ public class DashboardRestController {
     @PostMapping ("infoList")
     public ResponseEntity dashboardDeviceInfo(){
 
-
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
         data.clear();
 //        data.put("dashboardDevice",dashboardDevice);
         res.addResponse("data",data);
