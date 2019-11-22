@@ -48,7 +48,7 @@ public class ACIIoTService {
             //System.out.println("Shadow Nonblocking connect");
 
             // Update shadow document
-            String message = "{\"state\":{\"desired\":{\"" + keyString + "\":" + valueString + "}}}";
+            String message = "{\"state\":{\"desired\":{\"" + keyString + "\":\"" + valueString + "\"}}}";
             device.update(message,3000);
 
             //System.out.println("shadow nonBlocking update");

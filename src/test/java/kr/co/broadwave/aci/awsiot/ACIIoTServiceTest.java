@@ -22,7 +22,7 @@ public class ACIIoTServiceTest {
     @Test
     @Ignore
     public void shadowNonblockingSend(){
-        aciIoTService.shadowNonblockingSend("ISOL-KR-SEOUL-0002","testreq","555");
+        aciIoTService.shadowNonblockingSend("ISOL-KR-SEL-0004","doresol","open");
 
     }
 
