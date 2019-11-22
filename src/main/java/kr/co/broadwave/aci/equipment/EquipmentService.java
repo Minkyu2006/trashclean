@@ -27,18 +27,18 @@ public class EquipmentService {
     private final ModelMapper modelMapper;
     private final EquipmentRepository equipmentRepository;
     private final KeyGenerateService keyGenerateService;
-    private final EquipmentRepositoryCystom equipmentRepositoryCystom;
-    private final CompanyRepositoryCystom companyRepositoryCystom;
+    private final EquipmentRepositoryCustom equipmentRepositoryCustom;
+    private final CompanyRepositoryCustom companyRepositoryCustom;
 
     @Autowired
     public EquipmentService(EquipmentRepository equipmentRepository,
                             KeyGenerateService keyGenerateService,
-                            CompanyRepositoryCystom companyRepositoryCystom,
-                            EquipmentRepositoryCystom equipmentRepositoryCystom,
+                            CompanyRepositoryCustom companyRepositoryCustom,
+                            EquipmentRepositoryCustom equipmentRepositoryCustom,
                             ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-        this.companyRepositoryCystom = companyRepositoryCystom;
-        this.equipmentRepositoryCystom = equipmentRepositoryCystom;
+        this.companyRepositoryCustom = companyRepositoryCustom;
+        this.equipmentRepositoryCustom = equipmentRepositoryCustom;
         this.equipmentRepository = equipmentRepository;
         this.keyGenerateService = keyGenerateService;
     }
@@ -67,7 +67,7 @@ public class EquipmentService {
 
     public Page<EquipmentListDto> findByEquipmentSearch
             (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable) {
-        return equipmentRepositoryCystom.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,pageable);
+        return equipmentRepositoryCustom.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,pageable);
     }
 
 
@@ -85,7 +85,7 @@ public class EquipmentService {
     }
 
     public Page<CompanyListDto> findByAgencySearch(String csNumber, String csOperator, Pageable pageable) {
-        return companyRepositoryCystom.findByAgencySearch(csNumber,csOperator,pageable);
+        return companyRepositoryCustom.findByAgencySearch(csNumber,csOperator,pageable);
     }
 
 

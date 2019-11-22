@@ -18,7 +18,7 @@ import java.util.List;
  * Remark :
  */
 @Repository
-public class CompanyRepositoryCustomImpl extends QuerydslRepositorySupport implements CompanyRepositoryCystom{
+public class CompanyRepositoryCustomImpl extends QuerydslRepositorySupport implements CompanyRepositoryCustom{
 
     public CompanyRepositoryCustomImpl() {
         super(Company.class);

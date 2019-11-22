@@ -5,14 +5,11 @@ import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author InSeok
@@ -30,13 +27,16 @@ public class DashboardService {
 
     private final ObjectMapper objectMapper;
     private final ACIAWSLambdaService aciawsLambdaService;
-
+    private final DashboardRepositoryCustom dashboardRepositoryCustom;
 
 
 
     @Autowired
-    public DashboardService(ObjectMapper objectMapper, ACIAWSLambdaService aciawsLambdaService) {
+    public DashboardService(ObjectMapper objectMapper,
+                            DashboardRepositoryCustom dashboardRepositoryCustom,
+                            ACIAWSLambdaService aciawsLambdaService) {
         this.objectMapper = objectMapper;
+        this.dashboardRepositoryCustom = dashboardRepositoryCustom;
         this.aciawsLambdaService = aciawsLambdaService;
     }
 
@@ -60,6 +60,10 @@ public class DashboardService {
 
         return aciawsLambdaService.getDeviceHistory(deviceid,intervaltime);
 
+    }
+
+    public Page<DashboardDeviceListViewDto> findByDashboardListView(Pageable pageable) {
+        return dashboardRepositoryCustom.findByDashboardListView(pageable);
     }
 
 }

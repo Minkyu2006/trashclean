@@ -30,15 +30,15 @@ public class CompanyService {
     private final ModelMapper modelMapper;
     private final CompanyRepository companyRepository;
     private final KeyGenerateService keyGenerateService;
-    private final CompanyRepositoryCystom companyRepositoryCystom;
+    private final CompanyRepositoryCustom companyRepositoryCustom;
 
     @Autowired
     public CompanyService(CompanyRepository companyRepository,
                           KeyGenerateService keyGenerateService,
-                          CompanyRepositoryCystom companyRepositoryCystom,
+                          CompanyRepositoryCustom companyRepositoryCustom,
                          ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
-        this.companyRepositoryCystom = companyRepositoryCystom;
+        this.companyRepositoryCustom = companyRepositoryCustom;
         this.companyRepository = companyRepository;
         this.keyGenerateService = keyGenerateService;
     }
@@ -61,7 +61,7 @@ public class CompanyService {
 
 
     public Page<CompanyListDto> findByCompanySearch(String csNumber, String csOperator,  Long csDivisionType, Long csRegionalType, Pageable pageable) {
-        return companyRepositoryCystom.findByCompanySearch(csNumber,csOperator,csDivisionType,csRegionalType,pageable);
+        return companyRepositoryCustom.findByCompanySearch(csNumber,csOperator,csDivisionType,csRegionalType,pageable);
     }
 
     public CompanyDto findById(Long id) {

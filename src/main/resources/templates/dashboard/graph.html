@@ -60,32 +60,61 @@
 		<script type="text/javascript">
 			$(function() {
 				//자동실행
-				deviceListView();
+				deviceListView(1);
 			});
 
-			function deviceListView() {
+			function deviceListView(page) {
+
+				page = page - 1;
+				if (page < 0) page = 0
+
+				var perPage = 10;
+				var perArea = 5;
+				var totCnt = 0;
+
+				var $deviceList = $('#deviceList');
+				var $totalCnt = $('#totalCnt');
+
+				$deviceList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
+				$totalCnt.text('0');
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
 				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
 
 				$.ajax({
-					url: '/api/dashboard/infoList',
-					type: 'post',
-					data: params,
-					cache: false,
-					error: function (request, status, error) {
-						alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+					url:'/api/dashboard/deviceInfoList?size='+ perPage + '&page=' + page,
+					type : 'post',
+					cache:false,
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 					},
-					success: function (res) {
-
-
-						// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
-						var install = res.data.equipment.emInstallDate
-						var install2 = [install[0],install[1],install[2],install[3],"-",install[4],install[5],"-",install[6],install[7]];
-						var installArray = install2.join('');
-						$("#emInstallDate").val(installArray);
-						
+					success: function(res){
+						//화면 출력
+						totCnt = res.data.total_rows;
+						$("#paging1").jqueryPager({pageSize: perPage,
+							pageBlock: perArea,
+							currentPage: page + 1,
+							pageTotal: totCnt,
+							clickEvent: 'callList'});
+						if (totCnt == 0) {
+							$deviceList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
+							return;
+						}
+						$totalCnt.text(totCnt);
+						var html = '';
+						$.each(res.data.datalist, function(key, value){
+							html += '<tr >';
+							html += '<td >'+ echoNull2Blank(value.emNumber) +'</td>';
+							html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
+							html += '<td >'+ echoNull2Blank(value.emMaximumPayload) +'</td>';
+							html += '<td >'+ echoNull2Blank(value.company) +'</td>';
+							html += '<td >'+ echoNull2Blank(value.emLocation) +'</td>';
+							html += '<td >'+ echoNull2Blank(value.emCountry) +'</td>';
+							html += '<td >'+ echoNull2Blank(value.emInstallDate) +'</td>';
+							html += '</tr>';
+						});
+						$deviceList.html(html);
 					}
 				});
 			}
@@ -97,65 +126,23 @@
 
 		<div class="map" id="map"></div>
 
-		<table class="c-table">
-			<tbody>
-			<tr>
-				<th>장비 ID : </th>
-				<td>
-					<div class="c-text">
-						<input type="text" id="emNumber" class="c-text__input" readonly="readonly" />
+		<article class="article">
+			<table class="c-table">
+				<tbody id="deviceList">
+
+				</tbody>
+			</table>
+
+			<div class="c-pager">
+				<div class="c-paging" id="paging1">
+				</div>
+				<div class="c-paging__total">
+					<div class="c-paging__total-group">
+						Total
 					</div>
-				</td>
-			</tr>
-			<tr>
-				<th>장비타입 : </th>
-				<td>
-					<div class="c-text">
-						<input type="text" id="emType" class="c-text__input" readonly="readonly" />
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<th>최대적재량 : </th>
-				<td>
-					<div class="c-text">
-						<input type="text" id="emMaximumPayload" class="c-text__input" readonly="readonly" />
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<th>운영사</th>
-				<td>
-					<div class="c-text">
-						<input type="text" id="company" class="c-text__input" readonly="readonly" />
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<th>지역</th>
-				<td>
-					<div class="c-text">
-						<input type="text" id="emLocation" class="c-text__input" readonly="readonly" />
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<th>국가</th>
-				<td>
-					<div class="c-text">
-						<input type="text" id="emCountry" class="c-text__input" readonly="readonly" />
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<th>설치일자</th>
-				<td>
-					<div class="c-text">
-						<input type="text" id="emEmbeddedNumber" class="c-text__input" readonly="readonly" />
-					</div>
-				</td>
-			</tr>
-			</tbody>
-		</table>
+					<div class="c-paging__total-group" id="totalCnt">0</div>
+				</div>
+			</div>
+		</article>
 	</div>
 </html>

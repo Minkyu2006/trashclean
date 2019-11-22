@@ -1,10 +1,7 @@
 package kr.co.broadwave.aci.equipment;
 
-import kr.co.broadwave.aci.mastercode.MasterCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
-import java.util.Optional;
 
 /**
  * @author Minkyu
@@ -12,7 +9,7 @@ import java.util.Optional;
  * Time : 09:17
  * Remark : EquipmentRepositoryCystom
  */
-public interface EquipmentRepositoryCystom {
+public interface EquipmentRepositoryCustom {
     Page<EquipmentListDto> findByEquipmentSearch
-            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable);
+            (String emNumber, String emDesignation, Long emTypeId, Long emCountryId, Pageable pageable);
 }

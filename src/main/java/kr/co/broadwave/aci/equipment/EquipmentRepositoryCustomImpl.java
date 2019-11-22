@@ -3,8 +3,6 @@ package kr.co.broadwave.aci.equipment;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.mastercode.QMasterCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +18,7 @@ import java.util.Optional;
  * Remark :
  */
 @Repository
-public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport implements EquipmentRepositoryCystom{
+public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport implements EquipmentRepositoryCustom{
 
     public EquipmentRepositoryCustomImpl() {
         super(Company.class);
@@ -31,7 +29,6 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
             (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
-        QMasterCode masterCode = QMasterCode.masterCode;
 
         JPQLQuery<EquipmentListDto> query = from(equipment)
                 .select(Projections.constructor(EquipmentListDto.class,
