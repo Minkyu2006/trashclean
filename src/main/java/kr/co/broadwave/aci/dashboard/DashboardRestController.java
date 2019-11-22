@@ -1,10 +1,15 @@
 package kr.co.broadwave.aci.dashboard;
 
 import kr.co.broadwave.aci.common.AjaxResponse;
+import kr.co.broadwave.aci.common.CommonUtils;
+import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.equipment.EquipmentDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -93,17 +98,11 @@ public class DashboardRestController {
     }
 
 
-    // 업체 정보 보기
-    @PostMapping ("infoList")
-    public ResponseEntity dashboardDeviceInfo(){
-
-        AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
-        data.clear();
-//        data.put("dashboardDevice",dashboardDevice);
-        res.addResponse("data",data);
-
-        return ResponseEntity.ok(res.success());
+    //장비 리스트 뿌리기
+    @PostMapping ("deviceInfoList")
+    public ResponseEntity deviceInfoList(@PageableDefault Pageable pageable){
+        Page<DashboardDeviceListViewDto> deviceInfoListDtos = dashboardService.findByDashboardListView(pageable);
+        return CommonUtils.ResponseEntityPage(deviceInfoListDtos);
     }
 
 }
