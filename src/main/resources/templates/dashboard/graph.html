@@ -10,7 +10,7 @@
 				width: 400px;
 			}
 		</style>
-		
+
 		<script  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback=initMap" async defer></script>
 		<script>
 			var locations = [
@@ -56,17 +56,48 @@
 				      })(marker, i));
 				}
 			}
-			
-			
+
+		</script>
+
+		<script type="text/javascript">
+
 			$(function() {
+
+				//상태값 차트 , 쓰레기양 차트
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url: '/api/dashboard/dataGraph',
+					type: 'post',
+					cache: false,
+					error: function (request) {
+						ajaxErrorMsg(request);
+					},
+					success: function (res) {
+						if (!Ajax.checkResult(res)) {
+							return;
+						}
+						//상태값 차트
+						circleChart(res.data.circle_data_columns);
+						//쓰레기양 차트
+						barChart(res.data.bar_data_columns,res.data.device_list_columns);
+					}
+				})
+
+				$("#btnSearch").on('click',function(){
+					deviceListView(1);
+				});
+
+			});
+
+			//상태값 차트
+			function circleChart(circle_data_columns){
 				var piechart = c3.generate({
 					bindto: "#pie_chart",
 					data: {
-						columns: [
-							['정상', 6],
-							['관심', 3],
-							['심각', 1]
-						],
+						columns: circle_data_columns,
 						type: 'pie'
 					},
 					tooltip: {
@@ -80,14 +111,14 @@
 						pattern: ['#007e37', '#ffc600', '#e35f5f']
 					}
 				});
-				
-				
+			}
+
+			//쓰레기양 차트
+			function barChart(barData,deviceList) {
 				var barchart = c3.generate({
 					bindto: "#bar_chart",
 					data: {
-						columns: [
-							['쓰레기양', 80, 70, 20, 50, 60, 10, 90, 30, 40, 80]
-						],
+						columns: [barData],
 						type: "bar"
 					},
 					tooltip: {
@@ -104,7 +135,7 @@
 								position: 'outer-center'
 							},
 							type: 'category',
-							categories: ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10'],
+							categories: deviceList,
 							tick: {
 								centered: true
 							}
@@ -123,17 +154,14 @@
 					},
 					color: {
 						pattern: ['#007e37']
+					},
+					grid:{
+						y:{
+							show: true
+						}
 					}
-				})
-			})
-		</script>
-
-		<script type="text/javascript">
-			$(function() {
-				$("#btnSearch").on('click',function(){
-					deviceListView(1);
 				});
-			});
+			}
 
 			function deviceListView(page) {
 
@@ -198,7 +226,12 @@
 		<section class="section">
 
 			<!--구글지도-->
-			<div class="map" id="map"></div>
+
+			<div class="stat">
+				<div class="map" id="map"></div>
+				<div class="stat__circle" id="pie_chart"></div>
+				<div class="stat__bar" id="bar_chart"></div>
+			</div>
 
 			<br/>
 			<article class="article">
@@ -239,13 +272,6 @@
 				</div>
 			</article>
 		</section>
-		
-		
-		<div class="stat">
-			<div class="stat__circle" id="pie_chart"></div>
-			
-			<div class="stat__bar" id="bar_chart"></div>
-		</div>
 
 	</div>
 </html>
