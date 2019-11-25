@@ -125,7 +125,7 @@ public class EquipmentRestController {
         return ResponseEntity.ok(res.success());
     }
 
-    // 업체 리스트
+    // 장비 리스트
     @PostMapping("list")
     public ResponseEntity equipmentList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
                                                         @RequestParam (value="emDesignation", defaultValue="") String  emDesignation,
@@ -189,7 +189,7 @@ public class EquipmentRestController {
         return ResponseEntity.ok(res.success());
     }
 
-    // 업체 삭제
+    // 장비 삭제
     @PostMapping("del")
     public ResponseEntity equipmentDel(@RequestParam(value="emNumber", defaultValue="") String emNumber){
 
@@ -211,6 +211,17 @@ public class EquipmentRestController {
 
         data.clear();
         data.put("dataselect",ref);
+
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
+
+    //aws deivce Shadow 상태
+    @PostMapping("awsdevicestatus")
+    public ResponseEntity awsDeviceStatus(@RequestParam(value="deviceid", defaultValue="") String deviceid){
+
+        data.clear();
+        //data.put("dataselect",ref);
 
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());

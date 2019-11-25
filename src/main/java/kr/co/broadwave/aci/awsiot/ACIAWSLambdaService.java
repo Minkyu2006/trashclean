@@ -32,6 +32,7 @@ public class ACIAWSLambdaService {
     public ACIAWSLambdaService(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
+
     //장비목록 가져오기(Dynamodb)
     public HashMap getDeviceList(String deviceType){
 

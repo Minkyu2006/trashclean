@@ -22,8 +22,13 @@ public class ACIIoTServiceTest {
     @Test
     @Ignore
     public void shadowNonblockingSend(){
-        aciIoTService.shadowNonblockingSend("ISOL-KR-SEL-0004","doresol","open");
+        aciIoTService.shadowNonblockingSend("ISOL-KR-SEL-0004","doorsol","open");
 
+    }
+    @Test
+    @Ignore
+    public void shadowDeviceGet(){
+        aciIoTService.shadowDeviceGet("ISOL-KR-SEL-0004");
     }
 
 }
