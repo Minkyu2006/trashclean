@@ -26,6 +26,7 @@ public class ACIIoTService {
     private String clientId = "iEcoProc-WEB"; // 웹어플리케이션 이름
 
 
+    //shadow 메세지 보내기
     public void shadowNonblockingSend(String thingName,String keyString, String valueString) {
 
         try {
@@ -44,7 +45,6 @@ public class ACIIoTService {
             device.setReportInterval(reportInterval);
             client.connect();
 
-
             //System.out.println("Shadow Nonblocking connect");
 
             // Update shadow document
@@ -57,6 +57,36 @@ public class ACIIoTService {
 
         }catch (Exception e){
             e.printStackTrace();
+        }
+
+    }
+    //shadow 정보 가져오기
+    public String shadowDeviceGet(String thingName) {
+
+        try {
+
+
+            AWSIotMqttClient client = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
+
+
+            ACIIoTDevice device = new ACIIoTDevice(thingName);;
+
+            //shadow
+            client.attach(device);
+            long reportInterval = 0;            // milliseconds. Default interval is 3000.
+            device.setReportInterval(reportInterval);
+            client.connect();
+
+
+            // Get shadow document.
+            String resultStr = device.get(3000);
+
+            client.disconnect();
+            return resultStr;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
 
     }
