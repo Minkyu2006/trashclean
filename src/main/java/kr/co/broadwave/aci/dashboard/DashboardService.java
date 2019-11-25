@@ -52,7 +52,6 @@ public class DashboardService {
     //요청한장비의 마지막 상태 가져오기(Dynamodb)
     public HashMap getDeviceLastestState(String jsonDeviceList){
         return aciawsLambdaService.getDeviceLastestState(jsonDeviceList);
-
     }
 
     //특정장비의 history 가져오기(Dynamodb)
