@@ -26,8 +26,8 @@ public class ACIAWSIoTRestAPIServiceTest {
 
     @Test
     public void getDeviceList() throws Exception{
-        HashMap deviceList = aciawsIoTDeviceService.getDeviceList("ISOL-KR-SEL-0004");
-        //System.out.println(deviceList);
+        HashMap deviceList = aciawsIoTDeviceService.getDeviceStatus("ISOL-KR-SEL-0004");
+        //System.out.println(deviceList.get("state"));
         assertThat(deviceList.containsKey("timestamp")).as("DevicShadow Get Test [expect true] :").isEqualTo(true);
     }
 

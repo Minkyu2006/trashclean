@@ -2,14 +2,13 @@ package kr.co.broadwave.aci.equipment;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
 import kr.co.broadwave.aci.bscodes.CodeType;
-import kr.co.broadwave.aci.bscodes.CommonCode;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.company.*;
 import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -44,18 +42,20 @@ public class EquipmentRestController {
     private final AccountService accountService;
     private final CompanyService companyService;
     private final MasterCodeService masterCodeService;
+    private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
 
     @Autowired
     public EquipmentRestController(ModelMapper modelMapper,
                                    AccountService accountService,
                                    CompanyService companyService,
                                    MasterCodeService masterCodeService,
-                                   EquipmentService equipmentService) {
+                                   EquipmentService equipmentService, ACIAWSIoTDeviceService aciawsIoTDeviceService) {
         this.accountService = accountService;
         this.companyService = companyService;
         this.masterCodeService = masterCodeService;
         this.equipmentService = equipmentService;
         this.modelMapper = modelMapper;
+        this.aciawsIoTDeviceService = aciawsIoTDeviceService;
     }
 
     // 업체 저장
@@ -218,13 +218,58 @@ public class EquipmentRestController {
 
     //aws deivce Shadow 상태
     @PostMapping("awsdevicestatus")
-    public ResponseEntity awsDeviceStatus(@RequestParam(value="deviceid", defaultValue="") String deviceid){
+    public ResponseEntity awsDeviceStatus(@RequestParam(value="deviceid", defaultValue="") String deviceid) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
 
-        data.clear();
-        //data.put("dataselect",ref);
+        try{
+            HashMap deviceList = aciawsIoTDeviceService.getDeviceStatus(deviceid);
+            dataLocal.clear();
+            dataLocal.put("datastate",deviceList.get("state"));
 
-        res.addResponse("data",data);
-        return ResponseEntity.ok(res.success());
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+
     }
+
+    //Shadow 문열기 단기 요청
+    @PostMapping("shdoor")
+    public ResponseEntity awsSetDoorOpen(@RequestParam(value="deviceid", defaultValue="") String deviceid
+                                        ,@RequestParam(value="door", defaultValue="") String door) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setDeviceDoor(deviceid,door);
+            dataLocal.clear();
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+
+    }
+
+    //Shadow 데이터 요청
+    @PostMapping("shdatareq")
+    public ResponseEntity awsSetDataReq(@RequestParam(value="deviceid", defaultValue="") String deviceid
+            ,@RequestParam(value="ts", defaultValue="") String ts) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setDataRequest(deviceid,ts);
+            dataLocal.clear();
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+
+    }
+
 
 }

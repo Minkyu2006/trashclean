@@ -7,8 +7,169 @@
     <script>
 
         $(function(){
+            $("#btnSearch").on('click',function(){
+                calldeviceState();
+            });
+
+            $("#btnOpen").on('click',function(){
+                callDoorControl("open");
+            });
+            $("#btnClose").on('click',function(){
+                callDoorControl("close");
+            });
+
+            $("#btnData").on('click',function(){
+                callDataRequest();
+            });
+
+
+
+
 
         });
+
+        function callDataRequest() {
+            var timestamp = + new Date();
+
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+            var params = {
+                deviceid : $("#deviceid").val(),
+                ts: timestamp
+            };
+
+            $.ajax({
+                url:'/api/equipment/shdatareq',
+                type : 'post',
+                //dataType: json,
+                data : params,
+                cache:false,
+                error:function(request,status,error){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    //화면 출력
+                    statuscode= res.status;
+                    if (statuscode ===200) {
+                        alert('요청처리되었습니다.')
+
+                    }else{
+                        alert("처리오류")
+                    }
+
+                }
+            });
+
+
+        }
+        function callDoorControl(doormsg) {
+
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+            var params = {
+                deviceid : $("#deviceid").val(),
+                door: doormsg
+            };
+
+            $.ajax({
+                url:'/api/equipment/shdoor',
+                type : 'post',
+                //dataType: json,
+                data : params,
+                cache:false,
+                error:function(request,status,error){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    //화면 출력
+                    statuscode= res.status;
+                    if (statuscode ===200) {
+                       alert('요청처리되었습니다.')
+
+                    }else{
+                        alert("처리오류")
+                    }
+
+                }
+            });
+
+
+        }
+
+
+        function calldeviceState() {
+
+            $("#reqmsg").html("상태조회중..");
+            $("#resmsg").html("상태조회중..");
+            $("#reqdata").html("상태조회중..");
+            $("#resdata").html("상태조회중..");
+
+
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+            var params = {
+                deviceid : $("#deviceid").val()
+            };
+
+            $.ajax({
+                url:'/api/equipment/awsdevicestatus',
+                type : 'post',
+                //dataType: json,
+                data : params,
+                cache:false,
+                error:function(request,status,error){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    //화면 출력
+                    statuscode= res.status;
+                    if (statuscode ===200) {
+                        devicestate = res.data.datastate;
+                        //처리요청
+                        if (devicestate.desired) {
+                            reqdoor = nvl(devicestate.desired.doorsol, "확인불가");
+                            reqdatareq = nvl(devicestate.desired.datareq, "미요청");
+
+                        }else{
+                            reqdoor="확인불가";
+                            reqdatareq="미요청";
+                        }
+                        //처리결과
+                        if (devicestate.reported) {
+                            resdoor = nvl(devicestate.reported.doorsol, "확인불가");
+                            resdatareq = nvl(devicestate.reported.datareq, "미처리");
+                        }else {
+                            resdoor = "확인불가";
+                            resdatareq = "미처리";
+
+                        }
+
+                        $("#reqmsg").html(reqdoor.toUpperCase());
+                        $("#resmsg").html(resdoor.toUpperCase());
+                        $("#reqdata").html(reqdatareq);
+                        $("#resdata").html(resdatareq);
+
+
+
+                    }else{
+                        $("#reqmsg").html("조회실패");
+                        $("#resmsg").html("조회실패");
+                        $("#reqdata").html("조회실패");
+                        $("#reqdata").html("조회실패");
+                    }
+
+                }
+            });
+        }
 
     </script>
 
@@ -17,9 +178,35 @@
 <div layout:fragment="content" class="content">
 
     <section class="section">
-        <h2 class="section__heading">장비제어테스트 </h2>
+        <h2 class="section__heading">장비 명령 </h2>
         <article class="article">
+            <div>
+                <input type="text" id="deviceid" name ="deviceid"  value ='ISOL-KR-SEL-0004'/>
+                <button class="c-button c-button--point" id="btnSearch">장비상태조회</button>
+            </div>
+            <div class="member__form-item">
+                <span >도어-요청상태</span>
+                <span id ="reqmsg">...</span>
+            </div>
+            <div class="member__form-item">
+                <span >도어-처리상태</span>
+                <span id ="resmsg">...</span>
+            </div>
+            <div class="member__form-item">
+                <span >데이터요청-요청상태</span>
+                <span id ="reqdata">...</span>
+            </div>
+            <div class="member__form-item">
+                <span >데이터요청-처리상태</span>
+                <span id ="resdata">...</span>
+            </div>
 
+            <br/>
+            <div>
+                <button class="c-button c-button--point" id="btnOpen">문열기</button>
+                <button class="c-button c-button--point" id="btnClose">문닫기</button>
+                <button class="c-button c-button--point" id="btnData">데이터요청</button>
+            </div>
         </article>
     </section>
 

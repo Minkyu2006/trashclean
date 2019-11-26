@@ -34,6 +34,28 @@ function echoNull2Blank(str) {
     return str;
 }
 
+//20191126 최인석 장비상태조회시 값이없을경우 미확인 을 ㅗ처리
+function echoNull2Undefined(str) {
+    if (str == null) return '미확인';
+    return str;
+}
+
+/** 20191126 최인석 추가
+ * 문자열이 빈 문자열인지 체크하여 기본 문자열로 리턴한다.
+ * @param str           : 체크할 문자열
+ * @param defaultStr    : 문자열이 비어있을경우 리턴할 기본 문자열
+ */
+function nvl(str, defaultStr){
+
+    if(typeof str == "undefined" || str == null || str == "")
+        str = defaultStr ;
+
+    return str ;
+}
+
+
+출처: https://fruitdev.tistory.com/200 [과일가게 개발자]
+
 
 (function($) {
     $.fn.jqueryPager = function(options) {

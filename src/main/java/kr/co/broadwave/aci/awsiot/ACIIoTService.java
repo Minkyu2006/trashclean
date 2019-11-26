@@ -29,15 +29,11 @@ public class ACIIoTService {
     //shadow 메세지 보내기
     public void shadowNonblockingSend(String thingName,String keyString, String valueString) {
 
+        AWSIotMqttClient client = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
+        ACIIoTDevice device = new ACIIoTDevice(thingName);;
+
         try {
 
-
-            AWSIotMqttClient client = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
-
-            //String thingName = "ISOL-KR-SEOUL-0002";                    // replace with your AWS IoT Thing name
-
-
-            ACIIoTDevice device = new ACIIoTDevice(thingName);;
 
             //shadow
             client.attach(device);
@@ -48,7 +44,7 @@ public class ACIIoTService {
             //System.out.println("Shadow Nonblocking connect");
 
             // Update shadow document
-            String message = "{\"state\":{\"desired\":{\"" + keyString + "\":\"" + valueString + "\"}}}";
+            String message = "{\"state\":{\"desired\":{\"" + keyString.toLowerCase() + "\":\"" + valueString.toLowerCase() + "\"}}}";
             device.update(message,3000);
 
             //System.out.println("shadow nonBlocking update");
@@ -57,35 +53,44 @@ public class ACIIoTService {
 
         }catch (Exception e){
             e.printStackTrace();
+            try{
+                client.disconnect();
+            }catch (Exception e1){
+                e1.printStackTrace();
+
+            }
+
         }
 
     }
     //shadow 정보 가져오기
     public String shadowDeviceGet(String thingName) {
-
+        AWSIotMqttClient client = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
+        ACIIoTDevice device = new ACIIoTDevice(thingName);
         try {
-
-
-            AWSIotMqttClient client = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
-
-
-            ACIIoTDevice device = new ACIIoTDevice(thingName);;
 
             //shadow
             client.attach(device);
-            long reportInterval = 0;            // milliseconds. Default interval is 3000.
+            long reportInterval = 3000;            // milliseconds. Default interval is 3000.
             device.setReportInterval(reportInterval);
+            client.setMaxConnectionRetries(2);
             client.connect();
 
 
             // Get shadow document.
-            String resultStr = device.get(3000);
-
+            String resultStr = device.get();
             client.disconnect();
+
             return resultStr;
 
         }catch (Exception e){
             e.printStackTrace();
+            try{
+                client.disconnect();
+            }catch (Exception e1){
+                e1.printStackTrace();
+                return null;
+            }
             return null;
         }
 
