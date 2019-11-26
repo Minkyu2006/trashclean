@@ -2,9 +2,7 @@ package kr.co.broadwave.aci.dashboard;
 
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
-import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.equipment.Equipment;
-import kr.co.broadwave.aci.equipment.EquipmentDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author InSeok
@@ -55,6 +50,7 @@ public class DashboardRestController {
         //Sample of deviceids variable : {"deviceids":["ISOL-KR-SEOUL-0001","ISOL-KR-SEOUL-0002"]}
 
         HashMap<String, Object> resData = dashboardService.getDeviceLastestState(deviceids);
+        log.info("resData : "+resData);
         data.clear();
         data.put("statusCode",resData.get("statusCode"));
         data.put("datarow1",resData.get("data"));
@@ -103,60 +99,104 @@ public class DashboardRestController {
     }
 
     // 쓰레기통 상태값, 쓰레기양 차트
-    @Transactional
+//    @Transactional
     @PostMapping("dataGraph")
-    public ResponseEntity dataGraph() {
+    public ResponseEntity dataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         log.info("그래프 적용성공");
 
         List<List<String>> circleDataColumns = new ArrayList<>(); //상태값
-        List<String> barDataColumns = new ArrayList<>(); //쓰레기양
-        List<String> deviceListColumns = new ArrayList<>(); //장치리스트
-        barDataColumns.add("쓰레기양");
+        List<Object> barDataColumns = new ArrayList<>(); //쓰레기양
 
         List<String> exBarData = new ArrayList<>(); // 쓰레기양데이터 예시값
         exBarData.add("80");
         exBarData.add("50");
-        exBarData.add("60");
-        exBarData.add("90");
-        exBarData.add("30");
-        exBarData.add("50");
-        exBarData.add("40");
 
-        List<Equipment> equipments = equipmentService.findAll(); // 장치데이터 모두 불러오기
-        for(int i=0; i<equipments.size();i++){
-            deviceListColumns.add(equipments.get(i).getEmNumber());
-            barDataColumns.add(exBarData.get(i));
+        HashMap<String, Object> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
+
+        List<String> stateNames = new ArrayList<>(); // AWS 장비 status값 이름
+        List<Object> statusDatas = new ArrayList<>(); // AWS 장비 status값 리스트
+        List<Object> deviceidDatas = new ArrayList<>(); // AWS 장비 ID값 리스트
+
+        log.info("AWS 장치 list : "+resData);
+        log.info("AWS 장치 data : "+resData.get("data"));
+        log.info("AWS 장치 size : "+resData.get("datacounts"));
+
+        Object datacounts = resData.get("datacounts");
+        int number = Integer.parseInt(datacounts.toString());
+
+        for(int i = 0; i<number; i++){
+            Object a = ((ArrayList) resData.get("data")).get(i);
+            HashMap b = (HashMap) a;
+            statusDatas.add(b.get("status"));
+        }
+        log.info("AWS 장치 status : " +statusDatas);
+
+        List<String> statusSize = new ArrayList<>();
+        for(int i=0; i<number; i++){
+            if (!statusSize.contains(statusDatas.get(i))) {
+                statusSize.add((String)statusDatas.get(i));
+            }
+        }
+        log.info("AWS 장치 몇바퀴돌껀지 statusSize (최대3) : " +statusSize.size());
+
+        int count = 0;
+        for(int j=0; j<statusSize.size(); j++) {
+            String statuss = (String)statusDatas.get(j);
+            stateNames.clear();
+            for (int i = 0; i < number; i++) {
+                if (!stateNames.contains(statuss)) {
+                    stateNames.add(statuss);
+                }
+            }
+            for (int i = 0; i < number; i++) {
+                if (stateNames.contains((String)statusDatas.get(i))) {
+                    count++;
+                }
+            }
+            stateNames.add(Integer.toString(count));
+
+//            log.info("stateNames 데이터 : "+stateNames);
+//            log.info("건수 : "+count);
+
+            int cnt = 0;
+            int cnt2 = 1;
+            circleDataColumns.add(Arrays.asList(stateNames.get(cnt),stateNames.get(cnt2)));
+            count = 0;
+        }
+        //테스트용 주의,심각
+        List<String> testHardcording = new ArrayList<>();
+        testHardcording.add("caution");
+        testHardcording.add("severe");
+        circleDataColumns.add(Arrays.asList(testHardcording.get(0),"2"));
+        circleDataColumns.add(Arrays.asList(testHardcording.get(1),"1"));
+
+        log.info("원형차트 들어갈 리스트 값 : "+circleDataColumns);
+
+        barDataColumns.add("쓰레기양");
+        for(int i = 0; i<number; i++){
+            Object a = ((ArrayList) resData.get("data")).get(i);
+            HashMap b = (HashMap) a;
+            deviceidDatas.add(b.get("deviceid"));
+            barDataColumns.add(b.get("level"));
         }
 
-        List<String> stateNames = new ArrayList<>();
-        stateNames.add("정상");
-        stateNames.add("관심");
-        stateNames.add("심각");
-        stateNames.add("알수없음");
-        List<String> statedatas = new ArrayList<>();
-        statedatas.add(Integer.toString(6));
-        statedatas.add(Integer.toString(4));
-        statedatas.add(Integer.toString(2));
-        statedatas.add(Integer.toString(3));
+        //테스트용
+        deviceidDatas.add("ISOL-KR-INC-0001");
+        deviceidDatas.add("ITAI-US-TXS-0001");
+        deviceidDatas.add("INET-ES-MDR-0001");
+        barDataColumns.add("35");
+        barDataColumns.add("50");
+        barDataColumns.add("75");
 
-        log.info("상태값 리스트 : "+stateNames);
-        log.info("상태값 데이터 : "+statedatas);
-        log.info("장비데이터 모든값 : "+equipments);
-
-        for (int i = 0; i<statedatas.size(); i++){
-            int j=0;
-            circleDataColumns.add(Arrays.asList(stateNames.get(i),statedatas.get(i)));
-        }
-        log.info("상태값 차트데이터 : "+circleDataColumns);
-        log.info("장치리스트 : "+deviceListColumns);
-        log.info("장치 차트데이터 : "+barDataColumns);
+        log.info("AWS 장치 deviceid : " +deviceidDatas);
+        log.info("바차트 들어갈 리스트 값 : " +barDataColumns);
 
         data.put("circle_data_columns",circleDataColumns);
         data.put("bar_data_columns",barDataColumns);
-        data.put("device_list_columns",deviceListColumns);
+        data.put("device_list_columns",deviceidDatas);
 
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());
@@ -166,6 +206,9 @@ public class DashboardRestController {
     @PostMapping ("deviceInfoList")
     public ResponseEntity deviceInfoList(@PageableDefault Pageable pageable){
         Page<DashboardDeviceListViewDto> deviceInfoListDtos = dashboardService.findByDashboardListView(pageable);
+
+
+
         return CommonUtils.ResponseEntityPage(deviceInfoListDtos);
     }
 
