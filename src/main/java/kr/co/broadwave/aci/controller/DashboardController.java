@@ -1,7 +1,15 @@
 package kr.co.broadwave.aci.controller;
 
+import kr.co.broadwave.aci.bscodes.CodeType;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
+import kr.co.broadwave.aci.mastercode.MasterCodeService;
+import kr.co.broadwave.aci.teams.TeamService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 /**
  * @author InSeok
@@ -11,6 +19,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/dashboard")
 public class DashboardController {
+    private final MasterCodeService masterCodeService;
+
+    @Autowired
+    public DashboardController(MasterCodeService masterCodeService) {
+        this.masterCodeService = masterCodeService;
+    }
 
     @RequestMapping("monitering")
     public String monitering(){
@@ -18,7 +32,15 @@ public class DashboardController {
     }
 
     @RequestMapping("graph")
-    public String graph(){
+    public String graph(Model model){
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> agencys = masterCodeService.findCodeList(CodeType.C0006);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("agencys", agencys);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+
         return "dashboard/graph";
     }
 
@@ -30,6 +52,11 @@ public class DashboardController {
     @RequestMapping("dashboardTestPage")
     public String dashboardTestPage(){
         return "dashboard/dashboardTestPage";
+    }
+
+    @RequestMapping("dashboardTestPage1")
+    public String dashboardTestPage1(){
+        return "dashboard/dashboardTestPage1";
     }
 
     @RequestMapping("devicecontroltest")
