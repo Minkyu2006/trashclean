@@ -2,7 +2,7 @@
 <html lang="ko"
 	  xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate ="~{layout/default}">
+	  layout:decorate ="~{layout/loginlayout}">
 <head>
 	<script>
 
@@ -12,11 +12,30 @@
 
 <div layout:fragment="content" class="content">
 	
-	<div class="mainaci">
-
-			<p>iEcoPro-C 프로젝트 개발진행중(Sh) </p>
-
-
+	<div class="contents contents--main">
+		<div class="contents-header">
+			<h1 class="contents-header__logo">
+				<a href="/">자연상점</a>
+			</h1>
+			<ul class="contents-header__links">
+				<li>
+					<a href="/login" class="contents-header__login">Login</a>
+				</li>
+			</ul>
+			
+		</div>
+		
+		<div class="contents-body">
+			<div class="main">
+				<div class="main__section">
+					<div class="main__image"></div>
+				</div>
+			</div>
+		</div>
+		
+		<footer class="contents-footer">
+    			© 2019 Broadwave Corporation. All rights Reserved.
+    		</footer>
 	</div>
 </div>
 </html>

@@ -3,11 +3,11 @@
 .c-btn-group {
 	position: relative;
 }
-.c-btn-group:before {
+.c-btn-group__list:before {
 	content: " ";
 	display: table;
 }
-.c-btn-group:after {
+.c-btn-group__list:after {
 	content: " ";
 	display: table;
 	clear: both;
@@ -336,6 +336,304 @@ a.c-button {
 	margin-top: 0;
 }
 
+/* functions */
+.c-function {
+    margin-top: 10px;
+}
+.c-function:before {
+    content: " ";
+    display: table;
+}
+.c-function:after {
+    content: " ";
+    display: table;
+    clear: both;
+}
+.c-function__group {
+    float: left;
+}
+.c-function__group:before {
+    content: " ";
+    display: table;
+}
+.c-function__group:after {
+    content: " ";
+    display: table;
+    clear: both;
+}
+.c-function__group.c-function__group--right {
+    float: right;
+}
+.c-function__item {
+    float: left;
+    display: inline-block;
+}
+.c-function__item + .c-function__item {
+    margin-left: 10px;
+}
+
+
+/* table */
+.c-table {
+    table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: left;
+    color: #222;
+    font-size: 14px;
+    border-top: 2px solid #181a1f;
+    border-bottom: 2px solid #181a1f;
+}
+.c-table.align--center {
+    text-align: center;
+}
+.c-table th {
+    padding: 10px 5px;
+    border-bottom: 1px solid #efefef;
+    vertical-align: middle;
+    font-size: 14px;
+    /* font-weight: 700; */
+    word-break: break-all;
+    word-wrap: break-word;
+}
+.c-table td {
+    height: 35px;
+    padding: 5px;
+    border-bottom: 1px solid #efefef;
+    vertical-align: middle;
+    word-break: break-all;
+    word-wrap: break-word;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.c-table th.align--right,
+.c-table td.align--right {
+    text-align: right;
+}
+.c-table th.align--center,
+.c-table td.align--center {
+    text-align: center;
+}
+.c-table tr:last-child > th,
+.c-table tr:last-child > td {
+    border-bottom: none;
+}
+.c-table tr.align--center th,
+.c-table tr.align--center td {
+    text-align: center;
+}
+.c-table tr.align--right th,
+.c-table tr.align--right td {
+    text-align: right;
+}
+.c-table td a {
+	display: inline;
+	color: #222;
+	font-size: 14px;
+	line-height: 1.4;
+}
+.c-table td a:hover {
+	text-decoration: underline;
+}
+.c-table td a + img {
+	display: inline;
+	height: 14px;
+	margin: 0;
+	padding: 0;
+}
+
+.c-table.c-table--non-border th,
+.c-table.c-table--non-border td {
+    border: 0;
+    padding: 5px;
+}
+.c-table.c-table--non-border th {
+    font-size: 14px;
+}
+.c-table thead + tbody {
+    border-top: 1px solid #888;
+}
+.c-table__link {
+    color: #555;
+}
+.c-table__link:hover {
+    text-decoration: underline;
+}
+.c-table.c-table--hover tbody tr:hover,
+.c-table tbody tr.bg-color {
+    background-color: #efefef;
+}
+.c-table tr.border-top td{
+    border-top: 1px solid #efefef;
+}
+.c-table.c-table--font-small th {
+    font-size: 14px;
+}
+.c-table td.non-padding {
+    padding: 5px 0;
+}
+/* paging */
+.c-pager {
+    position: relative;
+    display: table;
+    width: 100%;
+    margin-top: 10px;
+}
+.c-paging {
+    position: relative;
+    display: table-cell;
+    width: calc(100% - 100px);
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.c-paging:before {
+    content: " ";
+    display: table;
+}
+.c-paging:after {
+    content: " ";
+    display: table;
+    clear: both;
+}
+.c-paging__wrapper {
+    /* display: table-cell; */
+    display: table;
+    margin: 0 auto;
+    vertical-align: middle;
+}
+.c-paging__item {
+    /* display: inline-block; */
+    display: table-cell;
+    min-width: 25px;
+    padding: 4px 8px;
+    height: 25px;
+    color: #888;
+    font-size: 14px;
+    /* line-height: 25px; */
+    text-decoration: none;
+    border-radius: 3px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: center;
+    vertical-align: middle;
+    /* line-height: 1; */
+}
+.c-paging__item + .c-paging__item {
+    margin-left: 4px;
+}
+.c-paging__item:hover {
+    background-color: #eee;
+    color: #555;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+}
+.c-paging__item.check {
+    background-color: #555;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+.c-paging__item.c-paging__control {
+	padding: 0;
+}
+.c-paging__total {
+    display: table-cell;
+    width: 100px;
+    /* float: left; */
+    /* margin-left: 19px; */
+}
+.c-paging__total:before {
+    content: " ";
+    display: table;
+}
+.c-paging__total:after {
+    content: " ";
+    display: table;
+    clear: both;
+}
+.c-paging__total-group {
+    float: left;
+    width: 50%;
+    height: 30px;
+    color: #555;
+    font-size: 14px;
+    text-align: right;
+    line-height: 30px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.c-paging__total-group:before {
+    content: " ";
+    display: table;
+}
+
+.c-paging__total-group:after {
+    content: " ";
+    display: table;
+    clear: both;
+}
+
+.c-paging__total-group:first-child {
+    font-weight: 700;
+}
+.c-paging__total-group .c-text {
+    float: left;
+    width: calc(100% - 35px);
+    border: 0;
+}
+.c-paging__total-group .c-text__input {
+    border: 0;
+}
+.c-paging__total-group .c-text__input:focus,
+.c-paging__total-group .c-text__input:active {
+    border: 0;
+}
+
+.c-paging__total-group .c-button {
+    min-width: 35px;
+    height: 30px;
+    padding: 9px 10px;
+    border: 0;
+    background: #eee;
+    border-radius: 0;
+}
+.c-paging__total-group .c-button:hover {
+    box-shadow: none;
+    background-color: #d6d6d6;
+}
+.c-paging__total-group + .c-paging__total-group {
+    position: relative;
+    padding-left: 20px;
+}
+
+/* .c-paging__total-group + .c-paging__total-group:before {
+    content:"/";
+    display: table;
+    position: absolute;
+    left: 10px;
+    top: 6px;
+} */
+.c-paging__total-alarm {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    font-size: 12px;
+    color: #888;
+}
+.c-paging__total-arrow,
+.c-paging__arrow {
+    float: left;
+}
+.c-paging__group {
+    float: left;
+    margin: 0 5px;
+}
+.c-table + .c-paging {
+    margin: 10px auto 0;
+}
 
 
 

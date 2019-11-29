@@ -16,6 +16,7 @@
 	<script src="/assets/js/d3/d3.js"></script>
 	<script src="/assets/js/c3/c3.js"></script>
 	<script src="/assets/js/charts/Chart.min.js"></script>
+	<script src="/assets/js/new/common.js"></script>
 	
 	<script>
 		// map
@@ -178,27 +179,22 @@
     		<div class="nav">
     			<ul>
     				<li>
-    					<a href="">Dashboard</a>
+    					<a href="#" class="nav__link nav__link--dash">Dashboard</a>
+    				</li>
+    				<li>
+    					<a href="#" class="nav__link nav__link--user toggle">사용자관리</a>
     					<ul class="nav-child">
-    						<li><a href=""></a></li>
-    						<li><a href=""></a></li>
-    						<li><a href=""></a></li>
+    						<li><a href="#">사용자승인</a></li>
+    						<li><a href="#">사용자관리</a></li>
     					</ul>
     				</li>
     				<li>
-    					<a href="" class="active">사용자관리</a>
-    					<ul class="nav-child active">
-    						<li><a href="">사용자승인</a></li>
-    						<li><a href="">사용자관리</a></li>
-    					</ul>
-    				</li>
-    				<li>
-    					<a href="">플랫폼관리</a>
+    					<a href="#" class="nav__link nav__link--platform toggle">플랫폼관리</a>
     					<ul class="nav-child">
-    						<li><a href="">마스터코드등록</a></li>
-    						<li><a href="">부서등록</a></li>
-    						<li><a href="">업체등록</a></li>
-    						<li><a href="">장비등록</a></li>
+    						<li><a href="#">마스터코드등록</a></li>
+    						<li><a href="#">부서등록</a></li>
+    						<li><a href="#">업체등록</a></li>
+    						<li><a href="#">장비등록</a></li>
     					</ul>
     				</li>
     			</ul>
@@ -221,12 +217,16 @@
     			</a>
     			
     			<div class="contents-profile">
-	    			<a href="">
+	    			<a href="#" class="contents-profile__btn">
 		    			<span class="contents-profile__pic">
 		    				<img src="/assets/images/dummy/picture.jpg" alt="" />
 		    			</span>
 		    			<span class="contents-profile__info">이지은</span>
 	    			</a>
+	    			<div class="profile-context">
+		    			<a href="#" class="profile-context--profile">Profile</a>
+		    			<a href="#" class="profile-context--logout">Logout</a>
+	    			</div>
     			</div>
     		</div>
     		
@@ -264,7 +264,7 @@
 	    								<h4 class="panel__title">Location</h4>
 	    								<div class="panel__console">
 		    								<button class="panel__button refresh">새로고침</button>
-		    								<button class="panel__button drop">접기</button>
+		    								<button class="panel__button fold">접기</button>
 	    								</div>
 	    							</div>
 	    							<div class="panel__body">
@@ -278,7 +278,7 @@
 	    								<h4 class="panel__title">Condition</h4>
 	    								<div class="panel__console">
 		    								<button class="panel__button refresh">새로고침</button>
-		    								<button class="panel__button drop">접기</button>
+		    								<button class="panel__button fold">접기</button>
 	    								</div>
 	    							</div>
 	    							<div class="panel__body">
@@ -292,7 +292,7 @@
 	    								<h4 class="panel__title">Level</h4>
 	    								<div class="panel__console">
 		    								<button class="panel__button refresh">새로고침</button>
-		    								<button class="panel__button drop">접기</button>
+		    								<button class="panel__button fold">접기</button>
 	    								</div>
 	    							</div>
 	    							<div class="panel__body">
@@ -311,11 +311,13 @@
 	    									<div class="panel__console panel__console--left">
 	    										<div class="c-btn-group">
 	    											<h5 class="c-btn-group__title">기간 선택</h5>
-		    										<button class="c-btn-group__button active">24Hours</button>
-		    										<button class="c-btn-group__button">7Days</button>
-		    										<button class="c-btn-group__button">1Month</button>
-		    										<button class="c-btn-group__button">1Year</button>
-		    										<button class="c-btn-group__button">FromTo</button>
+	    											<div class="c-btn-group__list">
+	    												<button class="c-btn-group__button active">24Hours</button>
+			    										<button class="c-btn-group__button">7Days</button>
+			    										<button class="c-btn-group__button">1Month</button>
+			    										<button class="c-btn-group__button">1Year</button>
+			    										<button class="c-btn-group__button">FromTo</button>
+	    											</div>
 		    									</div>
 	    									</div>
 	    									<div class="panel__console panel__console--right">
