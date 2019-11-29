@@ -50,12 +50,28 @@ public class DashboardController {
     }
 
     @RequestMapping("dashboardTestPage")
-    public String dashboardTestPage(){
+    public String dashboardTestPage(Model model){
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> agencys = masterCodeService.findCodeList(CodeType.C0006);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("agencys", agencys);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+
         return "dashboard/dashboardTestPage";
     }
 
     @RequestMapping("dashboardTestPage1")
-    public String dashboardTestPage1(){
+    public String dashboardTestPage1(Model model){
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> agencys = masterCodeService.findCodeList(CodeType.C0006);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("agencys", agencys);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+
         return "dashboard/dashboardTestPage1";
     }
 

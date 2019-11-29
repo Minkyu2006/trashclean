@@ -12,56 +12,222 @@
 		</style>
 
 		<script  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback=initMap" async defer></script>
-		<script>
-			var locations = [
-				['명동', 37.563576, 126.983431],
-				['가로수길', 37.520300, 127.023008],
-	            ['광화문', 37.575268, 126.976896],
-	            ['남산', 37.550925, 126.990945],
-	            ['이태원', 37.540223, 126.994005]
-			]
-		
-			var map;
-			
-			function initMap() {
+		<script type="text/javascript">
+
+			$(function() {
+				myChart();
+
+				$("#btnSearch").on('click',function(){
+					deviceListView(1);
+				});
+			});
+
+			function initMap(islLocation) {
+				// var locations = islLocation
+				var locations = [
+						['INET-ES-MDR-0001', 37.563576, 126.983431],
+								['ISOL-KR-INC-0001', 37.575268, 126.976896],
+								['ISOL-KR-SEL-0002', 37.550925, 126.990945],
+								['ISOL-KR-SEL-0003', 37.540223, 126.994005],
+								['ISOL-KR-SEL-0004', 37.520300, 127.023008]
+						]
+
+				var map;
+
 				map = new google.maps.Map(document.getElementById('map'), {
 					center: {lat: 37.14450, lng: 127.03312},
 					zoom: 8,
 					mapTypeControl: false,
 					streetViewControl: false
 				});
-				
+
 				var marker, i;
-				
+
 				var infowindow = new google.maps.InfoWindow();
-				
+
 				for (i = 0; i < locations.length; i++) {
 					marker = new google.maps.Marker({
 						position: new google.maps.LatLng(locations[i][1], locations[i][2]),
 						map: map
 					});
-					
+
 					google.maps.event.addListener(marker, 'click', (function(marker, i) {
 						var content = '<div class="iw-container" id="iw-container">' +
-							'<h2>' + (locations[i][0]) + '</h2>' +
-							'<dl>' +
+								'<h2>' + (locations[i][0]) + '</h2>' +
+								'<dl>' +
 								'<dt>위치정보</dt>' +
 								'<dd>00시00구00동</dd>' +
-							'</dl>' +
-						'</div>'
-				        return function() {
-				          infowindow.setContent(content);
-				          infowindow.open(map, marker);
-				        }
-				      })(marker, i));
+								'</dl>' +
+								'</div>'
+						return function() {
+							infowindow.setContent(content);
+							infowindow.open(map, marker);
+						}
+					})(marker, i));
 				}
 			}
 
-		</script>
+			// aws 데이터값 뿌리기 (차트,리스트 View)
+			function awsDataListView() {
 
-		<script type="text/javascript">
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
 
-			$(function() {
+				$.ajax({
+					url: '/api/dashboard/awsDataListView',
+					type: 'post',
+					cache: false,
+					error: function (request) {
+						ajaxErrorMsg(request);
+					},
+					success: function (res) {
+						if (!Ajax.checkResult(res)) {
+							return;
+						}
+
+						var pushValue = new Array();
+						$.each(res.data.equipment, function(key, value){
+							pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+						});
+						// pushDeviceId(pushValue);
+						// deviceListView(1)
+						// initMap()
+					}
+				});
+
+			}
+
+			// 장치리스트
+			function deviceListView(page) {
+				page = page - 1;
+				if (page < 0) page = 0
+
+				var perPage = 10;
+				var perArea = 5;
+				var totCnt = 0;
+
+				var $deviceList = $('#deviceList');
+				var $totalCnt = $('#totalCnt');
+
+				var params = {
+					emNumber:$('#s_emNumber').val(),
+					emAgency:$('#s_agnecy').val(),
+					emType:$('#s_emType').val(),
+					emCountry:$('#s_emCountry').val(),
+				};
+
+				$deviceList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
+				$totalCnt.text('0');
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url:'/api/dashboard/deviceInfoList?size='+ perPage + '&page=' + page,
+					type : 'post',
+					data : params,
+					cache:false,
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					},
+					success: function(res){
+						//화면 출력
+						totCnt = res.data.total_rows;
+						$("#paging1").jqueryPager({pageSize: perPage,
+							pageBlock: perArea,
+							currentPage: page + 1,
+							pageTotal: totCnt,
+							clickEvent: 'callList'});
+						if (totCnt == 0) {
+							$deviceList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
+							return;
+						}
+						$totalCnt.text(totCnt);
+						var html = '';
+						var pushValue = new Array();
+						var installDate = new Array();
+						$.each(res.data.datalist, function(key, value){
+							html += '<tr >';
+								html += '<td >'+ echoNull2Blank(value.emNumber) +'</td>';
+								html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
+								html += '<td >'+ echoNull2Blank(value.emMaximumPayload)+' '+echoNull2Blank(value.emUnit)+'</td>';
+								html += '<td >'+ echoNull2Blank(value.company) +'</td>';
+								html += '<td >'+ echoNull2Blank(value.emLocation) +'</td>';
+								html += '<td >'+ echoNull2Blank(value.emCountry) +'</td>';
+								html += '<td >'+ echoNull2Blank(value.emInstallDate) +'</td>';
+							html += '</tr>';
+							pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+							installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
+						});
+						console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
+						deviceAWSListView(pushValue,installDate);
+						pushDeviceId(pushValue);
+						$deviceList.html(html);
+					}
+				});
+			}
+
+			// ASW 장치 데이터리스트
+			function deviceAWSListView(pushValue,installDate) {
+				console.log("장비리스트 뿌리기 시작")
+				console.log("받은 장비번호 : "+pushValue);
+				console.log("받은 설치날짜 : "+installDate);
+
+				var $deviceAWSList = $('#deviceAWSList');
+
+				var deviceIds = new Array();
+				for(i=0; i<pushValue.length; i++){
+					deviceIds.push(pushValue[i]);
+					console.log("emNumber["+i+"]" +":"+pushValue[i]);
+				}
+				// deviceIds.push("ISOL-KR-SEL-0004");
+
+				var itemJson = new Object();
+				itemJson.deviceids = deviceIds;
+				var devicestr = JSON.stringify(itemJson);
+
+				var params = {
+					deviceids:devicestr,
+				};
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url:'/api/dashboard/deviceAWSListView',
+					type : 'post',
+					data : params,
+					cache:false,
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					},
+					success: function(res){
+						console.log("출력완료");
+						//화면 출력
+						var html = '';
+
+							$.each(res.data.aswListDatas, function (key, value) {
+								html += '<tr >';
+								html += '<td >' + '장치 : ' + echoNull2Blank(value.deviceid) + '</td>';
+								html += '<td >' + '온도 : ' + echoNull2Blank(value.temp_brd) + ' ℃' + '</td>';
+								html += '<td >' + '배출량 : ' + echoNull2Blank(value.level) + ' %' + '</td>';
+								html += '<td >' + '배터리잔량 : ' + echoNull2Blank(value.batt_level) + ' %' + '</td>';
+								html += '<td >' + '태양광판넬 : ' + echoNull2Blank(value.solar_current) + 'A' + ' / ' + echoNull2Blank(value.solar_voltage) + 'V' + '</td>';
+								html += '<td ></td>';
+								html += '<td ></td>';
+								html += '</tr>';
+							});
+						$deviceAWSList.html(html);
+					}
+				});
+			}
+
+			// aws deviceID값 push하는 함수 next -> 차트만들기
+			function pushDeviceId(pushValue) {
+				console.log("차트그래프 그리기 시작")
 
 				//상태값 차트 , 쓰레기양 차트
 				var token = $("meta[name='_csrf']").attr("content");
@@ -69,8 +235,10 @@
 				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
 
 				var deviceIds = new Array();
-				deviceIds.push("ISOL-KR-SEL-0002");
-				deviceIds.push("ISOL-KR-SEL-0004");
+				for (var i=0; i<pushValue.length; i++){
+					deviceIds.push(pushValue[i]);
+				}
+				// deviceIds.push("ISOL-KR-SEL-0004");
 
 				var itemJson = new Object();
 				itemJson.deviceids = deviceIds;
@@ -97,13 +265,13 @@
 						//쓰레기양 차트
 						barChart(res.data.bar_data_columns,res.data.device_list_columns);
 					}
-				})
-
-				$("#btnSearch").on('click',function(){
-					deviceListView(1);
 				});
+			}
 
-			});
+			//테스트차트
+			function myChart(){
+
+			}
 
 			//상태값 차트
 			function circleChart(circle_data_columns){
@@ -176,61 +344,6 @@
 				});
 			}
 
-			function deviceListView(page) {
-
-				page = page - 1;
-				if (page < 0) page = 0
-
-				var perPage = 10;
-				var perArea = 5;
-				var totCnt = 0;
-
-				var $deviceList = $('#deviceList');
-				var $totalCnt = $('#totalCnt');
-
-				$deviceList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
-				$totalCnt.text('0');
-
-				var token = $("meta[name='_csrf']").attr("content");
-				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-
-				$.ajax({
-					url:'/api/dashboard/deviceInfoList?size='+ perPage + '&page=' + page,
-					type : 'post',
-					cache:false,
-					error:function(request,status,error){
-						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-					},
-					success: function(res){
-						//화면 출력
-						totCnt = res.data.total_rows;
-						$("#paging1").jqueryPager({pageSize: perPage,
-							pageBlock: perArea,
-							currentPage: page + 1,
-							pageTotal: totCnt,
-							clickEvent: 'callList'});
-						if (totCnt == 0) {
-							$deviceList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
-							return;
-						}
-						$totalCnt.text(totCnt);
-						var html = '';
-						$.each(res.data.datalist, function(key, value){
-							html += '<tr >';
-							html += '<td >'+ echoNull2Blank(value.emNumber) +'</td>';
-							html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
-							html += '<td >'+ echoNull2Blank(value.emMaximumPayload)+' '+echoNull2Blank(value.emUnit)+'</td>';
-							html += '<td >'+ echoNull2Blank(value.company) +'</td>';
-							html += '<td >'+ echoNull2Blank(value.emLocation) +'</td>';
-							html += '<td >'+ echoNull2Blank(value.emCountry) +'</td>';
-							html += '<td >'+ echoNull2Blank(value.emInstallDate) +'</td>';
-							html += '</tr>';
-						});
-						$deviceList.html(html);
-					}
-				});
-			}
 		</script>
 
 	</head>
@@ -238,8 +351,10 @@
 	<div layout:fragment="content" class="content">
 		<section class="section">
 
-			<!--구글지도-->
+			<div id="myChart">
+			</div>
 
+			<!--구글지도-->
 			<div class="stat">
 				<div class="map" id="map"></div>
 				<div class="stat__circle" id="pie_chart"></div>
@@ -251,14 +366,42 @@
 				<h2 class="article__heading">장비 조회</h2>
 				<table class="c-table">
 					<tr>
-						<th></th>
-						<td></td>
-						<th></th>
-						<td></td>
-						<th></th>
-						<td></td>
-						<th></th>
-						<td></td>
+						<th>장비 번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" id="s_emNumber" class="c-text__input" />
+							</div>
+						</td>
+						<th>소속운영사</th>
+						<td>
+							<div class="c-select">
+								<input type="text" id="s_agnecy" class="c-text__input" />
+							</div>
+						</td>
+						<th>장비 타입</th>
+						<td>
+							<div class="c-select">
+								<select id="s_emType" class="c-select__input">
+									<option value="">전체</option>
+									<option th:each ="equipdType : ${equipdTypes}"
+											th:value="${equipdType.code}"
+											th:text="${equipdType.name}"
+									></option>
+								</select>
+							</div>
+						</td>
+						<th>국가</th>
+						<td>
+							<div class="c-select">
+								<select id="s_emCountry" class="c-select__input" >
+									<option value="">전체</option>
+									<option th:each ="equipdCountry : ${equipdCountrys}"
+											th:value="${equipdCountry.code}"
+											th:text="${equipdCountry.name}">
+									</option>
+								</select>
+							</div>
+						</td>
 						<td style="width: 60px;">
 							<button class="c-button c-button--point" id="btnSearch">조회</button>
 						</td>
@@ -269,6 +412,9 @@
 			<article class="article">
 				<table class="c-table">
 					<tbody id="deviceList">
+
+					</tbody>
+					<tbody id="deviceAWSList">
 
 					</tbody>
 				</table>
