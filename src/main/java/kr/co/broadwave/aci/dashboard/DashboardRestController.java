@@ -185,16 +185,16 @@ public class DashboardRestController {
 //        log.info("number : "+number);
 
         for(int i = 0; i<number; i++){
-            Object a = ((ArrayList) resData.get("data")).get(i);
-            HashMap b = (HashMap) a;
-            if(b.get("status").equals("caution")){
-                b.replace("status","주의");
-            }else if(b.get("status").equals("normal")){
-                b.replace("status","정상");
-            }else if(b.get("status").equals("severe")){
-                b.replace("status","심각");
+            Object dataObject = ((ArrayList) resData.get("data")).get(i);
+            HashMap map = (HashMap) dataObject;
+            if(map.get("status").equals("caution")){
+                map.replace("status","주의");
+            }else if(map.get("status").equals("normal")){
+                map.replace("status","정상");
+            }else if(map.get("status").equals("severe")){
+                map.replace("status","심각");
             }
-            statusDatas.add(b.get("status"));
+            statusDatas.add(map.get("status"));
         }
 //        log.info("statusDatas : " +statusDatas);
 
@@ -272,15 +272,15 @@ public class DashboardRestController {
         List<String> gps_laDatas = new ArrayList<>(); // AWS 장비 gps_la값 리스트
         List<String> gps_loDatas = new ArrayList<>(); // AWS 장비 gps_lo값 리스트
 
-        List<String> gps_laDatas2 = new ArrayList<>();
-        List<String> gps_loDatas2 = new ArrayList<>();
+        List<String> gps_laDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
+        List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
 
         for(int i = 0; i<number; i++){
-            Object a = ((ArrayList) resData.get("data")).get(i);
-            HashMap b = (HashMap) a;
-            deviceIdNames.add((String)b.get("deviceid"));
-            gps_laDatas.add((String)b.get("gps_la"));
-            gps_loDatas.add((String)b.get("gps_lo"));
+            Object dataObject = ((ArrayList) resData.get("data")).get(i);
+            HashMap map = (HashMap) dataObject;
+            deviceIdNames.add((String)map.get("deviceid"));
+            gps_laDatas.add((String)map.get("gps_la"));
+            gps_loDatas.add((String)map.get("gps_lo"));
         }
 
         for(int i =0; i<deviceIdNames.size(); i++){

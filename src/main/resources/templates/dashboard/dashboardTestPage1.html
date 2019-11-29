@@ -203,7 +203,6 @@
 				var dateString = installDatas[i];
 				var dateObj = new Date(dateString.substring(0,4),Number(dateString.substring(4,6))-1,dateString.substring(6,8));
 				//console.log("dateObj :"+dateObj);
-				// var betweenDay = today.getTime()-dateObj.getTime()/1000;
 				date1 = parseInt(today.getTime()/1000);
 				date2 = parseInt(dateObj.getTime()/1000);
 				var timeDifference = date1 - date2;
@@ -246,32 +245,32 @@
 
 						if(value.status=="normal"){
 							html2 += '<div class="equipment__section">';
-							html2 += '<span class="equipment__stat normal">'+'Normal'+'</span>'
-							html2 += '<span class="equipment__connect on">'+'Online'+'</span>';
+							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>'
+							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
 						}else if(value.status=="caution"){
 							html2 += '<div class="equipment__section">';
-							html2 += '<span class="equipment__stat caution">'+'Caution'+'</span>'
-							html2 += '<span class="equipment__connect off">'+'Offnline'+'</span>';
+							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>'
+							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
 						}else if(value.status=="severe"){
 							html2 += '<div class="equipment__section">';
-							html2 += '<span class="equipment__stat severe">'+'Severe'+'</span>'
-							html2 += '<span class="equipment__connect on">'+'Online'+'</span>';
+							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>'
+							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
 						}else{
 							html2 += '<div class="equipment__section">';
-							html2 += '<span class="equipment__stat severe">'+'None'+'</span>'
-							html2 += '<span class="equipment__connect off">'+'None'+'</span>';
+							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>'
+							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
