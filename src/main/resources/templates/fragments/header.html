@@ -4,7 +4,7 @@
 >
 
 <header th:fragment="headerFragment" class="header">
-	<div class="header__inner">
+	<!--<div class="header__inner">
 		<div class="nav-icon" sec:authorize="isAuthenticated()">
 			<span></span>
 			<span></span>
@@ -57,7 +57,6 @@
 		<div class="info" sec:authorize="isAuthenticated()">
 			<ul>
 				<li>
-<!--					<a href="/mypage" class="info__btn"><span th:text="${session.username}"></span></a>-->
 					<a href="/mypage" class="info__btn"><div sec:authentication="name"></div></a>
 
 				</li>
@@ -76,6 +75,61 @@
 
 			</ul>
 		</div>
+	</div>-->
+	
+	<!-- logo -->
+	<h1 class="logo">
+		<a href="/dashboard/dashboardTestPage">자연상점</a>
+	</h1>
+	<!-- profile -->
+	<div class="profile">
+		<div class="profile__picture"><img src="/assets/images/dummy/picture.jpg" alt="" /></div>
+		<div class="profile__info">
+			<span>Welcome,</span>
+			<h2>이지은</h2>
+		</div>
+	</div>
+	<!-- nav -->
+	<div class="nav">
+		<ul>
+			<li>
+				<a href="#" class="nav__link nav__link--dash toggle">Dashboard</a>
+				<ul class="nav-child">
+					<li><a href="/dashboard/graph">그래프</a></li>
+					<li><a href="/dashboard/layout">그래프dev</a></li>
+					<li><a href="/dashboard/dashboardTestPage">test</a></li>
+					<li><a href="/dashboard/dashboardTestPage1">test2</a></li>
+					<li><a href="/dashboard/monitering">Monitoring test</a></li>
+					<li><a href="/dashboard/devicecontroltest">장치제어테스트</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#" class="nav__link nav__link--user toggle">사용자관리</a>
+				<ul class="nav-child">
+					<li><a href="/admin/accountapproval">사용자승인</a></li>
+					<li><a href="/admin/accountreg">사용자관리</a></li>
+					<li><a href="/signup">사용자가입</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#" class="nav__link nav__link--platform toggle">플랫폼관리</a>
+				<ul class="nav-child">
+					<li><a href="/admin/mastercodereg">마스터코드등록</a></li>
+					<li><a href="/admin/teamreg">부서등록</a></li>
+					<li><a href="/admin/compreg">업체등록</a></li>
+					<li><a href="/admin/equipreg">장비등록</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	
+	<!-- setting -->
+	<div class="header-setting">
+		<!-- 설정: 사진등록 -->
+		<ul>
+			<li><a href="#" class="header-setting__btn-setting" title="설정">Setting</a></li>
+			<li><a href="#" class="header-setting__btn-logout" title="logout">Logout</a></li>
+		</ul>
 	</div>
 </header>
 

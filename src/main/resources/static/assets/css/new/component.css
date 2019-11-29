@@ -264,6 +264,19 @@ a.c-button {
 	color: #787a7d;
 	font-size: 12px;
 }
+.c-textarea {
+	width: 100%;
+	height: 60px;
+	padding: 5px 10px;
+	border: 1px solid #dfdfdf;
+	-webkit-border-radius: 5px;;
+	-moz-border-radius: 5px;;
+	border-radius: 5px;;
+	resize: none;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
 
 /* search */
 .c-search {

@@ -17,31 +17,60 @@
 
 		<!-- 공통으로 쓰이는 css파일을넣는다.-->
 		<link rel="stylesheet" href="/assets/css/main.css" />
-		<link rel="stylesheet" href="/assets/css/component.css" />
-		<link rel="stylesheet" href="/assets/css/common.css" />
-		<!-- <link rel="stylesheet" href="/assets/js/charts/Chart.min.css" /> -->
+		<link rel="stylesheet" href="/assets/css/new/component.css" />
+		<link rel="stylesheet" href="/assets/css/new/common.css" />
+		<link rel="stylesheet" href="/assets/js/charts/Chart.min.css" />
 		<link rel="stylesheet" href="/assets/js/c3/c3.css" />
 
 		<!-- 공통으로 쓰이는 js파일을넣는다.-->
 		<script src="/assets/js/jquery.min.js"></script>
 		<script src="/assets/js/jquery-ui.min.js"></script>
 		<script src="/assets/js/broadwave.common.js"></script>
-		<script src="/assets/js/common-pc.js"></script>
+		<!--<script src="/assets/js/common-pc.js"></script>-->
 		<script src="/assets/js/broadwave.ajax.js"></script>
-		<!-- <script src="/assets/js/charts/Chart.min.js"></script> -->
+		<script src="/assets/js/charts/Chart.min.js"></script>
 		<script src="/assets/js/d3/d3.js"></script>
 		<script src="/assets/js/c3/c3.js"></script>
 		<script src="/assets/js/sweetalert/sweetalert2.all.js"></script>
+		<script src="/assets/js/new/common.js"></script>
 	</head>
 
 	<div class="wrap">
-    	<div class="wrapper">
     		<header th:replace="fragments/header :: headerFragment"></header>
-
-		    <div layout:fragment="content"></div>
+			
+			<div class="contents">
+				<div class="contents-header">
+					<a href="#" class="nav-icon">
+						<span></span>
+						<span></span>
+						<span></span>
+						<span></span>
+					</a>
+					<div class="contents-profile">
+		    			<a href="#" class="contents-profile__btn">
+			    			<span class="contents-profile__pic">
+			    				<img src="/assets/images/dummy/picture.jpg" alt="">
+			    			</span>
+			    			<span class="contents-profile__info">이지은</span>
+		    			</a>
+		    			<div class="profile-context">
+			    			<a href="#" class="profile-context--profile">Profile</a>
+			    			<form th:action="@{/logout}" method="post">
+			    				<span class="profile-context--logout">
+			    					<input type="submit" value="Logout" title="Logout" />
+			    				</span>
+						    </form>
+		    			</div>
+	    			</div>
+				</div>
+				
+				<div layout:fragment="content"></div>
+				
+				<footer th:replace="fragments/footer:: footerFragment"></footer>
+			</div>
+		    
 		
-		    <footer th:replace="fragments/footer:: footerFragment"></footer>
-    	</div>    	
+		    
     </div>
 
     
