@@ -7,17 +7,26 @@ $(document).ready(function() {
 	
 	
 	// nav
+	$('.nav-child').hide();
 	$('.nav__link.toggle').on('click', function(e) {
-		var $this = $(this);
+		$(this).next().slideToggle(300);
+		$('.nav__link.toggle').not(this).next().slideUp(300);
 		
-		if ($this.next().hasClass('active')) {
-        	$this.removeClass('active');
+		return false
+		/*var $this = $(this);
+		
+		if ($this.hasClass('active')) {
+        	//$this.removeClass('active');
             $this.next().removeClass('active');
+            $this.next().slideUp(350);
         } else {
-            $this.parent().parent().find('li .nav__child').removeClass('active');
-            $this.toggleClass('active');
+        	//$this.parents('ul').find('li .nav__link.toggle').removeClass('active');
+            $this.parents('ul').find('li .nav__child').removeClass('active');
+            $this.parent().parent().find('li .nav__child').slideUp(350);
+            //$this.toggleClass('active');
             $this.next().toggleClass('active');
-        }
+            $this.next().slideToggle(350);
+        }*/
 		
 		e.preventDefault();
 	})
