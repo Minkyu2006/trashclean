@@ -164,6 +164,8 @@ var Ajax = {
 		//var status_msg = jqXHR.message.toString();
 		var msg = jqXHR.responseText;
         alert('Ajax Call error! code : ' + status_code )
+	}
+}
 		//alert('Ajax Call error! msg : ' + msg )
 
 		/*
@@ -216,5 +218,3 @@ var Ajax = {
 			}
 			alert(jqXHR.responseText);
 		*/
-	}
-}

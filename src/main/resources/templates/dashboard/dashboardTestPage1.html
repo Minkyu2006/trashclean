@@ -27,27 +27,8 @@
 	<script src="/assets/js/common-pc.js"></script>
 
 		<script type="text/javascript">
-		// chart
+
 		$(function() {
-			// timeseries combination
-			// var ctx = document.getElementById('chart').getContext('2d');
-			// var chart = new Chart(ctx, {
-			// 	type: 'line',
-			// 	data: {
-			// 		labels: ['월', '화', '수', '목', '금', '토', '일'],
-			// 		datasets: [{
-			// 			label: 'test',
-			// 			data: [10, 20, 30, 5, 60, 80, 20],
-			// 			pointRadius: 0,
-			// 			fill: false,
-			// 			lineTension: 0,
-			// 			borderWidth:2
-			// 		}]
-			// 	},
-			// 	option: {
-			// 		responsive: false
-			// 	}
-			// })
 
 			awsDataListView()
 			// deviceListView(1);
@@ -57,6 +38,30 @@
 			});
 
 		});
+
+		// 타임스탬프 그래프함수
+		function timeStamp(){
+			console.log("타임스탬프 그래프그리기 시작")
+			var ctx = document.getElementById('timeStampChart').getContext('2d');
+			var chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: ['월', '화', '수', '목', '금', '토', '일'],
+					datasets: [{
+						label: 'test',
+						data: [10, 20, 30, 5, 60, 80, 20],
+						pointRadius: 0,
+						fill: false,
+						lineTension: 0,
+						borderWidth:2
+					}]
+				},
+				option: {
+					responsive: false
+				}
+			})
+			console.log("타임스탬프 그래프그리기 완료")
+		}
 
 		// 대시보드 시작하면 AWS 데이터값 뿌리기 (차트,리스트 View)
 		function awsDataListView() {
@@ -155,12 +160,6 @@
 										html += '</li>'
 									html += '</ul>'
 								html += '</div>'
-
-							// html += '<div class="equipment__section">'
-							// 	html += '<div class="equipment__chart"></div>'
-							// 	html += '<canvas id="chart" style="width: 100%;height: 220px;"></canvas>'
-							// html += '</div>'
-
 							html += '</div>'
 						html += '</li>'
 
@@ -238,10 +237,12 @@
 					//화면 출력
 					var htmls = new Array();
 					var htmls2 = new Array();
+					var htmls3 = new Array();
 					var idx = 0;
 					$.each(res.data.aswListDatas, function (key, value) {
 						var html = '';
 						var html2 = '';
+						var html3 = '';
 
 						if(value.status=="normal"){
 							html2 += '<div class="equipment__section">';
@@ -286,15 +287,15 @@
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
 						html += '<span class="equipment__info-title">'+'온도 : '+'</span>'
-						html += '<span class="equipment__info-value">'+nvl(value.temp_brd,"확 인 불 가")+'</span>'
+						html += '<span class="equipment__info-value">'+nvl(value.temp_brd,"확 인 불 가")+'℃'+'</span>'
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
 						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>'
-						html += '<span class="equipment__info-value">'+nvl(value.level,"확 인 불 가")+'</span>'
+						html += '<span class="equipment__info-value">'+nvl(value.level,"확 인 불 가")+'%'+'</span>'
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
 						html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>'
-						html += '<span class="equipment__info-value">'+nvl(value.batt_level,"확 인 불 가")+'</span>'
+						html += '<span class="equipment__info-value">'+nvl(value.batt_level,"확 인 불 가")+'%'+'</span>'
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
 						html += '<span class="equipment__info-title">'+'태양광판넬출력량 : '+'</span>'
@@ -302,12 +303,23 @@
 						html += '</li>'
 						html += '</ul>'
 						html += '</div>'
+
+						html3 += '<div class="equipment__section">'
+						html3 += '<div class="equipment__chart"></div>'
+						html3 += '<canvas id="timeStampChart" style="width: 100%;height: 220px;"></canvas>'
+						html3 += '</div>'
+
 						htmls.push(html)
 						htmls2.push(html2)
-						$('#listTest'+idx).prepend(htmls2[idx]);
+						htmls3.push(html3)
+
 						$('#listTest'+idx).append(htmls[idx]);
+						$('#listTest'+idx).prepend(htmls2[idx]);
+						$('#listTest'+idx).append(htmls3[idx]);
+
 						idx++
 					});
+					timeStamp();
 					console.log("출력완료");
 				}
 			});

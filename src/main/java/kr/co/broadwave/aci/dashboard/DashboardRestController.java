@@ -84,12 +84,10 @@ public class DashboardRestController {
 
     @PostMapping("devicehitory")
     public ResponseEntity devicehistory(@RequestParam(value="deviceid", defaultValue="") String deviceid
-                                        ,@RequestParam(value="intervaltime", defaultValue="") String intervaltime
-    ){
+                                        ,@RequestParam(value="intervaltime", defaultValue="") String intervaltime){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
         log.info("Device History 가져오기 시작");
-
 
         HashMap<String, Object> resData = dashboardService.getDeviceHistory(deviceid,intervaltime);
         data.clear();

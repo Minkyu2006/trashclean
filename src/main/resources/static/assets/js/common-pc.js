@@ -53,10 +53,6 @@ function nvl(str, defaultStr){
     return str ;
 }
 
-
-출처: https://fruitdev.tistory.com/200 [과일가게 개발자]
-
-
 (function($) {
     $.fn.jqueryPager = function(options) {
         var defaults = {
