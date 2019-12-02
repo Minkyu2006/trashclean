@@ -10,21 +10,6 @@
 
 		$(function() {
 
-			$(".c-btn-group__button").on('click',function(){
-				if($(".c-btn-group__button.active").text()=="24Hours"){
-					$("#intervaltime").val("24");
-				}else if($(".c-btn-group__button.active").text()=="7Days"){
-					$("#intervaltime").val("168");
-				}else if($(".c-btn-group__button.active").text()=="1Month"){
-					$("#intervaltime").val("720");
-				}else if($(".c-btn-group__button.active").text()=="1Year"){
-					$("#intervaltime").val("8760");
-				}else if($(".c-btn-group__button.active").text()=="FromTo"){
-					$("#intervaltime").val("1000");
-				}
-				console.log("intervaltime.val() : "+$("#intervaltime").val());
-			});
-
 			awsDataListView()
 			// deviceListView(1);
 
@@ -510,6 +495,21 @@
 			});
 		}
 
+		// 기간선택에 따라 보내는시간 변경하는 함수
+		function intervaltimeChange(text) {
+			if(text=="24Hours"){
+				$("#intervaltime").val("24");
+			}else if(text=="7Days"){
+				$("#intervaltime").val("168");
+			}else if(text=="1Month"){
+				$("#intervaltime").val("720");
+			}else if(text=="1Year"){
+				$("#intervaltime").val("8760");
+			}else if(text=="FromTo"){
+				$("#intervaltime").val("1000");
+			}
+		}
+
 	</script>
 </head>
 <div layout:fragment="content" class="contents-body">
@@ -594,13 +594,13 @@
 									<div class="c-btn-group">
 										<h5 class="c-btn-group__title">기간 선택</h5>
 										<div class="c-btn-group__list">
-											<button class="c-btn-group__button active">24Hours</button>
-											<button class="c-btn-group__button">7Days</button>
-											<button class="c-btn-group__button">1Month</button>
-											<button class="c-btn-group__button">1Year</button>
-											<button class="c-btn-group__button">FromTo</button>
+											<button onclick="intervaltimeChange(this.value)" value="24Hours" class="c-btn-group__button active">24Hours</button>
+											<button onclick="intervaltimeChange(this.value)" value="7Days" class="c-btn-group__button">7Days</button>
+											<button onclick="intervaltimeChange(this.value)" value="1Month" class="c-btn-group__button">1Month</button>
+											<button onclick="intervaltimeChange(this.value)" value="1Year" class="c-btn-group__button">1Year</button>
+											<button onclick="intervaltimeChange(this.value)" value="FromTo" class="c-btn-group__button">FromTo</button>
 										</div>
-										<input type="text" id="intervaltime" value = "2000" />
+										<input type="hidden" id="intervaltime" value = "24" />
 									</div>
 								</div>
 								<div class="panel__console panel__console--right">
