@@ -87,7 +87,7 @@ public class DashboardRestController {
                                         ,@RequestParam(value="intervaltime", defaultValue="") String intervaltime){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
-        log.info("Device History 가져오기 시작");
+        //log.info("Device History 가져오기 시작");
 
         HashMap<String, Object> resData = dashboardService.getDeviceHistory(deviceid,intervaltime);
         data.clear();
@@ -95,13 +95,12 @@ public class DashboardRestController {
         data.put("datarow1",resData.get("data"));
         res.addResponse("data",data);
 
-        log.info("Device History 가져오기 성공 ");
+        //log.info("Device History 가져오기 성공 ");
         return ResponseEntity.ok(res.success());
 
     }
 
     // aws 데이터값 뿌리기 (차트,리스트 View) 안쓰는함수
-
     @PostMapping ("awsDataListView")
     public ResponseEntity awsDataListView(){
         AjaxResponse res = new AjaxResponse();

@@ -1,34 +1,29 @@
 <!DOCTYPE html>
-<html lang="ko"
-	  xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/default}">
+
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
-	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-
-	<link rel="stylesheet" href="/assets/css/new/component.css" />
-	<link rel="stylesheet" href="/assets/css/new/common.css" />
-	<link rel="stylesheet" href="/assets/js/c3/c3.css" />
-	<link rel="stylesheet" href="/assets/js/charts/Chart.min.css" />
-
-	<script src="/assets/js/jquery.min.js"></script>
-	<script src="/assets/js/jquery-ui.min.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
-	<script src="/assets/js/d3/d3.js"></script>
-	<script src="/assets/js/c3/c3.js"></script>
-	<script src="/assets/js/charts/Chart.min.js"></script>
 
-	<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
-	<!-- default header name is X-CSRF-TOKEN -->
-	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
-
-	<script src="/assets/js/broadwave.ajax.js"></script>
-	<script src="/assets/js/common-pc.js"></script>
-
-		<script type="text/javascript">
+	<script type="text/javascript">
 
 		$(function() {
+
+			$(".c-btn-group__button").on('click',function(){
+				if($(".c-btn-group__button.active").text()=="24Hours"){
+					$("#intervaltime").val("24");
+				}else if($(".c-btn-group__button.active").text()=="7Days"){
+					$("#intervaltime").val("168");
+				}else if($(".c-btn-group__button.active").text()=="1Month"){
+					$("#intervaltime").val("720");
+				}else if($(".c-btn-group__button.active").text()=="1Year"){
+					$("#intervaltime").val("8760");
+				}else if($(".c-btn-group__button.active").text()=="FromTo"){
+					$("#intervaltime").val("1000");
+				}
+				console.log("intervaltime.val() : "+$("#intervaltime").val());
+			});
 
 			awsDataListView()
 			// deviceListView(1);
@@ -38,30 +33,6 @@
 			});
 
 		});
-
-		// 타임스탬프 그래프함수
-		function timeStamp(){
-			console.log("타임스탬프 그래프그리기 시작")
-			var ctx = document.getElementById('timeStampChart').getContext('2d');
-			var chart = new Chart(ctx, {
-				type: 'line',
-				data: {
-					labels: ['월', '화', '수', '목', '금', '토', '일'],
-					datasets: [{
-						label: 'test',
-						data: [10, 20, 30, 5, 60, 80, 20],
-						pointRadius: 0,
-						fill: false,
-						lineTension: 0,
-						borderWidth:2
-					}]
-				},
-				option: {
-					responsive: false
-				}
-			})
-			console.log("타임스탬프 그래프그리기 완료")
-		}
 
 		// 대시보드 시작하면 AWS 데이터값 뿌리기 (차트,리스트 View)
 		function awsDataListView() {
@@ -164,14 +135,14 @@
 						html += '</li>'
 
 						idx++
-
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
-
+						timeStamp(value.emNumber);
 					});
 					//console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
 					$deviceList.html(html);
 					deviceAWSListView(pushValue,installDate);
+
 					pushDeviceId(pushValue);
 				}
 			});
@@ -319,8 +290,70 @@
 
 						idx++
 					});
-					timeStamp();
 					console.log("출력완료");
+				}
+			});
+		}
+
+		// 타임스탬프 그래프함수
+		function timeStamp(pushValue){
+			console.log("받아온 아이디 : "+pushValue);
+			console.log("받아온 시간 : "+$('#intervaltime').val());
+
+			var params = {
+				deviceid:pushValue,
+				intervaltime:$('#intervaltime').val()
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/dashboard/devicehitory',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res) {
+					statuscode= res.data.statusCode;
+					console.log("statuscode : "+statuscode)
+
+					if (statuscode ===200) {
+						console.log("타임스탬프 그래프그리기 시작")
+						var html = '';
+
+						$.each(res.data.datarow1, function (key, value) {
+							console.log("해당아이디 : "+value.deviceid);
+							console.log("타임스탬프 : "+value.timestamp);
+							console.log("온도 : "+value.temp_brd);
+							console.log("배출량 : "+value.level);
+							console.log("배터리잔량 : "+value.batt_level);
+							// var ctx = document.getElementById('timeStampChart').getContext('2d');
+							// var chart = new Chart(ctx, {
+							// 	type: 'line',
+							// 	data: {
+							// 		labels: ['월', '화', '수', '목', '금', '토', '일'],
+							// 		datasets: [{
+							// 			label: 'test',
+							// 			data: [10, 20, 30, 5, 60, 80, 20],
+							// 			pointRadius: 0,
+							// 			fill: false,
+							// 			lineTension: 0,
+							// 			borderWidth: 2
+							// 		}]
+							// 	},
+							// 	option: {
+							// 		responsive: false
+							// 	}
+							// })
+
+						}); // 반복문끝
+						// $("#historylist").html(html);
+				}
+					console.log("타임스탬프 그래프그리기 완료")
 				}
 			});
 		}
@@ -477,245 +510,180 @@
 			});
 		}
 
-		</script>
+	</script>
 </head>
-<body>
-<div class="wrap">
-	<div class="header">
-		<h1 class="logo">
-			<a href="/">자연상점</a>
-		</h1>
-		<div class="profile">
-			<div class="profile__picture"><img src="/assets/images/dummy/picture.jpg" alt="" /></div>
-			<div class="profile__info">
-				<span>Welcome,</span>
-				<h2>이지은</h2>
+<div layout:fragment="content" class="contents-body">
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>DashBoard</h2>
 			</div>
 		</div>
-		<div class="nav">
-			<ul>
-				<li>
-					<a href="">Dashboard</a>
-					<ul class="nav-child">
-						<li><a href=""></a></li>
-						<li><a href=""></a></li>
-						<li><a href=""></a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="" class="active">사용자관리</a>
-					<ul class="nav-child active">
-						<li><a href="">사용자승인</a></li>
-						<li><a href="">사용자관리</a></li>
-					</ul>
-				</li>
-				<li>
-					<a href="">플랫폼관리</a>
-					<ul class="nav-child">
-						<li><a href="">마스터코드등록</a></li>
-						<li><a href="">부서등록</a></li>
-						<li><a href="">업체등록</a></li>
-						<li><a href="">장비등록</a></li>
-					</ul>
-				</li>
-			</ul>
-		</div>
-		<div class="header-setting">
-			<!-- 설정: 사진등록 -->
-			<ul>
-				<li><a href="#" class="header-setting__btn-setting" title="설정">Setting</a></li>
-				<li><a href="#" class="header-setting__btn-logout" title="logout">Logout</a></li>
-			</ul>
-		</div>
-	</div>
-	<div class="contents">
-		<div class="contents-header">
-			<a href="#" class="nav-icon">
-				<span></span>
-				<span></span>
-				<span></span>
-				<span></span>
-			</a>
-
-			<div class="contents-profile">
-				<a href="">
-		    			<span class="contents-profile__pic">
-		    				<img src="/assets/images/dummy/picture.jpg" alt="" />
-		    			</span>
-					<span class="contents-profile__info">이지은</span>
-				</a>
+		<div class="dashboard">
+			<div class="dashboard__count">
+				<div class="dashboard__count-item">
+					<h4 class="dashbaord__count-title">전체</h4>
+					<p class="dashboard__count-num">1000</p>
+				</div>
+				<div class="dashboard__count-item">
+					<h4 class="dashbaord__count-title">정상</h4>
+					<p class="dashboard__count-num">600</p>
+				</div>
+				<div class="dashboard__count-item">
+					<h4 class="dashbaord__count-title">관심</h4>
+					<p class="dashboard__count-num dashboard__count-num--warning">300</p>
+				</div>
+				<div class="dashboard__count-item">
+					<h4 class="dashbaord__count-title">심각</h4>
+					<p class="dashboard__count-num dashboard__count-num--danger">100</p>
+				</div>
 			</div>
-		</div>
 
-		<div class="contents-body">
-			<div class="page">
-				<div class="page-title">
-					<div class="page-title__left">
-						<h2>DashBoard</h2>
+			<div class="dashboard__row">
+				<div class="panel panel--three">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">Location</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+								<button class="panel__button drop">접기</button>
+							</div>
+						</div>
+						<div class="panel__body">
+							<div class="map" id="map"></div>
+						</div>
 					</div>
 				</div>
-				<div class="dashboard">
-					<div class="dashboard__count">
-						<div class="dashboard__count-item">
-							<h4 class="dashbaord__count-title">전체</h4>
-							<p class="dashboard__count-num">1000</p>
+				<div class="panel panel--three">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">Condition</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+								<button class="panel__button drop">접기</button>
+							</div>
 						</div>
-						<div class="dashboard__count-item">
-							<h4 class="dashbaord__count-title">정상</h4>
-							<p class="dashboard__count-num">600</p>
-						</div>
-						<div class="dashboard__count-item">
-							<h4 class="dashbaord__count-title">관심</h4>
-							<p class="dashboard__count-num dashboard__count-num--warning">300</p>
-						</div>
-						<div class="dashboard__count-item">
-							<h4 class="dashbaord__count-title">심각</h4>
-							<p class="dashboard__count-num dashboard__count-num--danger">100</p>
+						<div class="panel__body">
+							<div class="panel__stat" id="pie_chart"></div>
 						</div>
 					</div>
-
-					<div class="dashboard__row">
-						<div class="panel panel--three">
-							<div class="panel__inner">
-								<div class="panel__header">
-									<h4 class="panel__title">Location</h4>
-									<div class="panel__console">
-										<button class="panel__button refresh">새로고침</button>
-										<button class="panel__button drop">접기</button>
-									</div>
-								</div>
-								<div class="panel__body">
-									<div class="map" id="map"></div>
-								</div>
+				</div>
+				<div class="panel panel--three">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">Level</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+								<button class="panel__button drop">접기</button>
 							</div>
 						</div>
-						<div class="panel panel--three">
-							<div class="panel__inner">
-								<div class="panel__header">
-									<h4 class="panel__title">Condition</h4>
-									<div class="panel__console">
-										<button class="panel__button refresh">새로고침</button>
-										<button class="panel__button drop">접기</button>
-									</div>
-								</div>
-								<div class="panel__body">
-									<div class="panel__stat" id="pie_chart"></div>
-								</div>
-							</div>
-						</div>
-						<div class="panel panel--three">
-							<div class="panel__inner">
-								<div class="panel__header">
-									<h4 class="panel__title">Level</h4>
-									<div class="panel__console">
-										<button class="panel__button refresh">새로고침</button>
-										<button class="panel__button drop">접기</button>
-									</div>
-								</div>
-								<div class="panel__body">
-									<div class="panel__stat" id="bar_chart"></div>
-								</div>
-							</div>
+						<div class="panel__body">
+							<div class="panel__stat" id="bar_chart"></div>
 						</div>
 					</div>
+				</div>
+			</div>
 
-					<div class="dashboard__row">
-						<!-- 검색영역 -->
-						<div class="panel">
-							<div class="panel__inner">
-								<div class="panel__body panel__body--height-auto">
-									<div class="panel__console">
-										<div class="panel__console panel__console--left">
-											<div class="c-btn-group">
-												<h5 class="c-btn-group__title">기간 선택</h5>
-												<button class="c-btn-group__button active">24Hours</button>
-												<button class="c-btn-group__button">7Days</button>
-												<button class="c-btn-group__button">1Month</button>
-												<button class="c-btn-group__button">1Year</button>
-												<button class="c-btn-group__button">FromTo</button>
-											</div>
+			<div class="dashboard__row">
+				<!-- 검색영역 -->
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__body panel__body--height-auto">
+							<div class="panel__console">
+								<div class="panel__console panel__console--left">
+									<div class="c-btn-group">
+										<h5 class="c-btn-group__title">기간 선택</h5>
+										<div class="c-btn-group__list">
+											<button class="c-btn-group__button active">24Hours</button>
+											<button class="c-btn-group__button">7Days</button>
+											<button class="c-btn-group__button">1Month</button>
+											<button class="c-btn-group__button">1Year</button>
+											<button class="c-btn-group__button">FromTo</button>
 										</div>
-										<div class="panel__console panel__console--right">
-											<div class="c-float">
-												<div class="c-float__item">
-													<div class="c-date-group">
-														<div class="c-date">
-															<label for="dateFrom" class="c-date__label">from</label>
-															<input type="date" class="c-date__input" id="dateFrom" />
-														</div>
-														<div class="c-date">
-															<label for="dateTo" class="c-date__label">today</label>
-															<input type="date" class="c-date__input" id="dateTo" readonly />
-														</div>
-													</div>
+										<input type="text" id="intervaltime" value = "2000" />
+									</div>
+								</div>
+								<div class="panel__console panel__console--right">
+									<div class="c-float">
+										<div class="c-float__item">
+											<div class="c-date-group">
+												<div class="c-date">
+													<label for="dateFrom" class="c-date__label">from</label>
+													<input type="date" class="c-date__input" id="dateFrom" />
 												</div>
-												<div class="c-float__item" style="padding-top: 15px;">
-													<button id="btnSearch" class="c-button c-button--point">조회</button>
+												<div class="c-date">
+													<label for="dateTo" class="c-date__label">today</label>
+													<input type="date" class="c-date__input" id="dateTo" readonly />
 												</div>
 											</div>
 										</div>
+										<div class="c-float__item" style="padding-top: 15px;">
+											<button id="btnSearch" class="c-button c-button--point">조회</button>
+										</div>
 									</div>
+								</div>
+							</div>
 
-									<div class="c-float c-float--flex">
-										<div class="c-float__item">
-											<div class="c-text">
-												<label for="s_emNumber" class="c-text__label">장비번호</label>
-												<input id="s_emNumber" type="text" class="c-text__input" />
-											</div>
-										</div>
-										<div class="c-float__item">
-											<div class="c-select">
-												<label for="s_emType" class="c-select__label">장비 타입</label>
-												<select name="" id="s_emType" class="c-select__input">
-													<option value="">전체</option>
-													<option th:each ="equipdType : ${equipdTypes}"
-															th:value="${equipdType.code}"
-															th:text="${equipdType.name}"
-													></option>
-												</select>
-											</div>
-										</div>
-										<div class="c-float__item">
-											<div class="c-text">
-												<label for="s_Agency" class="c-text__label">소속운영사</label>
-												<input id="s_Agency" type="text" class="c-text__input" />
-											</div>
-										</div>
-										<div class="c-float__item">
-											<div class="c-select">
-												<label for="s_emCountry" class="c-select__label">국가</label>
-												<select name="" id="s_emCountry" class="c-select__input">
-													<option value="">전체</option>
-													<option th:each ="equipdCountry : ${equipdCountrys}"
-															th:value="${equipdCountry.code}"
-															th:text="${equipdCountry.name}">
-													</option>
-												</select>
-											</div>
-										</div>
+							<div class="c-float c-float--flex">
+								<div class="c-float__item">
+									<div class="c-text">
+										<label for="s_emNumber" class="c-text__label">장비번호</label>
+										<input id="s_emNumber" type="text" class="c-text__input" />
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="s_emType" class="c-select__label">장비 타입</label>
+										<select name="" id="s_emType" class="c-select__input">
+											<option value="">전체</option>
+											<option th:each ="equipdType : ${equipdTypes}"
+													th:value="${equipdType.code}"
+													th:text="${equipdType.name}"
+											></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-text">
+										<label for="s_Agency" class="c-text__label">소속운영사</label>
+										<input id="s_Agency" type="text" class="c-text__input" />
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="s_emCountry" class="c-select__label">국가</label>
+										<select name="" id="s_emCountry" class="c-select__input">
+											<option value="">전체</option>
+											<option th:each ="equipdCountry : ${equipdCountrys}"
+													th:value="${equipdCountry.code}"
+													th:text="${equipdCountry.name}">
+											</option>
+										</select>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+				</div>
+			</div>
 
-					<div class="dashboard__row">
-						<div class="panel">
-							<div class="panel__inner">
-								<div class="panel__header">
-									<h4 class="panel__title">기기</h4>
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">기기</h4>
 <!--    									<div class="panel__console">-->
 <!--    										<div class="c-search">-->
 <!--	    										<input type="text" class="c-search__input" />-->
 <!--	    										<button class="c-search__btn">검색</button>-->
 <!--    										</div>-->
 <!--    									</div>-->
-								</div>
-								<div class="panel__body panel__body--height-auto panel__body--non-padding">
-									<ul id="deviceList" class="c-list equipment">
+						</div>
+						<div class="panel__body panel__body--height-auto panel__body--non-padding">
+							<ul id="deviceList" class="c-list equipment">
 
-									</ul>
-								</div>
+							</ul>
+						</div>
 <!--								<div class="c-pager">-->
 <!--									<div class="c-paging" id="paging">-->
 <!--									</div>-->
@@ -726,17 +694,10 @@
 <!--										<div class="c-paging__total-group" id="totalCnt">0</div>-->
 <!--									</div>-->
 <!--								</div>-->
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-
-		<footer class="contents-footer">
-			© 2019 Broadwave Corporation. All rights Reserved.
-		</footer>
 	</div>
 </div>
-</body>
 </html>
