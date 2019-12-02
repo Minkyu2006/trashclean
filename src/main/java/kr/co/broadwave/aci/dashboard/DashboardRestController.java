@@ -101,6 +101,7 @@ public class DashboardRestController {
     }
 
     // aws 데이터값 뿌리기 (차트,리스트 View) 안쓰는함수
+
     @PostMapping ("awsDataListView")
     public ResponseEntity awsDataListView(){
         AjaxResponse res = new AjaxResponse();
