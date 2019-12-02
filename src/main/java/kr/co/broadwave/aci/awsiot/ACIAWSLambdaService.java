@@ -116,8 +116,8 @@ public class ACIAWSLambdaService {
 
         final String url = ACIAWSAPIBASEURL + "/api/v1/isolarbins/{id}" ;
 
-
         RestTemplate restTemplate = new RestTemplate();
+
         //header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
