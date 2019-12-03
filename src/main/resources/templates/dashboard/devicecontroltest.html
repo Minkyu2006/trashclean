@@ -179,6 +179,96 @@
     <section class="section">
         <h2 class="section__heading">장비 명령 </h2>
         <article class="article">
+        	<div class="control">
+        		<div class="control__head">
+        			<div class="control__head-item">
+        				<div class="c-select">
+	        				<label for="" class="c-select__label">장비선택</label>
+	        				<select name="" id="" class="c-select__input">
+	        					<option value="">ISOL-KR-SEL-0004</option>
+	        					<option value=""></option>
+	        					<option value=""></option>
+	        				</select>
+	       				</div>
+        			</div>
+        			<div class="control__head-item" style="padding-top: 15px;">
+        				<button class="c-button c-button--point">장비상태조회</button>
+        			</div>
+        		</div>
+        		<div class="control__body">
+        			<div class="control__section">
+        				<div class="control__box">
+        					<div class="control__results">
+		        				<div class="control__result-item">
+		        					<div class="control__result-title">도어 - 요청상태</div>
+		        					<div class="control__result open">OPEN</div>
+		        				</div>
+		        				<div class="control__result-item">
+		        					<div class="control__result-title">도어 - 처리상태</div>
+		        					<div class="control__result close">CLOSE</div>
+		        				</div>
+		        			</div>
+        				</div>
+        				
+        				<div class="control__box">
+        					<div class="control__results">
+		        				<div class="control__result-item">
+		        					<div class="control__result-title">데이터요청 - 요청상태</div>
+		        					<div class="control__result loading">
+		        						<span></span>
+		        						<span></span>
+		        						<span></span>
+		        						<span></span>
+		        					</div>
+		        				</div>
+		        				<div class="control__result-item">
+		        					<div class="control__result-title">데이터요청 - 처리상태</div>
+		        					<div class="control__result">1575353338301</div>
+		        				</div>
+        					</div>
+        				</div>
+        				
+        				<div class="control__box">
+        					<div class="control__results">
+		        				<div class="control__result-item">
+		        					<div class="control__result-title">로딩전</div>
+		        					<div class="control__result loading">
+		        						<span></span>
+		        						<span></span>
+		        						<span></span>
+		        						<span></span>
+		        					</div>
+		        				</div>
+		        				<div class="control__result-item">
+		        					<div class="control__result-title">로딩중</div>
+		        					<div class="control__result loading active">
+		        						<span></span>
+		        						<span></span>
+		        						<span></span>
+		        						<span></span>
+		        					</div>
+		        				</div>
+        					</div>
+        				</div>
+        			</div>
+        			
+        			<div class="c-function">
+						<div class="c-function__group">
+							<div class="c-function__item">
+								<button class="c-button">문열기</button>
+							</div>
+							<div class="c-function__item">
+								<button class="c-button">문닫기</button>
+							</div>
+							<div class="c-function__item">
+								<button class="c-button">데이터요청</button>
+							</div>
+						</div>
+					</div>
+        		</div>
+        	</div>
+        </article>
+        <article class="article">
             <div>
                 <input type="text" id="deviceid" name ="deviceid"  value ='ISOL-KR-SEL-0004'/>
                 <button class="c-button c-button--point" id="btnSearch">장비상태조회</button>
