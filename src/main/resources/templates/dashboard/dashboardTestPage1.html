@@ -17,6 +17,20 @@
 				deviceListView(1);
 			});
 
+			$("#circleChart").on('click',function(){
+				console.log("원차트 새로고침")
+				refleshCircleChart(1);
+			});
+			$("#barChart").on('click',function(){
+				console.log("막대차트 새로고침")
+			});
+			$("#mapChart").on('click',function(){
+				console.log("맵차트 새로고침")
+			});
+			$("#allChart").on('click',function(){
+				console.log("전체차트 새로고침")
+			});
+
 		});
 
 		// 대시보드 시작하면 AWS 데이터값 뿌리기 (차트,리스트 View)
@@ -42,13 +56,56 @@
 					$.each(res.data.equipment, function(key, value){
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 					});
+					pushValue.sort();
 					pushDeviceId(pushValue);
 				}
 			});
 		}
 
+		// 원차트 새로고침
+		function refleshCircleChart(page) {
+
+			var params = {
+				emNumber:$('#s_emNumber').val(),
+				emAgency:$('#s_Agency').val(),
+				emType:$('#s_emType').val(),
+				emCountry:$('#s_emCountry').val(),
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/dashboard/deviceInfoList',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					var pushValue = new Array();
+					$.each(res.data.datalist, function(key, value){
+						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+					});
+					pushDeviceId(pushValue);
+				}
+			});
+		}
+
+		// 막대차트 새로고침
+
+
+		// 맵차트 새로고침
+
+
 		// 장치리스트
 		function deviceListView(page) {
+			if ($("#intervaltime").val().trim() == '') {
+				Swal.fire({text:"조회할 날짜를 선택해주세요"});
+				return false;
+			}
 
 			var $deviceList = $('#deviceList');
 
@@ -84,7 +141,7 @@
 							html += '<div id='+'listTest'+idx+' class="equipment">';
 
 								html += '<div class="equipment__section">';
-								html += '<h4 class="equipment__section-title">상세 정보</h4>';
+								html += '<h4 class="equipment__section-title">장치 상세 정보</h4>';
 									html += '<ul class="equipment__info">'
 										html += '<li class="equipment__info-item">'
 											html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>'
@@ -122,7 +179,6 @@
 						idx++
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
-						timeStamp(value.emNumber);
 					});
 					//console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
 					$deviceList.html(html);
@@ -135,7 +191,7 @@
 
 		// ASW 장치 데이터리스트
 		function deviceAWSListView(pushValue,installDate) {
-			console.log("장비리스트 뿌리기 시작")
+			// console.log("장비리스트 뿌리기 시작")
 			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
 
@@ -262,7 +318,7 @@
 
 						html3 += '<div class="equipment__section">'
 						html3 += '<div class="equipment__chart"></div>'
-						html3 += '<canvas id="timeStampChart" style="width: 100%;height: 220px;"></canvas>'
+						html3 += '<canvas id='+'timeStampChart'+idx+' style="width: 100%;height: 220px;"></canvas>'
 						html3 += '</div>'
 
 						htmls.push(html)
@@ -273,17 +329,20 @@
 						$('#listTest'+idx).prepend(htmls2[idx]);
 						$('#listTest'+idx).append(htmls3[idx]);
 
+						timeStamp(nvl(value.deviceid,"확 인 불 가"),idx);
+
 						idx++
 					});
 					console.log("출력완료");
+					// console.log("타임스탬프 데이터전송");
 				}
 			});
 		}
 
 		// 타임스탬프 그래프함수
-		function timeStamp(pushValue){
+		function timeStamp(pushValue,idx){
 			console.log("받아온 아이디 : "+pushValue);
-			console.log("받아온 시간 : "+$('#intervaltime').val());
+			// console.log("받아온 시간 : "+$('#intervaltime').val());
 
 			var params = {
 				deviceid:pushValue,
@@ -304,48 +363,144 @@
 				},
 				success: function(res) {
 					statuscode= res.data.statusCode;
-					console.log("statuscode : "+statuscode)
+					// console.log("statuscode : "+statuscode)
 
 					if (statuscode ===200) {
-						console.log("타임스탬프 그래프그리기 시작")
-						var html = '';
+						// console.log("타임스탬프 그래프그리기 시작")
+
+						var timeStamp = new Array(); //타임스탬프
+						var temp_brd = new Array(); //온도
+						var level = new Array(); //배출량
+						var batt_level = new Array(); //배터리잔량
 
 						$.each(res.data.datarow1, function (key, value) {
-							console.log("해당아이디 : "+value.deviceid);
-							console.log("타임스탬프 : "+value.timestamp);
-							console.log("온도 : "+value.temp_brd);
-							console.log("배출량 : "+value.level);
-							console.log("배터리잔량 : "+value.batt_level);
-							// var ctx = document.getElementById('timeStampChart').getContext('2d');
-							// var chart = new Chart(ctx, {
-							// 	type: 'line',
-							// 	data: {
-							// 		labels: ['월', '화', '수', '목', '금', '토', '일'],
-							// 		datasets: [{
-							// 			label: 'test',
-							// 			data: [10, 20, 30, 5, 60, 80, 20],
-							// 			pointRadius: 0,
-							// 			fill: false,
-							// 			lineTension: 0,
-							// 			borderWidth: 2
-							// 		}]
-							// 	},
-							// 	option: {
-							// 		responsive: false
-							// 	}
-							// })
+							// console.log("해당아이디 : "+value.deviceid);
+							// console.log("타임스탬프 : "+value.timestamp);
+							// console.log("온도 : "+value.temp_brd);
+							// console.log("배출량 : "+value.level);
+							// console.log("배터리잔량 : "+value.batt_level);
 
-						}); // 반복문끝
-						// $("#historylist").html(html);
-				}
-					console.log("타임스탬프 그래프그리기 완료")
-				}
-			});
-		}
+							var timestamp = value.timestamp*1000;
+							var date = new Date(timestamp);
+							var month = date.getMonth()+1;
+							var day = date.getDate();
+							if(day < 10){
+								day = "0"+day;
+							}
+							var time =month+"월"+day+"일 "+date.getHours()+":"+date.getMinutes()
+							timeStamp.push(time)
+							temp_brd.push(value.temp_brd)
+							level.push(value.level)
+							batt_level.push(value.batt_level)
+						});
+
+							var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
+
+							var barChartData = {
+								labels: timeStamp,
+								datasets: [{
+									type: 'line',
+									label: '온도',
+									yAxisID: 'y',
+									backgroundColor: "#e35f5f",
+									borderColor: "#e35f5f",
+									data: temp_brd,
+									fill: false
+								}, {
+									type: 'line',
+									label: '배출량',
+									yAxisID: 'x',
+									backgroundColor: "#48ae63",
+									borderColor: "#48ae63",
+									data: level,
+									fill: false
+								},{
+									type: 'line',
+									label: '배터리잔량',
+									yAxisID: 'x',
+									backgroundColor: "#ffc600",
+									borderColor: "#ffc600",
+									data: batt_level,
+									fill: false
+								}]
+							};
+
+							new Chart(ctx, {
+								type: 'line',
+								data: barChartData,
+								options: {
+									elements: {
+										point:{
+											radius: 0
+										}
+									},
+									responsive: true,
+									stacked : true,
+									tooltips: { //팁(모드설정)
+										mode: 'index',
+										intersect: false
+									},
+									hover: {
+										mode: 'index',
+										intersect: false
+									},
+									scales: {
+										xAxes: [
+											{
+											ticks: {
+												display: false // x축 라벨지우기
+											},
+											gridLines: {
+												drawOnChartArea: false
+											}
+										}
+										],
+										yAxes: [
+											{
+												ticks: {
+													callback: function(value, index, values) {
+														return value+'%';
+													},
+													max: 100,
+													min: 0,
+													stepSize: 20
+												},
+												id: 'x',
+												type: 'linear',
+												display: true,
+												position: 'left'
+											},
+											{
+												ticks: {
+													callback: function(value, index, values) {
+														return value+'℃';
+													}
+												},
+												id: 'y',
+												type: 'linear',
+												display: true,
+												position: 'right',
+												gridLines: {
+													drawOnChartArea: false
+												}
+											}
+										]
+									}
+								}
+							});
+						}
+						// console.log("타임스탬프 그래프그리기 완료")
+					}
+				});
+			}
+
+
+
+
 
 		// aws deviceID값 push하는 함수 next -> 차트만들기
 		function pushDeviceId(pushValue) {
-			console.log("차트그래프 그리기 시작")
+			// console.log("차트그래프 그리기 시작")
 
 			//상태값 차트 , 쓰레기양 차트
 			var token = $("meta[name='_csrf']").attr("content");
@@ -379,19 +534,19 @@
 						return;
 					}
 					//상태값 차트
-					circleChart(res.data.circle_data_columns);
+					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
 					//쓰레기양 차트
 					barChart(res.data.bar_data_columns,res.data.device_list_columns);
 					// 맵에 장치보기
-					mapDeviceId(res.data.map_data_columns);
+					mapDeviceId(res.data.map_data_columns,res.data.mapBarDataColumns,res.data.statusDatas);
 
-					console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
+					// console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
 				}
 			});
 		}
 
 		// map
-		function mapDeviceId(map_data_columns) {
+		function mapDeviceId(map_data_columns,mapBarDataColumns,statusDatas) {
 
 			var locations = map_data_columns
 
@@ -407,18 +562,18 @@
 
 			var infowindow = new google.maps.InfoWindow();
 
-			for (i = 0; i < locations.length; i++) {
+			for (i = 0; i < map_data_columns.length; i++) {
 				marker = new google.maps.Marker({
-					position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+					position: new google.maps.LatLng(map_data_columns[i][1], map_data_columns[i][2]),
 					map: map
 				});
 
 				google.maps.event.addListener(marker, 'click', (function(marker, i) {
 					var content = '<div class="iw-container" id="iw-container">' +
-							'<h2>' + (locations[i][0]) + '</h2>' +
+							'<h2>' + (map_data_columns[i][0]) + '</h2>' +
 							'<dl>' +
-							'<dt>위치정보</dt>' +
-							'<dd>00시00구00동</dd>' +
+							'<dt>' +'상태 : '+statusDatas[i]+'</dt>' +
+							'<dd>' +'배출량 : '+mapBarDataColumns[i]+'%'+'</dd>' +
 							'</dl>' +
 							'</div>'
 					return function() {
@@ -430,8 +585,14 @@
 		}
 
 		//상태값 차트
-		function circleChart(circle_data_columns){
-			var piechart = c3.generate({
+				function circleChart(circle_data_columns,circle_data_count){
+				// console.log("circle_data_count : "+circle_data_count) // 상태값 개수리스트
+				$("#statusAll").text(circle_data_count[0]);
+				$("#statusNomal").text(circle_data_count[1]);
+				$("#statusCaution").text(circle_data_count[2]);
+				$("#statusSerious").text(circle_data_count[3]);
+
+				var piechart = c3.generate({
 				bindto: "#pie_chart",
 				data: {
 					columns: circle_data_columns,
@@ -497,18 +658,65 @@
 
 		// 기간선택에 따라 보내는시간 변경하는 함수
 		function intervaltimeChange(text) {
-			if(text=="24Hours"){
+			if (text == "24Hours") {
 				$("#intervaltime").val("24");
-			}else if(text=="7Days"){
+				$("#fromTo").hide();
+				$("#dateFrom").val("");
+				$("#dateTo").val("");
+			} else if (text == "7Days") {
 				$("#intervaltime").val("168");
-			}else if(text=="1Month"){
+				$("#fromTo").hide();
+				$("#dateFrom").val("");
+				$("#dateTo").val("");
+			} else if (text == "1Month") {
 				$("#intervaltime").val("720");
-			}else if(text=="1Year"){
+				$("#fromTo").hide();
+				$("#dateFrom").val("");
+				$("#dateTo").val("");
+			} else if (text == "1Year") {
 				$("#intervaltime").val("8760");
-			}else if(text=="FromTo"){
-				$("#intervaltime").val("1000");
+				$("#fromTo").hide();
+				$("#dateFrom").val("");
+				$("#dateTo").val("");
+			} else if (text == "FromTo") {
+				$("#intervaltime").val("");
+				$("#fromTo").show();
 			}
 		}
+
+		// 사용자정의 시간구하기 (날짜선택에따른 시간)
+		function intervaltimeDate(date) {
+			// console.log("date : " + date); 받아온날짜
+			var today = new Date();
+			var year = today.getFullYear();
+			var month = today.getMonth()+1
+			var day = today.getDate();
+			if(month < 10){
+				month = "0"+month;
+			}
+			if(day < 10){
+				day = "0"+day;
+			}
+			var todayData = year+"-"+month+"-"+day;
+			$("#dateTo").val(todayData);
+
+			var dateObj = new Date(date);
+
+			if (today<dateObj) {
+				Swal.fire({text:"현재 날짜보다 앞선 날짜는 선택할 수 없습니다."});
+				$("#intervaltime").val("");
+				$("#dateFrom").val("");
+				$("#dateTo").val("");
+				return false;
+			}
+
+			// console.log("today : " + today); // 오늘날짜
+			// console.log("dateObj : " + dateObj); // 사용자정의 날짜
+			var hours = parseInt(Math.abs(today - dateObj) / 36e5); // 36e5는 60 * 60 * 1000의 과학 표기법으로, 밀리 초 차이를 시간으로 환산하여 나눔.
+			// console.log("hours : " + hours); // 정해진시간
+			$("#intervaltime").val(hours);
+		}
+
 
 	</script>
 </head>
@@ -516,26 +724,26 @@
 	<div class="page">
 		<div class="page-title">
 			<div class="page-title__left">
-				<h2>DashBoard</h2>
+				<h2>대시보드</h2>
 			</div>
 		</div>
 		<div class="dashboard">
 			<div class="dashboard__count">
 				<div class="dashboard__count-item">
 					<h4 class="dashbaord__count-title">전체</h4>
-					<p class="dashboard__count-num">1000</p>
+					<p class="dashboard__count-num" id='statusAll'></p>
 				</div>
 				<div class="dashboard__count-item">
 					<h4 class="dashbaord__count-title">정상</h4>
-					<p class="dashboard__count-num">600</p>
+					<p class="dashboard__count-num" id='statusNomal'></p>
 				</div>
 				<div class="dashboard__count-item">
 					<h4 class="dashbaord__count-title">관심</h4>
-					<p class="dashboard__count-num dashboard__count-num--warning">300</p>
+					<p class="dashboard__count-num dashboard__count-num--warning" id='statusCaution'></p>
 				</div>
 				<div class="dashboard__count-item">
 					<h4 class="dashbaord__count-title">심각</h4>
-					<p class="dashboard__count-num dashboard__count-num--danger">100</p>
+					<p class="dashboard__count-num dashboard__count-num--danger" id='statusSerious'></p>
 				</div>
 			</div>
 
@@ -543,10 +751,10 @@
 				<div class="panel panel--three">
 					<div class="panel__inner">
 						<div class="panel__header">
-							<h4 class="panel__title">Location</h4>
+							<h4 class="panel__title">설치위치</h4>
 							<div class="panel__console">
-								<button class="panel__button refresh">새로고침</button>
-								<button class="panel__button drop">접기</button>
+								<button class="panel__button refresh" id="mapChart">새로고침</button>
+								<button class="panel__button fold">접기</button>
 							</div>
 						</div>
 						<div class="panel__body">
@@ -557,10 +765,10 @@
 				<div class="panel panel--three">
 					<div class="panel__inner">
 						<div class="panel__header">
-							<h4 class="panel__title">Condition</h4>
+							<h4 class="panel__title">상태</h4>
 							<div class="panel__console">
-								<button class="panel__button refresh">새로고침</button>
-								<button class="panel__button drop">접기</button>
+								<button class="panel__button refresh" id="circleChart">새로고침</button>
+								<button class="panel__button fold">접기</button>
 							</div>
 						</div>
 						<div class="panel__body">
@@ -571,10 +779,10 @@
 				<div class="panel panel--three">
 					<div class="panel__inner">
 						<div class="panel__header">
-							<h4 class="panel__title">Level</h4>
+							<h4 class="panel__title">배출량</h4>
 							<div class="panel__console">
-								<button class="panel__button refresh">새로고침</button>
-								<button class="panel__button drop">접기</button>
+								<button class="panel__button refresh" id="barChart">새로고침</button>
+								<button class="panel__button fold">접기</button>
 							</div>
 						</div>
 						<div class="panel__body">
@@ -600,16 +808,16 @@
 											<button onclick="intervaltimeChange(this.value)" value="1Year" class="c-btn-group__button">1Year</button>
 											<button onclick="intervaltimeChange(this.value)" value="FromTo" class="c-btn-group__button">FromTo</button>
 										</div>
-										<input type="hidden" id="intervaltime" value = "24" />
+										<input type="hidden" id="intervaltime" value = "24" readonly="readonly" />
 									</div>
 								</div>
 								<div class="panel__console panel__console--right">
 									<div class="c-float">
-										<div class="c-float__item">
-											<div class="c-date-group">
+										<div class="c-float__item" id="fromTo" style="display: none">
+											<div class="c-date-group" >
 												<div class="c-date">
 													<label for="dateFrom" class="c-date__label">from</label>
-													<input type="date" class="c-date__input" id="dateFrom" />
+													<input type="date"  onchange="intervaltimeDate(this.value)" class="c-date__input" id="dateFrom" />
 												</div>
 												<div class="c-date">
 													<label for="dateTo" class="c-date__label">today</label>
@@ -618,6 +826,7 @@
 											</div>
 										</div>
 										<div class="c-float__item" style="padding-top: 15px;">
+											<button class="panel__button refresh" id="allChart">새로고침</button>
 											<button id="btnSearch" class="c-button c-button--point">조회</button>
 										</div>
 									</div>
