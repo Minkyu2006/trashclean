@@ -16,7 +16,7 @@ import java.util.List;
  * Remark :
  */
 @Controller
-@RequestMapping("/testPage")
+@RequestMapping("/testpage")
 public class TestpageController {
     private final MasterCodeService masterCodeService;
 
@@ -27,27 +27,27 @@ public class TestpageController {
 
     @RequestMapping("monitering")
     public String monitering(){
-        return "testPage/monitering";
+        return "testpage/monitering";
     }
 
     @RequestMapping("maptest")
     public String maptest(){
-        return "testPage/maptest";
+        return "testpage/maptest";
     }
 
     @RequestMapping("layout")
     public String layout(){
-        return "testPage/layout";
+        return "testpage/layout";
     }
 
     @RequestMapping("devicecontroltest")
     public String devicecontroltest(){
-        return "testPage/devicecontroltest";
+        return "testpage/devicecontroltest";
     }
 
     @RequestMapping("fileupload")
     public String fileupload(){
-        return "testPage/fileupload";
+        return "testpage/fileupload";
     }
 
 }
