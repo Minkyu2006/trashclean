@@ -40,19 +40,6 @@ public class TestpageController {
         return "testPage/layout";
     }
 
-    @RequestMapping("dashboardTestPage")
-    public String dashboardTestPage(Model model){
-        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
-        List<MasterCodeDto> agencys = masterCodeService.findCodeList(CodeType.C0006);
-        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
-
-        model.addAttribute("equipdTypes", equipdTypes);
-        model.addAttribute("agencys", agencys);
-        model.addAttribute("equipdCountrys", equipdCountrys);
-
-        return "testPage/dashboardTestPage";
-    }
-
     @RequestMapping("devicecontroltest")
     public String devicecontroltest(){
         return "testPage/devicecontroltest";

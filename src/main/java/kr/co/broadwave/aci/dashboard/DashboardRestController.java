@@ -1,5 +1,7 @@
 package kr.co.broadwave.aci.dashboard;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.equipment.Equipment;
@@ -11,12 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.rmi.CORBA.ValueHandler;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -159,7 +164,7 @@ public class DashboardRestController {
     // 쓰레기통 상태값, 쓰레기양 차트
 //    @Transactional
     @PostMapping("dataGraph")
-    public ResponseEntity dataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) {
+    public ResponseEntity dataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -185,47 +190,52 @@ public class DashboardRestController {
         List<String> gps_laDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
         List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
 
-        List<Object> deviceSort = new ArrayList<>();
-        log.info("deviceids : "+deviceids);
-        log.info("deviceSort : "+deviceSort);
+        ObjectMapper mapper = new ObjectMapper();
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
-        log.info("AWS 장치 list : "+resData);
-        log.info("AWS 장치 data : "+resData.get("data"));
-        log.info("AWS 장치 size : "+resData.get("datacounts"));
+
+
+        Map<String, String> deviceMap = mapper.readValue(deviceids, Map.class);
+        List<String> keySetList = new ArrayList<>(deviceMap.keySet());
+        // 오름차순 //
+        Collections.sort(keySetList, (o1, o2) -> (deviceMap.get(o1).compareTo(deviceMap.get(o2))));
+        List<String> a = new ArrayList<>();
+        for(String key : keySetList) {
+            System.out.println(String.format("Key : %s, Value : %s", key, a.add(deviceMap.get(key))));
+        }
+        System.out.println(a);
+
+
+//        log.info("AWS 장치 list : "+resData);
+//        log.info("AWS 장치 data : "+resData.get("data"));
+//        log.info("AWS 장치 size : "+resData.get("datacounts"));
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
 //        log.info("number : "+number);
 
         barDataColumns.add("쓰레기양"); // 배출량 막대그래프 첫번째값 y축이름 -> 쓰레기양
-        for(int j = 0; j<number; j++){
-//            for(int i = 0; i<number; i++) {
-//                if (deviceSort.get(i).contains(resData.get("deviceid").get(i))) {
-                    Object dataObject = resData.get("data").get(j);
-                    HashMap map = (HashMap) dataObject;
-                    if (map.get("status").equals("caution")) {
-                        map.replace("status", "주의");
-                    } else if (map.get("status").equals("normal")) {
-                        map.replace("status", "정상");
-                    } else if (map.get("status").equals("severe")) {
-                        map.replace("status", "심각");
-                    }
+        for(int i = 0; i<number; i++){
+            Object dataObject = resData.get("data").get(i);
+            HashMap map = (HashMap) dataObject;
+            if (map.get("status").equals("caution")) {
+                map.replace("status", "주의");
+            } else if (map.get("status").equals("normal")) {
+                map.replace("status", "정상");
+            } else if (map.get("status").equals("severe")) {
+                map.replace("status", "심각");
+            }
 
-                    statusDatas.add(map.get("status")); //상태값차트
+            statusDatas.add(map.get("status")); //상태값차트
 
-                    deviceidDatas.add((String) map.get("deviceid")); //배출량차트
-                    barDataColumns.add((String) map.get("level")); //배출량차트
-                    mapBarDataColumns.add((String) map.get("level")); //맵배출량차트
+            deviceidDatas.add((String) map.get("deviceid")); //배출량차트
+            barDataColumns.add((String) map.get("level")); //배출량차트
+            mapBarDataColumns.add((String) map.get("level")); //맵배출량차트
 
-                    deviceIdNames.add((String) map.get("deviceid")); //맵 데이터 차트
-                    gps_laDatas.add((String) map.get("gps_la")); //맵 데이터 차트
-                    gps_loDatas.add((String) map.get("gps_lo")); //맵 데이터 차트
-//                }else{
-//                    return null;
-//                }
-//            }
+            deviceIdNames.add((String) map.get("deviceid")); //맵 데이터 차트
+            gps_laDatas.add((String) map.get("gps_la")); //맵 데이터 차트
+            gps_loDatas.add((String) map.get("gps_lo")); //맵 데이터 차트
         }
 
         for(int i = 0; i<number; i++) {

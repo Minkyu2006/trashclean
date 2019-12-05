@@ -192,7 +192,7 @@
 		// ASW 장치 데이터리스트
 		function deviceAWSListView(pushValue,installDate) {
 			// console.log("장비리스트 뿌리기 시작")
-			// console.log("받은 장비번호 : "+pushValue);
+			console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
 
 			var deviceIds = new Array();
@@ -228,6 +228,7 @@
 			var itemJson = new Object();
 			itemJson.deviceids = deviceIds;
 			var devicestr = JSON.stringify(itemJson);
+
 			var params = {
 				deviceids:devicestr,
 			};
