@@ -59,7 +59,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
             query.where(equipment.emCountry.id.eq(emCountryId));
         }
 
-        query.orderBy(equipment.id.desc());
+        query.orderBy(equipment.emNumber.asc());
 
         final List<DashboardDeviceListViewDto> equipments = getQuerydsl().applyPagination(pageable, query).fetch();
         return new PageImpl<>(equipments, pageable, query.fetchCount());

@@ -185,10 +185,11 @@ public class DashboardRestController {
         List<String> gps_laDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
         List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
 
+        List<Object> deviceSort = new ArrayList<>();
+        log.info("deviceids : "+deviceids);
+        log.info("deviceSort : "+deviceSort);
+
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
-        
-        List<String> keySetList = new ArrayList<>(resData.get("data"));
-        log.info("keySetList : "+keySetList);
 
         log.info("AWS 장치 list : "+resData);
         log.info("AWS 장치 data : "+resData.get("data"));
@@ -199,26 +200,32 @@ public class DashboardRestController {
 //        log.info("number : "+number);
 
         barDataColumns.add("쓰레기양"); // 배출량 막대그래프 첫번째값 y축이름 -> 쓰레기양
-        for(int i = 0; i<number; i++){
-            Object dataObject = resData.get("data").get(i);
-            HashMap map = (HashMap) dataObject;
-            if(map.get("status").equals("caution")){
-                map.replace("status","주의");
-            }else if(map.get("status").equals("normal")){
-                map.replace("status","정상");
-            }else if(map.get("status").equals("severe")){
-                map.replace("status","심각");
-            }
+        for(int j = 0; j<number; j++){
+//            for(int i = 0; i<number; i++) {
+//                if (deviceSort.get(i).contains(resData.get("deviceid").get(i))) {
+                    Object dataObject = resData.get("data").get(j);
+                    HashMap map = (HashMap) dataObject;
+                    if (map.get("status").equals("caution")) {
+                        map.replace("status", "주의");
+                    } else if (map.get("status").equals("normal")) {
+                        map.replace("status", "정상");
+                    } else if (map.get("status").equals("severe")) {
+                        map.replace("status", "심각");
+                    }
 
-            statusDatas.add(map.get("status")); //상태값차트
+                    statusDatas.add(map.get("status")); //상태값차트
 
-            deviceidDatas.add((String)map.get("deviceid")); //배출량차트
-            barDataColumns.add((String)map.get("level")); //배출량차트
-            mapBarDataColumns.add((String)map.get("level")); //맵배출량차트
+                    deviceidDatas.add((String) map.get("deviceid")); //배출량차트
+                    barDataColumns.add((String) map.get("level")); //배출량차트
+                    mapBarDataColumns.add((String) map.get("level")); //맵배출량차트
 
-            deviceIdNames.add((String)map.get("deviceid")); //맵 데이터 차트
-            gps_laDatas.add((String)map.get("gps_la")); //맵 데이터 차트
-            gps_loDatas.add((String)map.get("gps_lo")); //맵 데이터 차트
+                    deviceIdNames.add((String) map.get("deviceid")); //맵 데이터 차트
+                    gps_laDatas.add((String) map.get("gps_la")); //맵 데이터 차트
+                    gps_loDatas.add((String) map.get("gps_lo")); //맵 데이터 차트
+//                }else{
+//                    return null;
+//                }
+//            }
         }
 
         for(int i = 0; i<number; i++) {
