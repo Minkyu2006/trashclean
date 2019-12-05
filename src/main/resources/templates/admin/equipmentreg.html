@@ -465,6 +465,17 @@
 				<div class="l-float-heading--right"><button class="c-button c-button--small" id="btnReset">조건 초기화</button></div>
 			</div>
 			<table class="c-table">
+				<colgroup>
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 62px;" />
+				</colgroup>
 				<tr>
 					<th>장비 번호</th>
 					<td>
@@ -502,7 +513,7 @@
 							</select>
 						</div>
 					</td>
-					<td style="width: 60px;">
+					<td>
 						<button class="c-button c-button--point" id="btnSearch">조회</button>
 					</td>
 				</tr>
@@ -510,17 +521,28 @@
 		</article>
 		<article class="article">
 			<table class="c-table">
+				<colgroup>
+					<col />
+					<col />
+					<col />
+					<col style="width: 90px;" />
+					<col />
+					<col style="width: 100px;" />
+					<col />
+					<col />
+					<col style="width: 50px;" />
+				</colgroup>
 				<thead>
 					<tr>
-						<th style="width: 135px;">장비 번호</th>
-						<th style="width: 135px;">장비 시리얼 번호</th>
-						<th style="width: 160px;">장비 명칭</th>
+						<th>장비 번호</th>
+						<th>장비 시리얼 번호</th>
+						<th>장비 명칭</th>
 						<th>장비 타입</th>
-						<th style="width: 110px;">AWS상 Device ID</th>
-						<th style="width: 100px;">국가/지역</th>
-						<th style="width: 120px;">임베디드 기판 번호</th>
+						<th>AWS상 Device ID</th>
+						<th>국가/지역</th>
+						<th>임베디드 기판 번호</th>
 						<th>소속운영사</th>
-						<th style="width: 40px;"></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody id="schList">
@@ -585,14 +607,8 @@
 						<th>설치일자</th>
 						<td>
 							<div class="c-calendar-layout">
-								<div class="c-date">
-									<div class="c-date__input-box">
-										<input type="text" class="c-date__result" id="emInstallDate" name="emInstallDate" />
-										<button type="button" class="c-date__button">
-											<img src="/assets/images/icon__calendar.svg" alt="달력" title="달력">
-										</button>
-									</div>
-									<div class="c-date__calendar"></div>
+								<div class="c-date" style="width: 100%;">
+									<input type="date" class="c-date__input" id="date" />
 								</div>
 							</div>
 						</td>
@@ -630,10 +646,10 @@
 						</td>
 						<th>소속운영사</th>
 						<td>
-							<div class="c-text c-text--duo">
-								<input type="text" class="c-text__input" name="operator" id="operator" readonly="readonly" style="width: 45%" />
-								<input type="text" id="csNum" class="c-text__input" readonly="readonly" style="width: 55%; padding-right: 40px;" />
-								<button class="c-text__button pop__list">검색</button>
+							<div class="c-search-form">
+								<input type="text" class="c-text__input" name="operator" id="operator" readonly="readonly" />
+								<input type="text" id="csNum" class="c-text__input" readonly="readonly" />
+								<button class="c-search-form__button pop__list">검색</button>
 							</div>
 						</td>
 					</tr>
