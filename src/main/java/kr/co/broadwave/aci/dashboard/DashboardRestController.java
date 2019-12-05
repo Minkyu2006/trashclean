@@ -186,7 +186,7 @@ public class DashboardRestController {
         List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
-
+        
         List<String> keySetList = new ArrayList<>(resData.get("data"));
         log.info("keySetList : "+keySetList);
 

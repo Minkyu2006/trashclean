@@ -16,13 +16,28 @@ import java.util.List;
  * Remark :
  */
 @Controller
-@RequestMapping("/dashboard")
-public class DashboardController {
+@RequestMapping("/testPage")
+public class TestpageController {
     private final MasterCodeService masterCodeService;
 
     @Autowired
-    public DashboardController(MasterCodeService masterCodeService) {
+    public TestpageController(MasterCodeService masterCodeService) {
         this.masterCodeService = masterCodeService;
+    }
+
+    @RequestMapping("monitering")
+    public String monitering(){
+        return "testPage/monitering";
+    }
+
+    @RequestMapping("maptest")
+    public String maptest(){
+        return "testPage/maptest";
+    }
+
+    @RequestMapping("layout")
+    public String layout(){
+        return "testPage/layout";
     }
 
     @RequestMapping("dashboardTestPage")
@@ -35,20 +50,17 @@ public class DashboardController {
         model.addAttribute("agencys", agencys);
         model.addAttribute("equipdCountrys", equipdCountrys);
 
-        return "dashboard/dashboardTestPage";
+        return "testPage/dashboardTestPage";
     }
 
-    @RequestMapping("dashboardTestPage1")
-    public String dashboardTestPage1(Model model){
-        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
-        List<MasterCodeDto> agencys = masterCodeService.findCodeList(CodeType.C0006);
-        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+    @RequestMapping("devicecontroltest")
+    public String devicecontroltest(){
+        return "testPage/devicecontroltest";
+    }
 
-        model.addAttribute("equipdTypes", equipdTypes);
-        model.addAttribute("agencys", agencys);
-        model.addAttribute("equipdCountrys", equipdCountrys);
-
-        return "dashboard/dashboardTestPage1";
+    @RequestMapping("fileupload")
+    public String fileupload(){
+        return "testPage/fileupload";
     }
 
 }

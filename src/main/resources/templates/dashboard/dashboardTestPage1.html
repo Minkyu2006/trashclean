@@ -261,7 +261,7 @@
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>'
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
-							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+							html2 += '<img src="/static/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
 						}else if(value.status=="caution"){
@@ -269,7 +269,7 @@
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>'
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
-							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+							html2 += '<img src="/static/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
 						}else if(value.status=="severe"){
@@ -277,7 +277,7 @@
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>'
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
-							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+							html2 += '<img src="/static/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
 						}else{
@@ -285,7 +285,7 @@
 							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>'
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
-							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+							html2 += '<img src="/static/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
 						}
@@ -394,105 +394,105 @@
 							batt_level.push(value.batt_level)
 						});
 
-							var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
+						var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
 
-							var barChartData = {
-								labels: timeStamp,
-								datasets: [{
-									type: 'line',
-									label: '온도',
-									yAxisID: 'y',
-									backgroundColor: "#e35f5f",
-									borderColor: "#e35f5f",
-									data: temp_brd,
-									fill: false
-								}, {
-									type: 'line',
-									label: '배출량',
-									yAxisID: 'x',
-									backgroundColor: "#48ae63",
-									borderColor: "#48ae63",
-									data: level,
-									fill: false
-								},{
-									type: 'line',
-									label: '배터리잔량',
-									yAxisID: 'x',
-									backgroundColor: "#ffc600",
-									borderColor: "#ffc600",
-									data: batt_level,
-									fill: false
-								}]
-							};
-
-							new Chart(ctx, {
+						var barChartData = {
+							labels: timeStamp,
+							datasets: [{
 								type: 'line',
-								data: barChartData,
-								options: {
-									elements: {
-										point:{
-											radius: 0
+								label: '온도',
+								yAxisID: 'y',
+								backgroundColor: "#e35f5f",
+								borderColor: "#e35f5f",
+								data: temp_brd,
+								fill: false
+							}, {
+								type: 'line',
+								label: '배출량',
+								yAxisID: 'x',
+								backgroundColor: "#48ae63",
+								borderColor: "#48ae63",
+								data: level,
+								fill: false
+							},{
+								type: 'line',
+								label: '배터리잔량',
+								yAxisID: 'x',
+								backgroundColor: "#ffc600",
+								borderColor: "#ffc600",
+								data: batt_level,
+								fill: false
+							}]
+						};
+
+						new Chart(ctx, {
+							type: 'line',
+							data: barChartData,
+							options: {
+								elements: {
+									point:{
+										radius: 0
+									}
+								},
+								responsive: true,
+								stacked : true,
+								tooltips: { //팁(모드설정)
+									mode: 'index',
+									intersect: false
+								},
+								hover: {
+									mode: 'index',
+									intersect: false
+								},
+								scales: {
+									xAxes: [
+										{
+										ticks: {
+											display: false // x축 라벨지우기
+										},
+										gridLines: {
+											drawOnChartArea: false
 										}
-									},
-									responsive: true,
-									stacked : true,
-									tooltips: { //팁(모드설정)
-										mode: 'index',
-										intersect: false
-									},
-									hover: {
-										mode: 'index',
-										intersect: false
-									},
-									scales: {
-										xAxes: [
-											{
+									}
+									],
+									yAxes: [
+										{
 											ticks: {
-												display: false // x축 라벨지우기
+												callback: function(value, index, values) {
+													return value+'%';
+												},
+												max: 100,
+												min: 0,
+												stepSize: 20
 											},
+											id: 'x',
+											type: 'linear',
+											display: true,
+											position: 'left'
+										},
+										{
+											ticks: {
+												callback: function(value, index, values) {
+													return value+'℃';
+												}
+											},
+											id: 'y',
+											type: 'linear',
+											display: true,
+											position: 'right',
 											gridLines: {
 												drawOnChartArea: false
 											}
 										}
-										],
-										yAxes: [
-											{
-												ticks: {
-													callback: function(value, index, values) {
-														return value+'%';
-													},
-													max: 100,
-													min: 0,
-													stepSize: 20
-												},
-												id: 'x',
-												type: 'linear',
-												display: true,
-												position: 'left'
-											},
-											{
-												ticks: {
-													callback: function(value, index, values) {
-														return value+'℃';
-													}
-												},
-												id: 'y',
-												type: 'linear',
-												display: true,
-												position: 'right',
-												gridLines: {
-													drawOnChartArea: false
-												}
-											}
-										]
-									}
+									]
 								}
-							});
-						}
-						// console.log("타임스탬프 그래프그리기 완료")
+							}
+						});
 					}
-				});
-			}
+					// console.log("타임스탬프 그래프그리기 완료")
+				}
+			});
+		}
 
 
 
