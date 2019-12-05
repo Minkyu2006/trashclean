@@ -175,6 +175,9 @@ a.c-button {
 .c-float.c-float--flex .c-float__item {
 	flex: 1;
 }
+.c-float.c-float--flex .c-float__item.c-float__item--flex--auto {
+	flex: 0 1 auto;
+}
 .panel__console + .c-float {
 	margin-top: 10px;
 }

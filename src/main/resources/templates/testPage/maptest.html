@@ -2,11 +2,224 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate ="~{layout/default}">
+	  
+	<head>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaj-tLY53HSlUAzB1mLnhKCdm6rRp8blY&callback=initMap" async defer></script>
+		<script>
+			// map
+			var locations = [
+				['명동', 37.563576, 126.983431],
+	            ['가로수길', 37.520300, 127.023008],
+	            ['광화문', 37.575268, 126.976896],
+	            ['남산', 37.550925, 126.990945],
+	            ['이태원', 37.540223, 126.994005],
+	            ['iSolabin', 37.14450, 127.03312]
+			]
+			
+			var map;
+			
+			function initMap() {
+				map = new google.maps.Map(document.getElementById('map'), {
+					center: {lat: 37.412834, lng: 126.984527},
+					zoom: 10,
+					mapTypeControl: false,
+					streetViewControl: false
+				});
+				
+				var marker, i;
+				
+				var infowindow = new google.maps.InfoWindow();
+				
+				for (i = 0; i < locations.length; i++) {
+					marker = new google.maps.Marker({
+						position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+						map: map
+					});
+					
+					google.maps.event.addListener(marker, 'click', (function(marker, i) {
+						var content = '<div class="iw-container" id="iw-container">' +
+							'<h2>' + (locations[i][0]) + '</h2>' +
+							'<dl>' +
+								'<dt>위치정보</dt>' +
+								'<dd>00시00구00동</dd>' +
+							'</dl>' +
+						'</div>'
+				        return function() {
+				          infowindow.setContent(content);
+				          infowindow.open(map, marker);
+				        }
+				      })(marker, i));
+				}
+			}
+	
+	
+		</script>
+	</head>
+	  
 <div layout:fragment="content" class="contents-body">
-	<section class="section">
-		<h2 class="section__heading">맵페이지 테스트</h2>
-		<article class="article">
-		</article>
-	</section>
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>위치기반</h2>
+			</div>
+		</div>
+		<div class="dashboard">
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__body panel__body--height-auto">
+							<div class="c-float c-float--flex">
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="select1" class="c-select__label">장비 타입</label>
+										<select name="" id="select1" class="c-select__input">
+											<option value="">iSolarbin</option>
+											<option value=""></option>
+											<option value=""></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="select2" class="c-select__label">소속운영사</label>
+										<select name="" id="select2" class="c-select__input">
+											<option value="">ACI</option>
+											<option value=""></option>
+											<option value=""></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="select3" class="c-select__label">국가</label>
+										<select name="" id="select3" class="c-select__input">
+											<option value="">Korea</option>
+											<option value=""></option>
+											<option value=""></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-text">
+										<label for="number" class="c-text__label">장비번호</label>
+										<input type="text" class="c-text__input" id="number">
+									</div>
+								</div>
+								<div class="c-float__item c-float__item--flex--auto" style="padding-top: 15px;">
+									<button class="c-button c-button--point">조회</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">Location</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+								<button class="panel__button fold">접기/펼치기</button>
+							</div>
+						</div>
+						<div class="panel__body panel__body--height-auto">
+							<div class="map map--big" id="map"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">기기</h4>
+						</div>
+						<div class="panel__body panel__body--height-auto panel__body--non-padding">
+							<ul class="c-list eqipment">
+								<li class="c-list__item">
+									<div class="equipment">
+										<div class="equipment__section">
+											<span class="equipment__stat normal">Normal</span>
+											<span class="equipment__connect on">Online</span>
+											<div class="equipment__img">
+												<img src="/assets/images/dummy/iSolarbin.png" alt="">
+											</div>
+										</div>
+										<div class="equipment__section">
+											<h4 class="equipment__section-title">상세 정보</h4>
+											<ul class="equipment__info">
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">장비 ID :</span>
+													<span class="equipment__info-value">ISOL-KR-INC-0001</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">장비타입 :</span>
+													<span class="equipment__info-value">iSolarbin</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">최대적재량 :</span>
+													<span class="equipment__info-value">200L</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">운영사 :</span>
+													<span class="equipment__info-value">ACI</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">지역 :</span>
+													<span class="equipment__info-value">서울</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">국가 :</span>
+													<span class="equipment__info-value">한국</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">설치일자 :</span>
+													<span class="equipment__info-value">2019년 10월 5일</span>
+												</li>
+											</ul>
+										</div>
+										<div class="equipment__section">
+											<h4 class="equipment__section-title">상태 상세 정보</h4>
+											<ul class="equipment__info">
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">운영일 :</span>
+													<span class="equipment__info-value">35일</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">온도 :</span>
+													<span class="equipment__info-value">27.5℃</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">배출량 :</span>
+													<span class="equipment__info-value">75%</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">배터리잔량 :</span>
+													<span class="equipment__info-value">65%</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">태양광판넬출력량 :</span>
+													<span class="equipment__info-value">9.2A/12.4V</span>
+												</li>
+											</ul>
+										</div>
+										<div class="equipment__section">
+											<div class="equipment__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+												<canvas id="chart" style="width: 100%; height: 220px; display: block;" width="252" height="220" class="chartjs-render-monitor"></canvas>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
 </div>
 </html>
