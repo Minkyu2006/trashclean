@@ -98,7 +98,7 @@ public class Maincontroller {
             log.info("=====================================");
         }
 
-        return "redirect:/testPage/dashboardTestPage";
+        return "redirect:/dashboard/dashboardTestPage";
     }
 
 
