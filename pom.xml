@@ -18,6 +18,20 @@
         <java.version>1.8</java.version>
     </properties>
 
+    <!--========= AWS S3 =========-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.amazonaws</groupId>
+                <artifactId>aws-java-sdk-bom</artifactId>
+                <version>1.11.543</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <!--============================-->
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -81,6 +95,14 @@
             <version>4.1.0</version>
         </dependency>
         <!-- ========= -->
+
+        <!--========= AWS S3 =========-->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+        </dependency>
+        <!-- ========= -->
+
 
         <!-- image makeThumbnail-->
         <dependency>
