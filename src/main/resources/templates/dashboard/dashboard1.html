@@ -335,7 +335,6 @@
 						html += '</div>'
 
 						html3 += '<div class="equipment__section">'
-						html3 += '<div class="equipment__chart"></div>'
 						html3 += '<canvas id='+'timeStampChart'+idx+' style="width: 100%;height: 220px;"></canvas>'
 						html3 += '</div>'
 
@@ -390,11 +389,11 @@
 						var temp_brd = new Array(); //온도
 						var level = new Array(); //배출량
 						var batt_level = new Array(); //배터리잔량
-
+						var testTimeStamp = new Array();
 						$.each(res.data.datarow1, function (key, value) {
-							// console.log("해당아이디 : "+value.deviceid);
-							// console.log("타임스탬프 : "+value.timestamp);
-							// console.log("온도 : "+value.temp_brd);
+							console.log("해당아이디 : "+value.deviceid);
+							console.log("타임스탬프 : "+value.timestamp);
+							console.log("온도 : "+value.temp_brd);
 							// console.log("배출량 : "+value.level);
 							// console.log("배터리잔량 : "+value.batt_level);
 
@@ -402,20 +401,34 @@
 							var date = new Date(timestamp);
 							var month = date.getMonth()+1; // 1월을 0월로 보기때문에 월에 +1을 해준다.
 							var day = date.getDate();
+							var minutes = date.getMinutes();
+							var seconds = date.getSeconds();
 							if(day < 10){
 								day = "0"+day;
 							}
-							var time =month+"월"+day+"일 "+date.getHours()+":"+date.getMinutes()
+							if(minutes < 10){
+								minutes = "0"+minutes;
+							}
+							if(seconds < 10){
+								seconds = "0"+seconds;
+							}
+							var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds
+
+							console.log("날짜 : "+time)
+							console.log("")
+							testTimeStamp.push(parseInt(value.timestamp));
 							timeStamp.push(time)
 							temp_brd.push(value.temp_brd)
 							level.push(value.level)
-							batt_level.push(value.batt_level)
+							batt_level.push(value.batt_level);
 						});
+						temp_brd_Max = Math.max.apply(0, temp_brd); // 온도최대값
+						temp_brd_Min = Math.min.apply(0, temp_brd); // 온도최소값
 
 						var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
 
 						var barChartData = {
-							labels: timeStamp,
+							labels: testTimeStamp,
 							datasets: [{
 								type: 'line',
 								label: '온도',
@@ -444,7 +457,6 @@
 						};
 
 						new Chart(ctx, {
-							type: 'line',
 							data: barChartData,
 							options: {
 								elements: {
@@ -452,7 +464,7 @@
 										radius: 0
 									}
 								},
-								responsive: true,
+								maintainAspectRatio: false,
 								stacked : true,
 								tooltips: { //팁(모드설정)
 									mode: 'index',
@@ -463,18 +475,46 @@
 									intersect: false
 								},
 								scales: {
-									xAxes: [
-										{
-										ticks: {
-											display: false // x축 라벨지우기
+									xAxes: [{
+											display: true,
+											type: 'time',
+										// time: {
+										// 	displayFormats: {
+										// 		quarter: 'MMM YYYY'
+										// 	}
+										// },
+										time: {
+											unit: 'hour',
+											unitStepSize: 0.5,
+											round: 'hour',
+											tooltipFormat: "h:mm:ss a",
+											displayFormats: {
+												hour: 'MMM D, h:mm A'
+											}
 										},
-										gridLines: {
-											drawOnChartArea: false
-										}
-									}
-									],
-									yAxes: [
-										{
+										// 	time: {
+										// 		parser: 'YYYY-MM-DD HH:mm:ss',
+										// 		tooltipFormat: 'll HH:mm:ss',
+										// 		unit: 'day',
+										// 		unitStepSize: 1,
+										// 		displayFormats: {
+										// 			'day': 'YYYY-MM-DD'
+										// 		}
+										// 	},
+											// time: {
+											// 	parser: 'YYYY-MM-DD HH:mm:ss',
+											// 	unit: 'day',
+											// 	displayFormats: {
+											// 		day: 'ddd'
+											// 	},
+											// 	min: '2019-11-02 18:43:53',
+											// 	max: '2019-12-06 18:43:53'
+											// },
+											gridLines: {
+												drawOnChartArea: false
+											}
+										}],
+									yAxes: [{
 											ticks: {
 												callback: function(value, index, values) {
 													return value+'%';
@@ -487,12 +527,13 @@
 											type: 'linear',
 											display: true,
 											position: 'left'
-										},
-										{
+										},{
 											ticks: {
 												callback: function(value, index, values) {
 													return value+'℃';
-												}
+												},
+												max: (temp_brd_Max+5).toFixed(0),
+												min: (temp_brd_Min-5).toFixed(0)
 											},
 											id: 'y',
 											type: 'linear',
@@ -501,8 +542,7 @@
 											gridLines: {
 												drawOnChartArea: false
 											}
-										}
-									]
+										}]
 								}
 							}
 						});
@@ -680,7 +720,17 @@
 
 		// 기간선택에 따라 보내는시간 변경하는 함수
 		function intervaltimeChange(text) {
-			if (text == "24Hours") {
+			if (text == "1Hours") {
+				$("#intervaltime").val("1");
+				$("#fromTo").hide();
+				$("#dateFrom").val("");
+				$("#dateTo").val("");
+			}else if (text == "3Hours") {
+				$("#intervaltime").val("3");
+				$("#fromTo").hide();
+				$("#dateFrom").val("");
+				$("#dateTo").val("");
+			}else if (text == "24Hours") {
 				$("#intervaltime").val("24");
 				$("#fromTo").hide();
 				$("#dateFrom").val("");
@@ -860,7 +910,9 @@
 									<div class="c-btn-group">
 										<h5 class="c-btn-group__title">기간 선택</h5>
 										<div class="c-btn-group__list">
-											<button onclick="intervaltimeChange(this.value)" value="24Hours" class="c-btn-group__button active">24Hours</button>
+											<button onclick="intervaltimeChange(this.value)" value="1Hours" class="c-btn-group__button active">1Hours</button>
+											<button onclick="intervaltimeChange(this.value)" value="3Hours" class="c-btn-group__button">3Hours</button>
+											<button onclick="intervaltimeChange(this.value)" value="24Hours" class="c-btn-group__button">24Hours</button>
 											<button onclick="intervaltimeChange(this.value)" value="7Days" class="c-btn-group__button">7Days</button>
 											<button onclick="intervaltimeChange(this.value)" value="1Month" class="c-btn-group__button">1Month</button>
 											<button onclick="intervaltimeChange(this.value)" value="1Year" class="c-btn-group__button">1Year</button>
