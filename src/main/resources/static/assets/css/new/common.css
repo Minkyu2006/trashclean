@@ -627,10 +627,50 @@ table {
 	background-position: left center;
 	background-attachment: fixed;
 }
+.main__image:before {
+	content: " ";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, .1);
+}
+.main__center {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	width: 100%;
+	padding: 0 40px 80px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transform: translateY(-50%);
+	-moz-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	-o-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+.main__txt-heading {
+	color: #fff;
+	font-size: 74px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-align: center;
+}
+.main__sub-heading {
+	color: rgba(255, 255, 255, .8);
+	margin-top: 20px;
+	font-size: 38px;
+	font-weight: 700;
+	line-height: 1.2;
+	text-align: center;
+}
 .main__center-btn {
 	display: block;
 	position: absolute;
-	top: 50%;
+	bottom: 8px;
 	left: 50%;
 	padding: 10px 20px;
 	background-color: #007e37;
@@ -641,11 +681,11 @@ table {
 	font-size: 24px;
 	font-weight: 700;
 	text-align: center;
-	-webkit-transform: translate(-50%, -50%);
-	-moz-transform: translate(-50%, -50%);
-	-ms-transform: translate(-50%, -50%);
-	-o-transform: translate(-50%, -50%);
-	transform: translate(-50%, -50%);
+	-webkit-transform: translateX(-50%);
+	-moz-transform: translateX(-50%);
+	-ms-transform: translateX(-50%);
+	-o-transform: translateX(-50%);
+	transform: translateX(-50%);
 	-webkit-box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
 	-moz-box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
 	box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
@@ -730,65 +770,27 @@ table {
 .join {
 	position: relative;
 	width: 100%;
-	padding: 33px 0;
 }
-.join__box {
-	position: relative;
-	width: 350px;
-	margin: 0 auto;
-	padding: 20px;
-	border: 1px solid #222;
-	background-color: #fff;
+.join__form form {
+	display: block;
+	margin: -5px;
+}
+.join__form form:before {
+	content: " ";
+	display: table;
+}
+.join__form form:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.join__form-item {
+	float: left;
+	width: 25%;
+	padding: 5px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-}
-.join__title {
-	padding: 20px 0;
-}
-.join__form,
-.member {
-	position: relative;
-}
-.join__form-item + .join__form-item,
-.member__form-item + .member__form-item {
-	margin-top: 15px;
-}
-.join__label {
-	display: block;
-	margin-bottom: 5px;
-	color: #222;
-	font-size: 14px;
-}
-.join__input {
-	width: 100%;
-	height: 34px;
-	padding: 0 10px;
-	border: 1px solid #222;
-	border-radius: 5px;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-.join__input[readonly] {
-	background-color: #ddd;
-}
-.join__submit {
-	display: block;
-	width: 100%;
-	height: 40px;
-	margin-top: 20px;
-	border: 0;
-	background-color: #007e37;
-	color: #fff;
-	font-size: 16px;
-	line-height: 40px;
-	font-weight: 700;
-	cursor: pointer;
-	transition: background-color .2s;
-}
-.join__submit:hover {
-	background-color: #5b7b73;
 }
 
 /* dashboard */
@@ -1023,7 +1025,7 @@ table {
 	content: " ";
 	position: absolute;
 	top: 10px;
-	left: 0;
+	left: -1px;
 	width: 1px;
 	height: calc(100% - 20px);
 	background-color: #dfdfdf;

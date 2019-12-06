@@ -8,19 +8,19 @@
 		<script>
 			// map
 			var locations = [
-				['명동', 37.563576, 126.983431],
-	            ['가로수길', 37.520300, 127.023008],
-	            ['광화문', 37.575268, 126.976896],
-	            ['남산', 37.550925, 126.990945],
-	            ['이태원', 37.540223, 126.994005],
-	            ['iSolabin', 37.14450, 127.03312]
+				['명동', 37.563576, 126.983431, 'Normal'],
+	            ['가로수길', 37.520300, 127.023008, 'Caution'],
+	            ['광화문', 37.575268, 126.976896, 'Severe'],
+	            ['남산', 37.550925, 126.990945, 'Normal'],
+	            ['이태원', 37.540223, 126.994005,'Caution'],
+	            ['iSolabin', 37.14450, 127.03312, 'Severe']
 			]
 			
 			var map;
 			
 			function initMap() {
 				map = new google.maps.Map(document.getElementById('map'), {
-					center: {lat: 37.412834, lng: 126.984527},
+					//center: {lat: 37.412834, lng: 126.984527},
 					zoom: 10,
 					mapTypeControl: false,
 					streetViewControl: false
@@ -28,28 +28,44 @@
 				
 				var marker, i;
 				
-				var infowindow = new google.maps.InfoWindow();
+				var iconSrc = [];
+				
+				iconSrc['Normal'] = "/assets/images/marker.png";
+				iconSrc['Caution'] = "/assets/images/marker--caution.png";
+				iconSrc['Severe'] = "/assets/images/marker--severe.png"
+				
+				//var infowindow = new google.maps.InfoWindow();
+				
+				var bounds = new google.maps.LatLngBounds()
 				
 				for (i = 0; i < locations.length; i++) {
 					marker = new google.maps.Marker({
 						position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-						map: map
+						map: map,
+						icon: iconSrc[locations[i][3]]
 					});
 					
+					bounds.extend(marker.position);
+					
 					google.maps.event.addListener(marker, 'click', (function(marker, i) {
-						var content = '<div class="iw-container" id="iw-container">' +
+						/*var content = '<div class="iw-container" id="iw-container">' +
 							'<h2>' + (locations[i][0]) + '</h2>' +
 							'<dl>' +
 								'<dt>위치정보</dt>' +
 								'<dd>00시00구00동</dd>' +
 							'</dl>' +
-						'</div>'
+						'</div>'*/
+						var content = (locations[i][0])
 				        return function() {
-				          infowindow.setContent(content);
-				          infowindow.open(map, marker);
+				          //infowindow.setContent(content);
+				          //infowindow.open(map, marker);
+				          console.log(content)
 				        }
+				        
 				      })(marker, i));
 				}
+				
+				map.fitBounds(bounds);
 			}
 	
 	
@@ -138,7 +154,7 @@
 							<h4 class="panel__title">기기</h4>
 						</div>
 						<div class="panel__body panel__body--height-auto panel__body--non-padding">
-							<ul class="c-list eqipment">
+							<ul class="c-list equipment">
 								<li class="c-list__item">
 									<div class="equipment">
 										<div class="equipment__section">
@@ -207,8 +223,8 @@
 											</ul>
 										</div>
 										<div class="equipment__section">
-											<div class="equipment__chart"><div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-												<canvas id="chart" style="width: 100%; height: 220px; display: block;" width="252" height="220" class="chartjs-render-monitor"></canvas>
+											<div class="c-loader">
+												<div class="c-loader__active c-loader__active--ring"></div>
 											</div>
 										</div>
 									</div>
