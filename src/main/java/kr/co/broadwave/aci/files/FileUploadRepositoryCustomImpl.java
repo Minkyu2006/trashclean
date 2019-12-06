@@ -29,6 +29,7 @@ public class FileUploadRepositoryCustomImpl extends QuerydslRepositorySupport im
                         qFileUpload.fileName,
                         qFileUpload.saveFileName,
                         qFileUpload.filePath,
+                        qFileUpload.fileFullPath,
                         qFileUpload.contentType,
                         qFileUpload.size
 

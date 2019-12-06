@@ -1,14 +1,20 @@
 package kr.co.broadwave.aci.controller;
 
-import kr.co.broadwave.aci.bscodes.CodeType;
-import kr.co.broadwave.aci.mastercode.MasterCodeDto;
+import kr.co.broadwave.aci.files.FileUploadDto;
+import kr.co.broadwave.aci.files.FileUploadService;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
 
 /**
  * @author InSeok
@@ -19,10 +25,12 @@ import java.util.List;
 @RequestMapping("/testpage")
 public class TestpageController {
     private final MasterCodeService masterCodeService;
+    private final FileUploadService fileUploadService;
 
     @Autowired
-    public TestpageController(MasterCodeService masterCodeService) {
+    public TestpageController(MasterCodeService masterCodeService, FileUploadService fileUploadService) {
         this.masterCodeService = masterCodeService;
+        this.fileUploadService = fileUploadService;
     }
 
     @RequestMapping("monitering")
@@ -49,5 +57,23 @@ public class TestpageController {
     public String fileupload(){
         return "testpage/fileupload";
     }
+
+
+    @RequestMapping("filedownload/{fileid}")
+    @ResponseBody
+    public byte[] downProcess(HttpServletResponse response,
+                              @PathVariable Long fileid) throws IOException {
+
+        FileUploadDto fileUploadDto = fileUploadService.findById(fileid);
+
+        byte[] bytes = fileUploadService.fileDownload(fileUploadDto.getFilePath(),fileUploadDto.getSaveFileName());
+
+
+        response.setHeader("Content-Disposition",
+                "attachment;filename=\"" + URLEncoder.encode(fileUploadDto.getFileName(), "UTF-8") + "\"");
+        response.setContentLength(bytes.length);
+        return bytes;
+    }
+
 
 }

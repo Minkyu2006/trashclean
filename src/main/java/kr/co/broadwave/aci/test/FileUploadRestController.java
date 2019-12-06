@@ -6,28 +6,36 @@ import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.files.FileUploadService;
 import kr.co.broadwave.aci.teams.TeamDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author InSeok
  * Date : 2019-12-05
  * Remark :
  */
+@Slf4j
 @RestController
 @RequestMapping("/api/test")
 public class FileUploadRestController {
@@ -63,7 +71,9 @@ public class FileUploadRestController {
             if (!mFile.isEmpty()) {
                 //System.out.println("파일명 확인  : " + fileName);
                 FileUpload save = fileUploadService.save(mFile);
-                //저장후 해당저장 값의 객체를반환하기때문에 다른테이블에 저장할수있다.
+                //====================다른파일저장로직시 활용부분!!!!!!!=========================
+                //저장후 해당저장 값의 객체를반환하기때문에 다른테이블에 fk로 저장할수있다.
+
 
             }
 
@@ -92,5 +102,22 @@ public class FileUploadRestController {
 
 
     }
+
+    //파일삭제
+    @PostMapping("filedel")
+    public ResponseEntity filedel(@RequestParam (value="fileid", defaultValue="") String fileid){
+
+
+        fileUploadService.del(Long.parseLong(fileid));
+        data.clear();
+        res.addResponse("data",data);
+
+
+        return ResponseEntity.ok(res.success());
+
+
+
+    }
+
 
 }

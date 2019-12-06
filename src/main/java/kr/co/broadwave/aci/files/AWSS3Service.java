@@ -41,7 +41,7 @@ public class AWSS3Service {
         ObjectMetadata omd = new ObjectMetadata();
         omd.setContentType(multipartFile.getContentType());
         omd.setContentLength(multipartFile.getSize());
-        omd.setHeader("filename", multipartFile.getOriginalFilename());
+        omd.setHeader("filename", storedFileName);//한글명들어가면 오류남
         String awsFilePath =AWSBUCKET+ uploadPath;
 
         // Copy file to the target location (Replacing existing file with the same name)
@@ -64,13 +64,13 @@ public class AWSS3Service {
 
     }
 
-    public Resource getObject(String date, String storedFileName) throws IOException {
-        S3Object o = s3Client.getObject(new GetObjectRequest(AWSBUCKET + "/" + date, storedFileName));
+    public byte[] getObject(String bucketPath, String fileName) throws IOException {
+        S3Object o = s3Client.getObject(new GetObjectRequest(AWSBUCKET +  bucketPath, fileName));
         S3ObjectInputStream objectInputStream = o.getObjectContent();
         byte[] bytes = IOUtils.toByteArray(objectInputStream);
-
-        Resource resource = new ByteArrayResource(bytes);
-        return resource;
+        return bytes;
+        //Resource resource = new ByteArrayResource(bytes);
+        //return resource;
     }
 
 

@@ -11,6 +11,7 @@ import lombok.Setter;
  * Remark :
  */
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileUploadDto {
@@ -18,6 +19,7 @@ public class FileUploadDto {
     private String fileName;
     private String saveFileName;
     private String filePath;
+    private String fileFullPath;
     private String contentType;
     private Long size;
 

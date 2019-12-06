@@ -34,6 +34,11 @@ public class FileUpload {
     @Column(name="bf_file_path")
     private String filePath;
 
+    @Column(name="bf_file_full_path")
+    private String fileFullPath;
+
+
+
     @Column(name="bf_content_type")
     private String contentType;
 
