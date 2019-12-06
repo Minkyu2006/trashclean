@@ -26,10 +26,15 @@ public class EquipmentMapperDto {
     private Long emLocation; // 지역
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
+    private String emSubName;
     private String operator;
     private Double emMaximumPayload;
     private Long emUnit;
     private String emInstallDate;
+
+    public String getEmSubName() {
+        return emSubName;
+    }
 
     public String getEmNumber() {
         return emNumber;

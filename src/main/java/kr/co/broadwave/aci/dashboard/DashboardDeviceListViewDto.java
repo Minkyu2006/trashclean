@@ -25,6 +25,11 @@ public class DashboardDeviceListViewDto {
     private MasterCode emLocation; // 지역
     private MasterCode emCountry; // 국가
     private String emInstallDate; // 설치일자
+    private String emSubName; // 약칭
+
+    public String getEmSubName() {
+        return emSubName;
+    }
 
     public Long getId() {
         return id;

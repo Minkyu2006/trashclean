@@ -42,7 +42,8 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
                         equipment.company,
                         equipment.emLocation,
                         equipment.emCountry,
-                        equipment.emInstallDate
+                        equipment.emInstallDate,
+                        equipment.emSubName
                 ));
 
         // 검색조건필터

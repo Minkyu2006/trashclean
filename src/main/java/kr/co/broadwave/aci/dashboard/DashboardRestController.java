@@ -2,6 +2,7 @@ package kr.co.broadwave.aci.dashboard;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.equipment.Equipment;
@@ -112,7 +113,6 @@ public class DashboardRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         List<Equipment> equipment = dashboardService.findAll();
-
         data.clear();
         data.put("equipment",equipment);
         res.addResponse("data",data);
@@ -126,10 +126,17 @@ public class DashboardRestController {
                                                             @RequestParam (value="emAgency", defaultValue="") String  emAgency,
                                                             @RequestParam (value="emType", defaultValue="")String emType,
                                                             @RequestParam (value="emCountry", defaultValue="")String emCountry,
+                                                            @RequestParam (value="emLocation", defaultValue="")String emLocation,
                                                             @PageableDefault Pageable pageable){
 
         Long emTypeId = null;
         Long emCountryId = null;
+
+        log.info("emNumber : "+emNumber);
+        log.info("emAgency : "+emAgency);
+        log.info("emType : "+emType);
+        log.info("emCountry : "+emCountry);
+       log.info("emLocation : "+emLocation);
 
         if(!emType.equals("")){
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
@@ -142,7 +149,6 @@ public class DashboardRestController {
 
         Page<DashboardDeviceListViewDto> deviceInfoListDtos =
                 dashboardService.findByDashboardListView(emNumber, emTypeId, emAgency, emCountryId, pageable);
-
         return CommonUtils.ResponseEntityPage(deviceInfoListDtos);
     }
 
@@ -152,10 +158,53 @@ public class DashboardRestController {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
-        HashMap<String, Object> resData = dashboardService.getDeviceLastestState(deviceids);
+        List<String> devices = new ArrayList<>(); //장비값넣기
+        List<String> status = new ArrayList<>(); // 상태값리스트
+        List<String> temp_brd = new ArrayList<>(); // 온도리스트
+        List<String> level = new ArrayList<>(); // 배출량리스트
+        List<String> batt_level = new ArrayList<>(); // 배터리잔량리스트
+        List<String> solar_current = new ArrayList<>(); // 전류리스트
+        List<String> solar_voltage = new ArrayList<>(); // 전압리스트
+
+        HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
+        List<String> sortDevice = new ArrayList<>();
+
+        Object datacounts = resData.get("datacounts");
+        int number = Integer.parseInt(datacounts.toString()); //반복수
+
+        for(int i = 0; i<number; i++) {
+            HashMap map = (HashMap)resData.get("data").get(i);
+            sortDevice.add((String) map.get("deviceid"));
+        }
+        sortDevice.sort(Comparator.naturalOrder());
+        //log.info("오름차순 : " + sortDevice);
+
+        // 아이디값의 따라 데이터넣기(오름차순)
+        for(String deviceid:sortDevice){
+            for(int i=0; i<number; i++){
+                HashMap map = (HashMap)resData.get("data").get(i);
+                if (map.get("deviceid") == deviceid) {
+                    devices.add((String)map.get("deviceid")); //상태값넣기
+                    status.add((String)map.get("status")); //상태값넣기
+                    temp_brd.add((String) map.get("temp_brd")); // 온도값넣기
+                    level.add((String) map.get("level")); //배출량값넣기
+                    batt_level.add((String) map.get("batt_level")); //배터리잔량값넣기
+                    solar_current.add((String) map.get("solar_current")); //전류값넣기
+                    solar_voltage.add((String) map.get("solar_voltage")); //전압값넣기
+                }
+            }
+        }
 
         data.clear();
-        data.put("aswListDatas",resData.get("data"));
+        data.put("devices",devices);
+        data.put("status",status);
+        data.put("temp_brd",temp_brd);
+        data.put("level",level);
+        data.put("batt_level",batt_level);
+        data.put("solar_current",solar_current);
+        data.put("solar_voltage",solar_voltage);
+
+//        data.put("aswListDatas",resData.get("data"));
         res.addResponse("data",data);
 
         return ResponseEntity.ok(res.success());
@@ -181,7 +230,6 @@ public class DashboardRestController {
         List<Integer> circleDataCount = new ArrayList<>(); // 상태값 개수
 
         List<String> barDataColumns = new ArrayList<>(); //쓰레기양
-        List<String> mapBarDataColumns = new ArrayList<>(); //맵에 보여줄 데이터 쓰레기양
 
         List<List<Object>> mapDataColumns = new ArrayList<>(); // 맵데이터 담는 리스트
         List<String> deviceIdNames = new ArrayList<>(); // AWS 장비 device값 이름
@@ -190,52 +238,51 @@ public class DashboardRestController {
         List<String> gps_laDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
         List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
 
-        ObjectMapper mapper = new ObjectMapper();
-
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
-
-
-        Map<String, String> deviceMap = mapper.readValue(deviceids, Map.class);
-        List<String> keySetList = new ArrayList<>(deviceMap.keySet());
-        // 오름차순 //
-        Collections.sort(keySetList, (o1, o2) -> (deviceMap.get(o1).compareTo(deviceMap.get(o2))));
-        List<String> a = new ArrayList<>();
-        for(String key : keySetList) {
-            System.out.println(String.format("Key : %s, Value : %s", key, a.add(deviceMap.get(key))));
-        }
-        System.out.println(a);
-
-
 //        log.info("AWS 장치 list : "+resData);
-//        log.info("AWS 장치 data : "+resData.get("data"));
+        log.info("AWS 장치 data : "+resData.get("data"));
 //        log.info("AWS 장치 size : "+resData.get("datacounts"));
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
 //        log.info("number : "+number);
 
+        List<String> sortDevice = new ArrayList<>();
+
+        for(int i = 0; i<number; i++) {
+            HashMap map = (HashMap)resData.get("data").get(i);
+            sortDevice.add((String) map.get("deviceid"));
+        }
+
+        sortDevice.sort(Comparator.naturalOrder()); // 오름차순 정렬시키기
+//        log.info("오름차순 : " + sortDevice);
+//        HashMap map = (HashMap)resData.get("data");
+//
         barDataColumns.add("쓰레기양"); // 배출량 막대그래프 첫번째값 y축이름 -> 쓰레기양
-        for(int i = 0; i<number; i++){
-            Object dataObject = resData.get("data").get(i);
-            HashMap map = (HashMap) dataObject;
-            if (map.get("status").equals("caution")) {
-                map.replace("status", "주의");
-            } else if (map.get("status").equals("normal")) {
-                map.replace("status", "정상");
-            } else if (map.get("status").equals("severe")) {
-                map.replace("status", "심각");
+        for(String deviceid:sortDevice){
+            for(int i=0; i<number; i++){
+                HashMap map = (HashMap)resData.get("data").get(i);
+//                log.info("데이터 : "+map);
+                if (map.get("deviceid") == deviceid) {
+                    //배열에다넣기
+                    if (map.get("status").equals("normal")) {
+                            map.replace("status", "정상");
+                        } else if (map.get("status").equals("caution")) {
+                            map.replace("status", "주의");
+                        } else if (map.get("status").equals("severe")) {
+                            map.replace("status", "심각");
+                    }
+                    statusDatas.add(map.get("status")); //상태값차트
+
+                    deviceidDatas.add((String) map.get("deviceid")); //배출량차트
+                    barDataColumns.add((String) map.get("level")); //배출량차트
+
+                    deviceIdNames.add((String) map.get("deviceid")); //맵 데이터 차트
+                    gps_laDatas.add((String) map.get("gps_la")); //맵 데이터 차트
+                    gps_loDatas.add((String) map.get("gps_lo")); //맵 데이터 차트
+                }
             }
-
-            statusDatas.add(map.get("status")); //상태값차트
-
-            deviceidDatas.add((String) map.get("deviceid")); //배출량차트
-            barDataColumns.add((String) map.get("level")); //배출량차트
-            mapBarDataColumns.add((String) map.get("level")); //맵배출량차트
-
-            deviceIdNames.add((String) map.get("deviceid")); //맵 데이터 차트
-            gps_laDatas.add((String) map.get("gps_la")); //맵 데이터 차트
-            gps_loDatas.add((String) map.get("gps_lo")); //맵 데이터 차트
         }
 
         for(int i = 0; i<number; i++) {
@@ -250,14 +297,24 @@ public class DashboardRestController {
 
  //        log.info("AWS 장치 deviceid : " +deviceidDatas);
 //        log.info("바차트 들어갈 리스트 값 : " +barDataColumns);
+        List<String> statusMaster = new ArrayList<>(); //정상,주의,심각 리스트
+        statusMaster.add("정상");
+        statusMaster.add("주의");
+        statusMaster.add("심각");
+
+//        log.info("statusMaster : "+statusSize); // 정상,주의,심각 데이터가 있는지 확인할수있는 리스트
+//        log.info("statusMaster : "+statusSize);
+//        log.info("stateNames : "+stateNames);
+//        log.info("statusDatas : "+statusDatas);
 
         // 상태값 차트구하기
         int count = 0;
-        for(int i=0; i<statusSize.size(); i++){
+        for(int i=0; i<statusMaster.size(); i++){
             stateNames.clear();
-            for (int j = 0; j < statusSize.size(); j++) {
-                if (!stateNames.contains(statusSize.get(i))) {
-                    stateNames.add((String)statusSize.get(i));
+//            stateNames.add(statusMaster.get(i));
+            for (int j = 0; j < statusMaster.size(); j++) {
+                if (!stateNames.contains(statusMaster.get(i))) {
+                    stateNames.add((String)statusMaster.get(i));
                 }
             }
             for (int j = 0; j < statusDatas.size(); j++) {
@@ -320,12 +377,30 @@ public class DashboardRestController {
 //        log.info("mapDataColumns : "+mapDataColumns);
 
         data.put("statusDatas",statusDatas);
-        data.put("mapBarDataColumns",mapBarDataColumns);
         data.put("map_data_columns",mapDataColumns);
         data.put("circle_data_columns",circleDataColumns);
         data.put("circle_data_count",circleDataCount);
         data.put("bar_data_columns",barDataColumns);
         data.put("device_list_columns",deviceidDatas);
+
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
+
+    @PostMapping("location")
+    public ResponseEntity location(@RequestParam(value="s_emCountry", defaultValue="") Long emCountry){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        log.info("emCountry : "+emCountry);
+
+        Optional<MasterCode> optionalCountry= masterCodeService.findById(emCountry);
+        CodeType codeType = CodeType.valueOf("C0005");
+
+
+        List<MasterCode> ref = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,optionalCountry.get().getCode());
+
+        data.clear();
+        data.put("dataselect",ref);
 
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());

@@ -40,6 +40,7 @@ public class EquipmentDto {
     private Double emMaximumPayload; // 최대적재량
     private MasterCode emUnit; // 단위
     private String emInstallDate; // 설치일자
+    private String emSubName; // 장비약칭
 
     private LocalDateTime insertDateTime;
     private String insert_id;
@@ -112,6 +113,10 @@ public class EquipmentDto {
 
     public LocalDateTime getInsertDateTime() {
         return insertDateTime;
+    }
+
+    public String getEmSubName() {
+        return emSubName;
     }
 
     public String getInsert_id() {

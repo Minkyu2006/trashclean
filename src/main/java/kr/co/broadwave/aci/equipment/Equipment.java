@@ -75,6 +75,9 @@ public class Equipment {
     @Column(name="em_install_date")
     private String emInstallDate; // 설치일자
 
+    @Column(name="em_subname")
+    private String emSubName; // 장비약칭
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 

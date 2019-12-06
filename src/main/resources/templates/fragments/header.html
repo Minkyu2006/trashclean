@@ -99,7 +99,7 @@
 					<li><a href="/dashboard/dashboard">대시보드테스트(프론트)</a></li>
 				</ul>
 			</li>
-			<li>
+			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--user toggle">사용자관리</a>
 				<ul class="nav-child">
 					<li><a href="/admin/accountapproval">사용자승인</a></li>
@@ -107,7 +107,7 @@
 					<li><a href="/signup">사용자등록 </a></li>
 				</ul>
 			</li>
-			<li>
+			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">플랫폼관리</a>
 				<ul class="nav-child">
 					<li><a href="/admin/mastercodereg">마스터코드등록</a></li>
@@ -116,7 +116,7 @@
 					<li><a href="/admin/equipreg">장비등록</a></li>
 				</ul>
 			</li>
-			<li>
+			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--dash toggle">테스트페이지</a>
 				<ul class="nav-child">
 					<li><a href="/testpage/layout">그래프테스트</a></li>

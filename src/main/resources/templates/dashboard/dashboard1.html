@@ -10,8 +10,9 @@
 
 		$(function() {
 
-			awsDataListView()
-			// deviceListView(1);
+			deviceListView(1);
+			// LocationSetting();
+			//awsDataListView();
 
 			$("#btnSearch").on('click',function(){
 				deviceListView(1);
@@ -70,6 +71,7 @@
 				emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
+				emLocation:$('#s_emLocation').val(),
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -89,6 +91,7 @@
 					$.each(res.data.datalist, function(key, value){
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 					});
+					console.log("pushValue : "+pushValue);
 					pushDeviceId(pushValue);
 				}
 			});
@@ -114,6 +117,7 @@
 				emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
+				// emCountry:$('#s_emLocation').val(),
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -135,6 +139,7 @@
 					var html = '';
 					var pushValue = new Array();
 					var installDate = new Array();
+					var subname = new Array();
 					var idx = 0;
 					$.each(res.data.datalist, function(key, value){
 						html += '<li class="c-list__item">'
@@ -179,12 +184,13 @@
 						idx++
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
+						subname.push(nvl(value.emSubName,"확 인 불 가"));
 					});
 					//console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
 					$deviceList.html(html);
 					deviceAWSListView(pushValue,installDate);
 
-					pushDeviceId(pushValue);
+					pushDeviceId(pushValue,subname);
 				}
 			});
 		}
@@ -192,7 +198,7 @@
 		// ASW 장치 데이터리스트
 		function deviceAWSListView(pushValue,installDate) {
 			// console.log("장비리스트 뿌리기 시작")
-			console.log("받은 장비번호 : "+pushValue);
+			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
 
 			var deviceIds = new Array();
@@ -251,12 +257,20 @@
 					var htmls2 = new Array();
 					var htmls3 = new Array();
 					var idx = 0;
-					$.each(res.data.aswListDatas, function (key, value) {
+					$.each(res.data.devices, function (key, value) {
 						var html = '';
 						var html2 = '';
 						var html3 = '';
 
-						if(value.status=="normal"){
+						// console.log("res.data.devices : "+res.data.devices[idx]);
+						// console.log("res.data.status : "+res.data.status[idx]);
+						// console.log("res.data.temp_brd : "+res.data.temp_brd[idx]);
+						// console.log("res.data.level : "+res.data.level[idx]);
+						// console.log("res.data.batt_level : "+res.data.batt_level[idx]);
+						// console.log("res.data.solar_current : "+res.data.solar_current[idx]);
+						// console.log("res.data.solar_voltage : "+res.data.solar_voltage[idx]);
+
+						if(res.data.status[idx]=="normal"){
 							html2 += '<div class="equipment__section">';
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>'
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
@@ -264,7 +278,7 @@
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
-						}else if(value.status=="caution"){
+						}else if(res.data.status[idx]=="caution"){
 							html2 += '<div class="equipment__section">';
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>'
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
@@ -272,7 +286,7 @@
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 							html2 += '</div>'
-						}else if(value.status=="severe"){
+						}else if(res.data.status[idx]=="severe"){
 							html2 += '<div class="equipment__section">';
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>'
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
@@ -299,19 +313,23 @@
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
 						html += '<span class="equipment__info-title">'+'온도 : '+'</span>'
-						html += '<span class="equipment__info-value">'+nvl(value.temp_brd,"확 인 불 가")+'℃'+'</span>'
+						html += '<span class="equipment__info-value">'+nvl(res.data.temp_brd[idx],"확 인 불 가")+'℃'+'</span>'
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
 						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>'
-						html += '<span class="equipment__info-value">'+nvl(value.level,"확 인 불 가")+'%'+'</span>'
+						html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>'
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
 						html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>'
-						html += '<span class="equipment__info-value">'+nvl(value.batt_level,"확 인 불 가")+'%'+'</span>'
+						html += '<span class="equipment__info-value">'+nvl(res.data.batt_level[idx],"확 인 불 가")+'%'+'</span>'
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'태양광판넬출력량 : '+'</span>'
-						html += '<span class="equipment__info-value">'+nvl(value.solar_current,"확 인 불 가")+'A / '+nvl(value.solar_voltage,"확 인 불 가")+'V'+'</span>'
+						html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>'
+						html += '<span class="equipment__info-value">'+nvl(res.data.solar_current[idx],"확 인 불 가")+'A'+'</span>'
+						html += '</li>'
+						html += '<li class="equipment__info-item">'
+						html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>'
+						html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
 						html += '</li>'
 						html += '</ul>'
 						html += '</div>'
@@ -329,7 +347,7 @@
 						$('#listTest'+idx).prepend(htmls2[idx]);
 						$('#listTest'+idx).append(htmls3[idx]);
 
-						timeStamp(nvl(value.deviceid,"확 인 불 가"),idx);
+						timeStamp(nvl(res.data.devices[idx],"확 인 불 가"),idx);
 
 						idx++
 					});
@@ -341,7 +359,7 @@
 
 		// 타임스탬프 그래프함수
 		function timeStamp(pushValue,idx){
-			console.log("받아온 아이디 : "+pushValue);
+			// console.log("받아온 아이디 : "+pushValue);
 			// console.log("받아온 시간 : "+$('#intervaltime').val());
 
 			var params = {
@@ -380,9 +398,9 @@
 							// console.log("배출량 : "+value.level);
 							// console.log("배터리잔량 : "+value.batt_level);
 
-							var timestamp = value.timestamp*1000;
+							var timestamp = parseInt(value.timestamp); // value.timestamp(밀리세컨드)는 문자열로 받아오기때문에 정수형으로 변환해준다.
 							var date = new Date(timestamp);
-							var month = date.getMonth()+1;
+							var month = date.getMonth()+1; // 1월을 0월로 보기때문에 월에 +1을 해준다.
 							var day = date.getDate();
 							if(day < 10){
 								day = "0"+day;
@@ -499,7 +517,8 @@
 
 
 		// aws deviceID값 push하는 함수 next -> 차트만들기
-		function pushDeviceId(pushValue) {
+		function pushDeviceId(pushValue,subname) {
+			// console.log("pushDeviceId - subname : "+subname)
 			// console.log("차트그래프 그리기 시작")
 
 			//상태값 차트 , 쓰레기양 차트
@@ -536,9 +555,9 @@
 					//상태값 차트
 					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
 					//쓰레기양 차트
-					barChart(res.data.bar_data_columns,res.data.device_list_columns);
+					barChart(res.data.bar_data_columns,res.data.device_list_columns,subname);
 					// 맵에 장치보기
-					mapDeviceId(res.data.map_data_columns,res.data.mapBarDataColumns,res.data.statusDatas);
+					mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
 
 					// console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
 				}
@@ -546,7 +565,7 @@
 		}
 
 		// map
-		function mapDeviceId(map_data_columns,mapBarDataColumns,statusDatas) {
+		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
 
 			var locations = map_data_columns
 
@@ -573,7 +592,7 @@
 							'<h2>' + (map_data_columns[i][0]) + '</h2>' +
 							'<dl>' +
 							'<dt>' +'상태 : '+statusDatas[i]+'</dt>' +
-							'<dd>' +'배출량 : '+mapBarDataColumns[i]+'%'+'</dd>' +
+							'<dd>' +'배출량 : '+bar_data_columns[i]+'%'+'</dd>' +
 							'</dl>' +
 							'</div>'
 					return function() {
@@ -586,7 +605,6 @@
 
 		//상태값 차트
 				function circleChart(circle_data_columns,circle_data_count){
-				// console.log("circle_data_count : "+circle_data_count) // 상태값 개수리스트
 				$("#statusAll").text(circle_data_count[0]);
 				$("#statusNomal").text(circle_data_count[1]);
 				$("#statusCaution").text(circle_data_count[2]);
@@ -612,7 +630,11 @@
 		}
 
 		//쓰레기양 차트
-		function barChart(barData,deviceList) {
+		function barChart(barData,deviceList,subname) {
+			// console.log("barData : "+barData);
+			// console.log("deviceList : "+deviceList);
+			// console.log("subname : "+subname);
+
 			var barchart = c3.generate({
 				bindto: "#bar_chart",
 				data: {
@@ -633,7 +655,7 @@
 							position: 'outer-center'
 						},
 						type: 'category',
-						categories: deviceList,
+						categories: subname,
 						tick: {
 							centered: true
 						}
@@ -717,6 +739,42 @@
 			$("#intervaltime").val(hours);
 		}
 
+		// 국가,지역검색
+		function LocationSetting() {
+			console.log("s_emCountry : "+$("#s_emCountry").val());
+
+			var params = {
+				s_emCountry: $("#s_emCountry").val()
+			};
+
+			var $schList = $("#s_emLocation");
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/dashboard/location',
+				type: 'post',
+				data: params,
+				cache: false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var html = '';
+					// html += '<option value ="">'+전체+'</option>';
+					$.each(res.data.dataselect, function (key, value) {
+						html += '<option value ="' + echoNull2Blank(value.id) + '">' + echoNull2Blank(value.name)+ '</option>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
 
 	</script>
 </head>
@@ -861,7 +919,7 @@
 								<div class="c-float__item">
 									<div class="c-select">
 										<label for="s_emCountry" class="c-select__label">국가</label>
-										<select name="" id="s_emCountry" class="c-select__input">
+										<select id="s_emCountry" class="c-select__input">
 											<option value="">전체</option>
 											<option th:each ="equipdCountry : ${equipdCountrys}"
 													th:value="${equipdCountry.code}"
@@ -870,6 +928,14 @@
 										</select>
 									</div>
 								</div>
+<!--								<div class="c-float__item">-->
+<!--									<div class="c-select">-->
+<!--										<label for="s_emLocation" class="c-select__label">지역</label>-->
+<!--										<select id="s_emLocation" class="c-select__input">-->
+<!--                                            <option value="">전체</option>-->
+<!--										</select>-->
+<!--									</div>-->
+<!--								</div>-->
 							</div>
 						</div>
 					</div>

@@ -420,6 +420,7 @@
 			var params = {
 				emCountry: $("#emCountry").val()
 			};
+			console.log("emCountry : "+$("#emCountry").val());
 
 			var $schList = $("#emLocation");
 
@@ -674,12 +675,22 @@
 								</li>
 							</ul>
 						</td>
+						<th>장비약칭(사용자지정)</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="emSubName" id="emSubName" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
 						<th>AWS상 Device ID</th>
 						<td>
 							<div class="c-text">
 								<input type="text" name="emAwsNumber" id="emAwsNumber" class="c-text__input" />
 							</div>
 						</td>
+						<th></th>
+						<td></td>
 					</tr>
 				</tbody>
 			</table>

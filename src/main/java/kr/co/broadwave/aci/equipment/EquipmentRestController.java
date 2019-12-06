@@ -204,6 +204,7 @@ public class EquipmentRestController {
 
     @PostMapping("location")
     public ResponseEntity location(@RequestParam(value="emCountry", defaultValue="") Long emCountry){
+        log.info("emCountry : "+emCountry);
         Optional<MasterCode> optionalCountry= masterCodeService.findById(emCountry);
         CodeType codeType = CodeType.valueOf("C0005");
 
