@@ -422,6 +422,7 @@
 							level.push(value.level)
 							batt_level.push(value.batt_level);
 						});
+						var days = $("#intervaltime").val(); // 기간선택 시간
 						temp_brd_Max = Math.max.apply(0, temp_brd); // 온도최대값
 						temp_brd_Min = Math.min.apply(0, temp_brd); // 온도최소값
 
@@ -476,21 +477,21 @@
 								},
 								scales: {
 									xAxes: [{
-											display: true,
-											type: 'time',
+										display: true,
+										type: 'time',
 										// time: {
 										// 	displayFormats: {
 										// 		quarter: 'MMM YYYY'
 										// 	}
 										// },
+
 										time: {
-											unit: 'hour',
-											unitStepSize: 0.5,
-											round: 'hour',
-											tooltipFormat: "h:mm:ss a",
-											displayFormats: {
-												hour: 'MMM D, h:mm A'
-											}
+											parser: "YYYY-MM-DD HH:mm:ss",
+											tooltipFormat: "YYYY-MM-DD HH:mm:ss"
+										},
+										scaleLabel: {
+											display: true,
+											labelString: "Date"
 										},
 										// 	time: {
 										// 		parser: 'YYYY-MM-DD HH:mm:ss',
