@@ -5,6 +5,7 @@
 
 <head>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
 	<script type="text/javascript">
 
@@ -428,6 +429,15 @@
 
 						var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
 
+
+						var nowDate = new Date();
+						// 라벨 최대값 구하기 (현재날짜)
+						var max_milliseconds = nowDate.getTime();
+						// 라벨 최소값 구하기
+						var min_milliseconds = nowDate.setHours(nowDate.getHours()-$("#intervaltime").val());
+						console.log("현재날짜 : "+max_milliseconds);
+						console.log("이전날짜 : "+min_milliseconds);
+
 						var barChartData = {
 							labels: testTimeStamp,
 							datasets: [{
@@ -477,22 +487,20 @@
 								},
 								scales: {
 									xAxes: [{
+										// scaleLabel: {labelString:'Time', display: true},
+										gridLines: {
+											drawOnChartArea: false
+										},
 										display: true,
 										type: 'time',
-										// time: {
-										// 	displayFormats: {
-										// 		quarter: 'MMM YYYY'
-										// 	}
-										// },
-
 										time: {
-											parser: "YYYY-MM-DD HH:mm:ss",
-											tooltipFormat: "YYYY-MM-DD HH:mm:ss"
-										},
-										scaleLabel: {
-											display: true,
-											labelString: "Date"
-										},
+											min: min_milliseconds,
+											max: max_milliseconds,
+											// unit:'minute',
+											// displayFormats: {
+											// 	'minute': 'hh:mm a'
+											// }
+										}
 										// 	time: {
 										// 		parser: 'YYYY-MM-DD HH:mm:ss',
 										// 		tooltipFormat: 'll HH:mm:ss',
@@ -502,18 +510,6 @@
 										// 			'day': 'YYYY-MM-DD'
 										// 		}
 										// 	},
-											// time: {
-											// 	parser: 'YYYY-MM-DD HH:mm:ss',
-											// 	unit: 'day',
-											// 	displayFormats: {
-											// 		day: 'ddd'
-											// 	},
-											// 	min: '2019-11-02 18:43:53',
-											// 	max: '2019-12-06 18:43:53'
-											// },
-											gridLines: {
-												drawOnChartArea: false
-											}
 										}],
 									yAxes: [{
 											ticks: {
