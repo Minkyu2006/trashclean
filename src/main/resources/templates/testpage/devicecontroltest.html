@@ -30,7 +30,6 @@
         function callDataRequest() {
             var timestamp = + new Date();
 
-
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
             $(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
@@ -53,19 +52,15 @@
                     //화면 출력
                     statuscode= res.status;
                     if (statuscode ===200) {
-                        alert('요청처리되었습니다.')
-
+						Swal.fire({text:"요청처리되었습니다."});
                     }else{
-                        alert("처리오류")
+						Swal.fire({text:"처리오류"});
                     }
-
                 }
             });
-
-
         }
-        function callDoorControl(doormsg) {
 
+        function callDoorControl(doormsg) {
 
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
@@ -89,27 +84,21 @@
                     //화면 출력
                     statuscode= res.status;
                     if (statuscode ===200) {
-                       alert('요청처리되었습니다.')
-
+						Swal.fire({text:"요청처리되었습니다."});
                     }else{
-                        alert("처리오류")
+						Swal.fire({text:"처리오류"});
                     }
-
                 }
             });
-
-
         }
 
 
         function calldeviceState() {
 
-            $("#reqmsg").html("상태조회중..");
-            $("#resmsg").html("상태조회중..");
-            $("#reqdata").html("상태조회중..");
-            $("#resdata").html("상태조회중..");
-
-
+            $("#reqmsg").addClass(" active");
+            $("#resmsg").addClass(" active");
+            $("#reqdata").addClass(" active");
+            $("#resdata").addClass(" active");
 
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
@@ -137,7 +126,6 @@
                         if (devicestate.desired) {
                             reqdoor = nvl(devicestate.desired.doorsol, "확인불가");
                             reqdatareq = nvl(devicestate.desired.datareq, "미요청");
-
                         }else{
                             reqdoor="확인불가";
                             reqdatareq="미요청";
@@ -149,23 +137,55 @@
                         }else {
                             resdoor = "확인불가";
                             resdatareq = "미처리";
-
                         }
 
+						$("#reqmsg").removeClass(" loading");
+						$("#resmsg").removeClass(" loading");
+						$("#reqdata").removeClass(" loading");
+						$("#resdata").removeClass(" loading");
+
+						if(reqdoor=="open"){
+							$("#reqmsg").removeClass(" close");
+							$("#reqmsg").addClass(" open");
+						}else if(reqdoor=="close"){
+							$("#reqmsg").removeClass(" open");
+							$("#reqmsg").addClass(" close");
+						}else if(reqdoor=="확인불가"){
+							$("#reqmsg").removeClass(" open");
+							$("#reqmsg").addClass(" close");
+						}
+
+						if(resdoor=="open"){
+							$("#resmsg").removeClass(" close");
+							$("#resmsg").addClass(" open");
+						}else if(resdoor=="close"){
+							$("#resmsg").removeClass(" open");
+							$("#resmsg").addClass(" close");
+						}else if(resdoor=="확인불가"){
+							$("#resmsg").removeClass(" open");
+							$("#resmsg").addClass(" close");
+						}
+						
                         $("#reqmsg").html(reqdoor.toUpperCase());
                         $("#resmsg").html(resdoor.toUpperCase());
+
                         $("#reqdata").html(reqdatareq);
                         $("#resdata").html(resdatareq);
 
-
-
                     }else{
+						$("#reqmsg").removeClass(" loading");
+						$("#resmsg").removeClass(" loading");
+						$("#reqdata").removeClass(" loading");
+						$("#resdata").removeClass(" loading");
+						$("#reqmsg").removeClass(" open");
+						$("#resmsg").removeClass(" open");
+						$("#reqmsg").removeClass(" close");
+						$("#resmsg").removeClass(" close");
                         $("#reqmsg").html("조회실패");
                         $("#resmsg").html("조회실패");
                         $("#reqdata").html("조회실패");
-                        $("#reqdata").html("조회실패");
+                        $("#resdata").html("조회실패");
                     }
-
                 }
             });
         }
@@ -183,16 +203,18 @@
         		<div class="control__head">
         			<div class="control__head-item">
         				<div class="c-select">
-	        				<label for="" class="c-select__label">장비선택</label>
-	        				<select name="" id="" class="c-select__input">
-	        					<option value="">ISOL-KR-SEL-0004</option>
-	        					<option value=""></option>
-	        					<option value=""></option>
+	        				<label for="deviceid" class="c-select__label">장비선택</label>
+	        				<select name="deviceid" id="deviceid" class="c-select__input">
+	        					<option value="ISOL-KR-SEL-0001">ISOL-KR-SEL-0001</option>
+	        					<option value="ISOL-KR-SEL-0002">ISOL-KR-SEL-0002</option>
+								<option value="ISOL-KR-SEL-0003">ISOL-KR-SEL-0003</option>
+								<option value="ISOL-KR-SEL-0004">ISOL-KR-SEL-0004</option>
+								<option value="ISOL-KR-SEL-0005">ISOL-KR-SEL-0005</option>
 	        				</select>
 	       				</div>
         			</div>
         			<div class="control__head-item" style="padding-top: 15px;">
-        				<button class="c-button c-button--point">장비상태조회</button>
+        				<button class="c-button c-button--point" id="btnSearch">장비상태조회</button>
         			</div>
         		</div>
         		<div class="control__body">
@@ -201,11 +223,21 @@
         					<div class="control__results">
 		        				<div class="control__result-item">
 		        					<div class="control__result-title">도어 - 요청상태</div>
-		        					<div class="control__result open">OPEN</div>
+		        					<div class="control__result loading" id="reqmsg">
+										<span></span>
+										<span></span>
+										<span></span>
+										<span></span>
+									</div>
 		        				</div>
 		        				<div class="control__result-item">
 		        					<div class="control__result-title">도어 - 처리상태</div>
-		        					<div class="control__result close">CLOSE</div>
+		        					<div class="control__result loading" id="resmsg">
+										<span></span>
+										<span></span>
+										<span></span>
+										<span></span>
+									</div>
 		        				</div>
 		        			</div>
         				</div>
@@ -214,7 +246,7 @@
         					<div class="control__results">
 		        				<div class="control__result-item">
 		        					<div class="control__result-title">데이터요청 - 요청상태</div>
-		        					<div class="control__result loading">
+		        					<div class="control__result loading" id="reqdata">
 		        						<span></span>
 		        						<span></span>
 		        						<span></span>
@@ -223,11 +255,16 @@
 		        				</div>
 		        				<div class="control__result-item">
 		        					<div class="control__result-title">데이터요청 - 처리상태</div>
-		        					<div class="control__result">1575353338301</div>
+		        					<div class="control__result loading" id="resdata">
+										<span></span>
+										<span></span>
+										<span></span>
+										<span></span>
+									</div>
 		        				</div>
         					</div>
         				</div>
-        				
+
         				<div class="control__box">
         					<div class="control__results">
 		        				<div class="control__result-item">
@@ -250,52 +287,24 @@
 		        				</div>
         					</div>
         				</div>
+
         			</div>
         			
         			<div class="c-function">
 						<div class="c-function__group">
 							<div class="c-function__item">
-								<button class="c-button">문열기</button>
+								<button class="c-button" id="btnOpen">문열기</button>
 							</div>
 							<div class="c-function__item">
-								<button class="c-button">문닫기</button>
+								<button class="c-button" id="btnClose">문닫기</button>
 							</div>
 							<div class="c-function__item">
-								<button class="c-button">데이터요청</button>
+								<button class="c-button" id="btnData">데이터요청</button>
 							</div>
 						</div>
 					</div>
         		</div>
         	</div>
-        </article>
-        <article class="article">
-            <div>
-                <input type="text" id="deviceid" name ="deviceid"  value ='ISOL-KR-SEL-0004'/>
-                <button class="c-button c-button--point" id="btnSearch">장비상태조회</button>
-            </div>
-            <div class="member__form-item">
-                <span >도어-요청상태</span>
-                <span id ="reqmsg">...</span>
-            </div>
-            <div class="member__form-item">
-                <span >도어-처리상태</span>
-                <span id ="resmsg">...</span>
-            </div>
-            <div class="member__form-item">
-                <span >데이터요청-요청상태</span>
-                <span id ="reqdata">...</span>
-            </div>
-            <div class="member__form-item">
-                <span >데이터요청-처리상태</span>
-                <span id ="resdata">...</span>
-            </div>
-
-            <br/>
-            <div>
-                <button class="c-button c-button--point" id="btnOpen">문열기</button>
-                <button class="c-button c-button--point" id="btnClose">문닫기</button>
-                <button class="c-button c-button--point" id="btnData">데이터요청</button>
-            </div>
         </article>
     </section>
 
