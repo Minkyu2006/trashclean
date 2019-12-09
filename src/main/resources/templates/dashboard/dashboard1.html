@@ -392,9 +392,9 @@
 						var batt_level = new Array(); //배터리잔량
 						var testTimeStamp = new Array();
 						$.each(res.data.datarow1, function (key, value) {
-							console.log("해당아이디 : "+value.deviceid);
-							console.log("타임스탬프 : "+value.timestamp);
-							console.log("온도 : "+value.temp_brd);
+							// console.log("해당아이디 : "+value.deviceid);
+							// console.log("타임스탬프 : "+value.timestamp);
+							// console.log("온도 : "+value.temp_brd);
 							// console.log("배출량 : "+value.level);
 							// console.log("배터리잔량 : "+value.batt_level);
 
@@ -415,8 +415,8 @@
 							}
 							var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds
 
-							console.log("날짜 : "+time)
-							console.log("")
+							// console.log("날짜 : "+time)
+							// console.log("")
 							testTimeStamp.push(parseInt(value.timestamp));
 							timeStamp.push(time)
 							temp_brd.push(value.temp_brd)
@@ -435,8 +435,8 @@
 						var max_milliseconds = nowDate.getTime();
 						// 라벨 최소값 구하기
 						var min_milliseconds = nowDate.setHours(nowDate.getHours()-$("#intervaltime").val());
-						console.log("현재날짜 : "+max_milliseconds);
-						console.log("이전날짜 : "+min_milliseconds);
+						// console.log("현재날짜 : "+max_milliseconds);
+						// console.log("이전날짜 : "+min_milliseconds);
 
 						var barChartData = {
 							labels: testTimeStamp,
@@ -445,6 +445,7 @@
 								label: '온도',
 								yAxisID: 'y',
 								backgroundColor: "#e35f5f",
+								borderWidth: 2,
 								borderColor: "#e35f5f",
 								data: temp_brd,
 								fill: false
@@ -453,6 +454,7 @@
 								label: '배출량',
 								yAxisID: 'x',
 								backgroundColor: "#48ae63",
+								borderWidth: 2,
 								borderColor: "#48ae63",
 								data: level,
 								fill: false
@@ -461,6 +463,7 @@
 								label: '배터리잔량',
 								yAxisID: 'x',
 								backgroundColor: "#ffc600",
+								borderWidth: 2,
 								borderColor: "#ffc600",
 								data: batt_level,
 								fill: false
@@ -481,35 +484,22 @@
 									mode: 'index',
 									intersect: false
 								},
-								hover: {
-									mode: 'index',
-									intersect: false
-								},
+								// hover: { //점 나오기
+								// 	mode: 'index',
+								// 	intersect: false
+								// },
 								scales: {
 									xAxes: [{
-										// scaleLabel: {labelString:'Time', display: true},
 										gridLines: {
 											drawOnChartArea: false
 										},
-										display: true,
+										display: false,
 										type: 'time',
 										time: {
 											min: min_milliseconds,
 											max: max_milliseconds,
-											// unit:'minute',
-											// displayFormats: {
-											// 	'minute': 'hh:mm a'
-											// }
+											tooltipFormat: 'YYYY'+'년'+'MM'+'월'+'DD'+'일 '+'HH:mm:ss:a',
 										}
-										// 	time: {
-										// 		parser: 'YYYY-MM-DD HH:mm:ss',
-										// 		tooltipFormat: 'll HH:mm:ss',
-										// 		unit: 'day',
-										// 		unitStepSize: 1,
-										// 		displayFormats: {
-										// 			'day': 'YYYY-MM-DD'
-										// 		}
-										// 	},
 										}],
 									yAxes: [{
 											ticks: {
@@ -529,8 +519,8 @@
 												callback: function(value, index, values) {
 													return value+'℃';
 												},
-												max: (temp_brd_Max+5).toFixed(0),
-												min: (temp_brd_Min-5).toFixed(0)
+												max: (temp_brd_Max+15).toFixed(0),
+												min: (temp_brd_Min-15).toFixed(0)
 											},
 											id: 'y',
 											type: 'linear',
@@ -603,7 +593,6 @@
 
 		// map
 		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
-
 			var locations = map_data_columns
 
 			var map;
@@ -616,20 +605,31 @@
 
 			var marker, i;
 
+			var iconSrc = [];
+
+			iconSrc['정상'] = "/assets/images/marker.png";
+			iconSrc['주의'] = "/assets/images/marker--caution.png";
+			iconSrc['심각'] = "/assets/images/marker--severe.png"
+
 			var infowindow = new google.maps.InfoWindow();
+
+			var bounds = new google.maps.LatLngBounds()
 
 			for (i = 0; i < map_data_columns.length; i++) {
 				marker = new google.maps.Marker({
 					position: new google.maps.LatLng(map_data_columns[i][1], map_data_columns[i][2]),
-					map: map
+					map: map,
+					icon: iconSrc[locations[i][3]]
 				});
+
+				bounds.extend(marker.position);
 
 				google.maps.event.addListener(marker, 'click', (function(marker, i) {
 					var content = '<div class="iw-container" id="iw-container">' +
 							'<h2>' + (map_data_columns[i][0]) + '</h2>' +
 							'<dl>' +
 							'<dt>' +'상태 : '+statusDatas[i]+'</dt>' +
-							'<dd>' +'배출량 : '+bar_data_columns[i]+'%'+'</dd>' +
+							'<dd>' +'배출량 : '+bar_data_columns[i+1]+'%'+'</dd>' +
 							'</dl>' +
 							'</div>'
 					return function() {
@@ -638,6 +638,7 @@
 					}
 				})(marker, i));
 			}
+			map.fitBounds(bounds);
 		}
 
 		//상태값 차트

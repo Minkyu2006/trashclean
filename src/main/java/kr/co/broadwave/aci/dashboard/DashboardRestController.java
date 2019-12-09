@@ -368,7 +368,7 @@ public class DashboardRestController {
             gps_laDatas2.add(gps_laSubStirng);
             gps_loDatas2.add(gps_loSubStirng);
 
-            mapDataColumns.add(Arrays.asList((String)deviceIdNames.get(i),Double.parseDouble(gps_laDatas2.get(i)),Double.parseDouble(gps_loDatas2.get(i))));
+            mapDataColumns.add(Arrays.asList((String)deviceIdNames.get(i),Double.parseDouble(gps_laDatas2.get(i)),Double.parseDouble(gps_loDatas2.get(i)),(String)statusDatas.get(i)));
         }
 
 //        log.info("deviceIdNames : "+deviceIdNames);
