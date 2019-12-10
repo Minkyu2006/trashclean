@@ -24,13 +24,13 @@
 				refleshCircleChart(1);
 			});
 			$("#barChart").on('click',function(){
-				console.log("막대차트 새로고침")
+				refleshCircleChart(1);
 			});
 			$("#mapChart").on('click',function(){
-				console.log("맵차트 새로고침")
+				refleshCircleChart(1);
 			});
 			$("#allChart").on('click',function(){
-				console.log("전체차트 새로고침")
+				refleshCircleChart(1);
 			});
 
 		});
@@ -136,17 +136,26 @@
 				success: function(res){
 					//화면 출력
 					console.log("출력시작")
-
+					var html2 = '';
 					var html = '';
 					var pushValue = new Array();
 					var installDate = new Array();
 					var subname = new Array();
+
 					var idx = 0;
+
 					$.each(res.data.datalist, function(key, value){
+						html2 += '<li class="c-list__item">'
+						html2 += '<div id='+'loadinglist'+idx+' class="equipment">';
+							html2 += '<div id='+'mask'+idx+' class="c-loader">'
+							html2 += '<div id='+'loading'+idx+' class="c-loader__active c-loader__active--ring"></div>'
+							html2 += '</div>'
+						html2 += '</div>'
+						html2 += '</li>'
+
 						html += '<li class="c-list__item">'
 							html += '<div id='+'listTest'+idx+' class="equipment">';
-
-								html += '<div class="equipment__section">';
+							html += '<div class="equipment__section">';
 								html += '<h4 class="equipment__section-title">장치 상세 정보</h4>';
 									html += '<ul class="equipment__info">'
 										html += '<li class="equipment__info-item">'
@@ -178,20 +187,32 @@
 											html += '<span class="equipment__info-value">'+nvl(value.emInstallDate,"확 인 불 가")+'</span>';
 										html += '</li>'
 									html += '</ul>'
-								html += '</div>'
-							html += '</div>'
+						html += '</div>'
+						html += '</div>'
 						html += '</li>'
 
 						idx++
+
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
 						subname.push(nvl(value.emSubName,"확 인 불 가"));
 					});
 					//console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
-					$deviceList.html(html);
-					deviceAWSListView(pushValue,installDate);
+					$deviceList.html(html2);
+					setTimeout(function(){
+						for(var i=0; i<pushValue.length; i++){
+							$("#loadinglist"+i).removeClass("equipment");
+							$("#mask"+i).removeClass("c-loader");
+							$("#loading"+i).removeClass("c-loader__active c-loader__active--ring");
+						}
+						$deviceList.html(html);
+						deviceAWSListView(pushValue,installDate);
+						pushDeviceId(pushValue,subname);
+					},1500);
 
-					pushDeviceId(pushValue,subname);
+					// deviceAWSListView(pushValue,installDate);
+					//
+					// pushDeviceId(pushValue,subname);
 				}
 			});
 		}
@@ -263,46 +284,38 @@
 						var html2 = '';
 						var html3 = '';
 
-						// console.log("res.data.devices : "+res.data.devices[idx]);
-						// console.log("res.data.status : "+res.data.status[idx]);
-						// console.log("res.data.temp_brd : "+res.data.temp_brd[idx]);
-						// console.log("res.data.level : "+res.data.level[idx]);
-						// console.log("res.data.batt_level : "+res.data.batt_level[idx]);
-						// console.log("res.data.solar_current : "+res.data.solar_current[idx]);
-						// console.log("res.data.solar_voltage : "+res.data.solar_voltage[idx]);
-
 						if(res.data.status[idx]=="normal"){
 							html2 += '<div class="equipment__section">';
-							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>'
+							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-							html2 += '</div>'
+							html2 += '</div>';
 						}else if(res.data.status[idx]=="caution"){
 							html2 += '<div class="equipment__section">';
-							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>'
+							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-							html2 += '</div>'
+							html2 += '</div>';
 						}else if(res.data.status[idx]=="severe"){
 							html2 += '<div class="equipment__section">';
-							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>'
+							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-							html2 += '</div>'
+							html2 += '</div>';
 						}else{
 							html2 += '<div class="equipment__section">';
-							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>'
+							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-							html2 += '</div>'
+							html2 += '</div>';
 						}
 
 						html += '<div class="equipment__section">'
@@ -346,6 +359,13 @@
 						$('#listTest'+idx).append(htmls[idx]);
 						$('#listTest'+idx).prepend(htmls2[idx]);
 						$('#listTest'+idx).append(htmls3[idx]);
+
+						$("#statemask"+idx).removeClass("c-loader");
+						$("#stateloading"+idx).removeClass("c-loader__active c-loader__active--ring");
+						$("#detailmask"+idx).removeClass("c-loader");
+						$("#detailloading"+idx).removeClass("c-loader__active c-loader__active--ring");
+						$("#graphmask"+idx).removeClass("c-loader");
+						$("#graphloading"+idx).removeClass("c-loader__active c-loader__active--ring");
 
 						timeStamp(nvl(res.data.devices[idx],"확 인 불 가"),idx);
 
@@ -427,8 +447,8 @@
 						temp_brd_Max = Math.max.apply(0, temp_brd); // 온도최대값
 						temp_brd_Min = Math.min.apply(0, temp_brd); // 온도최소값
 
-						var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
-
+						//var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
+						var ctx = document.getElementById('timeStampChart'+idx);
 
 						var nowDate = new Date();
 						// 라벨 최대값 구하기 (현재날짜)
@@ -484,10 +504,10 @@
 									mode: 'index',
 									intersect: false
 								},
-								// hover: { //점 나오기
-								// 	mode: 'index',
-								// 	intersect: false
-								// },
+								hover: { //점 나오기
+									mode: 'index',
+									intersect: false
+								},
 								scales: {
 									xAxes: [{
 										gridLines: {
@@ -1006,7 +1026,9 @@
 						</div>
 						<div class="panel__body panel__body--height-auto panel__body--non-padding">
 							<ul id="deviceList" class="c-list equipment">
-
+<!--								<div  id="mask" class="c-loader">-->
+<!--									<div id="loading" class="c-loader__active c-loader__active&#45;&#45;ring"></div>-->
+<!--								</div>-->
 							</ul>
 						</div>
 <!--								<div class="c-pager">-->
