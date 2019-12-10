@@ -58,6 +58,10 @@ public class TestpageController {
         return "testpage/fileupload";
     }
 
+    @RequestMapping("listtest")
+    public String listtest(){
+        return "testpage/listtest";
+    }
 
     @RequestMapping("filedownload/{fileid}")
     @ResponseBody
