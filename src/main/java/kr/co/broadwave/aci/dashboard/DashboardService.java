@@ -78,4 +78,5 @@ public class DashboardService {
     public List<Equipment> findAll() {
         return equipmentRepository.findAll();
     }
+
 }

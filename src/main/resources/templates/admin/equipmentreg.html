@@ -89,18 +89,6 @@
 				return false;
 			}
 
-			//날짜저장 VIEW(YYYY-MM-DD) -> DATABASE(YYYYMMDD)
-			// if($("#emInstallDate").val() != "") {
-			// 	var install = $('#emInstallDate').val();
-			// 	var installArray = install.split("");
-			// 	for(var i = 0; i<2; i++) {
-			// 		installArray.splice(installArray.indexOf("-"), 1);
-			// 	}
-			// 	var realinstall = installArray.join("");
-			// 	console.log("realinstall : "+realinstall)
-			// 	$("#emInstallDate").val(realinstall);
-			// };
-
 			var $form = $('form[name="equreg"]');
 
 			var params = $form.serialize();

@@ -5,7 +5,6 @@
 
 <head>
 	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
 
 	<script type="text/javascript">
 
@@ -20,24 +19,24 @@
 
 			$("#circleChart").on('click',function(){
 				$("#pieChartLoading").show();
-				refleshCircleChart(1);
+				refleshCircleChart();
 			});
 			$("#barChart").on('click',function(){
 				$("#barChartLoading").show();
-				refleshBarChart(1);
+				refleshBarChart();
 			});
 			$("#mapChart").on('click',function(){
 				$("#mapChartLoading").show();
-				refleshMapChart(1);
+				refleshMapChart();
 			});
 			$("#allChart").on('click',function(){
-				refleshAllChart(1);
+				// refleshAllChart();
 			});
 
 		});
 
 		//  모든차트 새로고침
-		function refleshAllChart(page) {
+		function refleshAllChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
 				emAgency:$('#s_Agency').val(),
@@ -75,7 +74,7 @@
 		}
 
 		// 원차트 새로고침
-		function refleshCircleChart(page) {
+		function refleshCircleChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
 				emAgency:$('#s_Agency').val(),
@@ -105,7 +104,7 @@
 		}
 
 		// 막대차트 새로고침
-		function refleshBarChart(page) {
+		function refleshBarChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
 				emAgency:$('#s_Agency').val(),
@@ -137,7 +136,7 @@
 		}
 
 		// 맵차트 새로고침
-		function refleshMapChart(page) {
+		function refleshMapChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
 				emAgency:$('#s_Agency').val(),
@@ -169,7 +168,7 @@
 		// 장치리스트 출력
 		function deviceListView(page) {
 			if ($("#intervaltime").val().trim() == '') {
-				Swal.fire({text:"조회할 날짜를 선택해주세요"});
+				alert("조회할 날짜를 선택해주세요");
 				return false;
 			}
 			$("#mapChartLoading").show();
@@ -200,7 +199,7 @@
 				},
 				success: function(res){
 					//화면 출력
-					console.log("출력시작")
+					//console.log("출력시작")
 					var html2 = '';
 					var html = '';
 					var pushValue = new Array();
@@ -440,7 +439,7 @@
 
 						idx++
 					});
-					console.log("출력완료");
+					//console.log("출력완료");
 				}
 			});
 		}
@@ -1231,9 +1230,6 @@
 						</div>
 						<div class="panel__body panel__body--height-auto panel__body--non-padding">
 							<ul id="deviceList" class="c-list equipment">
-<!--								<div  id="mask" class="c-loader">-->
-<!--									<div id="loading" class="c-loader__active c-loader__active&#45;&#45;ring"></div>-->
-<!--								</div>-->
 							</ul>
 						</div>
 <!--								<div class="c-pager">-->

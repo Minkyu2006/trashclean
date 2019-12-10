@@ -4,71 +4,229 @@
 	  layout:decorate ="~{layout/default}">
 	  
 	<head>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaj-tLY53HSlUAzB1mLnhKCdm6rRp8blY&callback=initMap" async defer></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaj-tLY53HSlUAzB1mLnhKCdm6rRp8blY&callback" async defer></script>
 		<script>
-			// map
-			var locations = [
-				['명동', 37.563576, 126.983431, 'Normal'],
-	            ['가로수길', 37.520300, 127.023008, 'Caution'],
-	            ['광화문', 37.575268, 126.976896, 'Severe'],
-	            ['남산', 37.550925, 126.990945, 'Normal'],
-	            ['이태원', 37.540223, 126.994005,'Caution'],
-	            ['iSolabin', 37.14450, 127.03312, 'Severe']
-			]
-			
-			var map;
-			
-			function initMap() {
+
+			$(function() {
+
+				deviceMap();
+
+				$("#btnSearch").on('click', function () {
+					deviceMap();
+				})
+
+			});
+
+			function deviceMap() {
+                console.log("위치기반 시스템 ON");
+				var params = {
+					emNumber:$('#s_emNumber').val(),
+					emType:$('#s_emType').val(),
+					emAgency:$('#s_Agency').val(),
+					emCountry:$('#s_emCountry').val(),
+				};
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url:'/api/dashboard/deviceInfoList',
+					type : 'post',
+					data : params,
+					cache:false,
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					},
+					success: function(res){
+						var pushValue = new Array();
+						$.each(res.data.datalist, function(key, value){
+							pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+						});
+						MapChartDeviceId(pushValue);
+					}
+				});
+			}
+
+			// Map그래프 새로고침
+			function MapChartDeviceId(pushValue) {
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+				var deviceIds = new Array();
+				for (var i=0; i<pushValue.length; i++){
+					deviceIds.push(pushValue[i]);
+				}
+				var itemJson = new Object();
+				itemJson.deviceids = deviceIds;
+				var devicestr = JSON.stringify(itemJson);
+				var params = {
+					deviceids:devicestr
+				};
+				$.ajax({
+					url: '/api/dashboard/dataMapGraph',
+					type: 'post',
+					data : params,
+					cache: false,
+					error: function (request) {
+						ajaxErrorMsg(request);
+					},
+					success: function (res) {
+						if (!Ajax.checkResult(res)) {
+							return;
+						}
+						// 맵에 장치보기
+						mapDeviceId(pushValue,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
+						$("#mapLoaging").hide();
+					}
+				});
+			}
+
+			function mapDeviceId(pushValue,map_data_columns,bar_data_columns,statusDatas) {
+				console.log("pushValue : "+pushValue)
+
+				var locations = map_data_columns
+
+				var map;
 				map = new google.maps.Map(document.getElementById('map'), {
-					//center: {lat: 37.412834, lng: 126.984527},
-					zoom: 10,
+					center: {lat: 37.14450, lng: 127.03312},
+					zoom: 8,
 					mapTypeControl: false,
 					streetViewControl: false
 				});
-				
+
 				var marker, i;
-				
+
 				var iconSrc = [];
-				
-				iconSrc['Normal'] = "/assets/images/marker.png";
-				iconSrc['Caution'] = "/assets/images/marker--caution.png";
-				iconSrc['Severe'] = "/assets/images/marker--severe.png"
-				
-				//var infowindow = new google.maps.InfoWindow();
-				
+
+				iconSrc['정상'] = "/assets/images/marker.png";
+				iconSrc['주의'] = "/assets/images/marker--caution.png";
+				iconSrc['심각'] = "/assets/images/marker--severe.png"
+
+				var infowindow = new google.maps.InfoWindow();
+
 				var bounds = new google.maps.LatLngBounds()
-				
-				for (i = 0; i < locations.length; i++) {
+
+				for (i = 0; i < map_data_columns.length; i++) {
 					marker = new google.maps.Marker({
-						position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+						position: new google.maps.LatLng(map_data_columns[i][1], map_data_columns[i][2]),
 						map: map,
 						icon: iconSrc[locations[i][3]]
 					});
-					
+
 					bounds.extend(marker.position);
-					
+
 					google.maps.event.addListener(marker, 'click', (function(marker, i) {
-						/*var content = '<div class="iw-container" id="iw-container">' +
-							'<h2>' + (locations[i][0]) + '</h2>' +
-							'<dl>' +
-								'<dt>위치정보</dt>' +
-								'<dd>00시00구00동</dd>' +
-							'</dl>' +
-						'</div>'*/
-						var content = (locations[i][0])
-				        return function() {
-				          //infowindow.setContent(content);
-				          //infowindow.open(map, marker);
-				          console.log(content)
-				        }
-				        
-				      })(marker, i));
+						var content = '<div class="iw-container" id="iw-container">' +
+								'<h2>' + (map_data_columns[i][0]) + '</h2>' +
+								'<dl>' +
+								'<dt>' +'상태 : '+statusDatas[i]+'</dt>' +
+								'<dd>' +'배출량 : '+bar_data_columns[i+1]+'%'+'</dd>' +
+								'</dl>' +
+								'</div>'
+						return function() {
+							infowindow.setContent(content);
+							infowindow.open(map, marker);
+							deviceDetail(pushValue[i])
+						}
+					})(marker, i));
 				}
-				
 				map.fitBounds(bounds);
 			}
-	
-	
+
+			// 장치리스트 출력
+			function deviceDetail(pushValue) {
+
+				var $deviceDetail = $('#deviceDetail');
+
+				var params = {
+					pushValue:pushValue,
+				};
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url:'/api/dashboard/deviceMapDetail',
+					type : 'post',
+					data : params,
+					cache:false,
+					error:function(request,status,error){
+						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					},
+					success: function(res){
+						// var html2 = '';
+						// var html = '';
+						// var pushValue = new Array();
+						// var installDate = new Array();
+						//
+						// var idx = 0;
+
+						// $.each(res.data.datalist, function(key, value){
+						// 	html2 += '<li class="c-list__item">'
+						// 	html2 += '<div class="equipment">';
+						// 	html2 += '<div id="mask" class="c-loader">'
+						// 	html2 += '<div id="loading" class="c-loader__active c-loader__active--ring"></div>'
+						// 	html2 += '</div>'
+						// 	html2 += '</div>'
+						// 	html2 += '</li>'
+						//
+						// 	html += '<li class="c-list__item">'
+						// 	html += '<div id="listTest" class="equipment">';
+						// 	html += '<div class="equipment__section">';
+						// 	html += '<h4 class="equipment__section-title">장치 상세 정보</h4>';
+						// 	html += '<ul class="equipment__info">'
+						// 	html += '<li class="equipment__info-item">'
+						// 	html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>'
+						// 	html += '<span class="equipment__info-value">'+nvl(value.emNumber,"확 인 불 가")+'</span>';
+						// 	html += '</li>'
+						// 	html += '<li class="equipment__info-item">'
+						// 	html += '<span class="equipment__info-title">'+'장비타입 : '+'</span>'
+						// 	html += '<span class="equipment__info-value">'+nvl(value.emType,"확 인 불 가")+'</span>';
+						// 	html += '</li>'
+						// 	html += '<li class="equipment__info-item">'
+						// 	html += '<span class="equipment__info-title">'+'최대적재량 : '+'</span>'
+						// 	html += '<span class="equipment__info-value">'+nvl(value.emMaximumPayload,"확 인 불 가")+' '+nvl(value.emUnit,"확 인 불 가")+'</span>';
+						// 	html += '</li>'
+						// 	html += '<li class="equipment__info-item">'
+						// 	html += '<span class="equipment__info-title">'+'운영사 : '+'</span>'
+						// 	html += '<span class="equipment__info-value">'+nvl(value.company,"확 인 불 가")+'</span>';
+						// 	html += '</li>'
+						// 	html += '<li class="equipment__info-item">'
+						// 	html += '<span class="equipment__info-title">'+'지역 : '+'</span>'
+						// 	html += '<span class="equipment__info-value">'+nvl(value.emLocation,"확 인 불 가")+'</span>';
+						// 	html += '</li>'
+						// 	html += '<li class="equipment__info-item">'
+						// 	html += '<span class="equipment__info-title">'+'국가 : '+'</span>'
+						// 	html += '<span class="equipment__info-value">'+nvl(value.emCountry,"확 인 불 가")+'</span>';
+						// 	html += '</li>'
+						// 	html += '<li class="equipment__info-item">'
+						// 	html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>'
+						// 	html += '<span class="equipment__info-value">'+nvl(value.emInstallDate,"확 인 불 가").substring(0,4)+"년 "+nvl(value.emInstallDate,"확 인 불 가").substring(4,6)+"월 "+nvl(value.emInstallDate,"확 인 불 가").substring(6,8)+"일"+'</span>';
+						// 	html += '</li>'
+						// 	html += '</ul>'
+						// 	html += '</div>'
+						// 	html += '</div>'
+						// 	html += '</li>'
+						//
+						// 	idx++
+						//
+						// 	pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+						// 	installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
+						// });
+
+						// $deviceDetail.html(html2);
+						// setTimeout(function(){
+						// 	$("#mask").removeClass("c-loader");
+						// 	$("#loading").removeClass("c-loader__active c-loader__active--ring");
+						// 	$deviceList.html(html);
+						// 	deviceAWSListView(pushValue,installDate);
+						// },2000);
+					}
+				});
+			}
+
 		</script>
 	</head>
 	  
@@ -86,43 +244,43 @@
 						<div class="panel__body panel__body--height-auto">
 							<div class="c-float c-float--flex">
 								<div class="c-float__item">
-									<div class="c-select">
-										<label for="select1" class="c-select__label">장비 타입</label>
-										<select name="" id="select1" class="c-select__input">
-											<option value="">iSolarbin</option>
-											<option value=""></option>
-											<option value=""></option>
-										</select>
+									<div class="c-text">
+										<label for="s_emNumber" class="c-text__label">장비번호</label>
+										<input id="s_emNumber" type="text" class="c-text__input" />
 									</div>
 								</div>
 								<div class="c-float__item">
 									<div class="c-select">
-										<label for="select2" class="c-select__label">소속운영사</label>
-										<select name="" id="select2" class="c-select__input">
-											<option value="">ACI</option>
-											<option value=""></option>
-											<option value=""></option>
-										</select>
-									</div>
-								</div>
-								<div class="c-float__item">
-									<div class="c-select">
-										<label for="select3" class="c-select__label">국가</label>
-										<select name="" id="select3" class="c-select__input">
-											<option value="">Korea</option>
-											<option value=""></option>
-											<option value=""></option>
+										<label for="s_emType" class="c-select__label">장비 타입</label>
+										<select name="" id="s_emType" class="c-select__input">
+											<option value="">전체</option>
+											<option th:each ="equipdType : ${equipdTypes}"
+													th:value="${equipdType.code}"
+													th:text="${equipdType.name}"
+											></option>
 										</select>
 									</div>
 								</div>
 								<div class="c-float__item">
 									<div class="c-text">
-										<label for="number" class="c-text__label">장비번호</label>
-										<input type="text" class="c-text__input" id="number">
+										<label for="s_Agency" class="c-text__label">소속운영사</label>
+										<input id="s_Agency" type="text" class="c-text__input" />
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="s_emCountry" class="c-select__label">국가</label>
+										<select id="s_emCountry" class="c-select__input">
+											<option value="">전체</option>
+											<option th:each ="equipdCountry : ${equipdCountrys}"
+													th:value="${equipdCountry.code}"
+													th:text="${equipdCountry.name}">
+											</option>
+										</select>
 									</div>
 								</div>
 								<div class="c-float__item c-float__item--flex--auto" style="padding-top: 15px;">
-									<button class="c-button c-button--point">조회</button>
+									<button id="btnSearch" class="c-button c-button--point">조회</button>
 								</div>
 							</div>
 						</div>
@@ -141,6 +299,9 @@
 							</div>
 						</div>
 						<div class="panel__body panel__body--height-auto">
+							<div id="mapLoaging" class="c-loader">
+								<div class="c-loader__active c-loader__active--ring"></div>
+							</div>
 							<div class="map map--big" id="map"></div>
 						</div>
 					</div>
@@ -154,81 +315,7 @@
 							<h4 class="panel__title">기기</h4>
 						</div>
 						<div class="panel__body panel__body--height-auto panel__body--non-padding">
-							<ul class="c-list equipment">
-								<li class="c-list__item">
-									<div class="equipment">
-										<div class="equipment__section">
-											<span class="equipment__stat normal">Normal</span>
-											<span class="equipment__connect on">Online</span>
-											<div class="equipment__img">
-												<img src="/assets/images/dummy/iSolarbin.png" alt="">
-											</div>
-										</div>
-										<div class="equipment__section">
-											<h4 class="equipment__section-title">상세 정보</h4>
-											<ul class="equipment__info">
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">장비 ID :</span>
-													<span class="equipment__info-value">ISOL-KR-INC-0001</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">장비타입 :</span>
-													<span class="equipment__info-value">iSolarbin</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">최대적재량 :</span>
-													<span class="equipment__info-value">200L</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">운영사 :</span>
-													<span class="equipment__info-value">ACI</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">지역 :</span>
-													<span class="equipment__info-value">서울</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">국가 :</span>
-													<span class="equipment__info-value">한국</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">설치일자 :</span>
-													<span class="equipment__info-value">2019년 10월 5일</span>
-												</li>
-											</ul>
-										</div>
-										<div class="equipment__section">
-											<h4 class="equipment__section-title">상태 상세 정보</h4>
-											<ul class="equipment__info">
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">운영일 :</span>
-													<span class="equipment__info-value">35일</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">온도 :</span>
-													<span class="equipment__info-value">27.5℃</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">배출량 :</span>
-													<span class="equipment__info-value">75%</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">배터리잔량 :</span>
-													<span class="equipment__info-value">65%</span>
-												</li>
-												<li class="equipment__info-item">
-													<span class="equipment__info-title">태양광판넬출력량 :</span>
-													<span class="equipment__info-value">9.2A/12.4V</span>
-												</li>
-											</ul>
-										</div>
-										<div class="equipment__section">
-											<div class="c-loader">
-												<div class="c-loader__active c-loader__active--ring"></div>
-											</div>
-										</div>
-									</div>
-								</li>
+							<ul id="deviceDetail" class="c-list equipment">
 							</ul>
 						</div>
 					</div>
