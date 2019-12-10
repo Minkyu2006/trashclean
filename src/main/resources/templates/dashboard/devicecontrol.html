@@ -6,6 +6,9 @@
     <script>
 
         $(function(){
+
+        	deviceList();
+
             $("#btnSearch").on('click',function(){
                 calldeviceState();
             });
@@ -21,11 +24,31 @@
                 callDataRequest();
             });
 
-
-
-
-
         });
+
+		function deviceList() {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			var $deviceid = $('#deviceid');
+
+			$.ajax({
+				url:'/api/equipment/devicelist',
+				type : 'post',
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					var html = '';
+					$.each(res.data.equipment, function(key, value){
+						html +=  '<option value='+value.emNumber+'>'+value.emNumber+'</option>'
+					});
+					$deviceid.html(html);
+				}
+			});
+		}
 
         function callDataRequest() {
             var timestamp = + new Date();
@@ -205,11 +228,6 @@
         				<div class="c-select">
 	        				<label for="deviceid" class="c-select__label">장비선택</label>
 	        				<select name="deviceid" id="deviceid" class="c-select__input">
-	        					<option value="ISOL-KR-SEL-0001">ISOL-KR-SEL-0001</option>
-	        					<option value="ISOL-KR-SEL-0002">ISOL-KR-SEL-0002</option>
-								<option value="ISOL-KR-SEL-0003">ISOL-KR-SEL-0003</option>
-								<option value="ISOL-KR-SEL-0004">ISOL-KR-SEL-0004</option>
-								<option value="ISOL-KR-SEL-0005">ISOL-KR-SEL-0005</option>
 	        				</select>
 	       				</div>
         			</div>

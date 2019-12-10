@@ -4,15 +4,12 @@ import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.files.FileUploadService;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 
@@ -46,11 +43,6 @@ public class TestpageController {
     @RequestMapping("layout")
     public String layout(){
         return "testpage/layout";
-    }
-
-    @RequestMapping("devicecontroltest")
-    public String devicecontroltest(){
-        return "testpage/devicecontroltest";
     }
 
     @RequestMapping("fileupload")

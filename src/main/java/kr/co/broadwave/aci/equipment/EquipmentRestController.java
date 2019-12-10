@@ -8,6 +8,7 @@ import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.company.*;
+import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +35,7 @@ import java.util.*;
 @RequestMapping("/api/equipment")
 public class EquipmentRestController {
 
-    private AjaxResponse res = new AjaxResponse();
-    private HashMap<String, Object> data = new HashMap<>();
-
+    private final DashboardService dashboardService;
     private final ModelMapper modelMapper;
     private final EquipmentService equipmentService;
     private final AccountService accountService;
@@ -48,9 +47,11 @@ public class EquipmentRestController {
     public EquipmentRestController(ModelMapper modelMapper,
                                    AccountService accountService,
                                    CompanyService companyService,
+                                   DashboardService dashboardService,
                                    MasterCodeService masterCodeService,
                                    EquipmentService equipmentService, ACIAWSIoTDeviceService aciawsIoTDeviceService) {
         this.accountService = accountService;
+        this.dashboardService = dashboardService;
         this.companyService = companyService;
         this.masterCodeService = masterCodeService;
         this.equipmentService = equipmentService;
@@ -61,6 +62,8 @@ public class EquipmentRestController {
     // 업체 저장
     @PostMapping ("reg")
     public ResponseEntity equipmentReg(@ModelAttribute EquipmentMapperDto equipmentMapperDto,HttpServletRequest request){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         Equipment equipment = modelMapper.map(equipmentMapperDto, Equipment.class);
 
@@ -165,6 +168,8 @@ public class EquipmentRestController {
     // 업체 정보 보기
     @PostMapping ("info")
     public ResponseEntity equipmentInfo(@RequestParam (value="id", defaultValue="") Long id){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         EquipmentDto equipment = equipmentService.findById(id);
         log.info("받아온 아이디값 : "+id);
@@ -179,6 +184,8 @@ public class EquipmentRestController {
     // 소속운영사 관리코드-운영사명 따오기
     @PostMapping ("agencyInfo")
     public ResponseEntity agencyInfo(@RequestParam (value="id", defaultValue="") Long id){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         CompanyDto companyDto = companyService.findById(id);
 
@@ -192,6 +199,8 @@ public class EquipmentRestController {
     // 장비 삭제
     @PostMapping("del")
     public ResponseEntity equipmentDel(@RequestParam(value="emNumber", defaultValue="") String emNumber){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         Optional<Equipment> optionalEquipment = equipmentService.findByEmNumber(emNumber);
 
@@ -204,7 +213,9 @@ public class EquipmentRestController {
 
     @PostMapping("location")
     public ResponseEntity location(@RequestParam(value="emCountry", defaultValue="") Long emCountry){
-        log.info("emCountry : "+emCountry);
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
         Optional<MasterCode> optionalCountry= masterCodeService.findById(emCountry);
         CodeType codeType = CodeType.valueOf("C0005");
 
@@ -212,6 +223,21 @@ public class EquipmentRestController {
 
         data.clear();
         data.put("dataselect",ref);
+
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
+
+    //장비 고유아이디값 리스트부르기
+    @PostMapping("devicelist")
+    public ResponseEntity devicelist() {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        List<Equipment> equipment = dashboardService.findAll();
+
+        data.clear();
+        data.put("equipment",equipment);
 
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());
@@ -233,7 +259,6 @@ public class EquipmentRestController {
         }catch(Exception e){
             return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
         }
-
     }
 
     //Shadow 문열기 단기 요청

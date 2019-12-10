@@ -51,4 +51,9 @@ public class DashboardController {
         return "dashboard/dashboard1";
     }
 
+    @RequestMapping("devicecontrol")
+    public String devicecontroltest(){
+        return "dashboard/devicecontrol";
+    }
+
 }
