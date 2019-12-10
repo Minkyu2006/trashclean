@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.equipment;
 import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Minkyu
@@ -15,6 +16,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Setter
+@Slf4j
 public class EquipmentMapperDto {
 
     private String emNumber; // 장비 번호
@@ -81,6 +83,7 @@ public class EquipmentMapperDto {
     }
 
     public String getEmInstallDate() {
-        return emInstallDate;
+        String installDate = emInstallDate.replaceAll("-", "");
+        return installDate;
     }
 }

@@ -5,6 +5,11 @@
 <head>
     <script type="text/javascript">
 		$(function() {
+			// 오직 숫자만 입력할수있게하는 제이쿼리
+			$("input:text[numberOnly]").on("keyup", function() {
+				$(this).val($(this).val().replace(/[^0-9]/g,""));
+			});
+
 			//자동실행
 			LocationSetting();
 
@@ -62,6 +67,7 @@
 			$("#emMaximumPayload").val('');
 			$("#addSell").val('');
 			$("#emInstallDate").val('');
+			$("#emSubName").val('');
 
 			$("#emTypeView").hide();
 			$("#emCountryView").hide();
@@ -73,25 +79,27 @@
 
 		// 장비저장
 		function save() {
+
 			if ($("#operator").val().trim() == '') {
-				Swal.fire({text:"소속 운영사를 선택해주세요."});
+				alert("소속 운영사를 선택해주세요.");
 				return false;
 			}
 			if ($("#emInstallDate").val().trim() == '') {
-				Swal.fire({text:"설치일자를 선택해주세요."});
+				alert("설치일자를 선택해주세요.");
 				return false;
 			}
 
-			// 날짜저장 VIEW(YYYY-MM-DD) -> DATABASE(YYYYMMDD)
-			if($("#emInstallDate").val() != "") {
-				var install = $('#emInstallDate').val();
-				var installArray = install.split("");
-				for(var i = 0; i<2; i++) {
-					installArray.splice(installArray.indexOf("-"), 1);
-				}
-				var realinstall = installArray.join("");
-				$("#emInstallDate").val(realinstall);
-			};
+			//날짜저장 VIEW(YYYY-MM-DD) -> DATABASE(YYYYMMDD)
+			// if($("#emInstallDate").val() != "") {
+			// 	var install = $('#emInstallDate').val();
+			// 	var installArray = install.split("");
+			// 	for(var i = 0; i<2; i++) {
+			// 		installArray.splice(installArray.indexOf("-"), 1);
+			// 	}
+			// 	var realinstall = installArray.join("");
+			// 	console.log("realinstall : "+realinstall)
+			// 	$("#emInstallDate").val(realinstall);
+			// };
 
 			var $form = $('form[name="equreg"]');
 
@@ -125,6 +133,17 @@
 			});
 		}
 
+		//한글을 지우는 함수
+		function delHangle(evt){
+			var objTarget = evt.srcElement || evt.target;
+			var _value = event.srcElement.value;
+			if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
+				//  objTarget.value = objTarget.value.replace(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g,''); // g가 핵심: 빠르게 타이핑할때 여러 한글문자가 입력되어 버린다.
+				objTarget.value = null;
+				//return false;
+			}
+		}
+
 		// 소수점한개로 제한한 실수값입력할수있게하는 함수
 		function isNumberKey(evt) {
 			var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -146,7 +165,7 @@
 			// 소수점 둘째자리까지만 입력가능
 			var _pattern2 = /^\d*[.]\d{2}$/;
 			if (_pattern2.test(_value)) {
-				Swal.fire({text:"소수점 둘째자리까지만 입력가능합니다."});
+				alert("소수점 둘째자리까지만 입력가능합니다.");
 				return false;
 			}
 		}
@@ -308,7 +327,7 @@
 					$("#emUnit").val(res.data.equipment.emUnit);
 					$("#emSubName").val(res.data.equipment.emSubName);
 					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
-					var install = res.data.equipment.emInstallDate
+					var install = res.data.equipment.emInstallDate;
 					var install2 = [install[0],install[1],install[2],install[3],"-",install[4],install[5],"-",install[6],install[7]];
 					var installArray = install2.join('');
 					$("#emInstallDate").val(installArray);
@@ -369,7 +388,7 @@
 		//삭제버튼 실행
 		function del() {
 			if ($("#emNumber").val().trim() == '') {
-				Swal.fire({text:"삭제하고자하는 장비를 선택하세요."});
+				alert("삭제하고자하는 장비를 선택하세요.");
 				return false;
 			}
 			Swal.fire({
@@ -420,7 +439,7 @@
 			var params = {
 				emCountry: $("#emCountry").val()
 			};
-			console.log("emCountry : "+$("#emCountry").val());
+			// console.log("emCountry : "+$("#emCountry").val());
 
 			var $schList = $("#emLocation");
 
@@ -609,7 +628,7 @@
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">
-									<input type="date" class="c-date__input" id="date" />
+									<input type="date" class="c-date__input" name="emInstallDate" id="emInstallDate" />
 								</div>
 							</div>
 						</td>
@@ -660,7 +679,7 @@
 							<ul class="c-input-list">
 								<li>
 									<div class="c-select" style="width: 170px;">
-										<input name="emMaximumPayload" id="emMaximumPayload" class="c-text__input" onkeypress="return isNumberKey(event)" />
+										<input name="emMaximumPayload" id="emMaximumPayload" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 									</div>
 								</li>
 								<li>

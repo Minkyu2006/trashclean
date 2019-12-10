@@ -106,20 +106,6 @@ public class DashboardRestController {
 
     }
 
-    // aws 데이터값 뿌리기 (차트,리스트 View) 안쓰는함수
-    @PostMapping ("awsDataListView")
-    public ResponseEntity awsDataListView(){
-        AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
-
-        List<Equipment> equipment = dashboardService.findAll();
-        data.clear();
-        data.put("equipment",equipment);
-        res.addResponse("data",data);
-
-        return ResponseEntity.ok(res.success());
-    }
-
     //장비 리스트 뿌리기
     @PostMapping ("deviceInfoList")
     public ResponseEntity deviceInfoList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
@@ -387,6 +373,208 @@ public class DashboardRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    @PostMapping("dataCircleGraph")
+    public ResponseEntity dataCircleGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        List<String> stateNames = new ArrayList<>(); // AWS 장비 status값 이름
+        List<Object> statusDatas = new ArrayList<>(); // AWS 장비 status값 리스트
+        List<String> statusSize = new ArrayList<>(); // 상태값 사이즈
+        List<List<String>> statusHardcording = new ArrayList<>(); // 정상or주의or심각 값이 0일경우 0값넣는 리스트
+        statusHardcording.add(Arrays.asList("정상","0"));
+        statusHardcording.add(Arrays.asList("주의","0"));
+        statusHardcording.add(Arrays.asList("심각","0"));
+
+        List<List<String>> circleDataColumns = new ArrayList<>(); //상태값
+        List<Integer> circleDataCount = new ArrayList<>(); // 상태값 개수
+
+        HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
+        Object datacounts = resData.get("datacounts");
+        int number = Integer.parseInt(datacounts.toString()); //반복수
+        List<String> sortDevice = new ArrayList<>();
+        for(int i = 0; i<number; i++) {
+            HashMap map = (HashMap)resData.get("data").get(i);
+            sortDevice.add((String) map.get("deviceid"));
+        }
+        sortDevice.sort(Comparator.naturalOrder()); // 오름차순 정렬시키기
+
+        for(String deviceid:sortDevice){
+            for(int i=0; i<number; i++){
+                HashMap map = (HashMap)resData.get("data").get(i);
+                if (map.get("deviceid") == deviceid) {
+                    if (map.get("status").equals("normal")) {
+                        map.replace("status", "정상");
+                    } else if (map.get("status").equals("caution")) {
+                        map.replace("status", "주의");
+                    } else if (map.get("status").equals("severe")) {
+                        map.replace("status", "심각");
+                    }
+                    statusDatas.add(map.get("status")); //상태값차트
+                }
+            }
+        }
+
+        for(int i = 0; i<number; i++) {
+            if (!statusSize.contains(statusDatas.get(i))) {
+                statusSize.add((String)statusDatas.get(i));
+            }
+        }
+
+        List<String> statusMaster = new ArrayList<>(); //정상,주의,심각 리스트
+        statusMaster.add("정상");
+        statusMaster.add("주의");
+        statusMaster.add("심각");
+
+        // 상태값 차트구하기
+        int count = 0;
+        for(int i=0; i<statusMaster.size(); i++){
+            stateNames.clear();
+            for (int j = 0; j < statusMaster.size(); j++) {
+                if (!stateNames.contains(statusMaster.get(i))) {
+                    stateNames.add((String)statusMaster.get(i));
+                }
+            }
+            for (int j = 0; j < statusDatas.size(); j++) {
+                if (stateNames.contains(statusDatas.get(j))) {
+                    count++;
+                }
+            }
+            stateNames.add(Integer.toString(count));
+
+            int cnt = 0;
+            int cnt2 = 1;
+
+            if(!circleDataColumns.contains(stateNames)){
+                circleDataColumns.add(Arrays.asList(stateNames.get(cnt),stateNames.get(cnt2)));
+            }
+            count = 0;
+        }
+
+        // 값이 0일경우 넣기
+        if(!statusSize.contains("정상")) {
+            circleDataColumns.add(statusHardcording.get(0));
+        }
+        if(!statusSize.contains("주의")) {
+            circleDataColumns.add(statusHardcording.get(1));
+        }
+        if(!statusSize.contains("심각")) {
+            circleDataColumns.add(statusHardcording.get(2));
+        }
+
+        // 각 상태값의 대한 장치 개수
+        int circleCount = Integer.parseInt(circleDataColumns.get(0).get(1))
+                +Integer.parseInt(circleDataColumns.get(1).get(1))
+                +Integer.parseInt(circleDataColumns.get(2).get(1));
+        circleDataCount.add(circleCount);
+        circleDataCount.add(Integer.parseInt(circleDataColumns.get(0).get(1)));
+        circleDataCount.add(Integer.parseInt(circleDataColumns.get(1).get(1)));
+        circleDataCount.add(Integer.parseInt(circleDataColumns.get(2).get(1)));
+        // log.info("상태값 개수 리스트 : "+circleDataCount);
+
+        data.put("statusDatas",statusDatas);
+        data.put("circle_data_columns",circleDataColumns);
+        data.put("circle_data_count",circleDataCount);
+
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
+
+    @PostMapping("dataBarGraph")
+    public ResponseEntity dataBarGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        List<String> barDataColumns = new ArrayList<>(); //쓰레기양
+        List<String> deviceidDatas = new ArrayList<>();
+
+        HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
+        Object datacounts = resData.get("datacounts");
+        int number = Integer.parseInt(datacounts.toString()); //반복수
+        List<String> sortDevice = new ArrayList<>();
+        for(int i = 0; i<number; i++) {
+            HashMap map = (HashMap)resData.get("data").get(i);
+            sortDevice.add((String) map.get("deviceid"));
+        }
+        sortDevice.sort(Comparator.naturalOrder()); // 오름차순 정렬시키기
+        barDataColumns.add("쓰레기양");
+
+        for(String deviceid:sortDevice){
+            for(int i=0; i<number; i++){
+                HashMap map = (HashMap)resData.get("data").get(i);
+                if (map.get("deviceid") == deviceid) {
+                    deviceidDatas.add((String) map.get("deviceid")); //배출량차트
+                    barDataColumns.add((String) map.get("level")); //배출량차트
+                }
+            }
+        }
+        data.put("bar_data_columns",barDataColumns);
+        data.put("device_list_columns",deviceidDatas);
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
+
+    @PostMapping("dataMapGraph")
+    public ResponseEntity mapDataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        List<Object> statusDatas = new ArrayList<>(); // AWS 장비 status값 리스트
+        List<String> barDataColumns = new ArrayList<>(); //쓰레기양
+        List<List<Object>> mapDataColumns = new ArrayList<>(); // 맵데이터 담는 리스트
+        List<String> deviceIdNames = new ArrayList<>(); // AWS 장비 device값 이름
+        List<String> gps_laDatas = new ArrayList<>(); // AWS 장비 gps_la값 리스트
+        List<String> gps_loDatas = new ArrayList<>(); // AWS 장비 gps_lo값 리스트
+        List<String> gps_laDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
+        List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
+
+        HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
+        Object datacounts = resData.get("datacounts");
+        int number = Integer.parseInt(datacounts.toString()); //반복수
+        List<String> sortDevice = new ArrayList<>();
+        for(int i = 0; i<number; i++) {
+            HashMap map = (HashMap)resData.get("data").get(i);
+            sortDevice.add((String) map.get("deviceid"));
+        }
+        sortDevice.sort(Comparator.naturalOrder()); // 오름차순 정렬시키기
+        for(String deviceid:sortDevice){
+            for(int i=0; i<number; i++){
+                HashMap map = (HashMap)resData.get("data").get(i);
+//                log.info("데이터 : "+map);
+                if (map.get("deviceid") == deviceid) {
+                    //배열에다넣기
+                    if (map.get("status").equals("normal")) {
+                        map.replace("status", "정상");
+                    } else if (map.get("status").equals("caution")) {
+                        map.replace("status", "주의");
+                    } else if (map.get("status").equals("severe")) {
+                        map.replace("status", "심각");
+                    }
+                    statusDatas.add(map.get("status")); //상태값차트
+                    deviceIdNames.add((String) map.get("deviceid")); //맵 데이터 차트
+                    gps_laDatas.add((String) map.get("gps_la")); //맵 데이터 차트
+                    gps_loDatas.add((String) map.get("gps_lo")); //맵 데이터 차트
+                }
+            }
+        }
+
+        for(int i =0; i<deviceIdNames.size(); i++){
+            String gps_laData = gps_laDatas.get(i);
+            String gps_loData = gps_loDatas.get(i);
+            String gps_laSubStirng = gps_laData.substring(1);
+            String gps_loSubStirng = gps_loData.substring(1);
+            gps_laDatas2.add(gps_laSubStirng);
+            gps_loDatas2.add(gps_loSubStirng);
+            mapDataColumns.add(Arrays.asList((String)deviceIdNames.get(i),Double.parseDouble(gps_laDatas2.get(i)),Double.parseDouble(gps_loDatas2.get(i)),(String)statusDatas.get(i)));
+        }
+        data.put("statusDatas",statusDatas);
+        data.put("map_data_columns",mapDataColumns);
+        data.put("bar_data_columns",barDataColumns);
+
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
+
     @PostMapping("location")
     public ResponseEntity location(@RequestParam(value="s_emCountry", defaultValue="") Long emCountry){
         AjaxResponse res = new AjaxResponse();
@@ -396,8 +584,8 @@ public class DashboardRestController {
         Optional<MasterCode> optionalCountry= masterCodeService.findById(emCountry);
         CodeType codeType = CodeType.valueOf("C0005");
 
-
         List<MasterCode> ref = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,optionalCountry.get().getCode());
+        log.info("ref : "+ref);
 
         data.clear();
         data.put("dataselect",ref);

@@ -64,7 +64,11 @@ public class DashboardDeviceListViewDto {
     }
 
     public String getEmInstallDate() {
-        String installDate = emInstallDate.substring(0,4)+"년 "+emInstallDate.substring(4,6)+"월 "+emInstallDate.substring(6,8)+"일";
-        return installDate;
+        return emInstallDate;
     }
+
+//    public String getEmInstallDate() {
+//        String installDate = emInstallDate.substring(0,4)+"년 "+emInstallDate.substring(4,6)+"월 "+emInstallDate.substring(6,8)+"일";
+//        return installDate;
+//    }
 }

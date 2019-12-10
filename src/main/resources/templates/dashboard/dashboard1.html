@@ -13,60 +13,31 @@
 
 			deviceListView(1);
 			// LocationSetting();
-			//awsDataListView();
 
 			$("#btnSearch").on('click',function(){
 				deviceListView(1);
 			});
 
 			$("#circleChart").on('click',function(){
-				console.log("원차트 새로고침")
+				$("#pieChartLoading").show();
 				refleshCircleChart(1);
 			});
 			$("#barChart").on('click',function(){
-				refleshCircleChart(1);
+				$("#barChartLoading").show();
+				refleshBarChart(1);
 			});
 			$("#mapChart").on('click',function(){
-				refleshCircleChart(1);
+				$("#mapChartLoading").show();
+				refleshMapChart(1);
 			});
 			$("#allChart").on('click',function(){
-				refleshCircleChart(1);
+				refleshAllChart(1);
 			});
 
 		});
 
-		// 대시보드 시작하면 AWS 데이터값 뿌리기 (차트,리스트 View)
-		function awsDataListView() {
-
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-
-			$.ajax({
-				url: '/api/dashboard/awsDataListView',
-				type: 'post',
-				cache: false,
-				error: function (request) {
-					ajaxErrorMsg(request);
-				},
-				success: function (res) {
-					if (!Ajax.checkResult(res)) {
-						return;
-					}
-
-					var pushValue = new Array();
-					$.each(res.data.equipment, function(key, value){
-						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-					});
-					pushValue.sort();
-					pushDeviceId(pushValue);
-				}
-			});
-		}
-
-		// 원차트 새로고침
-		function refleshCircleChart(page) {
-
+		//  모든차트 새로고침
+		function refleshAllChart(page) {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
 				emAgency:$('#s_Agency').val(),
@@ -74,11 +45,47 @@
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
 			};
-
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$.ajax({
+				url:'/api/dashboard/deviceInfoList',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					var pushValue = new Array();
+					var subName = new Array();
+					var installDate = new Array();
+					$.each(res.data.datalist, function(key, value){
+						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+						subName.push(nvl(value.emSubName,"확 인 불 가"));
+						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
+					});
+					console.log("installDate : "+installDate);
+					CircleChartDeviceId(pushValue);
+					BarChartDeviceId(pushValue,subName);
+					MapChartDeviceId(pushValue);
+					deviceAWSListView(pushValue,installDate);
+				}
+			});
+		}
 
+		// 원차트 새로고침
+		function refleshCircleChart(page) {
+			var params = {
+				emNumber:$('#s_emNumber').val(),
+				emAgency:$('#s_Agency').val(),
+				emType:$('#s_emType').val(),
+				emCountry:$('#s_emCountry').val(),
+				emLocation:$('#s_emLocation').val(),
+			};
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
 			$.ajax({
 				url:'/api/dashboard/deviceInfoList',
 				type : 'post',
@@ -92,24 +99,82 @@
 					$.each(res.data.datalist, function(key, value){
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 					});
-					console.log("pushValue : "+pushValue);
-					pushDeviceId(pushValue);
+					CircleChartDeviceId(pushValue);
 				}
 			});
 		}
 
 		// 막대차트 새로고침
-
+		function refleshBarChart(page) {
+			var params = {
+				emNumber:$('#s_emNumber').val(),
+				emAgency:$('#s_Agency').val(),
+				emType:$('#s_emType').val(),
+				emCountry:$('#s_emCountry').val(),
+				emLocation:$('#s_emLocation').val(),
+			};
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$.ajax({
+				url:'/api/dashboard/deviceInfoList',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					var pushValue = new Array();
+					var subName = new Array();
+					$.each(res.data.datalist, function(key, value){
+						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+						subName.push(nvl(value.emSubName,"확 인 불 가"));
+					});
+					BarChartDeviceId(pushValue,subName);
+				}
+			});
+		}
 
 		// 맵차트 새로고침
+		function refleshMapChart(page) {
+			var params = {
+				emNumber:$('#s_emNumber').val(),
+				emAgency:$('#s_Agency').val(),
+				emType:$('#s_emType').val(),
+				emCountry:$('#s_emCountry').val(),
+				emLocation:$('#s_emLocation').val(),
+			};
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$.ajax({
+				url:'/api/dashboard/deviceInfoList',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				},
+				success: function(res){
+					var pushValue = new Array();
+					$.each(res.data.datalist, function(key, value){
+						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+					});
+					MapChartDeviceId(pushValue);
+				}
+			});
+		}
 
-
-		// 장치리스트
+		// 장치리스트 출력
 		function deviceListView(page) {
 			if ($("#intervaltime").val().trim() == '') {
 				Swal.fire({text:"조회할 날짜를 선택해주세요"});
 				return false;
 			}
+			$("#mapChartLoading").show();
+			$("#pieChartLoading").show();
+			$("#barChartLoading").show();
 
 			var $deviceList = $('#deviceList');
 
@@ -146,7 +211,7 @@
 
 					$.each(res.data.datalist, function(key, value){
 						html2 += '<li class="c-list__item">'
-						html2 += '<div id='+'loadinglist'+idx+' class="equipment">';
+						html2 += '<div class="equipment">';
 							html2 += '<div id='+'mask'+idx+' class="c-loader">'
 							html2 += '<div id='+'loading'+idx+' class="c-loader__active c-loader__active--ring"></div>'
 							html2 += '</div>'
@@ -184,7 +249,7 @@
 										html += '</li>'
 										html += '<li class="equipment__info-item">'
 											html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>'
-											html += '<span class="equipment__info-value">'+nvl(value.emInstallDate,"확 인 불 가")+'</span>';
+											html += '<span class="equipment__info-value">'+nvl(value.emInstallDate,"확 인 불 가").substring(0,4)+"년 "+nvl(value.emInstallDate,"확 인 불 가").substring(4,6)+"월 "+nvl(value.emInstallDate,"확 인 불 가").substring(6,8)+"일"+'</span>';
 										html += '</li>'
 									html += '</ul>'
 						html += '</div>'
@@ -201,7 +266,6 @@
 					$deviceList.html(html2);
 					setTimeout(function(){
 						for(var i=0; i<pushValue.length; i++){
-							$("#loadinglist"+i).removeClass("equipment");
 							$("#mask"+i).removeClass("c-loader");
 							$("#loading"+i).removeClass("c-loader__active c-loader__active--ring");
 						}
@@ -209,10 +273,6 @@
 						deviceAWSListView(pushValue,installDate);
 						pushDeviceId(pushValue,subname);
 					},1500);
-
-					// deviceAWSListView(pushValue,installDate);
-					//
-					// pushDeviceId(pushValue,subname);
 				}
 			});
 		}
@@ -230,16 +290,12 @@
 			}
 			// deviceIds.push("ISOL-KR-SEL-0004");
 
-			var installDatas = new Array();
 			var installDayDatas = new Array();
 			var today = new Date();
 
 			//운영일구하기
 			for(i=0; i<installDate.length; i++){
-				installDatas.push(installDate[i].substring(0,4)+installDate[i].substring(6,8)+installDate[i].substring(10,12));
-			}
-			for(i=0; i<installDatas.length; i++){
-				var dateString = installDatas[i];
+				var dateString = installDate[i];
 				var dateObj = new Date(dateString.substring(0,4),Number(dateString.substring(4,6))-1,dateString.substring(6,8));
 				//console.log("dateObj :"+dateObj);
 				date1 = parseInt(today.getTime()/1000);
@@ -278,7 +334,9 @@
 					var htmls = new Array();
 					var htmls2 = new Array();
 					var htmls3 = new Array();
+
 					var idx = 0;
+
 					$.each(res.data.devices, function (key, value) {
 						var html = '';
 						var html2 = '';
@@ -286,6 +344,9 @@
 
 						if(res.data.status[idx]=="normal"){
 							html2 += '<div class="equipment__section">';
+							html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
+							html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
+							html2 += '</div>'
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
@@ -294,6 +355,9 @@
 							html2 += '</div>';
 						}else if(res.data.status[idx]=="caution"){
 							html2 += '<div class="equipment__section">';
+							html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
+							html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
+							html2 += '</div>'
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
@@ -302,6 +366,9 @@
 							html2 += '</div>';
 						}else if(res.data.status[idx]=="severe"){
 							html2 += '<div class="equipment__section">';
+							html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
+							html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
+							html2 += '</div>'
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
@@ -310,6 +377,9 @@
 							html2 += '</div>';
 						}else{
 							html2 += '<div class="equipment__section">';
+							html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
+							html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
+							html2 += '</div>'
 							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
@@ -319,6 +389,9 @@
 						}
 
 						html += '<div class="equipment__section">'
+						html += '<div id='+'detailLoading'+idx+' class="c-loader">'
+						html += '<div class="c-loader__active c-loader__active--ring"></div>'
+						html += '</div>'
 						html += '<h4 class="equipment__section-title">상태 상세 정보</h4>'
 						html += '<ul class="equipment__info">'
 						html += '<li class="equipment__info-item">'
@@ -349,6 +422,9 @@
 						html += '</div>'
 
 						html3 += '<div class="equipment__section">'
+						html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">'
+						html3 += '<div class="c-loader__active c-loader__active--ring"></div>'
+						html3 += '</div>'
 						html3 += '<canvas id='+'timeStampChart'+idx+' style="width: 100%;height: 220px;"></canvas>'
 						html3 += '</div>'
 
@@ -360,19 +436,11 @@
 						$('#listTest'+idx).prepend(htmls2[idx]);
 						$('#listTest'+idx).append(htmls3[idx]);
 
-						$("#statemask"+idx).removeClass("c-loader");
-						$("#stateloading"+idx).removeClass("c-loader__active c-loader__active--ring");
-						$("#detailmask"+idx).removeClass("c-loader");
-						$("#detailloading"+idx).removeClass("c-loader__active c-loader__active--ring");
-						$("#graphmask"+idx).removeClass("c-loader");
-						$("#graphloading"+idx).removeClass("c-loader__active c-loader__active--ring");
-
 						timeStamp(nvl(res.data.devices[idx],"확 인 불 가"),idx);
 
 						idx++
 					});
 					console.log("출력완료");
-					// console.log("타임스탬프 데이터전송");
 				}
 			});
 		}
@@ -444,8 +512,24 @@
 							batt_level.push(value.batt_level);
 						});
 						var days = $("#intervaltime").val(); // 기간선택 시간
+
+						// 온도최대값,최소값 계산(y축그래프)
 						temp_brd_Max = Math.max.apply(0, temp_brd); // 온도최대값
 						temp_brd_Min = Math.min.apply(0, temp_brd); // 온도최소값
+						tempMap = (temp_brd_Max+15).toFixed(0);
+						tempMin = (temp_brd_Min-15).toFixed(0);
+						if(tempMap/5!=0){
+							var tempMaxsub = tempMap.substring(1,2);
+							var tempBrdMax = parseInt(tempMap)-parseInt(tempMaxsub);
+						}else{
+							var tempBrdMax = tempMap;
+						}
+						if(tempMin/5!=0){
+							var tempMinsub = tempMin.substring(1,2);
+							var tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
+						}else{
+							var tempBrdMin = tempMin;
+						}
 
 						//var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
 						var ctx = document.getElementById('timeStampChart'+idx);
@@ -539,8 +623,8 @@
 												callback: function(value, index, values) {
 													return value+'℃';
 												},
-												max: (temp_brd_Max+15).toFixed(0),
-												min: (temp_brd_Min-15).toFixed(0)
+												max: tempBrdMax,
+												min: tempBrdMin
 											},
 											id: 'y',
 											type: 'linear',
@@ -554,14 +638,124 @@
 							}
 						});
 					}
-					// console.log("타임스탬프 그래프그리기 완료")
+					setTimeout(function(){
+						$("#stateLoading"+idx).hide();
+						$("#detailLoading"+idx).hide();
+						$("#timechartLoading"+idx).hide();
+					},1000);
 				}
 			});
 		}
 
+		// Circle그래프 새로고침
+		function CircleChartDeviceId(pushValue) {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
 
+			var deviceIds = new Array();
+			for (var i=0; i<pushValue.length; i++){
+				deviceIds.push(pushValue[i]);
+			}
 
+			var itemJson = new Object();
+			itemJson.deviceids = deviceIds;
+			var devicestr = JSON.stringify(itemJson);
 
+			var params = {
+				deviceids:devicestr
+			};
+
+			$.ajax({
+				url: '/api/dashboard/dataCircleGraph',
+				type: 'post',
+				data : params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					//상태값 차트
+					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
+					$("#pieChartLoading").hide();
+				}
+			});
+		}
+
+		// Bar그래프 새로고침
+		function BarChartDeviceId(pushValue,subname) {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			var deviceIds = new Array();
+			for (var i=0; i<pushValue.length; i++){
+				deviceIds.push(pushValue[i]);
+			}
+
+			var itemJson = new Object();
+			itemJson.deviceids = deviceIds;
+			var devicestr = JSON.stringify(itemJson);
+
+			var params = {
+				deviceids:devicestr
+			};
+
+			$.ajax({
+				url: '/api/dashboard/dataBarGraph',
+				type: 'post',
+				data : params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					//쓰레기양 차트
+					barChart(res.data.bar_data_columns,res.data.device_list_columns,subname);
+					$("#barChartLoading").hide();
+				}
+			});
+		}
+
+		// Map그래프 새로고침
+		function MapChartDeviceId(pushValue) {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			var deviceIds = new Array();
+			for (var i=0; i<pushValue.length; i++){
+				deviceIds.push(pushValue[i]);
+			}
+			var itemJson = new Object();
+			itemJson.deviceids = deviceIds;
+			var devicestr = JSON.stringify(itemJson);
+			var params = {
+				deviceids:devicestr
+			};
+			$.ajax({
+				url: '/api/dashboard/dataMapGraph',
+				type: 'post',
+				data : params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					// 맵에 장치보기
+					mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
+					$("#mapChartLoading").hide();
+				}
+			});
+		}
 
 		// aws deviceID값 push하는 함수 next -> 차트만들기
 		function pushDeviceId(pushValue,subname) {
@@ -605,7 +799,9 @@
 					barChart(res.data.bar_data_columns,res.data.device_list_columns,subname);
 					// 맵에 장치보기
 					mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
-
+					$("#mapChartLoading").hide();
+					$("#pieChartLoading").hide();
+					$("#barChartLoading").hide();
 					// console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
 				}
 			});
@@ -662,25 +858,25 @@
 		}
 
 		//상태값 차트
-				function circleChart(circle_data_columns,circle_data_count){
-				$("#statusAll").text(circle_data_count[0]);
-				$("#statusNomal").text(circle_data_count[1]);
-				$("#statusCaution").text(circle_data_count[2]);
-				$("#statusSerious").text(circle_data_count[3]);
+		function circleChart(circle_data_columns,circle_data_count){
+			$("#statusAll").text(circle_data_count[0]);
+			$("#statusNomal").text(circle_data_count[1]);
+			$("#statusCaution").text(circle_data_count[2]);
+			$("#statusSerious").text(circle_data_count[3]);
 
-				var piechart = c3.generate({
-				bindto: "#pie_chart",
-				data: {
-					columns: circle_data_columns,
-					type: 'pie'
-				},
-				tooltip: {
-					format: {
-						value: function (value) {
-							return value + '개';
-						}
+			var piechart = c3.generate({
+			bindto: "#pie_chart",
+			data: {
+				columns: circle_data_columns,
+				type: 'pie'
+			},
+			tooltip: {
+				format: {
+					value: function (value) {
+						return value + '개';
 					}
-				},
+				}
+			},
 				color: {
 					pattern: ['#48ae63', '#ffc600', '#e35f5f']
 				}
@@ -884,6 +1080,9 @@
 							</div>
 						</div>
 						<div class="panel__body">
+							<div class="c-loader">
+								<div id="mapChartLoading" class="c-loader__active c-loader__active--ring"></div>
+							</div>
 							<div class="map" id="map"></div>
 						</div>
 					</div>
@@ -898,6 +1097,9 @@
 							</div>
 						</div>
 						<div class="panel__body">
+							<div class="c-loader">
+								<div id="pieChartLoading" class="c-loader__active c-loader__active--ring"></div>
+							</div>
 							<div class="panel__stat" id="pie_chart"></div>
 						</div>
 					</div>
@@ -912,6 +1114,9 @@
 							</div>
 						</div>
 						<div class="panel__body">
+							<div id="barChartLoading" class="c-loader">
+								<div class="c-loader__active c-loader__active--ring"></div>
+							</div>
 							<div class="panel__stat" id="bar_chart"></div>
 						</div>
 					</div>
