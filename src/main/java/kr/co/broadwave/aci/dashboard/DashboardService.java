@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.dashboard;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.equipment.Equipment;
+import kr.co.broadwave.aci.equipment.EquipmentDto;
 import kr.co.broadwave.aci.equipment.EquipmentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author InSeok
@@ -79,4 +81,12 @@ public class DashboardService {
         return equipmentRepository.findAll();
     }
 
+    public EquipmentDto findByEmNumber(String pushValue) {
+        Optional<Equipment> optionalEquipment = equipmentRepository.findByEmNumber(pushValue);
+        if (optionalEquipment.isPresent()) {
+            return modelMapper.map(optionalEquipment.get(), EquipmentDto.class);
+        } else {
+            return null;
+        }
+    }
 }

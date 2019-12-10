@@ -50,8 +50,18 @@ public class DashboardController {
     }
 
     @RequestMapping("devicecontrol")
-    public String devicecontroltest(){
+    public String devicecontrol(){
         return "dashboard/devicecontrol";
+    }
+
+    @RequestMapping("locationbase")
+    public String locationbased(Model model){
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+        return "dashboard/locationbase";
     }
 
 }

@@ -39,6 +39,7 @@ public class EquipmentDto {
     private Company company; // 소속운영사
     private Double emMaximumPayload; // 최대적재량
     private MasterCode emUnit; // 단위
+    private MasterCode emUnitName; // 단위이름
     private String emInstallDate; // 설치일자
     private String emSubName; // 장비약칭
 
@@ -46,6 +47,10 @@ public class EquipmentDto {
     private String insert_id;
     private LocalDateTime modifyDateTime;
     private String modify_id;
+
+    public String getEmUnitName() {
+        return emUnitName.getName();
+    }
 
     public Long getId() {
         return id;

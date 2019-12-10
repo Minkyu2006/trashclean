@@ -39,16 +39,6 @@ public class TestpageController {
         return "testpage/monitering";
     }
 
-    @RequestMapping("maptest")
-    public String maptest(Model model){
-        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
-        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
-
-        model.addAttribute("equipdTypes", equipdTypes);
-        model.addAttribute("equipdCountrys", equipdCountrys);
-        return "testpage/maptest";
-    }
-
     @RequestMapping("layout")
     public String layout(){
         return "testpage/layout";
