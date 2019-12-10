@@ -56,6 +56,10 @@ public class FileUploadService {
         if (optionalFileUpload.isPresent()) {
             FileUpload fileUpload = optionalFileUpload.get();
             awss3Service.deleteObject(fileUpload.getFilePath(),fileUpload.getSaveFileName());
+            //이미지면 썸네일도삭제
+            if (fileUpload.getContentType().substring(0,5).toUpperCase().equals("IMAGE")){
+                awss3Service.deleteObject(fileUpload.getFilePath(),"s_" + fileUpload.getSaveFileName());
+            }
             fileUploadRepository.delete(fileUpload);
         }
     }

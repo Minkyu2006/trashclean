@@ -4,6 +4,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
@@ -11,7 +12,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
@@ -47,13 +50,30 @@ public class AWSS3Service {
         // Copy file to the target location (Replacing existing file with the same name)
         PutObjectResult putObjectResult = s3Client.putObject(new PutObjectRequest(awsFilePath, storedFileName,
                 multipartFile.getInputStream(), omd));
-//
-//        System.out.println(putObjectResult.toString());
-//
-//        System.out.println("filesize: " + multipartFile.getSize() );
-//        System.out.println("OriginalFilename: " + multipartFile.getOriginalFilename() );
-//        System.out.println("File path : '" + awsFilePath +"'");
-//        System.out.println("File name : '" + storedFileName +"'");
+
+        //이미지 화일이면 섬네일변환후 울리기 파일명앞에 "s_" 를 붙임
+        if(multipartFile.getContentType().substring(0,5).toUpperCase().equals("IMAGE")){
+            BufferedImage originamImage = ImageIO.read(multipartFile.getInputStream());
+            BufferedImage destImg = Scalr.resize(originamImage, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, 200);
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(destImg, getExtension(storedFileName), os);
+            byte[] buffer = os.toByteArray();
+            InputStream destImgInputStream = new ByteArrayInputStream(buffer);
+
+
+            ObjectMetadata s_omd = new ObjectMetadata();
+            s_omd.setContentType(multipartFile.getContentType());
+            s_omd.setContentLength(buffer.length);
+            s_omd.setHeader("filename", "s_" +storedFileName);//한글명들어가면 오류남
+
+            // Copy file to the target location (Replacing existing file with the same name)
+            PutObjectResult putObjectResultThumbnail = s3Client.putObject(new PutObjectRequest(awsFilePath, "s_"+storedFileName,
+                    destImgInputStream, s_omd));
+
+            
+
+        }
+
 
 
     }
@@ -73,6 +93,31 @@ public class AWSS3Service {
         //return resource;
     }
 
+    private static String makeThumbnail(String uploadPath, String path, String fileName) throws Exception {
 
+        BufferedImage sourceImg = ImageIO.read(new File(uploadPath + path, fileName));
+
+        BufferedImage destImg = Scalr.resize(sourceImg, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_HEIGHT, 100);
+
+        String thumbnailName = uploadPath + path + File.separator + "s_" + fileName;
+
+        File newFile = new File(thumbnailName);
+        String formatName = fileName.substring(fileName.lastIndexOf(".") + 1);
+
+        ImageIO.write(destImg, formatName.toUpperCase(), newFile);
+
+        return thumbnailName.substring(uploadPath.length()).replace(File.separatorChar, '/');
+    }
+
+
+    private String getExtension(String fileName) {
+        int dotPosition = fileName.lastIndexOf('.');
+
+        if (-1 != dotPosition && fileName.length() - 1 > dotPosition) {
+            return fileName.substring(dotPosition + 1);
+        } else {
+            return "";
+        }
+    }
 
 }
