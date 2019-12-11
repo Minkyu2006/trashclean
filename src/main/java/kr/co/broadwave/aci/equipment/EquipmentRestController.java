@@ -10,6 +10,7 @@ import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.company.*;
 import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -219,7 +220,7 @@ public class EquipmentRestController {
         Optional<MasterCode> optionalCountry= masterCodeService.findById(emCountry);
         CodeType codeType = CodeType.valueOf("C0005");
 
-        List<MasterCode> ref = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,optionalCountry.get().getCode());
+        List<MasterCodeDto> ref = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,optionalCountry.get().getCode());
 
         data.clear();
         data.put("dataselect",ref);

@@ -9,5 +9,5 @@ import org.springframework.data.domain.Pageable;
  * Remark :
  */
 public interface DashboardRepositoryCustom {
-    Page<DashboardDeviceListViewDto> findByDashboardListView(String emNumber, Long emTypeId, String emAgencyId,Long emCountryId, Pageable pageable);
+    Page<DashboardDeviceListViewDto> findByDashboardListView(String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable);
 }

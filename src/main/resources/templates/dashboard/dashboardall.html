@@ -14,7 +14,7 @@
 			$("#intervaltime").val("3");
 
 			deviceListView(1);
-			// LocationSetting();
+			LocationSetting("");
 
 			$("#btnSearch").on('click',function(){
 				deviceListView(1);
@@ -32,8 +32,15 @@
 				$("#mapChartLoading").show();
 				refleshMapChart();
 			});
-			$("#allChart").on('click',function(){
+
+			$("#refreshMaster").on('click',function(){
 				// refleshAllChart();
+			});
+
+			$("#masterfold").on('click',function(){
+				$("#mapfold").toggleClass(" fold");
+				$("#circlefold").toggleClass(" fold");
+				$("#levelfold").toggleClass(" fold");
 			});
 
 		});
@@ -42,7 +49,7 @@
 		function refleshAllChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
-				emAgency:$('#s_Agency').val(),
+				// emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
@@ -80,7 +87,7 @@
 		function refleshCircleChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
-				emAgency:$('#s_Agency').val(),
+				// emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
@@ -110,7 +117,7 @@
 		function refleshBarChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
-				emAgency:$('#s_Agency').val(),
+				// emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
@@ -142,7 +149,7 @@
 		function refleshMapChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
-				emAgency:$('#s_Agency').val(),
+				// emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
@@ -182,10 +189,10 @@
 
 			var params = {
 				emNumber:$('#s_emNumber').val(),
-				emAgency:$('#s_Agency').val(),
+				// emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
-				// emCountry:$('#s_emLocation').val(),
+				emLocation:$('#s_emLocation').val(),
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -1006,14 +1013,14 @@
 		}
 
 		// 국가,지역검색
-		function LocationSetting() {
-			console.log("s_emCountry : "+$("#s_emCountry").val());
+		function LocationSetting(value) {
+			// console.log("value : "+value);
 
 			var params = {
-				s_emCountry: $("#s_emCountry").val()
+				s_emCountry:value
 			};
 
-			var $schList = $("#s_emLocation");
+			var $s_emLocation = $("#s_emLocation");
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -1033,11 +1040,11 @@
 					}
 
 					var html = '';
-					// html += '<option value ="">'+전체+'</option>';
-					$.each(res.data.dataselect, function (key, value) {
-						html += '<option value ="' + echoNull2Blank(value.id) + '">' + echoNull2Blank(value.name)+ '</option>';
+					html += '<option value ="">'+'전체'+'</option>';
+					$.each(res.data.locationData, function (key, value) {
+						html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name)+ '</option>';
 					});
-					$schList.html(html);
+					$s_emLocation.html(html);
 				}
 			});
 		}
@@ -1078,10 +1085,9 @@
 							<h4 class="panel__title">설치위치</h4>
 							<div class="panel__console">
 								<button class="panel__button refresh" id="mapChart">새로고침</button>
-								<button class="panel__button fold">접기</button>
 							</div>
 						</div>
-						<div class="panel__body">
+						<div id="mapfold" class="panel__body">
 							<div class="c-loader">
 								<div id="mapChartLoading" class="c-loader__active c-loader__active--ring"></div>
 							</div>
@@ -1095,10 +1101,9 @@
 							<h4 class="panel__title">상태</h4>
 							<div class="panel__console">
 								<button class="panel__button refresh" id="circleChart">새로고침</button>
-								<button class="panel__button fold">접기</button>
 							</div>
 						</div>
-						<div class="panel__body">
+						<div id="circlefold" class="panel__body">
 							<div class="c-loader">
 								<div id="pieChartLoading" class="c-loader__active c-loader__active--ring"></div>
 							</div>
@@ -1112,12 +1117,12 @@
 							<h4 class="panel__title">배출량</h4>
 							<div class="panel__console">
 								<button class="panel__button refresh" id="barChart">새로고침</button>
-								<button class="panel__button fold">접기</button>
+<!--								<button id="masterfold" class="panel__button fold">접기</button>-->
 							</div>
 						</div>
-						<div class="panel__body">
-							<div id="barChartLoading" class="c-loader">
-								<div class="c-loader__active c-loader__active--ring"></div>
+						<div id="levelfold" class="panel__body">
+							<div class="c-loader">
+								<div id="barChartLoading" class="c-loader__active c-loader__active--ring"></div>
 							</div>
 							<div class="panel__stat" id="bar_chart"></div>
 						</div>
@@ -1161,7 +1166,24 @@
 											</div>
 										</div>
 										<div class="c-float__item" style="padding-top: 15px;">
-<!--											<button class="panel__button refresh" id="allChart">새로고침</button>-->
+											<button id="refreshMaster" class="c-button c-button--point">새로고침</button>
+											<div class="l-float-heading">
+												<div class="l-float-heading--left">
+													<h4 class="article__head" >진행상태</h4>
+													<div style="height:20px; background-color: darkblue; width:100%" id="progressbar"></div>
+												</div>
+											</div>
+											<input id="monitering" type="checkbox" value="자동 새로 고침" />
+											<input id="tensec" type="radio" value="10초" />
+											<input id="onemin" type="radio" value="1분" />
+											<input id="twomin" type="radio" value="2분" />
+											<input id="fivemin" type="radio" value="5분" />
+											<input id="ftmin" type="radio" value="15분" />
+										</div>
+										<div class="c-float__item" style="padding-top: 15px;">
+											<button id="masterfold" class="c-button c-button--point">접기</button>
+										</div>
+										<div class="c-float__item" style="padding-top: 15px;">
 											<button id="btnSearch" class="c-button c-button--point">조회</button>
 										</div>
 									</div>
@@ -1196,7 +1218,7 @@
 								<div class="c-float__item">
 									<div class="c-select">
 										<label for="s_emCountry" class="c-select__label">국가</label>
-										<select id="s_emCountry" class="c-select__input">
+										<select id="s_emCountry" class="c-select__input" onchange="LocationSetting(this.value)">
 											<option value="">전체</option>
 											<option th:each ="equipdCountry : ${equipdCountrys}"
 													th:value="${equipdCountry.code}"
@@ -1209,7 +1231,6 @@
 									<div class="c-select">
 										<label for="s_emLocation" class="c-select__label">지역</label>
 										<select id="s_emLocation" class="c-select__input">
-                                            <option value="">전체</option>
 										</select>
 									</div>
 								</div>

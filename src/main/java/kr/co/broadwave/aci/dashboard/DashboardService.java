@@ -73,8 +73,8 @@ public class DashboardService {
     }
 
     public Page<DashboardDeviceListViewDto> findByDashboardListView
-            (String emNumber, Long emTypeId, String emAgencyId,Long emCountryId, Pageable pageable) {
-        return dashboardRepositoryCustom.findByDashboardListView(emNumber,emTypeId,emAgencyId,emCountryId,pageable);
+            (String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable) {
+        return dashboardRepositoryCustom.findByDashboardListView(emNumber,emTypeId,emCountryId,emLocationId,pageable);
     }
 
     public List<Equipment> findAll() {

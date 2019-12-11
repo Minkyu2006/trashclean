@@ -12,9 +12,16 @@
 				$("#starthour").addClass(" active");
 				$("#intervaltime").val("3");
 
+				LocationSetting("");
 				deviceMap();
 
+				$("#refleshMapChart").on('click',function(){
+					$("#mapLoaging").show();
+					deviceMap();
+				});
+
 				$("#btnSearch").on('click', function () {
+					$("#mapLoaging").show();
 					deviceMap();
 					$("#deviceDetail").hide();
 				})
@@ -25,8 +32,8 @@
 				var params = {
 					emNumber:$('#s_emNumber').val(),
 					emType:$('#s_emType').val(),
-					emAgency:$('#s_Agency').val(),
 					emCountry:$('#s_emCountry').val(),
+					emLocation:$('#s_emLocation').val(),
 				};
 
 				var token = $("meta[name='_csrf']").attr("content");
@@ -552,6 +559,43 @@
 				$("#intervaltime").val(hours);
 			}
 
+			// 국가,지역검색
+			function LocationSetting(value) {
+				// console.log("value : "+value);
+
+				var params = {
+					s_emCountry:value
+				};
+
+				var $s_emLocation = $("#s_emLocation");
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url: '/api/dashboard/location',
+					type: 'post',
+					data: params,
+					cache: false,
+					error:function(request){
+						ajaxErrorMsg(request);
+					},
+					success: function (res) {
+						if (!Ajax.checkResult(res)) {
+							return;
+						}
+
+						var html = '';
+						html += '<option value ="">'+'전체'+'</option>';
+						$.each(res.data.locationData, function (key, value) {
+							html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name)+ '</option>';
+						});
+						$s_emLocation.html(html);
+					}
+				});
+			}
+
 		</script>
 	</head>
 	  
@@ -623,7 +667,7 @@
 								<div class="c-float__item">
 									<div class="c-select">
 										<label for="s_emCountry" class="c-select__label">국가</label>
-										<select id="s_emCountry" class="c-select__input">
+										<select id="s_emCountry" class="c-select__input" onchange="LocationSetting(this.value)">
 											<option value="">전체</option>
 											<option th:each ="equipdCountry : ${equipdCountrys}"
 													th:value="${equipdCountry.code}"
@@ -636,7 +680,6 @@
 									<div class="c-select">
 										<label for="s_emLocation" class="c-select__label">지역</label>
 										<select id="s_emLocation" class="c-select__input">
-											<option value="">전체</option>
 										</select>
 									</div>
 								</div>
@@ -655,7 +698,7 @@
 						<div class="panel__header">
 							<h4 class="panel__title">Location</h4>
 							<div class="panel__console">
-								<button class="panel__button refresh">새로고침</button>
+								<button id="refleshMapChart" class="panel__button refresh">새로고침</button>
 								<button class="panel__button fold">접기/펼치기</button>
 							</div>
 						</div>

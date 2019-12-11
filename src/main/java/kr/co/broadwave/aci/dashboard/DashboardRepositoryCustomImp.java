@@ -27,7 +27,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
 
     @Override
     public Page<DashboardDeviceListViewDto> findByDashboardListView
-            (String emNumber, Long emTypeId, String emAgencyId,Long emCountryId, Pageable pageable){
+            (String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
 
@@ -50,14 +50,14 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
         if (emNumber != null && !emNumber.isEmpty()){
             query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
         }
-//        if (emAgencyId != null ){
-//            query.where(equipment.company.id.eq(emAgencyId));
-//        }
         if (emTypeId != null ){
             query.where(equipment.emType.id.eq(emTypeId));
         }
         if (emCountryId != null ){
             query.where(equipment.emCountry.id.eq(emCountryId));
+        }
+        if (emLocationId != null ){
+            query.where(equipment.emLocation.id.eq(emLocationId));
         }
 
         query.orderBy(equipment.emNumber.asc());

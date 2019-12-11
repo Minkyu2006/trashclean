@@ -9,6 +9,7 @@ import kr.co.broadwave.aci.equipment.Equipment;
 import kr.co.broadwave.aci.equipment.EquipmentDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,7 +111,7 @@ public class DashboardRestController {
     //장비 리스트 뿌리기
     @PostMapping ("deviceInfoList")
     public ResponseEntity deviceInfoList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
-                                                            @RequestParam (value="emAgency", defaultValue="") String  emAgency,
+//                                                            @RequestParam (value="emAgency", defaultValue="") String  emAgency,
                                                             @RequestParam (value="emType", defaultValue="")String emType,
                                                             @RequestParam (value="emCountry", defaultValue="")String emCountry,
                                                             @RequestParam (value="emLocation", defaultValue="")String emLocation,
@@ -118,12 +119,13 @@ public class DashboardRestController {
 
         Long emTypeId = null;
         Long emCountryId = null;
+        Long emLocationId = null;
 
-//        log.info("emNumber : "+emNumber);
+        log.info("emNumber : "+emNumber);
 //        log.info("emAgency : "+emAgency);
-//        log.info("emType : "+emType);
-//        log.info("emCountry : "+emCountry);
-//       log.info("emLocation : "+emLocation);
+        log.info("emType : "+emType);
+        log.info("emCountry : "+emCountry);
+       log.info("emLocation : "+emLocation);
 
         if(!emType.equals("")){
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
@@ -133,9 +135,13 @@ public class DashboardRestController {
             Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
             emCountryId = emCountrys.get().getId();
         }
+        if(!emLocation.equals("")){
+            Optional<MasterCode> emLocations = masterCodeService.findByCode(emLocation);
+            emLocationId = emLocations.get().getId();
+        }
 
         Page<DashboardDeviceListViewDto> deviceInfoListDtos =
-                dashboardService.findByDashboardListView(emNumber, emTypeId, emAgency, emCountryId, pageable);
+                dashboardService.findByDashboardListView(emNumber, emTypeId, emCountryId, emLocationId, pageable);
         return CommonUtils.ResponseEntityPage(deviceInfoListDtos);
     }
 
@@ -580,25 +586,6 @@ public class DashboardRestController {
         return ResponseEntity.ok(res.success());
     }
 
-    @PostMapping("location")
-    public ResponseEntity location(@RequestParam(value="s_emCountry", defaultValue="") Long emCountry){
-        AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
-        log.info("emCountry : "+emCountry);
-
-        Optional<MasterCode> optionalCountry= masterCodeService.findById(emCountry);
-        CodeType codeType = CodeType.valueOf("C0005");
-
-        List<MasterCode> ref = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,optionalCountry.get().getCode());
-        log.info("ref : "+ref);
-
-        data.clear();
-        data.put("dataselect",ref);
-
-        res.addResponse("data",data);
-        return ResponseEntity.ok(res.success());
-    }
-
     // 위치기반 선택장비 리스트 상세데이터 보내기
     @PostMapping("detailMapDataGraph")
     public ResponseEntity detailMapDataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
@@ -671,9 +658,6 @@ public class DashboardRestController {
         return ResponseEntity.ok(res.success());
     }
 
-
-
-
     @PostMapping("deviceDetail")
     public ResponseEntity deviceDetail(@RequestParam(value="pushValue", defaultValue="") String pushValue) {
         AjaxResponse res = new AjaxResponse();
@@ -684,6 +668,34 @@ public class DashboardRestController {
         data.put("deviceDetailList",deviceDetailList);
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());
+    }
+
+    @PostMapping("location")
+    public ResponseEntity location(@RequestParam(value="s_emCountry", defaultValue="")String emCountry){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        CodeType codeType = CodeType.valueOf("C0005");
+//        log.info("emCountry : "+emCountry);
+//        log.info("codeType : "+codeType);
+
+        if (emCountry.equals("")) {
+            List<MasterCodeDto> locationData = masterCodeService.findCodeList(codeType);
+
+            data.clear();
+            data.put("locationData",locationData);
+
+            res.addResponse("data",data);
+            return ResponseEntity.ok(res.success());
+        }else{
+            List<MasterCodeDto> locationData = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,emCountry);
+
+            data.clear();
+            data.put("locationData",locationData);
+
+            res.addResponse("data",data);
+            return ResponseEntity.ok(res.success());
+        }
     }
 
 }

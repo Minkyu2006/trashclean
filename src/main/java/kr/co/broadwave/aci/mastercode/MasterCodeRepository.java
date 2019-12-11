@@ -14,10 +14,13 @@ import java.util.Optional;
  */
 public interface MasterCodeRepository extends JpaRepository<MasterCode,Long> {
     Optional<MasterCode> findByAndCodeTypeAndCode(CodeType codeType,String code);
+
     List<MasterCode> findByAndCodeType(CodeType codeType);
 
     List<MasterCode> findAllByCodeTypeEqualsAndBcRef1(CodeType codeType, String emCountry);
 
     Optional<MasterCode> findByCode(String emCountry);
+
+    Optional<MasterCode> findByBcRef1(String emCountry);
 
 }

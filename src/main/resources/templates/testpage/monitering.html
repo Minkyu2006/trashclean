@@ -29,12 +29,6 @@
                 callDeviceHistory();
             });
 
-
-
-
-
-
-
         })
 
         function callStats() {
@@ -90,21 +84,8 @@
 
 
         }
-        function progresssDisplay(){
 
 
-            timeprogress += 1;
-            if( timeprogress * 100  >= timeInterval){
-                timeprogress = 0;
-                callStats();
-            }
-            var progressrate = timeprogress * 10000  / timeInterval;
-
-            $('#progressbar').css("width",progressrate+"%")
-            $('#progress').html(timeprogress);
-
-
-        }
         function callStart() {
 
             if(timerId != null) {
@@ -115,19 +96,26 @@
             progresssDisplay();
             timerId = setInterval(progresssDisplay, 100);
 
+        }
 
+        function progresssDisplay(){
 
+            timeprogress += 1;
+            if( timeprogress * 100  >= timeInterval){
+                timeprogress = 0;
+                callStats();
+            }
+            var progressrate = timeprogress * 10000  / timeInterval;
 
+            $('#progressbar').css("width",progressrate+"%")
+            $('#progress').html(timeprogress);
         }
 
         function callStop() {
-
             if(timerId != null) {
                 clearInterval(timerId);
-
             }
             $('#curstatus').html('End');
-
         }
 
 
