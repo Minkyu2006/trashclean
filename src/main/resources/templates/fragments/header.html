@@ -95,8 +95,7 @@
 			<li>
 				<a href="#" class="nav__link nav__link--dash toggle">대시보드</a>
 				<ul class="nav-child">
-					<li><a href="/dashboard/dashboard1">대시보드테스트(백엔드)</a></li>
-					<li><a href="/dashboard/dashboard">대시보드테스트(프론트)</a></li>
+					<li><a href="/dashboard/dashboard">대시보드종합</a></li>
 					<li><a href="/dashboard/devicecontrol">장치제어</a></li>
 					<li><a href="/dashboard/locationbase">위치기반</a></li>
 				</ul>
@@ -121,12 +120,13 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--dash toggle">테스트페이지</a>
 				<ul class="nav-child">
+					<li><a href="/testpage/dashboardfront">대시보드테스트(프론트)</a></li>
 					<li><a href="/testpage/layout">그래프테스트</a></li>
 					<li><a href="/testpage/monitering">모니터링테스트</a></li>
 					<li><a href="/testpage/fileupload">파일업로드테스트</a></li>
 					<li><a href="/testpage/listtest">리스트테스트</a></li>
-					<li><a href="/testpage/listtes2">리스트테스트3</a></li>
-					<li><a href="/testpage/listtest3">리스트테스트2</a></li>
+					<li><a href="/testpage/listtest2">리스트테스트2</a></li>
+					<li><a href="/testpage/listtest3">리스트테스트3</a></li>
 				</ul>
 			</li>
 		</ul>

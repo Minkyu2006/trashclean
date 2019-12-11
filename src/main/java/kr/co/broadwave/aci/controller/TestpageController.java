@@ -34,6 +34,19 @@ public class TestpageController {
         this.fileUploadService = fileUploadService;
     }
 
+    @RequestMapping("dashboardfront")
+    public String dashboardfront(Model model){
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> agencys = masterCodeService.findCodeList(CodeType.C0006);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("agencys", agencys);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+
+        return "testpage/dashboardfront";
+    }
+
     @RequestMapping("monitering")
     public String monitering(){
         return "testpage/monitering";

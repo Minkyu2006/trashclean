@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/default}">
+
+<head>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBaj-tLY53HSlUAzB1mLnhKCdm6rRp8blY&callback=initMap" async defer></script>
+	<script>
+		// map
+		var locations = [
+			['명동', 37.563576, 126.983431],
+            ['가로수길', 37.520300, 127.023008],
+            ['광화문', 37.575268, 126.976896],
+            ['남산', 37.550925, 126.990945],
+            ['이태원', 37.540223, 126.994005],
+            ['iSolabin', 37.14450, 127.03312]
+		]
+		
+		var map;
+		
+		function initMap() {
+			map = new google.maps.Map(document.getElementById('map'), {
+				center: {lat: 37.14450, lng: 127.03312},
+				zoom: 8,
+				mapTypeControl: false,
+				streetViewControl: false
+			});
+			
+			var marker, i;
+			
+			var infowindow = new google.maps.InfoWindow();
+			
+			for (i = 0; i < locations.length; i++) {
+				marker = new google.maps.Marker({
+					position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+					map: map
+				});
+				
+				google.maps.event.addListener(marker, 'click', (function(marker, i) {
+					var content = '<div class="iw-container" id="iw-container">' +
+						'<h2>' + (locations[i][0]) + '</h2>' +
+						'<dl>' +
+							'<dt>위치정보</dt>' +
+							'<dd>00시00구00동</dd>' +
+						'</dl>' +
+					'</div>'
+			        return function() {
+			          infowindow.setContent(content);
+			          infowindow.open(map, marker);
+			        }
+			      })(marker, i));
+			}
+		}
+
+
+		// chart
+		$(function() {
+			var piechart = c3.generate({
+				bindto: "#pie_chart",
+				data: {
+					columns: [
+						['정상', 6],
+						['관심', 3],
+						['심각', 1]
+					],
+					type: 'pie'
+				},
+				tooltip: {
+					format: {
+						value: function (value) {
+							return value + '개';
+						}
+					}
+				},
+				color: {
+					pattern: ['#48ae63', '#ffc600', '#e35f5f']
+				}
+			});
+
+
+			var barchart = c3.generate({
+				bindto: "#bar_chart",
+				data: {
+					columns: [
+						['쓰레기양', 80, 70, 20, 50, 60, 10, 90, 30, 40, 80]
+					],
+					type: "bar"
+				},
+				tooltip: {
+					format: {
+						value: function (value) {
+							return value + '%'
+						}
+					}
+				},
+				axis: {
+					x: {
+						label: {
+							text: '장비명',
+							position: 'outer-center'
+						},
+						type: 'category',
+						categories: ['s1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10'],
+						tick: {
+							centered: true
+						}
+					},
+					y: {
+						label: {
+							text: '쓰레기양',
+							position: 'outer-middle'
+						},
+						max: 100,
+						min: 10
+					}
+				},
+				legend: {
+					hide: true
+				},
+				color: {
+					pattern: ['#48ae63']
+				}
+			});
+
+
+
+			// timeseries combination
+			var ctx = document.getElementById('chart').getContext('2d');
+			var chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: ['월', '화', '수', '목', '금', '토', '일'],
+					datasets: [{
+						label: 'test',
+						data: [10, 20, 30, 5, 60, 80, 20],
+						pointRadius: 0,
+						fill: false,
+						lineTension: 0,
+						borderWidth:2
+					}]
+				},
+				option: {
+					responsive: false
+				}
+			})
+		})
+
+
+
+
+	</script>
+</head>
+<div layout:fragment="content" class="contents-body">
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>DashBoard</h2>
+			</div>
+		</div>
+		<div class="dashboard">
+			<div class="dashboard__count">
+				<div class="dashboard__count-item">
+					<h4 class="dashbaord__count-title">전체</h4>
+					<p class="dashboard__count-num">1000</p>
+				</div>
+				<div class="dashboard__count-item">
+					<h4 class="dashbaord__count-title">정상</h4>
+					<p class="dashboard__count-num">600</p>
+				</div>
+				<div class="dashboard__count-item">
+					<h4 class="dashbaord__count-title">관심</h4>
+					<p class="dashboard__count-num dashboard__count-num--warning">300</p>
+				</div>
+				<div class="dashboard__count-item">
+					<h4 class="dashbaord__count-title">심각</h4>
+					<p class="dashboard__count-num dashboard__count-num--danger">100</p>
+				</div>
+			</div>
+			
+			<div class="dashboard__row">
+				<div class="panel panel--three">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">Location</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+								<button class="panel__button fold">접기</button>
+							</div>
+						</div>
+						<div class="panel__body">
+							<div class="map" id="map"></div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel--three">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">Condition</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+								<button class="panel__button fold">접기</button>
+							</div>
+						</div>
+						<div class="panel__body">
+							<div class="panel__stat" id="pie_chart"></div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel--three">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">Level</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+								<button class="panel__button fold">접기</button>
+							</div>
+						</div>
+						<div class="panel__body">
+							<div class="panel__stat" id="bar_chart"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dashboard__row">
+				<!-- 검색영역 -->
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__body panel__body--height-auto">
+							<div class="panel__console">
+								<div class="panel__console panel__console--left">
+									<div class="c-btn-group">
+										<h5 class="c-btn-group__title">기간 선택</h5>
+										<div class="c-btn-group__list">
+											<button class="c-btn-group__button active">24Hours</button>
+											<button class="c-btn-group__button">7Days</button>
+											<button class="c-btn-group__button">1Month</button>
+											<button class="c-btn-group__button">1Year</button>
+											<button class="c-btn-group__button">FromTo</button>
+										</div>
+									</div>
+								</div>
+								<div class="panel__console panel__console--right">
+									<div class="c-float">
+										<div class="c-float__item">
+											<div class="c-date-group">
+ 											<div class="c-date">
+   										<label for="dateFrom" class="c-date__label">from</label>
+   										<input type="date" class="c-date__input" id="dateFrom" />
+  										</div>
+  										<div class="c-date">
+   										<label for="dateTo" class="c-date__label">today</label>
+   										<input type="date" class="c-date__input" id="dateTo" readonly />
+  										</div>
+ 										</div>
+										</div>
+										<div class="c-float__item" style="padding-top: 15px;">
+											<button class="c-button c-button--point">조회</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="c-float c-float--flex">
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="select1" class="c-select__label">장비 타입</label>
+										<select name="" id="select1" class="c-select__input">
+											<option value="">iSolarbin</option>
+											<option value=""></option>
+											<option value=""></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="select2" class="c-select__label">소속운영사</label>
+										<select name="" id="select2" class="c-select__input">
+											<option value="">ACI</option>
+											<option value=""></option>
+											<option value=""></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="select3" class="c-select__label">국가</label>
+										<select name="" id="select3" class="c-select__input">
+											<option value="">Korea</option>
+											<option value=""></option>
+											<option value=""></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-text">
+										<label for="number" class="c-text__label">장비번호</label>
+										<input type="text" class="c-text__input" id="number" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">기기</h4>
+							<div class="panel__console">
+								<div class="c-search">
+									<input type="text" class="c-search__input" />
+									<button class="c-search__btn">검색</button>
+								</div>
+							</div>
+						</div>
+						<div class="panel__body panel__body--height-auto panel__body--non-padding">
+							<ul class="c-list equipment">
+								<li class="c-list__item">
+									<div class="equipment">
+										<div class="equipment__section">
+											<span class="equipment__stat normal">Normal</span>
+											<span class="equipment__connect on">Online</span>
+											<div class="equipment__img">
+												<img src="/static/assets/images/dummy/iSolarbin.png" alt="" />
+											</div>
+										</div>
+										<div class="equipment__section">
+											<h4 class="equipment__section-title">상세 정보</h4>
+											<ul class="equipment__info">
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">장비 ID :</span>
+													<span class="equipment__info-value">ISOL-KR-INC-0001</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">장비타입 :</span>
+													<span class="equipment__info-value">iSolarbin</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">최대적재량 :</span>
+													<span class="equipment__info-value">200L</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">운영사 :</span>
+													<span class="equipment__info-value">ACI</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">지역 :</span>
+													<span class="equipment__info-value">서울</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">국가 :</span>
+													<span class="equipment__info-value">한국</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">설치일자 :</span>
+													<span class="equipment__info-value">2019년 10월 5일</span>
+												</li>
+											</ul>
+										</div>
+										<div class="equipment__section">
+											<h4 class="equipment__section-title">상태 상세 정보</h4>
+											<ul class="equipment__info">
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">운영일 :</span>
+													<span class="equipment__info-value">35일</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">온도 :</span>
+													<span class="equipment__info-value">27.5℃</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">배출량 :</span>
+													<span class="equipment__info-value">75%</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">배터리잔량 :</span>
+													<span class="equipment__info-value">65%</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">태양광판넬출력량 :</span>
+													<span class="equipment__info-value">9.2A/12.4V</span>
+												</li>
+											</ul>
+										</div>
+										<div class="equipment__section">
+											<div class="equipment__chart">
+												<canvas id="chart" style="width: 100%;height: 220px;"></canvas>
+											</div>
+										</div>
+									</div>
+								</li>
+								
+								<li class="c-list__item">
+									<div class="equipment">
+										<div class="equipment__section">
+											<span class="equipment__stat caution">Caution</span>
+											<span class="equipment__connect off">Offline</span>
+											<div class="equipment__img">
+												<img src="/static/assets/images/dummy/iSolarbin.png" alt="" />
+											</div>
+										</div>
+										<div class="equipment__section">
+											<h4 class="equipment__section-title">상세 정보</h4>
+											<ul class="equipment__info">
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">장비 ID :</span>
+													<span class="equipment__info-value">ISOL-KR-INC-0001</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">장비타입 :</span>
+													<span class="equipment__info-value">iSolarbin</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">최대적재량 :</span>
+													<span class="equipment__info-value">200L</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">운영사 :</span>
+													<span class="equipment__info-value">ACI</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">지역 :</span>
+													<span class="equipment__info-value">서울</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">국가 :</span>
+													<span class="equipment__info-value">한국</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">설치일자 :</span>
+													<span class="equipment__info-value">2019년 10월 5일</span>
+												</li>
+											</ul>
+										</div>
+										<div class="equipment__section">
+											<h4 class="equipment__section-title">상태 상세 정보</h4>
+											<ul class="equipment__info">
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">운영일 :</span>
+													<span class="equipment__info-value">35일</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">온도 :</span>
+													<span class="equipment__info-value">27.5℃</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">배출량 :</span>
+													<span class="equipment__info-value">75%</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">배터리잔량 :</span>
+													<span class="equipment__info-value">65%</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">태양광판넬출력량 :</span>
+													<span class="equipment__info-value">9.2A/12.4V</span>
+												</li>
+											</ul>
+										</div>
+										<div class="equipment__section">
+											<div class="equipment__chart" id=""></div>
+										</div>
+									</div>
+								</li>
+								
+								<li class="c-list__item">
+									<div class="equipment">
+										<div class="equipment__section">
+											<span class="equipment__stat severe">Severe</span>
+											<span class="equipment__connect on">Online</span>
+											<div class="equipment__img">
+												<img src="/static/assets/images/dummy/iSolarbin.png" alt="" />
+											</div>
+										</div>
+										<div class="equipment__section">
+											<h4 class="equipment__section-title">상세 정보</h4>
+											<ul class="equipment__info">
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">장비 ID :</span>
+													<span class="equipment__info-value">ISOL-KR-INC-0001</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">장비타입 :</span>
+													<span class="equipment__info-value">iSolarbin</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">최대적재량 :</span>
+													<span class="equipment__info-value">200L</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">운영사 :</span>
+													<span class="equipment__info-value">ACI</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">지역 :</span>
+													<span class="equipment__info-value">서울</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">국가 :</span>
+													<span class="equipment__info-value">한국</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">설치일자 :</span>
+													<span class="equipment__info-value">2019년 10월 5일</span>
+												</li>
+											</ul>
+										</div>
+										<div class="equipment__section">
+											<h4 class="equipment__section-title">상태 상세 정보</h4>
+											<ul class="equipment__info">
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">운영일 :</span>
+													<span class="equipment__info-value">35일</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">온도 :</span>
+													<span class="equipment__info-value">27.5℃</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">배출량 :</span>
+													<span class="equipment__info-value">75%</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">배터리잔량 :</span>
+													<span class="equipment__info-value">65%</span>
+												</li>
+												<li class="equipment__info-item">
+													<span class="equipment__info-title">태양광판넬출력량 :</span>
+													<span class="equipment__info-value">9.2A/12.4V</span>
+												</li>
+											</ul>
+										</div>
+										<div class="equipment__section">
+											<div class="equipment__chart" id=""></div>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</html>
