@@ -611,9 +611,8 @@
 								<div class="c-float__item">
 									<div class="c-select">
 										<label for="s_emType" class="c-select__label">장비 타입</label>
-										<select name="" id="s_emType" class="c-select__input">
+										<select id="s_emType" class="c-select__input">
 											<option value="">전체</option>
-											<!--/*@thymesVar id="equipdTypes" type=""*/-->
 											<option th:each ="equipdType : ${equipdTypes}"
 													th:value="${equipdType.code}"
 													th:text="${equipdType.name}"
@@ -626,7 +625,6 @@
 										<label for="s_emCountry" class="c-select__label">국가</label>
 										<select id="s_emCountry" class="c-select__input">
 											<option value="">전체</option>
-											<!--/*@thymesVar id="equipdCountrys" type=""*/-->
 											<option th:each ="equipdCountry : ${equipdCountrys}"
 													th:value="${equipdCountry.code}"
 													th:text="${equipdCountry.name}">
