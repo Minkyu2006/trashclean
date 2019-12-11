@@ -1161,7 +1161,7 @@
 											</div>
 										</div>
 										<div class="c-float__item" style="padding-top: 15px;">
-											<button class="panel__button refresh" id="allChart">새로고침</button>
+<!--											<button class="panel__button refresh" id="allChart">새로고침</button>-->
 											<button id="btnSearch" class="c-button c-button--point">조회</button>
 										</div>
 									</div>
@@ -1180,24 +1180,26 @@
 										<label for="s_emType" class="c-select__label">장비 타입</label>
 										<select name="" id="s_emType" class="c-select__input">
 											<option value="">전체</option>
+											<!--/*@thymesVar id="equipdTypes" type=""*/-->
 											<option th:each ="equipdType : ${equipdTypes}"
 													th:value="${equipdType.code}"
-													th:text="${equipdType.name}"
-											></option>
+													th:text="${equipdType.name}">
+											</option>
 										</select>
 									</div>
 								</div>
-								<div class="c-float__item">
-									<div class="c-text">
-										<label for="s_Agency" class="c-text__label">소속운영사</label>
-										<input id="s_Agency" type="text" class="c-text__input" />
-									</div>
-								</div>
+<!--								<div class="c-float__item">-->
+<!--									<div class="c-text">-->
+<!--										<label for="s_Agency" class="c-text__label">소속운영사</label>-->
+<!--										<input id="s_Agency" type="text" class="c-text__input" />-->
+<!--									</div>-->
+<!--								</div>-->
 								<div class="c-float__item">
 									<div class="c-select">
 										<label for="s_emCountry" class="c-select__label">국가</label>
 										<select id="s_emCountry" class="c-select__input">
 											<option value="">전체</option>
+											<!--/*@thymesVar id="equipdCountrys" type=""*/-->
 											<option th:each ="equipdCountry : ${equipdCountrys}"
 													th:value="${equipdCountry.code}"
 													th:text="${equipdCountry.name}">
@@ -1205,14 +1207,14 @@
 										</select>
 									</div>
 								</div>
-<!--								<div class="c-float__item">-->
-<!--									<div class="c-select">-->
-<!--										<label for="s_emLocation" class="c-select__label">지역</label>-->
-<!--										<select id="s_emLocation" class="c-select__input">-->
-<!--                                            <option value="">전체</option>-->
-<!--										</select>-->
-<!--									</div>-->
-<!--								</div>-->
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="s_emLocation" class="c-select__label">지역</label>
+										<select id="s_emLocation" class="c-select__input">
+                                            <option value="">전체</option>
+										</select>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

@@ -4,7 +4,7 @@
 	  layout:decorate ="~{layout/default}">
 	  
 	<head>
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5TolDRIMUyTUF5HyyxY37BGSbK3pzXgU&callback" async defer></script>
+		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
 		<script>
 
 			$(function() {
@@ -613,6 +613,7 @@
 										<label for="s_emType" class="c-select__label">장비 타입</label>
 										<select name="" id="s_emType" class="c-select__input">
 											<option value="">전체</option>
+											<!--/*@thymesVar id="equipdTypes" type=""*/-->
 											<option th:each ="equipdType : ${equipdTypes}"
 													th:value="${equipdType.code}"
 													th:text="${equipdType.name}"
@@ -621,20 +622,23 @@
 									</div>
 								</div>
 								<div class="c-float__item">
-									<div class="c-text">
-										<label for="s_Agency" class="c-text__label">소속운영사</label>
-										<input id="s_Agency" type="text" class="c-text__input" />
-									</div>
-								</div>
-								<div class="c-float__item">
 									<div class="c-select">
 										<label for="s_emCountry" class="c-select__label">국가</label>
 										<select id="s_emCountry" class="c-select__input">
 											<option value="">전체</option>
+											<!--/*@thymesVar id="equipdCountrys" type=""*/-->
 											<option th:each ="equipdCountry : ${equipdCountrys}"
 													th:value="${equipdCountry.code}"
 													th:text="${equipdCountry.name}">
 											</option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="s_emLocation" class="c-select__label">지역</label>
+										<select id="s_emLocation" class="c-select__input">
+											<option value="">전체</option>
 										</select>
 									</div>
 								</div>

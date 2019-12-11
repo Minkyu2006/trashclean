@@ -228,7 +228,7 @@ public class DashboardRestController {
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
 //        log.info("AWS 장치 list : "+resData);
-        log.info("AWS 장치 data : "+resData.get("data"));
+ //       log.info("AWS 장치 data : "+resData.get("data"));
 //        log.info("AWS 장치 size : "+resData.get("datacounts"));
 
         Object datacounts = resData.get("datacounts");
@@ -622,7 +622,7 @@ public class DashboardRestController {
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
-        log.info("AWS 장치 data : "+resData.get("data"));
+//        log.info("AWS 장치 data : "+resData.get("data"));
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수

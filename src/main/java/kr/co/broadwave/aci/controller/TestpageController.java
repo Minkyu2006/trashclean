@@ -35,14 +35,7 @@ public class TestpageController {
     }
 
     @RequestMapping("dashboardfront")
-    public String dashboardfront(Model model){
-        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
-        List<MasterCodeDto> agencys = masterCodeService.findCodeList(CodeType.C0006);
-        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
-
-        model.addAttribute("equipdTypes", equipdTypes);
-        model.addAttribute("agencys", agencys);
-        model.addAttribute("equipdCountrys", equipdCountrys);
+    public String dashboardfront(){
 
         return "testpage/dashboardfront";
     }

@@ -26,7 +26,7 @@ public class DashboardController {
     }
 
     @RequestMapping("dashboard")
-    public String dashboardTestPage1(Model model){
+    public String dashboard(Model model){
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
 
