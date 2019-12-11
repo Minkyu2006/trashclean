@@ -54,6 +54,16 @@ public class TestpageController {
         return "testpage/listtest";
     }
 
+    @RequestMapping("listtest2")
+    public String listtest2(){
+        return "testpage/listtest2";
+    }
+
+    @RequestMapping("listtest3")
+    public String listtest3(){
+        return "testpage/listtest3";
+    }
+
     @RequestMapping("filedownload/{fileid}")
     @ResponseBody
     public byte[] downProcess(HttpServletResponse response,

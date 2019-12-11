@@ -8,11 +8,15 @@
 		<script>
 
 			$(function() {
+				$("#removehour").removeClass(" active");
+				$("#starthour").addClass(" active");
+				$("#intervaltime").val("3");
 
 				deviceMap();
 
 				$("#btnSearch").on('click', function () {
 					deviceMap();
+					$("#deviceDetail").hide();
 				})
 
 			});
@@ -126,6 +130,7 @@
 						return function() {
 							infowindow.setContent(content);
 							infowindow.open(map, marker);
+							$("#deviceDetail").show();
 							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_level[i],solar_current[i],solar_voltage[i]);
 						}
 					})(marker, i));
@@ -476,6 +481,77 @@
 				});
 			}
 
+			// 기간선택에 따라 보내는시간 변경하는 함수
+			function intervaltimeChange(text) {
+				if (text == "1Hours") {
+					$("#intervaltime").val("1");
+					$("#fromTo").hide();
+					$("#dateFrom").val("");
+					$("#dateTo").val("");
+				}else if (text == "3Hours") {
+					$("#intervaltime").val("3");
+					$("#fromTo").hide();
+					$("#dateFrom").val("");
+					$("#dateTo").val("");
+				}else if (text == "24Hours") {
+					$("#intervaltime").val("24");
+					$("#fromTo").hide();
+					$("#dateFrom").val("");
+					$("#dateTo").val("");
+				} else if (text == "7Days") {
+					$("#intervaltime").val("168");
+					$("#fromTo").hide();
+					$("#dateFrom").val("");
+					$("#dateTo").val("");
+				} else if (text == "1Month") {
+					$("#intervaltime").val("720");
+					$("#fromTo").hide();
+					$("#dateFrom").val("");
+					$("#dateTo").val("");
+				} else if (text == "1Year") {
+					$("#intervaltime").val("8760");
+					$("#fromTo").hide();
+					$("#dateFrom").val("");
+					$("#dateTo").val("");
+				} else if (text == "FromTo") {
+					$("#intervaltime").val("");
+					$("#fromTo").show();
+				}
+			}
+
+			// 사용자정의 시간구하기 (날짜선택에따른 시간)
+			function intervaltimeDate(date) {
+				// console.log("date : " + date); 받아온날짜
+				var today = new Date();
+				var year = today.getFullYear();
+				var month = today.getMonth()+1
+				var day = today.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+				var todayData = year+"-"+month+"-"+day;
+				$("#dateTo").val(todayData);
+
+				var dateObj = new Date(date);
+
+				if (today<dateObj) {
+					Swal.fire({text:"현재 날짜보다 앞선 날짜는 선택할 수 없습니다."});
+					$("#intervaltime").val("");
+					$("#dateFrom").val("");
+					$("#dateTo").val("");
+					return false;
+				}
+
+				// console.log("today : " + today); // 오늘날짜
+				// console.log("dateObj : " + dateObj); // 사용자정의 날짜
+				var hours = parseInt(Math.abs(today - dateObj) / 36e5); // 36e5는 60 * 60 * 1000의 과학 표기법으로, 밀리 초 차이를 시간으로 환산하여 나눔.
+				// console.log("hours : " + hours); // 정해진시간
+				$("#intervaltime").val(hours);
+			}
+
 		</script>
 	</head>
 	  
@@ -491,6 +567,40 @@
 				<div class="panel">
 					<div class="panel__inner">
 						<div class="panel__body panel__body--height-auto">
+							<div class="panel__console">
+								<div class="panel__console panel__console--left">
+									<div class="c-btn-group">
+										<h5 class="c-btn-group__title">기간 선택</h5>
+										<div class="c-btn-group__list">
+											<button onclick="intervaltimeChange(this.value)" id="removehour" value="1Hours" class="c-btn-group__button">1Hours</button>
+											<button onclick="intervaltimeChange(this.value)" id="starthour" value="3Hours" class="c-btn-group__button">3Hours</button>
+											<button onclick="intervaltimeChange(this.value)" value="24Hours" class="c-btn-group__button">24Hours</button>
+											<button onclick="intervaltimeChange(this.value)" value="7Days" class="c-btn-group__button">7Days</button>
+											<button onclick="intervaltimeChange(this.value)" value="1Month" class="c-btn-group__button">1Month</button>
+											<button onclick="intervaltimeChange(this.value)" value="1Year" class="c-btn-group__button">1Year</button>
+											<button onclick="intervaltimeChange(this.value)" value="FromTo" class="c-btn-group__button">FromTo</button>
+										</div>
+										<input type="hidden" id="intervaltime" value ="" readonly="readonly" />
+									</div>
+								</div>
+								<div class="panel__console panel__console--right">
+									<div class="c-float">
+										<div class="c-float__item" id="fromTo" style="display: none">
+											<div class="c-date-group" >
+												<div class="c-date">
+													<label for="dateFrom" class="c-date__label">from</label>
+													<input type="date"  onchange="intervaltimeDate(this.value)" class="c-date__input" id="dateFrom" />
+												</div>
+												<div class="c-date">
+													<label for="dateTo" class="c-date__label">today</label>
+													<input type="date" class="c-date__input" id="dateTo" readonly />
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+
 							<div class="c-float c-float--flex">
 								<div class="c-float__item">
 									<div class="c-text">
