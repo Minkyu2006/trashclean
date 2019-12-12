@@ -13,6 +13,7 @@
             $("#btnStart").on('click',function(){
                 callStart();
             });
+
             $("#btnStop").on('click',function(){
                 callStop();
             });
@@ -24,6 +25,7 @@
             $("#btnDevicehistory").on('click',function(){
                 callDeviceHistory();
             });
+
             $("#btnAllSearch").on('click',function(){
                 calldevicelist();
                 callDeviceHistory();
@@ -62,40 +64,24 @@
                     //화면 출력
                     statuscode= res.data.statusCode;
                     if (statuscode ===200) {
-
                         var html = '';
-
                         $.each(res.data.datarow1, function(key, value){
-
                             html += '<li>'+ echoNull2Blank(value.deviceid) + '(온도):' + echoNull2Blank(value.temp_brd) +'℃</li>';
-
                         });
-
                         $("#curstatus").html(html);
-
                     }
-
-
-
                 }
-
             });
-
-
-
         }
 
 
         function callStart() {
-
             if(timerId != null) {
                 clearInterval(timerId);
             }
             timeInterval = $("#timeinterval").val();
-
             progresssDisplay();
             timerId = setInterval(progresssDisplay, 100);
-
         }
 
         function progresssDisplay(){

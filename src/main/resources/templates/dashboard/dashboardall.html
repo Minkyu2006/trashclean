@@ -33,9 +33,9 @@
 				refleshMapChart();
 			});
 
-			$("#refreshMaster").on('click',function(){
-				// refleshAllChart();
-			});
+			$("#monitoring").prop('checked',true);
+			$("#tensec").prop('checked',true);
+			refleshAutomatic();
 
 			$("#masterfold").on('click',function(){
 				$("#mapfold").toggleClass(" fold");
@@ -43,45 +43,119 @@
 				$("#levelfold").toggleClass(" fold");
 			});
 
+			$("#refreshMaster").on('click',function() {
+				var monitorTime = $('input[name="monitorTime"]:checked').val();
+				callStart(monitorTime);
+			});
+
 		});
 
-		//  모든차트 새로고침
-		function refleshAllChart() {
-			var params = {
-				emNumber:$('#s_emNumber').val(),
-				// emAgency:$('#s_Agency').val(),
-				emType:$('#s_emType').val(),
-				emCountry:$('#s_emCountry').val(),
-				emLocation:$('#s_emLocation').val(),
-			};
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-			$.ajax({
-				url:'/api/dashboard/deviceInfoList',
-				type : 'post',
-				data : params,
-				cache:false,
-				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-				},
-				success: function(res){
-					var pushValue = new Array();
-					var subName = new Array();
-					var installDate = new Array();
-					$.each(res.data.datalist, function(key, value){
-						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-						subName.push(nvl(value.emSubName,"확 인 불 가"));
-						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
-					});
-					console.log("installDate : "+installDate);
-					CircleChartDeviceId(pushValue);
-					BarChartDeviceId(pushValue,subName);
-					MapChartDeviceId(pushValue);
-					deviceAWSListView(pushValue,installDate);
-				}
-			});
+		//자동새로고침시작 함수
+		function refleshAutomatic(timevalue) {
+			var check = $("#monitoring").is(":checked");
+			console.log("check : "+check)
+
+			if(timevalue==null){
+				var monitorTime = $('input[name="monitorTime"]:checked').val();
+			}else{
+				monitorTime=timevalue
+			}
+
+			if(check==true){
+				console.log("자동 새로고침 시작")
+				callStart(monitorTime)
+			}else if(check==false){
+				console.log("자동 새로고침 종료")
+				$('#progressbar').css("width",0+"%")
+				// $('#progress').html(0);
+				callStop()
+			}
 		}
+
+		// 자동새로고침시작
+		function callStart(monitorTime) {
+			if(timerId != null) {
+				clearInterval(timerId);
+			}
+			timeInterval = monitorTime;
+			progresssDisplay();
+			timerId = setInterval(progresssDisplay, 100);
+		}
+
+		var timerId = null;
+		var timeprogress = 0;
+
+		// 자동새로고침 함수 호출
+		function progresssDisplay(){
+
+			var deviceid = $("#deviceIds").val().split(',');
+			var deviceinstall = $("#deviceInstalls").val().split(',');
+			var devicesubname = $("#deviceSubnames").val().split(',');
+
+			var deviceidArr = new Array();
+			var deviceinstallArr = new Array();
+			var devicesubnameArr = new Array();
+
+			for(var i=0; i<deviceid.length; i++){
+				deviceidArr.push(deviceid[i]);
+				deviceinstallArr.push(deviceinstall[i]);
+				devicesubnameArr.push(devicesubname[i]);
+			}
+
+			timeprogress += 1;
+			if( timeprogress * 100  >= timeInterval){
+				timeprogress = 0;
+				deviceAWSListViewReflesh(deviceidArr,deviceinstallArr);
+			}
+			var progressrate = timeprogress * 10000  / timeInterval;
+			$('#progressbar').css("width",progressrate+"%")
+			// $('#progress').html(timeprogress);
+		}
+
+		// 자동새로고침종료
+		function callStop() {
+			if(timerId != null) {
+				clearInterval(timerId);
+			}
+		}
+
+		//  모든차트 새로고침
+		// function refleshAllChart() {
+		// 	var params = {
+		// 		emNumber:$('#s_emNumber').val(),
+		// 		// emAgency:$('#s_Agency').val(),
+		// 		emType:$('#s_emType').val(),
+		// 		emCountry:$('#s_emCountry').val(),
+		// 		emLocation:$('#s_emLocation').val(),
+		// 	};
+		// 	var token = $("meta[name='_csrf']").attr("content");
+		// 	var header = $("meta[name='_csrf_header']").attr("content");
+		// 	$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+		// 	$.ajax({
+		// 		url:'/api/dashboard/deviceInfoList',
+		// 		type : 'post',
+		// 		data : params,
+		// 		cache:false,
+		// 		error:function(request,status,error){
+		// 			ajaxErrorMsg(request);
+		// 		},
+		// 		success: function(res){
+		// 			var pushValue = new Array();
+		// 			var subName = new Array();
+		// 			var installDate = new Array();
+		// 			$.each(res.data.datalist, function(key, value){
+		// 				pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+		// 				subName.push(nvl(value.emSubName,"확 인 불 가"));
+		// 				installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
+		// 			});
+		// 			console.log("installDate : "+installDate);
+		// 			CircleChartDeviceId(pushValue);
+		// 			BarChartDeviceId(pushValue,subName);
+		// 			MapChartDeviceId(pushValue);
+		// 			deviceAWSListView(pushValue,installDate);
+		// 		}
+		// 	});
+		// }
 
 		// 원차트 새로고침
 		function refleshCircleChart() {
@@ -101,7 +175,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					var pushValue = new Array();
@@ -131,7 +205,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					var pushValue = new Array();
@@ -157,13 +231,14 @@
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
 			$.ajax({
 				url:'/api/dashboard/deviceInfoList',
 				type : 'post',
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					var pushValue = new Array();
@@ -205,7 +280,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					//화면 출력
@@ -281,6 +356,9 @@
 						$deviceList.html(html);
 						deviceAWSListView(pushValue,installDate);
 						pushDeviceId(pushValue,subname);
+						$("#deviceIds").val(pushValue);
+						$("#deviceInstalls").val(installDate);
+						$("#deviceSubnames").val(subname);
 					},1000);
 				}
 			});
@@ -298,6 +376,7 @@
 				// console.log("emNumber["+i+"]" +":"+pushValue[i]);
 			}
 			// deviceIds.push("ISOL-KR-SEL-0004");
+			// console.log("장비배열 : "+deviceIds)
 
 			var installDayDatas = new Array();
 			var today = new Date();
@@ -316,7 +395,7 @@
 				installDayDatas.push(parseInt(betweenDay));
 			}
 			// console.log("installDatas :"+installDatas);
-			//console.log("installDayDatas :"+installDayDatas);
+			// console.log("운영일 :"+installDayDatas);
 
 			var itemJson = new Object();
 			itemJson.deviceids = deviceIds;
@@ -336,7 +415,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					//화면 출력
@@ -351,53 +430,192 @@
 						var html2 = '';
 						var html3 = '';
 
+						html2 += '<div id='+'states'+idx+' class="equipment__section">';
+						html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
+						html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
+						html2 += '</div>'
 						if(res.data.status[idx]=="normal"){
-							html2 += '<div class="equipment__section">';
-							html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
-							html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
-							html2 += '</div>'
+									html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
+									html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+								html2 += '<div class="equipment__img">';
+								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+								html2 += '</div>';
+						}else if(res.data.status[idx]=="caution"){
+									html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
+									html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+								html2 += '<div class="equipment__img">';
+								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+								html2 += '</div>';
+						}else if(res.data.status[idx]=="severe"){
+									html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
+									html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+								html2 += '<div class="equipment__img">';
+								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+								html2 += '</div>';
+						}else{
+									html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
+									html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+								html2 += '<div class="equipment__img">';
+								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+								html2 += '</div>';
+						}
+						html2 += '</div>';
+
+						html += '<div id='+'details'+idx+' class="equipment__section">'
+							html += '<div id='+'detailLoading'+idx+' class="c-loader">'
+								html += '<div class="c-loader__active c-loader__active--ring"></div>'
+							html += '</div>'
+						html += '<h4 class="equipment__section-title">상태 상세 정보</h4>'
+							html += '<ul class="equipment__info">'
+								html += '<li class="equipment__info-item">'
+									html += '<span class="equipment__info-title">'+'운영일 : '+'</span>'
+									html += '<span class="equipment__info-value">'+nvl(installDayDatas[idx],"확 인 불 가 ")+'일'+'</span>'
+								html += '</li>'
+								html += '<li class="equipment__info-item">'
+									html += '<span class="equipment__info-title">'+'온도 : '+'</span>'
+									html += '<span class="equipment__info-value">'+nvl(res.data.temp_brd[idx],"확 인 불 가")+'℃'+'</span>'
+								html += '</li>'
+								html += '<li class="equipment__info-item">'
+									html += '<span class="equipment__info-title">'+'배출량 : '+'</span>'
+									html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>'
+								html += '</li>'
+								html += '<li class="equipment__info-item">'
+									html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>'
+									html += '<span class="equipment__info-value">'+nvl(res.data.batt_level[idx],"확 인 불 가")+'%'+'</span>'
+								html += '</li>'
+								html += '<li class="equipment__info-item">'
+									html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>'
+									html += '<span class="equipment__info-value">'+nvl(res.data.solar_current[idx],"확 인 불 가")+'A'+'</span>'
+								html += '</li>'
+								html += '<li class="equipment__info-item">'
+									html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>'
+									html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
+								html += '</li>'
+							html += '</ul>'
+						html += '</div>'
+
+						html3 += '<div id='+'graphs'+idx+' class="equipment__section">'
+							html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">'
+								html3 += '<div class="c-loader__active c-loader__active--ring"></div>'
+							html3 += '</div>'
+						html3 += '<canvas id='+'timeStampChart'+idx+' style="width: 100%;height: 220px;"></canvas>'
+						html3 += '</div>'
+
+						htmls.push(html)
+						htmls2.push(html2)
+						htmls3.push(html3)
+
+						$('#listTest'+idx).append(htmls[idx]);
+						$('#listTest'+idx).prepend(htmls2[idx]);
+						$('#listTest'+idx).append(htmls3[idx]);
+
+						timeStamp(nvl(res.data.devices[idx],"확 인 불 가"),idx);
+
+						idx++
+					});
+					//console.log("출력완료");
+				}
+			});
+		}
+
+		// ASW 장치 데이터리스트(새로고침)
+		function deviceAWSListViewReflesh(pushValue,installDate) {
+			// console.log("장비리스트 뿌리기 시작")
+			// console.log("받은 장비번호 : "+pushValue);
+			// console.log("받은 설치날짜 : "+installDate);
+
+			var deviceIds = new Array();
+			for(i=0; i<pushValue.length; i++){
+				deviceIds.push(pushValue[i]);
+				// console.log("emNumber["+i+"]" +":"+pushValue[i]);
+			}
+			// deviceIds.push("ISOL-KR-SEL-0004");
+			// console.log("장비배열 : "+deviceIds)
+
+			var installDayDatas = new Array();
+			var today = new Date();
+
+			//운영일구하기
+			for(i=0; i<installDate.length; i++){
+				var dateString = installDate[i];
+				var dateObj = new Date(dateString.substring(0,4),Number(dateString.substring(4,6))-1,dateString.substring(6,8));
+				//console.log("dateObj :"+dateObj);
+				date1 = parseInt(today.getTime()/1000);
+				date2 = parseInt(dateObj.getTime()/1000);
+				var timeDifference = date1 - date2;
+				var timeDifferenceInHours = timeDifference / 60 / 60;
+				var betweenDay = timeDifferenceInHours  / 24;
+				//console.log("betweenDay :"+betweenDay);
+				installDayDatas.push(parseInt(betweenDay));
+			}
+			// console.log("installDatas :"+installDatas);
+			// console.log("운영일 :"+installDayDatas);
+
+			var itemJson = new Object();
+			itemJson.deviceids = deviceIds;
+			var devicestr = JSON.stringify(itemJson);
+
+			var params = {
+				deviceids:devicestr,
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/dashboard/deviceAWSListView',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					//화면 출력
+					var htmls = new Array();
+					var htmls2 = new Array();
+					var htmls3 = new Array();
+
+					var idx = 0;
+
+					$.each(res.data.devices, function (key, value) {
+						var html = '';
+						var html2 = '';
+						var html3 = '';
+
+						// html2 += '<div id='+'states'+idx+' class="equipment__section">';
+						html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
+						html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
+						html2 += '</div>'
+						if(res.data.status[idx]=="normal"){
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-							html2 += '</div>';
 						}else if(res.data.status[idx]=="caution"){
-							html2 += '<div class="equipment__section">';
-							html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
-							html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
-							html2 += '</div>'
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-							html2 += '</div>';
 						}else if(res.data.status[idx]=="severe"){
-							html2 += '<div class="equipment__section">';
-							html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
-							html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
-							html2 += '</div>'
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-							html2 += '</div>';
 						}else{
-							html2 += '<div class="equipment__section">';
-							html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
-							html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
-							html2 += '</div>'
 							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-							html2 += '</div>';
 						}
+						// html2 += '</div>';
 
-						html += '<div class="equipment__section">'
+						// html += '<div id='+'details'+idx+' class="equipment__section">'
 						html += '<div id='+'detailLoading'+idx+' class="c-loader">'
 						html += '<div class="c-loader__active c-loader__active--ring"></div>'
 						html += '</div>'
@@ -428,22 +646,22 @@
 						html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
 						html += '</li>'
 						html += '</ul>'
-						html += '</div>'
+						// html += '</div>'
 
-						html3 += '<div class="equipment__section">'
+						// html3 += '<div id='+'graphs'+idx+' class="equipment__section">'
 						html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">'
 						html3 += '<div class="c-loader__active c-loader__active--ring"></div>'
 						html3 += '</div>'
 						html3 += '<canvas id='+'timeStampChart'+idx+' style="width: 100%;height: 220px;"></canvas>'
-						html3 += '</div>'
+						// html3 += '</div>'
 
 						htmls.push(html)
 						htmls2.push(html2)
 						htmls3.push(html3)
 
-						$('#listTest'+idx).append(htmls[idx]);
-						$('#listTest'+idx).prepend(htmls2[idx]);
-						$('#listTest'+idx).append(htmls3[idx]);
+						$('#states'+idx).html(htmls2[idx]);
+						$('#details'+idx).html(htmls[idx]);
+						$('#graphs'+idx).html(htmls3[idx]);
 
 						timeStamp(nvl(res.data.devices[idx],"확 인 불 가"),idx);
 
@@ -474,7 +692,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res) {
 					statuscode= res.data.statusCode;
@@ -768,7 +986,8 @@
 
 		// aws deviceID값 push하는 함수 next -> 차트만들기
 		function pushDeviceId(pushValue,subname) {
-			// console.log("pushDeviceId - subname : "+subname)
+			// console.log("pushValue : "+pushValue)
+			// console.log("subname : "+subname)
 			// console.log("차트그래프 그리기 시작")
 
 			//상태값 차트 , 쓰레기양 차트
@@ -780,6 +999,7 @@
 			for (var i=0; i<pushValue.length; i++){
 				deviceIds.push(pushValue[i]);
 			}
+			console.log("deviceIds : "+deviceIds)
 			// deviceIds.push("ISOL-KR-SEL-0004");
 
 			var itemJson = new Object();
@@ -998,7 +1218,7 @@
 			var dateObj = new Date(date);
 
 			if (today<dateObj) {
-				Swal.fire({text:"현재 날짜보다 앞선 날짜는 선택할 수 없습니다."});
+				alert("현재 날짜보다 앞선 날짜는 선택할 수 없습니다.");
 				$("#intervaltime").val("");
 				$("#dateFrom").val("");
 				$("#dateTo").val("");
@@ -1149,6 +1369,9 @@
 											<button onclick="intervaltimeChange(this.value)" value="FromTo" class="c-btn-group__button">FromTo</button>
 										</div>
 										<input type="hidden" id="intervaltime" value ="" readonly="readonly" />
+										<input type="hidden" id="deviceIds" value ="" readonly="readonly" />
+										<input type="hidden" id="deviceInstalls" value ="" readonly="readonly" />
+										<input type="hidden" id="deviceSubnames" value ="" readonly="readonly" />
 									</div>
 								</div>
 								<div class="panel__console panel__console--right">
@@ -1165,21 +1388,43 @@
 												</div>
 											</div>
 										</div>
+
+
 										<div class="c-float__item" style="padding-top: 15px;">
 											<button id="refreshMaster" class="c-button c-button--point">새로고침</button>
+
 											<div class="l-float-heading">
 												<div class="l-float-heading--left">
 													<h4 class="article__head" >진행상태</h4>
-													<div style="height:20px; background-color: darkblue; width:100%" id="progressbar"></div>
+<!--													<h4 class="article__head" id="progress">0</h4>-->
+													<div style="height:20px; background-color: #3A9DFF; width:100%" id="progressbar"></div>
 												</div>
 											</div>
-											<input id="monitering" type="checkbox" value="자동 새로 고침" />
-											<input id="tensec" type="radio" value="10초" />
-											<input id="onemin" type="radio" value="1분" />
-											<input id="twomin" type="radio" value="2분" />
-											<input id="fivemin" type="radio" value="5분" />
-											<input id="ftmin" type="radio" value="15분" />
+
+											<label><input id="monitoring" type="checkbox" onclick="refleshAutomatic()" />자동 새로 고침</label>
+											<ul style="list-style: none">
+												<li>
+													<label>새로 고침 간격</label>
+												</li>
+												<li>
+													<label><input id="tensec" name="monitorTime" type="radio" value="10000" onclick="refleshAutomatic(this.value)" />10초</label>
+												</li>
+												<li>
+													<label><input id="onemin" name="monitorTime" type="radio" value="60000" onclick="refleshAutomatic(this.value)" />1분</label>
+												</li>
+												<li>
+													<label><input id="twomin" name="monitorTime" type="radio" value="120000" onclick="refleshAutomatic(this.value)" />2분</label>
+												</li>
+												<li>
+													<label><input id="fivemin" name="monitorTime" type="radio" value="300000" onclick="refleshAutomatic(this.value)" />5분</label>
+												</li>
+												<li>
+													<label><input id="ftmin" name="monitorTime" type="radio" value="1500000" onclick="refleshAutomatic(this.value)" />15분</label>
+												</li>
+											</ul>
 										</div>
+
+
 										<div class="c-float__item" style="padding-top: 15px;">
 											<button id="masterfold" class="c-button c-button--point">접기</button>
 										</div>

@@ -46,7 +46,7 @@
 					data : params,
 					cache:false,
 					error:function(request,status,error){
-						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+						ajaxErrorMsg(request);
 					},
 					success: function(res){
 						var pushValue = new Array();
@@ -164,7 +164,7 @@
 					data : params,
 					cache:false,
 					error:function(request,status,error){
-						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+						ajaxErrorMsg(request);
 					},
 					success: function(res){
 
@@ -315,7 +315,7 @@
 					data : params,
 					cache:false,
 					error:function(request,status,error){
-						alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+						ajaxErrorMsg(request);
 					},
 					success: function(res) {
 						statuscode= res.data.statusCode;
@@ -545,7 +545,7 @@
 				var dateObj = new Date(date);
 
 				if (today<dateObj) {
-					Swal.fire({text:"현재 날짜보다 앞선 날짜는 선택할 수 없습니다."});
+					alert("현재 날짜보다 앞선 날짜는 선택할 수 없습니다.");
 					$("#intervaltime").val("");
 					$("#dateFrom").val("");
 					$("#dateTo").val("");

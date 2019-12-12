@@ -70,6 +70,11 @@ public class TestpageController {
         return "testpage/listtest3";
     }
 
+    @RequestMapping("modelregtest")
+    public String modelregtest(){
+        return "testpage/modelregtest";
+    }
+
     @RequestMapping("filedownload/{fileid}")
     @ResponseBody
     public byte[] downProcess(HttpServletResponse response,
