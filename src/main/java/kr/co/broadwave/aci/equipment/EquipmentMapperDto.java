@@ -33,6 +33,16 @@ public class EquipmentMapperDto {
     private Double emMaximumPayload;
     private Long emUnit;
     private String emInstallDate;
+    private Double emLatitude; // 위도
+    private Double emHardness; // 경도
+
+    public Double getEmLatitude() {
+        return emLatitude;
+    }
+
+    public Double getEmHardness() {
+        return emHardness;
+    }
 
     public String getEmSubName() {
         return emSubName;

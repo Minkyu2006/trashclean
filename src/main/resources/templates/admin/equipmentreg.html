@@ -5,10 +5,6 @@
 <head>
     <script type="text/javascript">
 		$(function() {
-			// 오직 숫자만 입력할수있게하는 제이쿼리
-			$("input:text[numberOnly]").on("keyup", function() {
-				$(this).val($(this).val().replace(/[^0-9]/g,""));
-			});
 
 			//자동실행
 			LocationSetting();
@@ -68,6 +64,8 @@
 			$("#addSell").val('');
 			$("#emInstallDate").val('');
 			$("#emSubName").val('');
+			$("#emLatitude").val('');
+			$("#emHardness").val('');
 
 			$("#emTypeView").hide();
 			$("#emCountryView").hide();
@@ -126,9 +124,8 @@
 			var objTarget = evt.srcElement || evt.target;
 			var _value = event.srcElement.value;
 			if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
-				//  objTarget.value = objTarget.value.replace(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g,''); // g가 핵심: 빠르게 타이핑할때 여러 한글문자가 입력되어 버린다.
+				alert("숫자만 입력가능합니다.");
 				objTarget.value = null;
-				//return false;
 			}
 		}
 
@@ -314,6 +311,9 @@
 					$("#emMaximumPayload").val(res.data.equipment.emMaximumPayload);
 					$("#emUnit").val(res.data.equipment.emUnit);
 					$("#emSubName").val(res.data.equipment.emSubName);
+					$("#emLatitude").val(res.data.equipment.emLatitude);
+					$("#emHardness").val(res.data.equipment.emHardness);
+
 					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
 					var install = res.data.equipment.emInstallDate;
 					var install2 = [install[0],install[1],install[2],install[3],"-",install[4],install[5],"-",install[6],install[7]];
@@ -686,6 +686,20 @@
 						<td>
 							<div class="c-text">
 								<input type="text" name="emSubName" id="emSubName" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>위도</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="emLatitude" id="emLatitude" class="c-text__input" onkeyup="return delHangle(event)" />
+							</div>
+						</td>
+						<th>경도</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="emHardness" id="emHardness" class="c-text__input" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
 					</tr>

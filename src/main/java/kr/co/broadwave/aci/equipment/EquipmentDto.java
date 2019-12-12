@@ -42,11 +42,21 @@ public class EquipmentDto {
     private MasterCode emUnitName; // 단위이름
     private String emInstallDate; // 설치일자
     private String emSubName; // 장비약칭
+    private Double emLatitude; // 위도
+    private Double emHardness; // 경도
 
     private LocalDateTime insertDateTime;
     private String insert_id;
     private LocalDateTime modifyDateTime;
     private String modify_id;
+
+    public Double getEmLatitude() {
+        return emLatitude;
+    }
+
+    public Double getEmHardness() {
+        return emHardness;
+    }
 
     public String getEmUnitName() {
         return emUnitName.getName();

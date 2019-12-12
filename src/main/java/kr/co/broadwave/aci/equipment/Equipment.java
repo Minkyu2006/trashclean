@@ -78,6 +78,12 @@ public class Equipment {
     @Column(name="em_subname")
     private String emSubName; // 장비약칭
 
+    @Column(name="em_latitude")
+    private Double emLatitude; // 위도
+
+    @Column(name="em_hardness")
+    private Double emHardness; // 경도
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 
