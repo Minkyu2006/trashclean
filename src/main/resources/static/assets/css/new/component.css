@@ -107,6 +107,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 	font-size: 16px;
 	line-height: 27px;
 }
+.c-date-group.c-date-group--flex {
+	display: flex;
+}
+.c-date-group.c-date-group--flex .c-date {
+	flex: 1;
+	float: none;
+	width: auto;
+}
 
 /* button */
 .c-button {
