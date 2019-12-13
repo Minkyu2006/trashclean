@@ -45,7 +45,10 @@
 
 			$("#refreshMaster").on('click',function() {
 				var monitorTime = $('input[name="monitorTime"]:checked').val();
-				callStart(monitorTime);
+				$("#mapChartLoading").show();
+				$("#pieChartLoading").show();
+				$("#barChartLoading").show();
+				masterReflesh()
 			});
 
 		});
@@ -63,17 +66,18 @@
 
 			if(check==true){
 				console.log("자동 새로고침 시작")
-				callStart(monitorTime)
+				AutoStart(monitorTime)
 			}else if(check==false){
 				console.log("자동 새로고침 종료")
-				$('#progressbar').css("width",0+"%")
-				// $('#progress').html(0);
 				callStop()
 			}
 		}
 
+		var timerId = null;
+		var timeprogress = 0;
+
 		// 자동새로고침시작
-		function callStart(monitorTime) {
+		function AutoStart(monitorTime) {
 			if(timerId != null) {
 				clearInterval(timerId);
 			}
@@ -82,11 +86,8 @@
 			timerId = setInterval(progresssDisplay, 100);
 		}
 
-		var timerId = null;
-		var timeprogress = 0;
-
-		// 자동새로고침 함수 호출
-		function progresssDisplay(){
+		// 그냥새로고침
+		function masterReflesh() {
 
 			var deviceid = $("#deviceIds").val().split(',');
 			var deviceinstall = $("#deviceInstalls").val().split(',');
@@ -96,19 +97,45 @@
 			var deviceinstallArr = new Array();
 			var devicesubnameArr = new Array();
 
-			for(var i=0; i<deviceid.length; i++){
+			for (var i = 0; i < deviceid.length; i++) {
+				deviceidArr.push(deviceid[i]);
+				deviceinstallArr.push(deviceinstall[i]);
+				devicesubnameArr.push(devicesubname[i]);
+			}
+
+			deviceAWSListViewReflesh(deviceidArr, deviceinstallArr);
+			pushDeviceId(deviceidArr, devicesubnameArr);
+		}
+
+		// 자동새로고침 함수 호출
+		function progresssDisplay() {
+
+			var deviceid = $("#deviceIds").val().split(',');
+			var deviceinstall = $("#deviceInstalls").val().split(',');
+			var devicesubname = $("#deviceSubnames").val().split(',');
+
+			var deviceidArr = new Array();
+			var deviceinstallArr = new Array();
+			var devicesubnameArr = new Array();
+
+			for (var i = 0; i < deviceid.length; i++) {
 				deviceidArr.push(deviceid[i]);
 				deviceinstallArr.push(deviceinstall[i]);
 				devicesubnameArr.push(devicesubname[i]);
 			}
 
 			timeprogress += 1;
-			if( timeprogress * 100  >= timeInterval){
+
+			if (timeprogress * 100 >= timeInterval) {
 				timeprogress = 0;
-				deviceAWSListViewReflesh(deviceidArr,deviceinstallArr);
+				deviceAWSListViewReflesh(deviceidArr, deviceinstallArr);
+				pushDeviceId(deviceidArr, devicesubnameArr);
+				$("#mapChartLoading").show();
+				$("#pieChartLoading").show();
+				$("#barChartLoading").show();
 			}
-			var progressrate = timeprogress * 10000  / timeInterval;
-			$('#progressbar').css("width",progressrate+"%")
+			var progressrate = timeprogress * 10000 / timeInterval;
+			$('#progressbar').css("width", progressrate + "%")
 			// $('#progress').html(timeprogress);
 		}
 
@@ -119,49 +146,10 @@
 			}
 		}
 
-		//  모든차트 새로고침
-		// function refleshAllChart() {
-		// 	var params = {
-		// 		emNumber:$('#s_emNumber').val(),
-		// 		// emAgency:$('#s_Agency').val(),
-		// 		emType:$('#s_emType').val(),
-		// 		emCountry:$('#s_emCountry').val(),
-		// 		emLocation:$('#s_emLocation').val(),
-		// 	};
-		// 	var token = $("meta[name='_csrf']").attr("content");
-		// 	var header = $("meta[name='_csrf_header']").attr("content");
-		// 	$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-		// 	$.ajax({
-		// 		url:'/api/dashboard/deviceInfoList',
-		// 		type : 'post',
-		// 		data : params,
-		// 		cache:false,
-		// 		error:function(request,status,error){
-		// 			ajaxErrorMsg(request);
-		// 		},
-		// 		success: function(res){
-		// 			var pushValue = new Array();
-		// 			var subName = new Array();
-		// 			var installDate = new Array();
-		// 			$.each(res.data.datalist, function(key, value){
-		// 				pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-		// 				subName.push(nvl(value.emSubName,"확 인 불 가"));
-		// 				installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
-		// 			});
-		// 			console.log("installDate : "+installDate);
-		// 			CircleChartDeviceId(pushValue);
-		// 			BarChartDeviceId(pushValue,subName);
-		// 			MapChartDeviceId(pushValue);
-		// 			deviceAWSListView(pushValue,installDate);
-		// 		}
-		// 	});
-		// }
-
 		// 원차트 새로고침
 		function refleshCircleChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
-				// emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
@@ -191,7 +179,6 @@
 		function refleshBarChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
-				// emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
@@ -223,7 +210,6 @@
 		function refleshMapChart() {
 			var params = {
 				emNumber:$('#s_emNumber').val(),
-				// emAgency:$('#s_Agency').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
@@ -869,7 +855,7 @@
 						$("#stateLoading"+idx).hide();
 						$("#detailLoading"+idx).hide();
 						$("#timechartLoading"+idx).hide();
-					},1000);
+					},2000);
 				}
 			});
 		}
