@@ -1512,7 +1512,6 @@ h4.article__heading {
 
 /* popup.js */
 .popup {
-	display: none;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -1525,9 +1524,9 @@ h4.article__heading {
 .popup.popup--dim {
 	background-color: rgba(0, 0, 0, .4);
 }
-.popup.popup--open {
+/*.popup.popup--open {
 	display: block;
-}
+}*/
 .popup__box {
 	display: block;
 	position: absolute;
