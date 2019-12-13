@@ -3,19 +3,30 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate ="~{layout/default}">
 <head>
-    <script>
-    $(document).ready(function() {
-        $('.btn-alertPop').on('click', function() {
-            var popupType = $(this).data('id');
-            // $('.popup__text').text('성공하였습니다.');
-            $('.popup__stat').addClass('popup__stat--' + popupType);
-            $('.popup').addClass('popup--open');
-        })
+	<script src="/assets/js/jstest/alerttest.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			// $('.btn-alertPop').on('click', function() {
+			// 	var popupType = $(this).data('id');
+			// 	// $('.popup__text').text('성공하였습니다.');
+			// 	$('.popup__stat').addClass('popup__stat--' + popupType);
+			// 	$('.popup').addClass('popup--open');
+			// })
 
-        $('.popup__btn--cancel').on('click', function() {
-            $('.popup').removeClass('popup--open');
-        })
-    })
+			$('#successBtn').on('click', function() {
+				$('.popup').removeClass('popup--open');
+			})
+
+			$('#cancelBtn').on('click', function() {
+				$('.popup').removeClass('popup--open');
+			})
+
+			$('#confirm').on('click', function() {
+				console.log("확인버튼 실행")
+				alertCheck();
+			})
+
+		});
     </script>
 </head>
 
@@ -23,19 +34,30 @@
 	<button id="success" class="btn-alertPop" data-id="success">성공</button>
     <button id="fail" class="btn-alertPop" data-id="cancel">실패</button>
     <button id="caution" class="btn-alertPop" data-id="caution">경고</button>
-    <button id="confirm" class="btn-alertPop" data-id="check">확인</button>
 
-	<div class="popup popup--dim">
-		<div class="popup__box">
-			<div class="popup__content">
-		              <div class="popup__stat"></div>
-				<div class="popup__text">팝업문구</div>
-			</div>
-			<div class="popup__buttons">
-				<button class="popup__btn popup__btn--success">확인</button>
-				<button class="popup__btn popup__btn--cancel">취소</button>
-			</div>
-		</div>
+
+
+    <button id="confirm" class="btn-alertPop" value="check" onclick="alertCheck(this.value)">확인</button>
+
+
+
+
+	<div id='alertTest'>
+
 	</div>
+
+<!--	<div class="popup popup&#45;&#45;dim">-->
+<!--		<div class="popup__box">-->
+<!--			<div class="popup__content">-->
+<!--				<div class="popup__stat"></div>-->
+<!--				<div class="popup__text"></div>-->
+<!--			</div>-->
+<!--			<div class="popup__buttons">-->
+<!--				<button id="successBtn" class="popup__btn popup__btn&#45;&#45;success">확인</button>-->
+<!--				<button class="popup__btn popup__btn&#45;&#45;cancel">취소</button>-->
+<!--			</div>-->
+<!--		</div>-->
+<!--	</div>-->
+
 </div>
 </html>
