@@ -9,7 +9,11 @@
 
         	deviceList();
 
-            $("#btnSearch").on('click',function(){
+			$("#alertTest").on('click',function(){
+				// showAlert(10, 10, 500, 500, '테스트입니다.', '');
+			});
+
+			$("#btnSearch").on('click',function(){
                 calldeviceState();
             });
 
@@ -294,6 +298,9 @@
 							</div>
 							<div class="c-function__item">
 								<button class="c-button" id="btnData">데이터요청</button>
+							</div>
+							<div class="c-function__item">
+								<button class="c-button" id="alertTest">알터테스트</button>
 							</div>
 						</div>
 					</div>
