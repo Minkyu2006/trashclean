@@ -15,11 +15,6 @@
 				LocationSetting("");
 				deviceMap();
 
-				$("#refleshMapChart").on('click',function(){
-					$("#mapLoaging").show();
-					deviceMap();
-				});
-
 				$("#btnSearch").on('click', function () {
 					$("#mapLoaging").show();
 					deviceMap();
@@ -697,10 +692,6 @@
 					<div class="panel__inner">
 						<div class="panel__header">
 							<h4 class="panel__title">Location</h4>
-							<div class="panel__console">
-								<button id="refleshMapChart" class="panel__button refresh">새로고침</button>
-								<button class="panel__button fold">접기/펼치기</button>
-							</div>
 						</div>
 						<div class="panel__body panel__body--height-auto">
 							<div id="mapLoaging" class="c-loader">

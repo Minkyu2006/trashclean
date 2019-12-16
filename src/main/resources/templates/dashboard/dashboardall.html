@@ -104,7 +104,7 @@
 			}
 
 			deviceAWSListViewReflesh(deviceidArr, deviceinstallArr);
-			pushDeviceId(deviceidArr, devicesubnameArr);
+			pushDeviceId(deviceidArr, devicesubnameArr,0);
 		}
 
 		// 자동새로고침 함수 호출
@@ -129,7 +129,7 @@
 			if (timeprogress * 100 >= timeInterval) {
 				timeprogress = 0;
 				deviceAWSListViewReflesh(deviceidArr, deviceinstallArr);
-				pushDeviceId(deviceidArr, devicesubnameArr);
+				pushDeviceId(deviceidArr, devicesubnameArr,0);
 				$("#mapChartLoading").show();
 				$("#pieChartLoading").show();
 				$("#barChartLoading").show();
@@ -341,7 +341,7 @@
 						}
 						$deviceList.html(html);
 						deviceAWSListView(pushValue,installDate);
-						pushDeviceId(pushValue,subname);
+						pushDeviceId(pushValue,subname,1);
 						$("#deviceIds").val(pushValue);
 						$("#deviceInstalls").val(installDate);
 						$("#deviceSubnames").val(subname);
@@ -971,7 +971,7 @@
 		}
 
 		// aws deviceID값 push하는 함수 next -> 차트만들기
-		function pushDeviceId(pushValue,subname) {
+		function pushDeviceId(pushValue,subname,num) {
 			// console.log("pushValue : "+pushValue)
 			// console.log("subname : "+subname)
 			// console.log("차트그래프 그리기 시작")
@@ -1013,8 +1013,10 @@
 					//쓰레기양 차트
 					barChart(res.data.bar_data_columns,res.data.device_list_columns,subname);
 					// 맵에 장치보기
-					mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
-					$("#mapChartLoading").hide();
+					if(num==1){
+						mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
+						$("#mapChartLoading").hide();
+					}
 					$("#pieChartLoading").hide();
 					$("#barChartLoading").hide();
 					// console.log("차트그래프 그리기 완료, 맵 장비 출력완료")

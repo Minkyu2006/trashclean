@@ -13,24 +13,25 @@ $(function() {
     })
 
     $('#success').on('click', function() {
-        console.log("성공버튼 실행")
-        alertSusses("성공성공!");
+        console.log("성공버튼 실행");
+        alertSusses('성공!');
     })
 
     $('#fail').on('click', function() {
-        console.log("실패버튼 실행")
-        alertCancel("실패실패!");
+        console.log("실패버튼 실행");
+        alertCancel('성공!');
     })
 
     $('#caution').on('click', function() {
-        // console.log("경고버튼 실행")
-        // alertCaution("경고경고!");
+        console.log("경고버튼 실행");
+        alertCaution("경고!");
     })
 
     $('#confirm').on('click', function() {
         console.log("확인버튼 실행")
-        alertCheck("정말 삭제할꺼야?");
+        alertCheck('성공!');
     })
+
 });
 
 
@@ -79,25 +80,25 @@ function alertCancel(text) { //에러창(로그인만료),오류
 }
 
 function alertCaution(text) { //경고창
-    // var $alertTest = $('#alertTest');
-    //
-    // var html = '';
-    //
-    // html +='<div class="popup popup--dim">'
-    // html +='<div class="popup__box">'
-    // html +='<div class="popup__content">'
-    // html +='<div class="popup__stat"></div>'
-    // html +='<div class="popup__text">'+text+'</div>'
-    // html +='</div>'
-    // html +='<div class="popup__buttons">'
-    // html +='<button id="successBtn" class="popup__btn popup__btn--success">확인</button>'
-    // html +='</div>'
-    // html +='</div>'
-    // html +='</div>'
-    //
-    // $alertTest.html(html);
-    //
-    // $('.popup__stat').addClass('popup__stat--confirm');
+    var $alertTest = $('#alertTest');
+
+    var html = '';
+
+    html +='<div class="popup popup--dim">'
+    html +='<div class="popup__box">'
+    html +='<div class="popup__content">'
+    html +='<div class="popup__stat"></div>'
+    html +='<div class="popup__text">'+text+'</div>'
+    html +='</div>'
+    html +='<div class="popup__buttons">'
+    html +='<button id="successBtn" class="popup__btn popup__btn--success">확인</button>'
+    html +='</div>'
+    html +='</div>'
+    html +='</div>'
+
+    $alertTest.html(html);
+
+    $('.popup__stat').addClass('popup__stat--confirm');
 }
 
 function alertCheck(text) { //정말삭제할껀지확인하는창
