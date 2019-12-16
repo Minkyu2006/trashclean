@@ -313,8 +313,50 @@ $(document).ready(function() {
 			alert('Ajax Call error! code : ' + status_code )
 		}
 	}
+	
+	// refresh context
+	$(document).mouseup(e => {
+		if (!$('.refresh-pop').is(e.target) // if the target of the click isn't the container...
+		   && $('.refresh-pop').has(e.target).length === 0) // ... nor a descendant of the container
+	   {
+		   $('.refresh-pop__context').removeClass('show');
+	   }
+	});
+	
+	$('.refresh-pop__btn-pop').on('click', function() {
+		$(this).parents('.refresh-pop').children('.refresh-pop__context').toggleClass('show');
+		e.preventDefault();
+		//$('.refresh-pop__context').toggleClass('show');
+	})
+	
+	// dashboard layout
+	$('.layout-select').on('click', '.loyout-select__btn', function(e) {
+		var $this = $(this);
+		var $parent = $this.parent()
+		var _index = $parent.index();
+		
+		
+		$parent.addClass('select').siblings().removeClass('select');
+
+		e.preventDefault();
+	}).find('.loyout-select__btn').eq(0).trigger('click');
+	
+	$('.loyout-select__btn.loyout-select__01').on('click', function(e) {
+		$('.panel--layout').removeClass('panel--layout-2');
+		$('.panel--layout').removeClass('panel--layout-3');
+	})
+	$('.loyout-select__btn.loyout-select__02').on('click', function(e) {
+		$('.panel--layout').addClass('panel--layout-2');
+		$('.panel--layout').removeClass('panel--layout-3');
+	})
+	$('.loyout-select__btn.loyout-select__03').on('click', function(e) {
+		$('.panel--layout').removeClass('panel--layout-2');
+		$('.panel--layout').addClass('panel--layout-3');
+	})
 
 })
+
+
 
 //민규추가 기존파일 : common-pc.js
 function echoNull2Blank(str) {
