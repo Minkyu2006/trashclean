@@ -19,7 +19,7 @@ $(function() {
 
     $('#fail').on('click', function() {
         console.log("실패버튼 실행");
-        alertCancel('성공!');
+        alertCancel('실패!');
     })
 
     $('#caution').on('click', function() {
@@ -29,7 +29,7 @@ $(function() {
 
     $('#confirm').on('click', function() {
         console.log("확인버튼 실행")
-        alertCheck('성공!');
+        alertCheck('확인!');
     })
 
 });

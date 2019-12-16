@@ -3,7 +3,7 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate ="~{layout/default}">
 <head>
-	<script>
+	<script type="text/javascript">
 
 		$(function(){
 
@@ -14,6 +14,7 @@
 		});
 
 		function save(){
+			console.log("왜안되?");
 			if ($("#userid").val().trim() == '') {
 				alert("아이디를 입력하세요. 아이디는 중복되지 않도록 확인 후 입력하세요");
 				$("#userid").trigger('focus');
@@ -52,7 +53,6 @@
 
 			var params = $form.serialize();
 
-
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
@@ -64,19 +64,15 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('회원가입 요청이 되었습니다. 관리자의 승인 이후에 로그인이 가능합니다. ');
+					alert('사용자 등록이 완료 되었습니다.');
 					location.href="/";
-
-
-
 				}
-
 			});
 		}
 
@@ -139,7 +135,6 @@
 									<option th:each ="team : ${teams}"
 											th:value="${team.teamcode}"
 											th:text="${team.teamname}"></option>
-	
 								</select>
 							</div>
 						</div>
@@ -150,7 +145,6 @@
 									<option th:each ="position : ${positions}"
 											th:value="${position.id}"
 											th:text="${position.name}"></option>
-	
 								</select>
 							</div>
 						</div>
@@ -164,22 +158,17 @@
 								</select>
 							</div>
 						</div>
-					
 					</form>
 					<div class="c-function">
 						<div class="c-function__group c-function__group--right">
 							<div class="c-function__item">
-								<button class="c-button c-button--point" id="btnsave">회원가입</button>
+								<button class="c-button c-button--point" id="btnsave">등록</button>
 							</div>
 						</div>
 					</div>
-					
 				</div>
 			</div>
 		</article>
 	</section>
-
-
-    
 </div>
 </html>

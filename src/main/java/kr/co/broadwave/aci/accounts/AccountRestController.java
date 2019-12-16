@@ -257,8 +257,8 @@ public class AccountRestController {
         }
         account.setInsert_id("signUp");
         account.setInsertDateTime(LocalDateTime.now());
-        account.setApprovalType(ApprovalType.AT01); // 미승인상태로 회원가입
-
+        //account.setApprovalType(ApprovalType.AT01); // 미승인상태로 회원가입
+        account.setApprovalType(ApprovalType.AT02); // 등록시 승인처리 2019/12/16 - 김민규
 
         //부서코드가 존재하지않으면
         if (!optionalTeam.isPresent()) {
