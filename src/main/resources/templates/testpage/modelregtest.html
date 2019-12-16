@@ -3,16 +3,20 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate ="~{layout/default}">
 <head>
-	<script src="/assets/js/jstest/alerttest.js"></script>
 	<script type="text/javascript">
 		$(function() {
+            $('#cancelbtn').on('click', function() {
+                console.log("취소버튼누름")
+                // $('#alertTest').removeClass('popup popup--dim');
+            })
+
 			// $('.btn-alertPop').on('click', function() {
 			// 	var popupType = $(this).data('id');
-			// 	// $('.popup__text').text('성공하였습니다.');
+			// 	$('.popup__text').text('성공하였습니다.');
 			// 	$('.popup__stat').addClass('popup__stat--' + popupType);
 			// 	$('.popup').addClass('popup--open');
 			// })
-			//
+            //
 			// $('.popup__btn--cancel').on('click', function() {
 			// 	$('.popup').removeClass('popup--open');
 			// })
@@ -22,19 +26,20 @@
 
 <div layout:fragment="content" class="contents-body">
 
-	<button id="success" class="btn-alertPop">성공</button>
-    <button id="fail" class="btn-alertPop">실패</button>
-    <button id="caution" class="btn-alertPop">경고</button>
-    <button id="confirm" class="btn-alertPop">확인</button>
 
-	<div id='alertTest'>
+	<button id="success">성공</button>
+    <button id="fail">실패</button>
+    <button id="caution">경고</button>
+    <button id="confirm">확인</button>
 
+	<div id='alertpop'>
 	</div>
 
-	<!--	<button id="success" class="btn-alertPop" data-id="success">성공</button>-->
-	<!--	<button id="fail" class="btn-alertPop" data-id="cancel">실패</button>-->
-	<!--	<button id="caution" class="btn-alertPop" data-id="caution">경고</button>-->
-	<!--	<button id="confirm" class="btn-alertPop" data-id="check">확인</button>-->
+
+<!--	<button id="success2" class="btn-alertPop" data-id="success">성공2</button>-->
+<!--	<button id="fail2" class="btn-alertPop" data-id="cancel">실패2</button>-->
+<!--	<button id="caution2" class="btn-alertPop" data-id="caution">경고2</button>-->
+<!--	<button id="confirm2" class="btn-alertPop" data-id="check">확인2</button>-->
 
 <!--	<div class="popup popup&#45;&#45;dim">-->
 <!--		<div class="popup__box">-->
@@ -48,6 +53,7 @@
 <!--			</div>-->
 <!--		</div>-->
 <!--	</div>-->
+
 
 </div>
 </html>

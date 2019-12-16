@@ -41,12 +41,12 @@
 
 			if ($("#teamcode").attr("readonly") != "readonly"){
 
-				alert("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
+				alertCaution("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
 				return false;
 			}
 
 			if ($("#teamcode").val().trim() == '') {
-				alert("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
+				alertCaution("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
 				$("#teamcode").trigger('focus');
 				return false;
 			}
@@ -69,23 +69,19 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('삭제되었습니다. ');
+					alertSuccess('삭제되었습니다. ');
 					init();
 					callList(1);
-
-
-
 				}
-
 			});
-
 		}
+
 		function init(){
 			//화면 초기화
 			$("#teamcode").val('');
@@ -93,20 +89,18 @@
 			$("#remark").val('');
 			$("#mode").val('N');
 			$("#teamcode").removeAttr("readonly");
-
 		}
 
 		function save(){
 
-
 			if ($("#teamcode").val().trim() == '') {
-				alert("부서코드를 입력하세요. 부서코드는 중복되지 않도록 확인 후 입력하세요");
+				alertCaution("부서코드를 입력하세요. 부서코드는 중복되지 않도록 확인 후 입력하세요");
 				$("#teamcode").trigger('focus');
 				return false;
 			}
 
 			if ($("#teamname").val().trim() == '') {
-				alert("부서명을 입력하세요.");
+				alertCaution("부서명을 입력하세요.");
 				$("#teamname").trigger('focus');
 				return false;
 			}
@@ -127,25 +121,17 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('저장되었습니다. ');
+					alertSuccess('저장되었습니다. ');
 					init();
 					callList(1);
-
-
 				}
-
 			});
-
-
-
-
-
 		}
 
 
@@ -157,8 +143,6 @@
 			var perPage = 10;
 			var perArea = 5;
 			var totCnt = 0;
-
-
 
 			var $schList = $('#schList');
 			var $totalCnt = $('#totalCnt');
@@ -182,7 +166,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					//화면 출력
@@ -237,7 +221,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 
@@ -246,14 +230,8 @@
 					$("#remark").val(res.data.datarow.remark);
 					$("#mode").val('U');
 					$("#teamcode").attr("readonly",true);
-
-
-
-
 				}
-
 			});
-
 		}
 
 	</script>
@@ -378,5 +356,7 @@
 
 		</article>
 	</section>
+	<div id='alertpop'>
+	</div>
 </div>
 </html>

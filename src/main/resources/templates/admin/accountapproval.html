@@ -44,7 +44,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					//화면 출력
@@ -92,7 +92,7 @@
 		function callApproval(userid,approvaltype) {
 			//alert (userid + '/' + approvaltype);
 			if (($("#okbtn_"+userid).html() != "승인") && ($("#rebtn_"+userid).html() != "거절") ){
-				alert("이미 승인(반려) 처리가 완료되었습니다.");
+				alertCaution("이미 승인(반려) 처리가 완료되었습니다.");
 				return false;
 			}
 
@@ -123,7 +123,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
@@ -216,6 +216,7 @@
 
 		</article>
 	</section>
-
+	<div id='alertpop'>
+	</div>
 </div>
 </html>

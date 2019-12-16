@@ -79,11 +79,11 @@
 		function save() {
 
 			if ($("#operator").val().trim() == '') {
-				alert("소속 운영사를 선택해주세요.");
+				alertCaution("소속 운영사를 선택해주세요.");
 				return false;
 			}
 			if ($("#emInstallDate").val().trim() == '') {
-				alert("설치일자를 선택해주세요.");
+				alertCaution("설치일자를 선택해주세요.");
 				return false;
 			}
 
@@ -101,13 +101,13 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('저장되었습니다.')
+					alertSuccess('저장되었습니다.')
 					init();
 					LocationSetting();
 					callList(1);
@@ -146,7 +146,7 @@
 			// 소수점 둘째자리까지만 입력가능
 			var _pattern2 = /^\d*[.]\d{2}$/;
 			if (_pattern2.test(_value)) {
-				alert("소수점 둘째자리까지만 입력가능합니다.");
+				alertCaution("소수점 둘째자리까지만 입력가능합니다.");
 				return false;
 			}
 		}
@@ -180,7 +180,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					//화면 출력
@@ -242,7 +242,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					//화면 출력
@@ -372,7 +372,7 @@
 		//삭제버튼 실행
 		function del() {
 			if ($("#emNumber").val().trim() == '') {
-				alert("삭제하고자하는 장비를 선택하세요.");
+				alertCaution("삭제하고자하는 장비를 선택하세요.");
 				return false;
 			}
 			if (result.value) {
@@ -786,6 +786,8 @@
 			</div>
 			<a href="#" class="l-popup__close">팝업닫기</a>
 		</div>
+	</div>
+	<div id='alertpop'>
 	</div>
 </div>
 </html>
