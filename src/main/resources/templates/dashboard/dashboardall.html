@@ -1263,6 +1263,37 @@
 			<div class="page-title__left">
 				<h2>대시보드</h2>
 			</div>
+			<div class="page-title__right">
+				<div class="refresh-pop">
+					<button class="refresh-pop__btn">새로고침</button>
+					<a href="#" class="refresh-pop__btn-pop"></a>
+					<div class="refresh-pop__progress">
+						<div id="progressbar"></div>
+					</div>
+					
+					<ul class="refresh-pop__context">
+						<li class="refresh-pop__box">
+							<label><input id="monitoring" type="checkbox" onclick="refleshAutomatic()" />자동 새로 고침</label>
+						</li>
+						<li>새로고침 간격</li>
+						<li>
+							<label><input id="tensec" name="monitorTime" type="radio" value="10000" onclick="refleshAutomatic(this.value)" />10초</label>
+						</li>
+						<li>
+							<label><input id="onemin" name="monitorTime" type="radio" value="60000" onclick="refleshAutomatic(this.value)" />1분</label>
+						</li>
+						<li>
+							<label><input id="twomin" name="monitorTime" type="radio" value="120000" onclick="refleshAutomatic(this.value)" />2분</label>
+						</li>
+						<li>
+							<label><input id="fivemin" name="monitorTime" type="radio" value="300000" onclick="refleshAutomatic(this.value)" />5분</label>
+						</li>
+						<li>
+							<label><input id="ftmin" name="monitorTime" type="radio" value="1500000" onclick="refleshAutomatic(this.value)" />15분</label>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</div>
 		<div class="dashboard">
 			<div class="dashboard__count">
@@ -1376,13 +1407,12 @@
 										</div>
 
 
-										<div class="c-float__item" style="padding-top: 15px;">
+										<!-- <div class="c-float__item" style="padding-top: 15px;">
 											<button id="refreshMaster" class="c-button c-button--point">새로고침</button>
 
 											<div class="l-float-heading">
 												<div class="l-float-heading--left">
 													<h4 class="article__head" >진행상태</h4>
-<!--													<h4 class="article__head" id="progress">0</h4>-->
 													<div style="height:20px; background-color: #3A9DFF; width:100%" id="progressbar"></div>
 												</div>
 											</div>
@@ -1408,7 +1438,7 @@
 													<label><input id="ftmin" name="monitorTime" type="radio" value="1500000" onclick="refleshAutomatic(this.value)" />15분</label>
 												</li>
 											</ul>
-										</div>
+										</div> -->
 
 
 										<div class="c-float__item" style="padding-top: 15px;">
