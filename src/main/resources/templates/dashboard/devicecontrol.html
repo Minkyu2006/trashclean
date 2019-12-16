@@ -79,9 +79,9 @@
                     //화면 출력
                     statuscode= res.status;
                     if (statuscode ===200) {
-						alert("요청처리되었습니다.");
+						alertSuccess("요청처리되었습니다.");
                     }else{
-						alert("처리오류");
+						alertCancel("처리오류");
                     }
                 }
             });
@@ -111,9 +111,9 @@
                     //화면 출력
                     statuscode= res.status;
                     if (statuscode ===200) {
-						alert("요청처리되었습니다.");
+						alertSuccess("요청처리되었습니다.");
                     }else{
-						alert("처리오류");
+						alertCancel("처리오류");
                     }
                 }
             });
@@ -299,9 +299,6 @@
 							<div class="c-function__item">
 								<button class="c-button" id="btnData">데이터요청</button>
 							</div>
-							<div class="c-function__item">
-								<button class="c-button" id="alertTest">알터테스트</button>
-							</div>
 						</div>
 					</div>
         		</div>
@@ -309,6 +306,8 @@
         </article>
     </section>
 
+	<div id='alertpop'>
+	</div>
 
 </div>
 </html>

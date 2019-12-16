@@ -50,12 +50,12 @@
 		function del(){
 
 			if ($("#userid").attr("readonly") != "readonly"){
-				alert("삭제하고자하는 사용자를 하단에서 선택 후 삭제하세요.");
+				alertCaution("삭제하고자하는 사용자를 하단에서 선택 후 삭제하세요.");
 				return false;
 			}
 
 			if ($("#userid").val().trim() == '') {
-				alert("삭제하고자하는 사용자를를 하단에서 선택 후 삭제하세요.");
+				alertCaution("삭제하고자하는 사용자를를 하단에서 선택 후 삭제하세요.");
 				$("#userid").trigger('focus');
 				return false;
 			}
@@ -82,7 +82,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('삭제되었습니다. ');
+					alertSuccess('삭제되었습니다. ');
 					init();
 					callList(1);
 				}
@@ -102,13 +102,13 @@
 		function save1(){
 
 			if ($("#userid").val().trim() == '') {
-				alert("수정할 아이디를 먼저 선택하세요.");
+				alertCaution("수정할 아이디를 먼저 선택하세요.");
 				$("#userid").trigger('focus');
 				return false;
 			}
 
 			if ($("#username").val().trim() == '') {
-				alert("이름을 입력하세요.");
+				alertCaution("이름을 입력하세요.");
 				$("#username").trigger('focus');
 				return false;
 			}
@@ -135,7 +135,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('수정되었습니다. ');
+					alertSuccess('수정되었습니다. ');
 					$('.l-popup').removeClass('open');
 					init();
 					callList(1);
@@ -146,12 +146,12 @@
 		function savepassword(){
 
 			if ($("#userid").val().trim() == '') {
-				alert("수정할 아이디를 먼저 선택하세요.");
+				alertCaution("수정할 아이디를 먼저 선택하세요.");
 				return false;
 			}
 
 			if ($("#password").val().trim() == '') {
-				alert("수정할 패스워드를 입력하세요.");
+				alertCaution("수정할 패스워드를 입력하세요.");
 				$("#password").trigger('focus');
 				return false;
 			}
@@ -178,7 +178,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('수정되었습니다. ');
+					alertSuccess('수정되었습니다. ');
 					$('.l-popup').removeClass('open');
 					init();
 					callList(1);
@@ -480,6 +480,7 @@
     		<a href="#" class="l-popup__close">팝업닫기</a>
     	</div>
     </div>
-
+	<div id='alertpop'>
+	</div>
 </div>
 </html>

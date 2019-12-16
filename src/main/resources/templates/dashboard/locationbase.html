@@ -539,7 +539,7 @@
 				var dateObj = new Date(date);
 
 				if (today<dateObj) {
-					alert("현재 날짜보다 앞선 날짜는 선택할 수 없습니다.");
+					alertCaution("현재 날짜보다 앞선 날짜는 선택할 수 없습니다.");
 					$("#intervaltime").val("");
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
@@ -717,6 +717,8 @@
 				
 			</div>
 		</div>
+	</div>
+	<div id='alertpop'>
 	</div>
 </div>
 </html>

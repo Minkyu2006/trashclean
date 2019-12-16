@@ -25,17 +25,17 @@
 		function save(){
 
 			if ($("#codeType").val().trim() == '') {
-				alert("대분류를 선택하세요");
+				alertCaution("대분류를 선택하세요");
 				return false;
 			}
 
 			if ($("#code").val().trim() == '') {
-				alert("코드를입력하세요");
+				alertCaution("코드를입력하세요");
 				return false;
 			}
 
 			if ($("#name").val().trim() == '') {
-				alert("코드명을 입력하세요");
+				alertCaution("코드명을 입력하세요");
 				return false;
 			}
 
@@ -55,13 +55,13 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('저장되었습니다. ');
+					alertSuccess('저장되었습니다. ');
 					init();
 					callList(1);
 
@@ -119,7 +119,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					//화면 출력
@@ -175,7 +175,7 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 
@@ -199,14 +199,14 @@
 
 			if ($("#codeType").attr("readonly") != "readonly"){
 
-				alert("삭제하고자하는 코드를 하단에서 선택 후 삭제하세요.");
+				alertCaution("삭제하고자하는 코드를 하단에서 선택 후 삭제하세요.");
 				return false;
 			}
 
 
-			if (confirm("정말 삭제하시겠습니까??") == false){
-				return false;
-			}
+			// if (confirm("정말 삭제하시겠습니까??") == false){
+			// 	return false;
+			// }
 
 
 			var params = {
@@ -232,7 +232,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('삭제되었습니다. ');
+					alertSuccess('삭제되었습니다.');
 					init();
 					callList(1);
 
@@ -404,6 +404,7 @@
 				</div>
 			</article>
 		</section>
-	    
+		<div id='alertpop'>
+		</div>
 	</div>
 </html>
