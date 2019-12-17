@@ -72,12 +72,12 @@ public class DashboardRestController {
         return ResponseEntity.ok(res.success());
 
     }
+
     @PostMapping("devicelist")
     public ResponseEntity devicelist(){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
         log.info("Device목록가져오기 시작");
-
 
         HashMap<String, Object> resData = dashboardService.getDeviceList("ISOL");
         data.clear();
@@ -158,6 +158,10 @@ public class DashboardRestController {
         List<String> batt_level = new ArrayList<>(); // 배터리잔량리스트
         List<String> solar_current = new ArrayList<>(); // 전류리스트
         List<String> solar_voltage = new ArrayList<>(); // 전압리스트
+        List<String> gps_laDatas = new ArrayList<>();// 위도리스트
+        List<String> gps_loDatas = new ArrayList<>();  // 경도리스트
+        List<String> gps_laDatas2 = new ArrayList<>();// 위도리스트
+        List<String> gps_loDatas2 = new ArrayList<>();  // 경도리스트
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
         List<String> sortDevice = new ArrayList<>();
@@ -184,9 +188,23 @@ public class DashboardRestController {
                     batt_level.add((String) map.get("batt_level")); //배터리잔량값넣기
                     solar_current.add((String) map.get("solar_current")); //전류값넣기
                     solar_voltage.add((String) map.get("solar_voltage")); //전압값넣기
+                    gps_laDatas.add((String) map.get("gps_la")); //위도값넣기
+                    gps_loDatas.add((String) map.get("gps_lo")); //경도값넣기
                 }
             }
         }
+
+        for(int i=0; i<number; i++) {
+            String gps_laData = gps_laDatas.get(i);
+            String gps_loData = gps_loDatas.get(i);
+
+            String gps_laSubStirng = gps_laData.substring(1);
+            String gps_loSubStirng = gps_loData.substring(1);
+
+            gps_laDatas2.add(gps_laSubStirng);
+            gps_loDatas2.add(gps_loSubStirng);
+        }
+
 
         data.clear();
         data.put("devices",devices);
@@ -196,6 +214,8 @@ public class DashboardRestController {
         data.put("batt_level",batt_level);
         data.put("solar_current",solar_current);
         data.put("solar_voltage",solar_voltage);
+        data.put("gps_laDatas",gps_laDatas2);
+        data.put("gps_loDatas",gps_loDatas2);
 
 //        data.put("aswListDatas",resData.get("data"));
         res.addResponse("data",data);
@@ -556,7 +576,7 @@ public class DashboardRestController {
                         map.replace("status", "정상");
                     } else if (map.get("status").equals("caution")) {
                         map.replace("status", "주의");
-                    } else if (map.get("status").equals("severe")) {
+                    } else if (map.get("statudeviceAWSListViews").equals("severe")) {
                         map.replace("status", "심각");
                     }
                     barDataColumns.add((String) map.get("level")); //배출량차트

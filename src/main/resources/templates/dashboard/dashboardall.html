@@ -26,10 +26,6 @@
 				$("#barChartLoading").show();
 				refleshBarChart();
 			});
-			// $("#mapChart").on('click',function(){
-			// 	$("#mapChartLoading").show();
-			// 	refleshMapChart();
-			// });
 
 			$("#monitoring").prop('checked',true);
 			$("#twomin").prop('checked',true);
@@ -39,6 +35,8 @@
 				$("#mapfold").toggleClass(" fold");
 				$("#circlefold").toggleClass(" fold");
 				$("#levelfold").toggleClass(" fold");
+				refleshBarChart();
+				refleshCircleChart();
 				$("#closeMasterfold").hide();
 				$("#openMasterfold").show();
 			});
@@ -46,6 +44,8 @@
 				$("#mapfold").toggleClass(" fold");
 				$("#circlefold").toggleClass(" fold");
 				$("#levelfold").toggleClass(" fold");
+				refleshBarChart();
+				refleshCircleChart();
 				$("#openMasterfold").hide();
 				$("#closeMasterfold").show();
 			});
@@ -233,36 +233,6 @@
 				}
 			});
 		}
-
-		//// 맵차트 새로고침
-		// function refleshMapChart() {
-		// 	var params = {
-		// 		emNumber:$('#s_emNumber').val(),
-		// 		emType:$('#s_emType').val(),
-		// 		emCountry:$('#s_emCountry').val(),
-		// 		emLocation:$('#s_emLocation').val(),
-		// 	};
-		// 	var token = $("meta[name='_csrf']").attr("content");
-		// 	var header = $("meta[name='_csrf_header']").attr("content");
-		// 	$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-		//
-		// 	$.ajax({
-		// 		url:'/api/dashboard/deviceInfoList',
-		// 		type : 'post',
-		// 		data : params,
-		// 		cache:false,
-		// 		error:function(request,status,error){
-		// 			ajaxErrorMsg(request);
-		// 		},
-		// 		success: function(res){
-		// 			var pushValue = new Array();
-		// 			$.each(res.data.datalist, function(key, value){
-		// 				pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-		// 			});
-		// 			MapChartDeviceId(pushValue);
-		// 		}
-		// 	});
-		// }
 
 		// 장치리스트 출력
 		function deviceListView(page) {
@@ -505,6 +475,9 @@
 									html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>'
 									html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
 								html += '</li>'
+								html += '<li class="equipment__info-item">'
+									html += '<input type="button" class="equipment__info-title" value="장비 위치로 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />'
+								html += '</li>'
 							html += '</ul>'
 						html += '</div>'
 
@@ -658,6 +631,9 @@
 						html += '<li class="equipment__info-item">'
 						html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>'
 						html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
+						html += '</li>'
+						html += '<li class="equipment__info-item">'
+						html += '<input type="button" class="equipment__info-title" value="위치로 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />'
 						html += '</li>'
 						html += '</ul>'
 						// html += '</div>'
@@ -964,40 +940,6 @@
 			});
 		}
 
-		// Map그래프 새로고침
-		function MapChartDeviceId(pushValue) {
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-			var deviceIds = new Array();
-			for (var i=0; i<pushValue.length; i++){
-				deviceIds.push(pushValue[i]);
-			}
-			var itemJson = new Object();
-			itemJson.deviceids = deviceIds;
-			var devicestr = JSON.stringify(itemJson);
-			var params = {
-				deviceids:devicestr
-			};
-			$.ajax({
-				url: '/api/dashboard/dataMapGraph',
-				type: 'post',
-				data : params,
-				cache: false,
-				error: function (request) {
-					ajaxErrorMsg(request);
-				},
-				success: function (res) {
-					if (!Ajax.checkResult(res)) {
-						return;
-					}
-					// 맵에 장치보기
-					mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
-					$("#mapChartLoading").hide();
-				}
-			});
-		}
-
 		// aws deviceID값 push하는 함수 next -> 차트만들기
 		function pushDeviceId(pushValue,subname,num) {
 			// console.log("pushValue : "+pushValue)
@@ -1052,7 +994,17 @@
 			});
 		}
 
-		// map
+		// 장치이동 누르면 실행되는 함수
+		function mapMove(gps_la,gps_lo) {
+
+			console.log("구글맵 장비이동");
+			console.log("위도 : "+gps_la);
+			console.log("경도 : "+gps_lo);
+			
+			$('html').scrollTop(70);
+		}
+
+		// 맵 차트
 		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
 			var locations = map_data_columns
 
@@ -1133,7 +1085,6 @@
 			// console.log("barData : "+barData);
 			// console.log("deviceList : "+deviceList);
 			// console.log("subname : "+subname);
-
 			var barchart = c3.generate({
 				bindto: "#bar_chart",
 				data: {
@@ -1305,21 +1256,21 @@
 						<li class="refresh-pop__box">
 							<label><input id="monitoring" type="checkbox" onclick="refleshAutomatic()" />자동 새로 고침</label>
 						</li>
-						<li>새로고침 간격</li>
+						<li><span>새로고침 간격</span></li>
 						<li>
-							<label><input id="tensec" name="monitorTime" type="radio" value="10000" onclick="refleshAutomatic(this.value)" />10초</label>
+							<label><input id="tensec" name="monitorTime" type="radio" value="10000" onclick="refleshAutomatic(this.value)" /><span>10초</span></label>
 						</li>
 						<li>
-							<label><input id="onemin" name="monitorTime" type="radio" value="60000" onclick="refleshAutomatic(this.value)" />1분</label>
+							<label><input id="onemin" name="monitorTime" type="radio" value="60000" onclick="refleshAutomatic(this.value)" /><span>1분</span></label>
 						</li>
 						<li>
-							<label><input id="twomin" name="monitorTime" type="radio" value="120000" onclick="refleshAutomatic(this.value)" />2분</label>
+							<label><input id="twomin" name="monitorTime" type="radio" value="120000" onclick="refleshAutomatic(this.value)" /><span>2분</span></label>
 						</li>
 						<li>
-							<label><input id="fivemin" name="monitorTime" type="radio" value="300000" onclick="refleshAutomatic(this.value)" />5분</label>
+							<label><input id="fivemin" name="monitorTime" type="radio" value="300000" onclick="refleshAutomatic(this.value)" /><span>5분</span></label>
 						</li>
 						<li>
-							<label><input id="ftmin" name="monitorTime" type="radio" value="1500000" onclick="refleshAutomatic(this.value)" />15분</label>
+							<label><input id="ftmin" name="monitorTime" type="radio" value="1500000" onclick="refleshAutomatic(this.value)" /><span>15분</span></label>
 						</li>
 					</ul>
 				</div>
