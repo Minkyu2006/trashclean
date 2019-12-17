@@ -26,19 +26,28 @@
 				$("#barChartLoading").show();
 				refleshBarChart();
 			});
-			$("#mapChart").on('click',function(){
-				$("#mapChartLoading").show();
-				refleshMapChart();
-			});
+			// $("#mapChart").on('click',function(){
+			// 	$("#mapChartLoading").show();
+			// 	refleshMapChart();
+			// });
 
 			$("#monitoring").prop('checked',true);
-			$("#tensec").prop('checked',true);
+			$("#twomin").prop('checked',true);
 			refleshAutomatic();
 
-			$("#masterfold").on('click',function(){
+			$("#closeMasterfold").on('click',function(){
 				$("#mapfold").toggleClass(" fold");
 				$("#circlefold").toggleClass(" fold");
 				$("#levelfold").toggleClass(" fold");
+				$("#closeMasterfold").hide();
+				$("#openMasterfold").show();
+			});
+			$("#openMasterfold").on('click',function(){
+				$("#mapfold").toggleClass(" fold");
+				$("#circlefold").toggleClass(" fold");
+				$("#levelfold").toggleClass(" fold");
+				$("#openMasterfold").hide();
+				$("#closeMasterfold").show();
 			});
 
 			$("#refreshMaster").on('click',function() {
@@ -49,12 +58,33 @@
 				masterReflesh()
 			});
 
+			$("#layout1").on('click',function() {
+				$("#pieChartLoading").show();
+				$("#barChartLoading").show();
+				refleshBarChart();
+				refleshCircleChart();
+			});
+
+			$("#layout2").on('click',function() {
+				$("#pieChartLoading").show();
+				$("#barChartLoading").show();
+				refleshBarChart();
+				refleshCircleChart();
+			});
+
+			$("#layout3").on('click',function() {
+				$("#pieChartLoading").show();
+				$("#barChartLoading").show();
+				refleshBarChart();
+				refleshCircleChart();
+			});
+
 		});
 
 		//자동새로고침시작 함수
 		function refleshAutomatic(timevalue) {
 			var check = $("#monitoring").is(":checked");
-			console.log("check : "+check)
+			//console.log("check : "+check)
 
 			if(timevalue==null){
 				var monitorTime = $('input[name="monitorTime"]:checked').val();
@@ -63,10 +93,10 @@
 			}
 
 			if(check==true){
-				console.log("자동 새로고침 시작")
+				//console.log("자동 새로고침 시작")
 				AutoStart(monitorTime)
 			}else if(check==false){
-				console.log("자동 새로고침 종료")
+				//console.log("자동 새로고침 종료")
 				callStop()
 			}
 		}
@@ -204,40 +234,40 @@
 			});
 		}
 
-		// 맵차트 새로고침
-		function refleshMapChart() {
-			var params = {
-				emNumber:$('#s_emNumber').val(),
-				emType:$('#s_emType').val(),
-				emCountry:$('#s_emCountry').val(),
-				emLocation:$('#s_emLocation').val(),
-			};
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-
-			$.ajax({
-				url:'/api/dashboard/deviceInfoList',
-				type : 'post',
-				data : params,
-				cache:false,
-				error:function(request,status,error){
-					ajaxErrorMsg(request);
-				},
-				success: function(res){
-					var pushValue = new Array();
-					$.each(res.data.datalist, function(key, value){
-						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-					});
-					MapChartDeviceId(pushValue);
-				}
-			});
-		}
+		//// 맵차트 새로고침
+		// function refleshMapChart() {
+		// 	var params = {
+		// 		emNumber:$('#s_emNumber').val(),
+		// 		emType:$('#s_emType').val(),
+		// 		emCountry:$('#s_emCountry').val(),
+		// 		emLocation:$('#s_emLocation').val(),
+		// 	};
+		// 	var token = $("meta[name='_csrf']").attr("content");
+		// 	var header = $("meta[name='_csrf_header']").attr("content");
+		// 	$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+		//
+		// 	$.ajax({
+		// 		url:'/api/dashboard/deviceInfoList',
+		// 		type : 'post',
+		// 		data : params,
+		// 		cache:false,
+		// 		error:function(request,status,error){
+		// 			ajaxErrorMsg(request);
+		// 		},
+		// 		success: function(res){
+		// 			var pushValue = new Array();
+		// 			$.each(res.data.datalist, function(key, value){
+		// 				pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+		// 			});
+		// 			MapChartDeviceId(pushValue);
+		// 		}
+		// 	});
+		// }
 
 		// 장치리스트 출력
 		function deviceListView(page) {
 			if ($("#intervaltime").val().trim() == '') {
-				alert("조회할 날짜를 선택해주세요");
+				alertCaution("조회할 날짜를 선택해주세요");
 				return false;
 			}
 			$("#mapChartLoading").show();
@@ -983,7 +1013,7 @@
 			for (var i=0; i<pushValue.length; i++){
 				deviceIds.push(pushValue[i]);
 			}
-			console.log("deviceIds : "+deviceIds)
+			//console.log("deviceIds : "+deviceIds)
 			// deviceIds.push("ISOL-KR-SEL-0004");
 
 			var itemJson = new Object();
@@ -1204,7 +1234,7 @@
 			var dateObj = new Date(date);
 
 			if (today<dateObj) {
-				alert("현재 날짜보다 앞선 날짜는 선택할 수 없습니다.");
+				alertCaution("현재 날짜보다 앞선 날짜는 <BR>선택할 수 없습니다.");
 				$("#intervaltime").val("");
 				$("#dateFrom").val("");
 				$("#dateTo").val("");
@@ -1265,7 +1295,7 @@
 			</div>
 			<div class="page-title__right">
 				<div class="refresh-pop">
-					<button class="refresh-pop__btn">새로고침</button>
+					<button id="refreshMaster" class="refresh-pop__btn">새로고침</button>
 					<a href="#" class="refresh-pop__btn-pop"></a>
 					<div class="refresh-pop__progress">
 						<div id="progressbar"></div>
@@ -1316,9 +1346,9 @@
 				
 				<div class="layout-select">
 					<ul>
-						<li><a href="#" class="loyout-select__btn loyout-select__01">레이아웃1</a></li>
-						<li><a href="#" class="loyout-select__btn loyout-select__02">레이아웃2</a></li>
-						<li><a href="#" class="loyout-select__btn loyout-select__03">레이아웃3</a></li>
+						<li><a href="#" id="layout1" class="loyout-select__btn loyout-select__01">레이아웃1</a></li>
+						<li><a href="#" id="layout2" class="loyout-select__btn loyout-select__02">레이아웃2</a></li>
+						<li><a href="#" id="layout3" class="loyout-select__btn loyout-select__03">레이아웃3</a></li>
 					</ul>
 				</div>
 			</div>
@@ -1328,9 +1358,6 @@
 					<div class="panel__inner">
 						<div class="panel__header">
 							<h4 class="panel__title">설치위치</h4>
-							<div class="panel__console">
-								<button class="panel__button refresh" id="mapChart">새로고침</button>
-							</div>
 						</div>
 						<div id="mapfold" class="panel__body">
 							<div class="c-loader">
@@ -1362,7 +1389,6 @@
 							<h4 class="panel__title">배출량</h4>
 							<div class="panel__console">
 								<button class="panel__button refresh" id="barChart">새로고침</button>
-<!--								<button id="masterfold" class="panel__button fold">접기</button>-->
 							</div>
 						</div>
 						<div id="levelfold" class="panel__body">
@@ -1399,6 +1425,7 @@
 										<input type="hidden" id="deviceSubnames" value ="" readonly="readonly" />
 									</div>
 								</div>
+
 								<div class="panel__console panel__console--right">
 									<div class="c-float">
 										<div class="c-float__item" id="fromTo" style="display: none">
@@ -1414,43 +1441,9 @@
 											</div>
 										</div>
 
-
-										<!-- <div class="c-float__item" style="padding-top: 15px;">
-											<button id="refreshMaster" class="c-button c-button--point">새로고침</button>
-
-											<div class="l-float-heading">
-												<div class="l-float-heading--left">
-													<h4 class="article__head" >진행상태</h4>
-													<div style="height:20px; background-color: #3A9DFF; width:100%" id="progressbar"></div>
-												</div>
-											</div>
-
-											<label><input id="monitoring" type="checkbox" onclick="refleshAutomatic()" />자동 새로 고침</label>
-											<ul style="list-style: none">
-												<li>
-													<label>새로 고침 간격</label>
-												</li>
-												<li>
-													<label><input id="tensec" name="monitorTime" type="radio" value="10000" onclick="refleshAutomatic(this.value)" />10초</label>
-												</li>
-												<li>
-													<label><input id="onemin" name="monitorTime" type="radio" value="60000" onclick="refleshAutomatic(this.value)" />1분</label>
-												</li>
-												<li>
-													<label><input id="twomin" name="monitorTime" type="radio" value="120000" onclick="refleshAutomatic(this.value)" />2분</label>
-												</li>
-												<li>
-													<label><input id="fivemin" name="monitorTime" type="radio" value="300000" onclick="refleshAutomatic(this.value)" />5분</label>
-												</li>
-												<li>
-													<label><input id="ftmin" name="monitorTime" type="radio" value="1500000" onclick="refleshAutomatic(this.value)" />15분</label>
-												</li>
-											</ul>
-										</div> -->
-
-
 										<div class="c-float__item" style="padding-top: 15px;">
-											<button id="masterfold" class="c-button c-button--point">접기</button>
+											<button id="closeMasterfold" class="c-button c-button--point">접기</button>
+											<button id="openMasterfold" class="c-button c-button--point" style="display: none">펴기</button>
 										</div>
 										<div class="c-float__item" style="padding-top: 15px;">
 											<button id="btnSearch" class="c-button c-button--point">조회</button>
@@ -1478,12 +1471,6 @@
 										</select>
 									</div>
 								</div>
-<!--								<div class="c-float__item">-->
-<!--									<div class="c-text">-->
-<!--										<label for="s_Agency" class="c-text__label">소속운영사</label>-->
-<!--										<input id="s_Agency" type="text" class="c-text__input" />-->
-<!--									</div>-->
-<!--								</div>-->
 								<div class="c-float__item">
 									<div class="c-select">
 										<label for="s_emCountry" class="c-select__label">국가</label>

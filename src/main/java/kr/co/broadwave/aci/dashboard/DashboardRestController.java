@@ -680,7 +680,7 @@ public class DashboardRestController {
 //        log.info("codeType : "+codeType);
 
         if (emCountry.equals("")) {
-            List<MasterCodeDto> locationData = masterCodeService.findCodeList(codeType);
+            List<MasterCodeDto> locationData = null;
 
             data.clear();
             data.put("locationData",locationData);

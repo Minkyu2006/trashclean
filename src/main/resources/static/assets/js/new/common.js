@@ -323,7 +323,7 @@ $(document).ready(function() {
 	   }
 	});
 	
-	$('.refresh-pop__btn-pop').on('click', function() {
+	$('.refresh-pop__btn-pop').on('click', function(e) {
 		$(this).parents('.refresh-pop').children('.refresh-pop__context').toggleClass('show');
 		e.preventDefault();
 		//$('.refresh-pop__context').toggleClass('show');
@@ -334,11 +334,10 @@ $(document).ready(function() {
 		var $this = $(this);
 		var $parent = $this.parent()
 		var _index = $parent.index();
-		
-		
-		$parent.addClass('select').siblings().removeClass('select');
 
+		$parent.addClass('select').siblings().removeClass('select');
 		e.preventDefault();
+
 	}).find('.loyout-select__btn').eq(0).trigger('click');
 	
 	$('.loyout-select__btn.loyout-select__01').on('click', function(e) {

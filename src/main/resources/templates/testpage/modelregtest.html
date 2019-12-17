@@ -4,28 +4,11 @@
       layout:decorate ="~{layout/default}">
 <head>
 	<script type="text/javascript">
-		$(function() {
-            $('#cancelbtn').on('click', function() {
-                console.log("취소버튼누름")
-                // $('#alertTest').removeClass('popup popup--dim');
-            })
 
-			// $('.btn-alertPop').on('click', function() {
-			// 	var popupType = $(this).data('id');
-			// 	$('.popup__text').text('성공하였습니다.');
-			// 	$('.popup__stat').addClass('popup__stat--' + popupType);
-			// 	$('.popup').addClass('popup--open');
-			// })
-            //
-			// $('.popup__btn--cancel').on('click', function() {
-			// 	$('.popup').removeClass('popup--open');
-			// })
-		});
     </script>
 </head>
 
 <div layout:fragment="content" class="contents-body">
-
 
 	<button id="success">성공</button>
     <button id="fail">실패</button>
@@ -34,26 +17,6 @@
 
 	<div id='alertpop'>
 	</div>
-
-
-<!--	<button id="success2" class="btn-alertPop" data-id="success">성공2</button>-->
-<!--	<button id="fail2" class="btn-alertPop" data-id="cancel">실패2</button>-->
-<!--	<button id="caution2" class="btn-alertPop" data-id="caution">경고2</button>-->
-<!--	<button id="confirm2" class="btn-alertPop" data-id="check">확인2</button>-->
-
-<!--	<div class="popup popup&#45;&#45;dim">-->
-<!--		<div class="popup__box">-->
-<!--			<div class="popup__content">-->
-<!--				<div class="popup__stat"></div>-->
-<!--				<div class="popup__text"></div>-->
-<!--			</div>-->
-<!--			<div class="popup__buttons">-->
-<!--				<button id="successBtn" class="popup__btn popup__btn&#45;&#45;success">확인</button>-->
-<!--				<button class="popup__btn popup__btn&#45;&#45;cancel">취소</button>-->
-<!--			</div>-->
-<!--		</div>-->
-<!--	</div>-->
-
 
 </div>
 </html>

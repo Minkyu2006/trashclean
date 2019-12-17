@@ -539,7 +539,7 @@
 				var dateObj = new Date(date);
 
 				if (today<dateObj) {
-					alertCaution("현재 날짜보다 앞선 날짜는 선택할 수 없습니다.");
+					alertCaution("현재 날짜보다 앞선 날짜는 <BR> 선택할 수 없습니다.");
 					$("#intervaltime").val("");
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
@@ -583,7 +583,9 @@
 						var html = '';
 						html += '<option value ="">'+'전체'+'</option>';
 						$.each(res.data.locationData, function (key, value) {
-							html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name)+ '</option>';
+							if(res.data.locationData!=null) {
+								html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name) + '</option>';
+							}
 						});
 						$s_emLocation.html(html);
 					}

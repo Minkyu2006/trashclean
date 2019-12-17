@@ -15,36 +15,36 @@
 
 		function save(){
 			if ($("#userid").val().trim() == '') {
-				alert("아이디를 입력하세요. 아이디는 중복되지 않도록 확인 후 입력하세요");
+				alertCaution("아이디를 입력하세요.<BR> 아이디는 중복되지 않도록 <BR> 확인 후 입력하세요");
 				$("#userid").trigger('focus');
 				return false;
 			}
 
 			if ($("#username").val().trim() == '') {
-				alert("이름을 입력하세요.");
+				alertCaution("이름을 입력하세요.");
 				$("#username").trigger('focus');
 				return false;
 			}
 
 			if ($("#password").val().trim() == '') {
-				alert("비밀번호를 입력하세요.");
+				alertCaution("비밀번호를 입력하세요.");
 				$("#password").trigger('focus');
 				return false;
 			}
 
 			if ($("#password").val().trim() != $("#password2").val().trim()) {
-				alert("입력한 비밀번호가 다릅니다.");
+				alertCaution("입력한 비밀번호가 다릅니다.");
 				$("#password").trigger('focus');
 				return false;
 			}
 
 			if ($("#cellphone").val().trim() == '') {
-				alert("전화번호를 입력하세요.\n메세지 알림을 받기 위해서는 필수입니다.");
+				alertCaution("전화번호를 입력하세요.<BR>메세지 알림을 받기 위해서는 <BR> 필수입니다.");
 				return false;
 			}
 
 			if ($("#email").val().trim() == '') {
-				alert("이메일 입력하세요.\n알림메일을 받기위해서는 필수입니다.");
+				alertCaution("이메일 입력하세요.<BR>알림메일을 받기위해서는 <BR> 필수입니다.");
 				return false;
 			}
 
@@ -64,13 +64,13 @@
 				data : params,
 				cache:false,
 				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('사용자등록이 완료 되었습니다.');
+					alertSuccess('사용자등록이 완료 되었습니다.');
 					location.href="/";
 				}
 			});
@@ -176,6 +176,7 @@
 	</section>
 
 
-
+	<div id='alertpop'>
+	</div>
 </div>
 </html>

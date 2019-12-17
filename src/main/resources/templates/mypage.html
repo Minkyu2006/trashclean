@@ -19,7 +19,7 @@
 		function callsave(){
 
 			if ($("#userid").val().trim() == '') {
-				alert("회원정보가 존재하지않습니다. 로그인 후 다시 시도하세요");
+				alertCaution("회원정보가 존재하지않습니다.<BR> 로그인 후 다시 시도하세요");
 				return false;
 			}
 
@@ -46,7 +46,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('저장되었습니다. ');
+					alertSuccess('저장되었습니다. ');
 
 
 
@@ -58,7 +58,7 @@
 		function callsavePassword(){
 
 			if ($("#userid").val().trim() == '') {
-				alert("회원정보가 존재하지않습니다. 로그인 후 다시 시도하세요");
+				alertCaution("회원정보가 존재하지않습니다.<BR> 로그인 후 다시 시도하세요");
 				return false;
 			}
 
@@ -85,7 +85,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alert('저장되었습니다. ');
+					alertSuccess('저장되었습니다. ');
 					$("#password").val('');
 					$("#oldpassword").val('');
 					$("#passwordconfirm").val('');
@@ -148,5 +148,7 @@
 			</div>
 		</article>
 	</section>
+	<div id='alertpop'>
+	</div>
 </div>
 </html>
