@@ -5,7 +5,7 @@
 
 <head>
 	<script type="text/javascript">
-
+		var map;
 		$(function() {
 
 			$("#removehour").removeClass(" active");
@@ -103,6 +103,7 @@
 				//console.log("자동 새로고침 종료")
 				callStop()
 			}
+
 		}
 
 		var timerId = null;
@@ -443,39 +444,36 @@
 					var idx = 0;
 
 					$.each(res.data.devices, function (key, value) {
+
 						var html = '';
 						var html2 = '';
 						var html3 = '';
-						var status
 
 						html2 += '<div id='+'states'+idx+' class="equipment__section">';
 						html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
 						html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
 						html2 += '</div>'
 						if(res.data.status[idx]=="정상"){
-							 status = 1;
-									html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
-									html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+								html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
+								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 								html2 += '<div class="equipment__img">';
 								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 								html2 += '</div>';
 						}else if(res.data.status[idx]=="주의"){
-							status = 2;
-									html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
-									html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+								html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
+								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 								html2 += '<div class="equipment__img">';
 								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 								html2 += '</div>';
 						}else if(res.data.status[idx]=="심각"){
-							status = 3;
-									html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
-									html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+								html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
+								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 								html2 += '<div class="equipment__img">';
 								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 								html2 += '</div>';
 						}else{
-									html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
-									html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+								html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
+								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 								html2 += '<div class="equipment__img">';
 								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 								html2 += '</div>';
@@ -513,7 +511,8 @@
 									html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
 								html += '</li>'
 								html += '<li class="equipment__info-item">'
-									html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+"'"+nvl(res.data.devices[idx],"확 인 불 가")+"'"+','+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+','+status+','+nvl(res.data.level[idx],"확 인 불 가")+')" />'
+						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />'
+								//	html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+idx+','+"'"+nvl(res.data.devices,"확 인 불 가")+"'"+','+"'"+nvl(res.data.gps_laDatas,"확 인 불 가")+"'"+','+"'"+nvl(res.data.gps_loDatas,"확 인 불 가")+"'"+','+"'"+nvl(res.data.status,"확 인 불 가")+"'"+','+"'"+nvl(res.data.level,"확 인 불 가")+"'"+')" />'
 								html += '</li>'
 							html += '</ul>'
 						html += '</div>'
@@ -600,7 +599,6 @@
 					var htmls = new Array();
 					var htmls2 = new Array();
 					var htmls3 = new Array();
-					var status
 
 					var idx = 0;
 
@@ -613,21 +611,18 @@
 						html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
 						html2 += '</div>'
 						if(res.data.status[idx]=="정상"){
-							status = 1;
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 						}else if(res.data.status[idx]=="주의"){
-							status = 2;
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 						}else if(res.data.status[idx]=="심각"){
-							status = 3;
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
@@ -671,7 +666,8 @@
 						html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
-						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+"'"+nvl(res.data.devices[idx],"확 인 불 가")+"'"+','+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+','+status+','+nvl(res.data.level[idx],"확 인 불 가")+')" />'
+						//html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+idx+','+"'"+nvl(res.data.devices,"확 인 불 가")+"'"+','+"'"+nvl(res.data.gps_laDatas,"확 인 불 가")+"'"+','+"'"+nvl(res.data.gps_loDatas,"확 인 불 가")+"'"+','+"'"+nvl(res.data.status,"확 인 불 가")+"'"+','+"'"+nvl(res.data.level,"확 인 불 가")+"'"+')" />'
+						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />'
 						html += '</li>'
 						html += '</ul>'
 
@@ -695,6 +691,18 @@
 					//console.log("출력완료");
 				}
 			});
+		}
+
+		// 장비위치이동 버튼을 누르면 실행되는 함수
+		function mapMove(lat,lng) {
+			var center = new google.maps.LatLng(lat, lng);
+			var infowindow = new google.maps.InfoWindow();
+
+			
+
+			map.setZoom(19);
+			map.panTo(center);
+			$('html').scrollTop(70);
 		}
 
 		// 타임스탬프 그래프함수
@@ -1065,58 +1073,53 @@
 			});
 		}
 
-		// 장비위치이동 버튼을 누르면 실행되는 함수
-		function mapMove(deviceId,gps_la,gps_lo,status,level) {
+		// 장비위치이동 버튼을 누르면 실행되는 함수(삽질함수)
+		function mapMovetest(idx,deviceId,gps_la,gps_lo,status,level) {
+			var deviceIds = new Array();
+			var gps_las = new Array();
+			var gps_los = new Array();
+			var statuss = new Array();
+			var levels = new Array();
+			deviceIds = deviceId.split(',');
+			gps_las = gps_la.split(',');
+			gps_los = gps_lo.split(',');
+			statuss = status.split(',');
+			levels = level.split(',');
 
-			var statusMap;
-			if(status==1){
-				statusMap="정상";
-			}else if(status==2){
-				statusMap="주의";
-			}else{
-				statusMap="심각";
-			}
+			var center = new google.maps.LatLng(parseFloat(gps_las[idx]), parseFloat(gps_los[idx]));
 
-			var map;
-			map = new google.maps.Map(document.getElementById('map'), {
-				mapTypeControl: false,
-				streetViewControl: false,
-				center: {lat: gps_la, lng: gps_lo},
-				zoom: 17,
-			});
-
-			var marker;
+			var marker, i;
 
 			var iconSrc = [];
 
-			iconSrc[1] = "/assets/images/marker.png";
-			iconSrc[2] = "/assets/images/marker--caution.png";
-			iconSrc[3] = "/assets/images/marker--severe.png"
+			iconSrc['정상'] = "/assets/images/marker.png";
+			iconSrc['주의'] = "/assets/images/marker--caution.png";
+			iconSrc['심각'] = "/assets/images/marker--severe.png"
 
 			var infowindow = new google.maps.InfoWindow();
 
-			marker = new google.maps.Marker({
-				position: new google.maps.LatLng(gps_la, gps_lo),
-				map: map,
-				icon: iconSrc[status]
-			});
-
-			google.maps.event.addListener(marker, 'click', (function(marker) {
-				var content = '<div class="iw-container" id="iw-container">' +
-						'<h2>' +deviceId+ '</h2>' +
-						'<dl>' +
-						'<dd>' +'상태 : '+statusMap+'</dd>' +
-						'<dd>' +'배출량 : '+level+'%'+'</dd>' +
-						'</dl>' +
-						'</div>'
-				infowindow.setContent(content);
-				infowindow.open(map, marker);
-				return function() {
-					infowindow.setContent(content);
-					infowindow.open(map, marker);
-				}
-			})(marker));
-
+			for (i = 0; i < deviceIds.length; i++) {
+				marker = new google.maps.Marker({
+					position: new google.maps.LatLng(parseFloat(gps_las[i]), parseFloat(gps_los[i])),
+					map: map,
+					icon: iconSrc[statuss[i]]
+				});
+				google.maps.event.addListener(marker, 'click', (function(marker, i) {
+					var content =
+							'<div class="iw-container" id="iw-container">' +
+							'<h2>' + deviceIds[i] + '</h2>' +
+							'<dl>' +
+							'<dt>' +'상태 : '+statuss[i]+'</dt>' +
+							'<dd>' +'배출량 : '+levels[i]+'%'+'</dd>' +
+							'</dl>' +
+							'</div>'
+					return function() {
+						infowindow.setContent(content);
+						infowindow.open(map, marker);
+					}
+				})(marker,i));
+			}
+			map.panTo(center);
 			$('html').scrollTop(70);
 		}
 
@@ -1124,7 +1127,7 @@
 		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
 			var locations = map_data_columns
 
-			var map;
+			//var map;
 			map = new google.maps.Map(document.getElementById('map'), {
 				center: {lat: 37.14450, lng: 127.03312},
 				zoom: 8,
@@ -1154,7 +1157,8 @@
 				bounds.extend(marker.position);
 
 				google.maps.event.addListener(marker, 'click', (function(marker, i) {
-					var content = '<div class="iw-container" id="iw-container">' +
+					var content =
+							'<div class="iw-container" id="iw-container">' +
 							'<h2>' + (map_data_columns[i][0]) + '</h2>' +
 							'<dl>' +
 							'<dt>' +'상태 : '+statusDatas[i]+'</dt>' +
