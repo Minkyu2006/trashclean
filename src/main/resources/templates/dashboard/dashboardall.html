@@ -7,6 +7,7 @@
 	<script type="text/javascript">
 
 		$(function() {
+
 			$("#removehour").removeClass(" active");
 			$("#starthour").addClass(" active");
 			$("#intervaltime").val("3");
@@ -18,6 +19,9 @@
 				deviceListView(1);
 			});
 
+			$("#mapChart").on('click',function(){
+				refleshMapChart();
+			});
 			$("#circleChart").on('click',function(){
 				$("#pieChartLoading").show();
 				refleshCircleChart();
@@ -172,6 +176,35 @@
 			if(timerId != null) {
 				clearInterval(timerId);
 			}
+		}
+
+		// 맵 새로고침
+		function refleshMapChart() {
+			var params = {
+				emNumber:$('#s_emNumber').val(),
+				emType:$('#s_emType').val(),
+				emCountry:$('#s_emCountry').val(),
+				emLocation:$('#s_emLocation').val(),
+			};
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$.ajax({
+				url:'/api/dashboard/deviceInfoList',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					var pushValue = new Array();
+					$.each(res.data.datalist, function(key, value){
+						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
+					});
+					MapChartDeviceId(pushValue);
+				}
+			});
 		}
 
 		// 원차트 새로고침
@@ -413,24 +446,28 @@
 						var html = '';
 						var html2 = '';
 						var html3 = '';
+						var status
 
 						html2 += '<div id='+'states'+idx+' class="equipment__section">';
 						html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
 						html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
 						html2 += '</div>'
-						if(res.data.status[idx]=="normal"){
+						if(res.data.status[idx]=="정상"){
+							 status = 1;
 									html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
 									html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 								html2 += '<div class="equipment__img">';
 								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 								html2 += '</div>';
-						}else if(res.data.status[idx]=="caution"){
+						}else if(res.data.status[idx]=="주의"){
+							status = 2;
 									html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
 									html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 								html2 += '<div class="equipment__img">';
 								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 								html2 += '</div>';
-						}else if(res.data.status[idx]=="severe"){
+						}else if(res.data.status[idx]=="심각"){
+							status = 3;
 									html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
 									html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 								html2 += '<div class="equipment__img">';
@@ -476,7 +513,7 @@
 									html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
 								html += '</li>'
 								html += '<li class="equipment__info-item">'
-									html += '<input type="button" class="equipment__info-title" value="장비 위치로 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />'
+									html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+"'"+nvl(res.data.devices[idx],"확 인 불 가")+"'"+','+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+','+status+','+nvl(res.data.level[idx],"확 인 불 가")+')" />'
 								html += '</li>'
 							html += '</ul>'
 						html += '</div>'
@@ -563,6 +600,7 @@
 					var htmls = new Array();
 					var htmls2 = new Array();
 					var htmls3 = new Array();
+					var status
 
 					var idx = 0;
 
@@ -571,23 +609,25 @@
 						var html2 = '';
 						var html3 = '';
 
-						// html2 += '<div id='+'states'+idx+' class="equipment__section">';
 						html2 += '<div id='+'stateLoading'+idx+' class="c-loader">'
 						html2 += '<div class="c-loader__active c-loader__active--ring"></div>'
 						html2 += '</div>'
-						if(res.data.status[idx]=="normal"){
+						if(res.data.status[idx]=="정상"){
+							status = 1;
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-						}else if(res.data.status[idx]=="caution"){
+						}else if(res.data.status[idx]=="주의"){
+							status = 2;
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
-						}else if(res.data.status[idx]=="severe"){
+						}else if(res.data.status[idx]=="심각"){
+							status = 3;
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
@@ -600,9 +640,7 @@
 							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
 							html2 += '</div>';
 						}
-						// html2 += '</div>';
 
-						// html += '<div id='+'details'+idx+' class="equipment__section">'
 						html += '<div id='+'detailLoading'+idx+' class="c-loader">'
 						html += '<div class="c-loader__active c-loader__active--ring"></div>'
 						html += '</div>'
@@ -633,17 +671,14 @@
 						html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>'
 						html += '</li>'
 						html += '<li class="equipment__info-item">'
-						html += '<input type="button" class="equipment__info-title" value="위치로 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />'
+						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+"'"+nvl(res.data.devices[idx],"확 인 불 가")+"'"+','+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+','+status+','+nvl(res.data.level[idx],"확 인 불 가")+')" />'
 						html += '</li>'
 						html += '</ul>'
-						// html += '</div>'
 
-						// html3 += '<div id='+'graphs'+idx+' class="equipment__section">'
 						html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">'
 						html3 += '<div class="c-loader__active c-loader__active--ring"></div>'
 						html3 += '</div>'
 						html3 += '<canvas id='+'timeStampChart'+idx+' style="width: 100%;height: 220px;"></canvas>'
-						// html3 += '</div>'
 
 						htmls.push(html)
 						htmls2.push(html2)
@@ -864,6 +899,42 @@
 			});
 		}
 
+		// Map 새로고침
+		function MapChartDeviceId(pushValue) {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			var deviceIds = new Array();
+			for (var i=0; i<pushValue.length; i++){
+				deviceIds.push(pushValue[i]);
+			}
+
+			var itemJson = new Object();
+			itemJson.deviceids = deviceIds;
+			var devicestr = JSON.stringify(itemJson);
+
+			var params = {
+				deviceids:devicestr
+			};
+
+			$.ajax({
+				url: '/api/dashboard/dataMapGraph',
+				type: 'post',
+				data : params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
+				}
+			});
+		}
+
 		// Circle그래프 새로고침
 		function CircleChartDeviceId(pushValue) {
 			var token = $("meta[name='_csrf']").attr("content");
@@ -994,13 +1065,58 @@
 			});
 		}
 
-		// 장치이동 누르면 실행되는 함수
-		function mapMove(gps_la,gps_lo) {
+		// 장비위치이동 버튼을 누르면 실행되는 함수
+		function mapMove(deviceId,gps_la,gps_lo,status,level) {
 
-			console.log("구글맵 장비이동");
-			console.log("위도 : "+gps_la);
-			console.log("경도 : "+gps_lo);
-			
+			var statusMap;
+			if(status==1){
+				statusMap="정상";
+			}else if(status==2){
+				statusMap="주의";
+			}else{
+				statusMap="심각";
+			}
+
+			var map;
+			map = new google.maps.Map(document.getElementById('map'), {
+				mapTypeControl: false,
+				streetViewControl: false,
+				center: {lat: gps_la, lng: gps_lo},
+				zoom: 17,
+			});
+
+			var marker;
+
+			var iconSrc = [];
+
+			iconSrc[1] = "/assets/images/marker.png";
+			iconSrc[2] = "/assets/images/marker--caution.png";
+			iconSrc[3] = "/assets/images/marker--severe.png"
+
+			var infowindow = new google.maps.InfoWindow();
+
+			marker = new google.maps.Marker({
+				position: new google.maps.LatLng(gps_la, gps_lo),
+				map: map,
+				icon: iconSrc[status]
+			});
+
+			google.maps.event.addListener(marker, 'click', (function(marker) {
+				var content = '<div class="iw-container" id="iw-container">' +
+						'<h2>' +deviceId+ '</h2>' +
+						'<dl>' +
+						'<dd>' +'상태 : '+statusMap+'</dd>' +
+						'<dd>' +'배출량 : '+level+'%'+'</dd>' +
+						'</dl>' +
+						'</div>'
+				infowindow.setContent(content);
+				infowindow.open(map, marker);
+				return function() {
+					infowindow.setContent(content);
+					infowindow.open(map, marker);
+				}
+			})(marker));
+
 			$('html').scrollTop(70);
 		}
 
@@ -1052,6 +1168,7 @@
 				})(marker, i));
 			}
 			map.fitBounds(bounds);
+
 		}
 
 		//상태값 차트
@@ -1309,6 +1426,9 @@
 					<div class="panel__inner">
 						<div class="panel__header">
 							<h4 class="panel__title">설치위치</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh" id="mapChart">새로고침</button>
+							</div>
 						</div>
 						<div id="mapfold" class="panel__body">
 							<div class="c-loader">
