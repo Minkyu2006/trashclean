@@ -142,10 +142,13 @@
 	<!-- setting -->
 	<div class="header-setting">
 		<!-- 설정: 사진등록 -->
-		<ul>
-			<li><a href="#" class="header-setting__btn-setting" title="설정">Setting</a></li>
-			<li><a href="#" class="header-setting__btn-logout" title="logout">Logout</a></li>
-		</ul>
+		<form th:action="@{/logout}" method="post" id="logout">
+			<ul>
+				<li><a href="#" class="header-setting__btn-setting" title="Setting">Setting</a></li>
+				<li><a href="#" onclick="document.getElementById('logout').submit();" value="Logout" class="header-setting__btn-logout" title="logout">Logout</a></li>
+			</ul>
+		</form>
+
 	</div>
 </header>
 

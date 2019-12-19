@@ -71,7 +71,12 @@ public class TestpageController {
     }
 
     @RequestMapping("modelregtest")
-    public String modelregtest(){
+    public String modelregtest(Model model){
+
+        List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
+
+        model.addAttribute("modelTypes", modelTypes);
+
         return "testpage/modelregtest";
     }
 

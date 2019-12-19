@@ -5,17 +5,222 @@
 <head>
 	<script type="text/javascript">
 
+
+
+		$(function(){
+
+			$("#mdSaveBtn").on('click',function(){
+				save();
+			});
+
+			$("#btnNew").on('click',function(){
+				init();
+			});
+
+		})
+
+		function init(){
+			$("#mdNumber").val('');
+			$("#mdName").val('');
+			$("#mdSubname").val('');
+			$("#mdRemark").val('');
+		}
+
+		function save() {
+			var $form = $('form[name="mdreg"]');
+
+			var params = $form.serialize();
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/model/reg',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alertSuccess('저장되었습니다.')
+					init();
+					// LocationSetting();
+					// callList(1);
+				}
+			});
+		}
+
+
+
     </script>
 </head>
 
 <div layout:fragment="content" class="contents-body">
+	<section class="section">
+		<article class="article">
+			<h2 class="article__heading">모델 조회</h2>
+			<div class="l-float-heading">
+				<div class="l-float-heading--left">
+					<h4 class="article__head">검색조건<span class="article__head-caption">(수정하려면 조회 후 초기화 버튼을 클릭하세요.)</span></h4>
+				</div>
+				<div class="l-float-heading--right"><button class="c-button c-button--small" id="btnReset">조건 초기화</button></div>
+			</div>
+			<table class="c-table">
+				<colgroup>
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 80px;" />
+					<col />
+					<col style="width: 62px;" />
+				</colgroup>
+				<tr>
+					<th>모델명</th>
+					<td>
+						<div class="c-text">
+							<input type="text" id="s_mdName" class="c-text__input" />
+						</div>
+					</td>
+					<th>모델 타입</th>
+					<td>
+						<div class="c-select">
+							<select id="s_mdType" class="c-select__input">
+								<option th:each ="modelType : ${modelTypes}"
+										th:value="${modelType.code}"
+										th:text="${modelType.name}"
+								></option>
+							</select>
+						</div>
+					</td>
+					<th>특이사항</th>
+					<td>
+						<div class="c-text">
+							<input type="text" id="s_mdRemark" class="c-text__input" />
+						</div>
+					</td>
+					<td>
+						<button class="c-button c-button--point" id="btnSearch">조회</button>
+					</td>
+				</tr>
+			</table>
+		</article>
+		<article class="article">
+			<table class="c-table">
+				<colgroup>
+					<col />
+					<col />
+					<col />
+					<col style="width: 90px;" />
+					<col />
+					<col style="width: 100px;" />
+				</colgroup>
+				<thead>
+				<tr>
+					<th>모델 번호</th>
+					<th>모델명</th>
+					<th>모델 타입</th>
+					<th>이미지</th>
+					<th>모델명(약칭)</th>
+					<th>특이사항</th>
+				</tr>
+				</thead>
+				<tbody id="schList">
 
-<!--    <button id="success">성공</button>-->
-<!--    <button id="fail">실패</button>-->
-<!--    <button id="caution">경고</button>-->
-<!--    <button id="confirm">확인</button>-->
+				</tbody>
+			</table>
 
+			<div class="c-pager">
+				<div class="c-paging" id="paging1">
+				</div>
+				<div class="c-paging__total">
+					<div class="c-paging__total-group">
+						Total
+					</div>
+					<div class="c-paging__total-group" id="totalCnt">0</div>
+				</div>
+			</div>
+		</article>
+	</section>
 
+	<section class="section">
+		<article class="article">
+			<h2 class="article__heading">모델 등록</h2>
+			<form name="mdreg">
+				<table class="c-table">
+					<tbody>
+					<tr>
+						<th>모델 번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="mdNumber" id="mdNumber" class="c-text__input" readonly="readonly" />
+							</div>
+						</td>
+						<th>모델명</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="mdName" id="mdName" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>모델 타입</th>
+						<td>
+							<div class="c-select">
+								<select id="mdType" name="mdType" class="c-select__input">
+									<option th:each ="modelType : ${modelTypes}"
+											th:value="${modelType.code}"
+											th:text="${modelType.name}"
+									></option>
+								</select>
+							</div>
+						</td>
+						<th>이미지업로드</th>
+						<td>
+							<div class="c-file">
+								<input type="file" name="file0" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>모델명(약칭)</th>
+						<td>
+							<div class="c-calendar-layout">
+								<div class="c-text">
+									<input type="text" name="mdSubname" id="mdSubname" class="c-date__input" />
+								</div>
+							</div>
+						</td>
+						<th>특이사항</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="mdRemark" id="mdRemark" class="c-date__input" />
+							</div>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</form>
+			<div class="c-function">
+				<div class="c-function__group c-function__group--right">
+					<div class="c-function__item">
+						<button class="c-button c-button--point" id="btnNew">신규</button>
+					</div>
+					<div class="c-function__item">
+						<button class="c-button c-button--point" id ="mdSaveBtn">저장</button>
+					</div>
+					<div class="c-function__item">
+						<button class="c-button" id="btnDel">삭제</button>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
 	<div id='alertpop'>
 	</div>
 </div>
