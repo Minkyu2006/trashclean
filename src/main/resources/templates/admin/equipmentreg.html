@@ -294,7 +294,7 @@
 				data: params,
 				cache: false,
 				error: function (request, status, error) {
-					alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+					ajaxErrorMsg(request);
 				},
 				success: function (res) {
 					$("#emNumber").val(res.data.equipment.emNumber);

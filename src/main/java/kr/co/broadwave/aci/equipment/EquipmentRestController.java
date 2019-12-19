@@ -98,7 +98,7 @@ public class EquipmentRestController {
         // 장비번호 가져오기(고유값)
         Optional<Equipment> optionalEquipment = equipmentService.findByEmNumber(equipment.getEmNumber());
         //신규 및 수정여부
-        if (optionalEquipment.isPresent()){
+        if (optionalEquipment.isPresent()) {
             //수정
             equipment.setId(optionalEquipment.get().getId());
             equipment.setInsert_id(optionalEquipment.get().getInsert_id());

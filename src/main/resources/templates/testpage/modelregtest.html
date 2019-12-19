@@ -5,8 +5,6 @@
 <head>
 	<script type="text/javascript">
 
-
-
 		$(function(){
 
 			$("#mdSaveBtn").on('click',function(){
@@ -17,19 +15,44 @@
 				init();
 			});
 
+			$("#btnSearch").on('click',function(){
+				list(1);
+			});
+
+			$("#btnReset").on('click',function(){
+				reset();
+			});
+
+			$("#btnDel").on('click',function(){
+				del();
+			});
+
 		})
 
+		// 조건초기화
+		function reset() {
+			$("#s_mdName").val('');
+			$("#s_mdType").val('');
+			$("#s_mdRemark").val('');
+		}
+
+		// 모델신규작성
 		function init(){
 			$("#mdNumber").val('');
 			$("#mdName").val('');
+			$("#mdType").val('52');
 			$("#mdSubname").val('');
 			$("#mdRemark").val('');
 		}
 
+		// 모델 등록
 		function save() {
-			var $form = $('form[name="mdreg"]');
+			if ($("#mdName").val().trim() == '') {
+				alertCaution("모델명을 작성해주세요.");
+				return false;
+			}
 
-			var params = $form.serialize();
+			var formData = new FormData(document.getElementById('mdreg'));
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -38,7 +61,10 @@
 			$.ajax({
 				url:'/api/model/reg',
 				type : 'post',
-				data : params,
+				data : formData,
+				processData : false,
+				contentType : false,
+				enctype: 'multipart/form-data',
 				cache:false,
 				error:function(request,status,error){
 					ajaxErrorMsg(request);
@@ -49,13 +75,142 @@
 					}
 					alertSuccess('저장되었습니다.')
 					init();
-					// LocationSetting();
-					// callList(1);
+					list(1);
 				}
 			});
 		}
 
+		// 모델조회
+		function list(page){
 
+			page = page - 1;
+			if (page < 0) page = 0
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+			var $schList = $('#schList');
+			var $totalCnt = $('#totalCnt');
+
+			var params = {
+				mdName:$('#s_mdName').val(),
+				mdType:$('#s_mdType').val(),
+				mdRemark:$('#s_mdRemark').val(),
+			};
+
+			$schList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/model/list?size='+ perPage + '&page=' + page,
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+				},
+				success: function(res) {
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+					if (totCnt == 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+					$totalCnt.text(totCnt);
+
+					var baseurl = res.data.awss3url;
+					console.log("baseurl : "+baseurl)
+
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+							html += '<td >'+ nvl(value.mdNumber,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(value.mdName,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(value.mdType,"확 인 불 가") +'</td>';
+							html += '<td >'+"이미지 미리보기"+'</td>';
+							html += '<td >'+ nvl(value.mdSubname,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(value.mdRemark,"확 인 불 가") +'</td>';
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:modelInfo(\''+nvl(value.id,"확 인 불 가")+'\');">보기</button></td>';
+						html += '</tr>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+
+		// 모델정보보기
+		function modelInfo(id) {
+
+			var params = {
+				id:id
+			}
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/model/info',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request, status, error) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					$("#mdNumber").val(res.data.iModel.mdNumber);
+					$("#mdName").val(res.data.iModel.mdName);
+					$("#mdType").val(res.data.iModel.mdTypeId);
+					$("#mdSubname").val(res.data.iModel.mdSubname);
+					// $("#modelfile").val(res.data.equipment.iModel.csNumber); 이미지 이름?
+					$("#mdRemark").val(res.data.iModel.mdRemark);
+				}
+			});
+		}
+
+		//삭제버튼 실행
+		function del() {
+			if ($("#mdNumber").val().trim() == '') {
+				alertCaution("삭제하고자하는 장비를 선택하세요.");
+				return false;
+			}
+
+			var params = {
+				mdNumber: $("#mdNumber").val()
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) {
+				xhr.setRequestHeader(header, token);
+			});
+
+			$.ajax({
+				url: '/api/model/del',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alertSuccess('장비가 삭제 되었습니다.');
+					init();
+					list(1);
+				}
+			})
+		}
 
     </script>
 </head>
@@ -91,6 +246,7 @@
 					<td>
 						<div class="c-select">
 							<select id="s_mdType" class="c-select__input">
+								<option value="">전체</option>
 								<option th:each ="modelType : ${modelTypes}"
 										th:value="${modelType.code}"
 										th:text="${modelType.name}"
@@ -116,9 +272,10 @@
 					<col />
 					<col />
 					<col />
-					<col style="width: 90px;" />
+					<col  />
 					<col />
-					<col style="width: 100px;" />
+					<col />
+					<col style="width: 90px;"/>
 				</colgroup>
 				<thead>
 				<tr>
@@ -128,6 +285,7 @@
 					<th>이미지</th>
 					<th>모델명(약칭)</th>
 					<th>특이사항</th>
+					<th></th>
 				</tr>
 				</thead>
 				<tbody id="schList">
@@ -151,7 +309,7 @@
 	<section class="section">
 		<article class="article">
 			<h2 class="article__heading">모델 등록</h2>
-			<form name="mdreg">
+			<form id ="mdreg" enctype="multipart/form-data">
 				<table class="c-table">
 					<tbody>
 					<tr>
@@ -174,7 +332,7 @@
 							<div class="c-select">
 								<select id="mdType" name="mdType" class="c-select__input">
 									<option th:each ="modelType : ${modelTypes}"
-											th:value="${modelType.code}"
+											th:value="${modelType.id}"
 											th:text="${modelType.name}"
 									></option>
 								</select>
@@ -183,7 +341,7 @@
 						<th>이미지업로드</th>
 						<td>
 							<div class="c-file">
-								<input type="file" name="file0" />
+								<input type="file" name="file0" id="modelfile"/>
 							</div>
 						</td>
 					</tr>

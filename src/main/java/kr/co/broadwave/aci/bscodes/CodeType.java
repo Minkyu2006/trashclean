@@ -14,7 +14,7 @@ public enum CodeType {
     C0006("C0006", "업체구분"),
     C0007("C0007", "운영권역"),
     C0008("C0008", "단위"),
-    C0009("C0008", "모델타입");
+    C0009("C0009", "모델타입");
 
     private String code;
     private String desc;

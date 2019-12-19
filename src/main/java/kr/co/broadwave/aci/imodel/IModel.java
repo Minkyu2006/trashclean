@@ -28,8 +28,8 @@ public class IModel {
     @Column(name="md_id")
     private Long id; // 모델 고유ID
 
-    @Column(unique = true,name="md_fileid")
-    private Long mdFileid; // 모델 번호
+    @Column(name="md_fileid")
+    private Long mdFileid; // 모델파일ID
 
     @Column(unique = true,name="md_number")
     private String mdNumber; // 모델 번호
