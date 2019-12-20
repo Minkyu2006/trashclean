@@ -74,6 +74,11 @@ public class IModelService {
         iModelRepository.delete(iModel);
     }
 
+    public Optional<IModel> findByMdFileid(Long mdFileid) {
+        return iModelRepository.findByMdFileid(mdFileid);
+    }
+
+
 //    public Page<EquipmentListDto> findByEquipmentSearch
 //            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable) {
 //        return equipmentRepositoryCustom.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,pageable);

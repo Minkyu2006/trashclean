@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.imodel;
 
+import kr.co.broadwave.aci.files.FileUpload;;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
@@ -28,8 +29,9 @@ public class IModel {
     @Column(name="md_id")
     private Long id; // 모델 고유ID
 
-    @Column(name="md_fileid")
-    private Long mdFileid; // 모델파일ID
+    @OneToMany(targetEntity = FileUpload.class, cascade = CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="id")
+    @JoinColumn(name = "md_fileid",referencedColumnName = "id")
+    private FileUpload fileUpload; // 모델파일ID
 
     @Column(unique = true,name="md_number")
     private String mdNumber; // 모델 번호

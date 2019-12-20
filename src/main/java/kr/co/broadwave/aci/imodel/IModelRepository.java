@@ -16,4 +16,5 @@ public interface IModelRepository extends JpaRepository<IModel,Long>, QuerydslPr
 
     Optional<IModel> findByMdNumber(String mdNumber);
 
+    Optional<IModel> findByMdFileid(Long mdFileid);
 }

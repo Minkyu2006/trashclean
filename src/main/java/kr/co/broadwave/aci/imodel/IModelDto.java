@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @Setter
 public class IModelDto {
     private Long id; // 장비 고유ID
-    private Long fileid; // 파일아이디
     private String mdNumber; // 모델 번호
     private String mdName; // 모델명
     private MasterCode mdTypeId; // 모델타입
@@ -53,10 +52,6 @@ public class IModelDto {
 
     public String getMdRemark() {
         return mdRemark;
-    }
-
-    public Long getFileid() {
-        return fileid;
     }
 
     public LocalDateTime getInsertDateTime() {

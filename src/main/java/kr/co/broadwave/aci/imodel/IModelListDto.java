@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.imodel;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * @author Minkyu
@@ -16,13 +17,14 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 @Setter
 public class IModelListDto {
-    private Long id;
 
+    private Long id;
     private String mdNumber; // 모델 번호
     private String mdName; // 모델명
     private MasterCode mdType; // 모델타입
     private String mdSubname; // 모델약칭
     private String mdRemark; // 모델특이사항
+
 
     public Long getId() {
         return id;
@@ -47,5 +49,6 @@ public class IModelListDto {
     public String getMdRemark() {
         return mdRemark;
     }
+
 
 }
