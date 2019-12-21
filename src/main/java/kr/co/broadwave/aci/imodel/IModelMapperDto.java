@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.imodel;
 
+import kr.co.broadwave.aci.files.FileUpload;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 

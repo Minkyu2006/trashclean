@@ -6,6 +6,7 @@ import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.equipment.EquipmentListDto;
 import kr.co.broadwave.aci.equipment.EquipmentRepositoryCustom;
 import kr.co.broadwave.aci.equipment.QEquipment;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,7 @@ import java.util.List;
  * Date : 2019-11-01
  * Remark :
  */
+@Slf4j
 @Repository
 public class IModelRepositoryCustomImpl extends QuerydslRepositorySupport implements IModelRepositoryCustom{
 
@@ -34,6 +36,7 @@ public class IModelRepositoryCustomImpl extends QuerydslRepositorySupport implem
         JPQLQuery<IModelListDto> query = from(iModel)
                 .select(Projections.constructor(IModelListDto.class,
                         iModel.id,
+                        iModel.mdFileid,
                         iModel.mdNumber,
                         iModel.mdName,
                         iModel.mdType,
@@ -58,5 +61,6 @@ public class IModelRepositoryCustomImpl extends QuerydslRepositorySupport implem
 
         final List<IModelListDto> iModels = getQuerydsl().applyPagination(pageable, query).fetch();
         return new PageImpl<>(iModels, pageable, query.fetchCount());
+
     }
 }

@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.imodel;
 import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.company.CompanyRepositoryCustom;
 import kr.co.broadwave.aci.equipment.*;
+import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -57,7 +58,7 @@ public class IModelService {
         return iModelRepository.findByMdNumber(mdNumber);
     }
 
-    public Page<IModelListDto> findByIModelSearch(String mdName, Long mdTypeId, String mdRemark, Pageable pageable) {
+    public Page<IModelListDto> findByIModelSearch(String mdName, Long mdTypeId, String mdRemark,Pageable pageable) {
         return iModelRepositoryCustom.findByIModelSearch(mdName,mdTypeId,mdRemark,pageable);
     }
 
@@ -72,10 +73,6 @@ public class IModelService {
 
     public void delete(IModel iModel) {
         iModelRepository.delete(iModel);
-    }
-
-    public Optional<IModel> findByMdFileid(Long mdFileid) {
-        return iModelRepository.findByMdFileid(mdFileid);
     }
 
 

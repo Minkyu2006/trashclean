@@ -70,16 +70,6 @@ public class TestpageController {
         return "testpage/listtest3";
     }
 
-    @RequestMapping("modelregtest")
-    public String modelregtest(Model model){
-
-        List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
-
-        model.addAttribute("modelTypes", modelTypes);
-
-        return "testpage/modelregtest";
-    }
-
     @RequestMapping("filedownload/{fileid}")
     @ResponseBody
     public byte[] downProcess(HttpServletResponse response,

@@ -99,7 +99,7 @@
 				mdRemark:$('#s_mdRemark').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="7" align = "center">조회 중</td></tr>');
 			$totalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -122,24 +122,20 @@
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
 					if (totCnt == 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
+						$schList.empty().append('<tr class="t-c"><td colspan="7" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 					$totalCnt.text(totCnt);
-
-					var baseurl = res.data.awss3url;
-					console.log("baseurl : "+baseurl)
-
+					// var baseurl = res.data.awss3url;
+					console.log(res.data.datalist);
 					var html = '';
 					$.each(res.data.datalist, function(key, value){
-						// console.log("baseurl : "+nvl(value.awsURL,"확 인 불 가"))
 						html += '<tr >';
 							html += '<td >'+ nvl(value.mdNumber,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdName,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdType,"확 인 불 가") +'</td>';
-							// html += '   <td><img width="50" src="'+ baseurl+ nvl(value.fileUpload,"확 인 불 가") +'"</img></td>';
-							html += '<td >'+ nvl(value.mdFileid,"확 인 불 가") +'</td>';
-							//html += '<td >'+"이미지 미리보기"+'</td>';
+							html += '   <td><img width="50" src="'+nvl(value.mdFileid,"확 인 불 가")+'"</img></td>';
+							// html += '   <td><img width="50" src="'+baseurl+nvl(value.mdFileid,"확 인 불 가")+'"</img></td>';
 							html += '<td >'+ nvl(value.mdSubname,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdRemark,"확 인 불 가") +'</td>';
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:modelInfo(\''+nvl(value.id,"확 인 불 가")+'\');">보기</button></td>';
@@ -343,23 +339,16 @@
 						</td>
 						<th>이미지업로드</th>
 						<td>
-
-<!--							<input type="text" readonly="readonly" class="c-file__input" id="file0" name="file0" />-->
 							<div class="c-text">
 								<input class="c-button" value="파일선택" type="file" name="file" />
 							</div>
-<!--							<div class="c-file">-->
-<!--								<input type="file" name="file0" id="modelfile"/>-->
-<!--							</div>-->
 						</td>
 					</tr>
 					<tr>
 						<th>모델명(약칭)</th>
 						<td>
-							<div class="c-calendar-layout">
-								<div class="c-text">
-									<input type="text" name="mdSubname" id="mdSubname" class="c-date__input" />
-								</div>
+							<div class="c-text">
+								<input type="text" name="mdSubname" id="mdSubname" class="c-date__input" />
 							</div>
 						</td>
 						<th>특이사항</th>

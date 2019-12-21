@@ -29,9 +29,9 @@ public class IModel {
     @Column(name="md_id")
     private Long id; // 모델 고유ID
 
-    @OneToMany(targetEntity = FileUpload.class, cascade = CascadeType.ALL, fetch=FetchType.LAZY, mappedBy="id")
-    @JoinColumn(name = "md_fileid",referencedColumnName = "id")
-    private FileUpload fileUpload; // 모델파일ID
+    @ManyToOne(targetEntity = FileUpload.class,fetch = FetchType.EAGER)
+    @JoinColumn(name = "md_fileid")
+    private FileUpload mdFileid;
 
     @Column(unique = true,name="md_number")
     private String mdNumber; // 모델 번호

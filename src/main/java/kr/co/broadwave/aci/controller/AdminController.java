@@ -90,6 +90,15 @@ public class AdminController {
         return "admin/equipmentreg";
     }
 
+    //모델등록
+    @RequestMapping("modelreg")
+    public String modelreg(Model model){
 
+        List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
+
+        model.addAttribute("modelTypes", modelTypes);
+
+        return "admin/modelreg";
+    }
 
 }

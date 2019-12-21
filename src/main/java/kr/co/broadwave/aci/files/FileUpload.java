@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.files;
 
+import kr.co.broadwave.aci.imodel.IModel;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,8 +37,6 @@ public class FileUpload {
 
     @Column(name="bf_file_full_path")
     private String fileFullPath;
-
-
 
     @Column(name="bf_content_type")
     private String contentType;

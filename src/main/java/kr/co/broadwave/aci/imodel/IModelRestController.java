@@ -10,6 +10,7 @@ import kr.co.broadwave.aci.company.CompanyService;
 import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.equipment.*;
 import kr.co.broadwave.aci.files.FileUpload;
+import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.files.FileUploadService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
@@ -43,14 +44,12 @@ import java.util.Optional;
 @RequestMapping("/api/model")
 public class IModelRestController {
 
-    @Value("${aci.aws.s3.bucket.url}")
-    private String AWSS3URL;
-
     private final ModelMapper modelMapper;
     private final AccountService accountService;
     private final MasterCodeService masterCodeService;
     private final IModelService iModelService;
     private final FileUploadService fileUploadService;
+
     @Autowired
     public IModelRestController(ModelMapper modelMapper,
                                 FileUploadService fileUploadService,
@@ -113,20 +112,24 @@ public class IModelRestController {
 
         //파일저장
         Iterator<String> files = multi.getFileNames();
-        // 저장할 파일이 존재할때만 실행
-        String uploadFile = files.next();
-        MultipartFile mFile = multi.getFile(uploadFile);
 
-        if (mFile.getSize()!=0) {
-//            if(!iModelService.equals(null)){
-//                iModelFileUploadService.del(optionalImodel.get().getMdFileid());
+        while(files.hasNext()) {
+            String uploadFile = files.next();
+            MultipartFile mFile = multi.getFile(uploadFile);
+            // 저장할 파일이 존재할때만 실행
+            if (!mFile.isEmpty()) {
+//            if(iModel.getMdFileid()!=null){
+//                log.info("기존에 존재하는 이미지는 삭제");
+//                fileUploadService.del(optionalImodel.get().getMdFileid().getId());
 //            }
-            FileUpload save = fileUploadService.save(mFile);
-            //====================다른파일저장로직시 활용부분!!!!!!!=========================
-            //저장후 해당저장 값의 객체를반환하기때문에 다른테이블에 fk로 저장할수있다.
-//            iModel.setMdFileid(save.getId());
+                FileUpload save = fileUploadService.save(mFile);
+                //log.info("저장한 이미지 아이디값 : "+save.getId());
+                //====================다른파일저장로직시 활용부분!!!!!!!=========================
+                //저장후 해당저장 값의 객체를반환하기때문에 다른테이블에 fk로 저장할수있다.
+                FileUploadDto fileUploadDto = fileUploadService.findById(save.getId());
+                iModel.setMdFileid(fileUploadDto.getFileUpload());
+            }
         }
-
         IModel save = iModelService.save(iModel);
 
         log.info("모델등록 데이터 : "+save.toString());
@@ -140,8 +143,6 @@ public class IModelRestController {
                                                         @RequestParam (value="mdType", defaultValue="") String  mdType,
                                                         @RequestParam (value="mdRemark", defaultValue="")String mdRemark,
                                                         @PageableDefault Pageable pageable){
-        AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
         Long mdTypeId = null;
 
@@ -177,19 +178,19 @@ public class IModelRestController {
     @PostMapping("del")
     public ResponseEntity modeltDel(@RequestParam(value="mdNumber", defaultValue="") String mdNumber){
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
         Optional<IModel> iModel = iModelService.findByMdNumber(mdNumber);
-
-//        if (iModel.get().getMdFileid()!=null) {
-//            //log.info("기존파일 존재하면 삭제후 저장");
-//            iModelFileUploadService.del(iModel.get().getMdFileid());
-//        }
-
         if (!iModel.isPresent()){
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
         }
+
         iModelService.delete(iModel.get());
+
+        if (iModel.get().getMdFileid()!=null) {
+            //log.info("기존파일 존재하면 삭제");
+            fileUploadService.del(iModel.get().getMdFileid().getId());
+        }
+
         return ResponseEntity.ok(res.success());
     }
 

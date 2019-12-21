@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.imodel;
 
+import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +19,21 @@ import org.springframework.beans.factory.annotation.Value;
 @Setter
 public class IModelListDto {
 
+//    @Value("${aci.aws.s3.bucket.url}")
+//    private String AWSS3URL;
+
     private Long id;
+    private FileUpload mdFileid;
     private String mdNumber; // 모델 번호
     private String mdName; // 모델명
     private MasterCode mdType; // 모델타입
     private String mdSubname; // 모델약칭
     private String mdRemark; // 모델특이사항
 
+    public String getMdFileid() {
+        String fileurl = mdFileid.getFilePath()+"/s_"+mdFileid.getSaveFileName();
+        return fileurl;
+    }
 
     public Long getId() {
         return id;
