@@ -511,6 +511,105 @@ a.c-button {
 .c-table td.non-padding {
     padding: 5px 0;
 }
+
+/* scroll table */
+.c-scroll-table {
+	position: relative;
+	width: 100%;
+}
+.c-scroll-table__header {
+	overflow: hidden;
+	position: relative;
+	width: 100%;
+}
+.c-scroll-table__body {
+	overflow: scroll;
+	width: 100%;
+	height: 500px;
+}
+.c-scroll-table__body-padding {
+	display: none;
+}
+.c-scroll-table__footer {
+	overflow: hidden;
+	position: absolute;
+	/*width: 100%;*/
+	width: calc(100% - 19px);
+	bottom: 17px;
+	left: 0;
+	/*padding-top: 4px;*/
+	background-color: #fff;
+	-webkit-box-shadow: 0 -2px 2px rgba(0, 0, 0, .3);
+	-moz-box-shadow: 0 -2px 2px rgba(0, 0, 0, .3);
+	box-shadow: 0 -2px 2px rgba(0, 0, 0, .3);
+}
+.c-scroll-table__body.c-scroll-table__body--scrollbar .c-scroll-table__body-padding {
+	display: block;
+	width: 100%;
+	height: 33px;
+}
+.c-scroll-table__body.c-scroll-table__body--scrollbar + .c-scroll-table__footer {
+	width: calc(100% - 17px);
+}
+
+.c-scroll-table table {
+	table-layout: fixed;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: left;
+    color: #222;
+    font-size: 14px;
+    border: 1px solid #7e7e7e;
+}
+/*.c-scroll-table .c-scroll-table__header table {
+	width: calc(100% + 19px);
+}*/
+.c-scroll-table .c-scroll-table__header table,
+.c-scroll-table .c-scroll-table__header table tr:last-child th {
+	border-bottom: 0 none;
+}
+.c-scroll-table .c-scroll-table__body table,
+.c-scroll-table .c-scroll-table__footer table {
+	/*border-top: 0;*/
+}
+.c-scroll-table table th,
+.c-scroll-table table td {
+	padding: 5px;
+	border: 1px solid #7e7e7e;
+	font-size: 14px;
+	text-align: center;
+}
+.c-scroll-table table th {
+	background-color: #c4c4c4;
+}
+.c-scroll-table table th:first-child,
+.c-scroll-table table td:first-child {
+	border-left: 0;
+}
+.c-scroll-table table th:last-child,
+.c-scroll-table table td:last-child {
+	border-right: 0;
+	border-left: 0;
+}
+.c-scroll-table table th:nth-last-child(2) {
+	/*border-right: 0;*/
+}
+.c-scroll-table .c-scroll-table__body table tr:nth-child(2n) td {
+	background-color: #efefef;
+}
+/*.c-scroll-table .c-scroll-table__footer td {
+	background-color: #fff;
+}*/
+.c-scroll-table table th input[type=checkbox],
+.c-scroll-table table td input[type=checkbox] {
+	margin: 0;
+	vertical-align: bottom;
+}
+
+
 /* paging */
 .c-pager {
     position: relative;

@@ -9,6 +9,420 @@
 </head>
 
 <div layout:fragment="content" class="contents-body">
-
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>테이블 분할</h2>
+			</div>
+		</div>
+		<div class="dashboard">
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__body panel__body--height-auto">
+							<div class="c-float c-float--flex">
+								<div class="c-float__item">
+									<div class="c-text">
+										<label for="num" class="c-text__label"></label>
+										<input type="text" class="c-text__input" id="num" />
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="" class="c-select__label"></label>
+										<select name="" id="" class="c-select__input">
+											<option>전체</option>
+											<option>권역</option>
+											<option>거점</option>
+											<option></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-date-group c-date-group--flex">
+										<div class="c-date">
+											<label for="from" class="c-date__label"></label>
+											<input type="date" class="c-date__input" id="from" />
+										</div>
+										<div class="c-date">
+											<label for="to" class="c-date__label"></label>
+											<input type="date" class="c-date__input" id="to" />
+										</div>
+									</div>
+								</div>
+								<div class="c-float__item c-float__item--flex--auto">
+									<button class="c-button c-button--point">조회</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="dashboard__row">
+				<div class="panel panel--w500">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">표1</h4>
+							<div class="panel__console"><button class="panel__button refresh"></button></div>
+						</div>
+						<div class="panel__body panel__body--height-auto">
+							<div class="panel__table">
+								<div class="c-scroll-table">
+									<div class="c-scroll-table__header">
+										<table>
+											<colgroup>
+												<col style="width: 50px;" />
+												<col style="width: 182px" />
+												<col style="width: 80px;" />
+												<col style="width: 80px;" />
+												<col style="width: 80px;" />
+												<col style="width: 19px;" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th>No.</th>
+													<th>권역</th>
+													<th>정상</th>
+													<th>관심</th>
+													<th>심각</th>
+													<th></th>
+												</tr>
+											</thead>
+										</table>
+									</div>
+									<div class="c-scroll-table__body">
+										<table>
+											<colgroup>
+												<col style="width: 50px;" />
+												<col style="width: 182px;" />
+												<col style="width: 80px;" />
+												<col style="width: 80px;" />
+												<col style="width: 80px;" />
+											</colgroup>
+											<tbody>
+												<tr>
+													<td>1</td>
+													<td>제주시</td>
+													<td>3</td>
+													<td>0</td>
+													<td>0</td>
+												</tr>
+											</tbody>
+										</table>
+										<div class="c-scroll-table__body-padding"></div>
+									</div>
+									<div class="c-scroll-table__footer">
+										<table>
+											<colgroup>
+												<col style="width: 50px;" />
+												<col style="width: 182px" />
+												<col style="width: 80px;" />
+												<col style="width: 80px;" />
+												<col style="width: 80px;" />
+											</colgroup>
+											<tfoot>
+												<tr>
+													<td>합계</td>
+													<td></td>
+													<td>3</td>
+													<td>0</td>
+													<td>0</td>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">표2</h4>
+							<div class="panel__console"><button class="panel__button refresh"></button></div>
+						</div>
+						<div class="panel__body panel__body--height-auto">
+							<div class="panel__table">
+								<div class="c-scroll-table">
+									<div class="c-scroll-table__header">
+										<table>
+											<colgroup>
+												<col style="width: 40px;" />
+												<col style="width: 50px;" />
+												<col style="width: 235px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 200px;" />
+												<col style="width: 17px;" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th><input type="checkbox" /></th>
+													<th>No.</th>
+													<th>거점</th>
+													<th>장비번호</th>
+													<th>적재부피(%)</th>
+													<th>적재기간(일)</th>
+													<th>적재중량(kg)</th>
+													<th>배치차량</th>
+													<th>수거차량</th>
+													<th>배치일시</th>
+													<th></th>
+												</tr>
+											</thead>
+										</table>
+									</div>
+									<div class="c-scroll-table__body">
+										<table>
+											<colgroup>
+												<col style="width: 40px;" />
+												<col style="width: 50px;" />
+												<col style="width: 235px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 150px;" />
+												<col style="width: 200px;" />
+											</colgroup>
+											<tbody>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>1</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>2</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>3</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>4</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>5</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>6</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>7</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>8</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>9</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>10</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>11</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>12</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>13</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>14</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>15</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>16</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>17</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+												<tr>
+													<td><input type="checkbox" /></td>
+													<td>18</td>
+													<td>제주시 노형동 생활폐기물 수거지역</td>
+													<td>0001100001</td>
+													<td>0.8</td>
+													<td>15</td>
+													<td>24.25</td>
+													<td></td>
+													<td></td>
+													<td>2019-11-19 14:54:21</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="dashboard__row">
+				
+			</div>
+		</div>
+	</div>
 </div>
 </html>

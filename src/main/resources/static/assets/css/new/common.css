@@ -822,9 +822,12 @@ table {
 	font-weight: 700;
 }
 .dashboard__count-num {
-	color: #48ae63;
+	color: #465a6e;
 	font-size: 40px;
 	font-weight: 700;
+}
+.dashboard__count-num.dashboard__count-num--normal {
+	color: #48ae63;
 }
 .dashboard__count-num.dashboard__count-num--warning {
 	color: #ffcc00;
@@ -914,6 +917,27 @@ table {
 .panel.panel--three {
 	width: 33.3333%;
 }
+.panel.panel--duo {
+	width: 50%;
+}
+.panel.panel--w500 {
+	width: 500px;
+}
+.panel.panel--w500 + .panel {
+	width: calc(100% - 500px);
+}
+.panel.panel--w600 {
+	width: 600px;
+}
+.panel.panel--w600 + .panel {
+	width: calc(100% - 600px);
+}
+.panel.panel--w700 {
+	width: 700px;
+}
+.panel.panel--w700 + .panel {
+	width: calc(100% - 700px);
+}
 .panel:first-child {
 	padding-left: 0;
 }
@@ -923,6 +947,9 @@ table {
 .panel:only-child {
 	padding: 5px 0;
 }
+/*.panel:only-child .c-scroll-table__body {
+	height: 500px;
+}*/
 .panel__inner {
 	background-color: #fff;
 	border: 1px solid #dfdfdf;

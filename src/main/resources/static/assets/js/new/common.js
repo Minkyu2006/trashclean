@@ -315,13 +315,13 @@ $(document).ready(function() {
 	}
 	
 	// refresh context
-	$(document).mouseup(e => {
-		if (!$('.refresh-pop').is(e.target) // if the target of the click isn't the container...
-		   && $('.refresh-pop').has(e.target).length === 0) // ... nor a descendant of the container
-	   {
-		   $('.refresh-pop__context').removeClass('show');
-	   }
-	});
+	//$(document).mouseup(e => {
+	//	if (!$('.refresh-pop').is(e.target) // if the target of the click isn't the container...
+	//	   && $('.refresh-pop').has(e.target).length === 0) // ... nor a descendant of the container
+	//   {
+	//	   $('.refresh-pop__context').removeClass('show');
+	//   }
+	//});
 	
 	$('.refresh-pop__btn-pop').on('click', function(e) {
 		$(this).parents('.refresh-pop').children('.refresh-pop__context').toggleClass('show');
@@ -353,6 +353,29 @@ $(document).ready(function() {
 		$('.panel--layout').addClass('panel--layout-3');
 	})
 
+	
+	// scroll table
+	$('.c-scroll-table__body').scroll(function () {
+        // divBodyScroll의 x좌표가 움직인 거리를 가져옵니다.
+        var xPoint = $(this).scrollLeft();
+
+        // 가져온 x좌표를 divHeadScroll에 적용시켜 같이 움직일수 있도록 합니다.
+        $(this).prev('.c-scroll-table__header').scrollLeft(xPoint);
+        $(this).next('.c-scroll-table__footer').scrollLeft(xPoint);
+    });
+	// 스크롤바 여부 파악
+	$.fn.hasScrollBar = function() {
+		return this.get(0).scrollHeight > this.get(0).clientHeight;
+	}
+	// 스크롤바 여부에 따른 클래스 추가
+	$('.c-scroll-table__body').on('click', function() {
+		if($(this).hasScrollBar()) {
+			$(this).addClass('c-scroll-table__body--scrollbar');
+		} else {
+			$(this).removeClass('c-scroll-table__body--scrollbar');
+		}
+	});
+	$('.c-scroll-table__body').trigger("click");
 })
 
 
