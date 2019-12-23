@@ -31,7 +31,8 @@
 				refleshBarChart();
 			});
 
-			$("#monitoring").prop('checked',true);
+			// $("#monitoring").prop('checked',true)
+			$("#monitoring").prop('checked',false);
 			$("#twomin").prop('checked',true);
 			refleshAutomatic();
 
@@ -1059,14 +1060,14 @@
 					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
 					//쓰레기양 차트
 					barChart(res.data.bar_data_columns,res.data.device_list_columns,subname);
-					// 맵에 장치보기
+					//맵에 장치보기
 					if(num==1){
 						mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
 						$("#mapChartLoading").hide();
 					}
 					$("#pieChartLoading").hide();
 					$("#barChartLoading").hide();
-					// console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
+					//console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
 				}
 			});
 		}
