@@ -285,7 +285,7 @@ public class DashboardRestController {
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
-        log.info("number : "+number);
+        //log.info("number : "+number);
 
         List<String> sortDevice = new ArrayList<>();
 
