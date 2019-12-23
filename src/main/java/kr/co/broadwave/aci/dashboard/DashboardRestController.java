@@ -168,17 +168,17 @@ public class DashboardRestController {
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
 
-        for(int i = 0; i<number; i++) {
-            HashMap map = (HashMap)resData.get("data").get(i);
+        for (int i = 0; i < number; i++) {
+            HashMap map = (HashMap) resData.get("data").get(i);
             sortDevice.add((String) map.get("deviceid"));
         }
         sortDevice.sort(Comparator.naturalOrder());
         //log.info("오름차순 : " + sortDevice);
 
         // 아이디값의 따라 데이터넣기(오름차순)
-        for(String deviceid:sortDevice){
-            for(int i=0; i<number; i++){
-                HashMap map = (HashMap)resData.get("data").get(i);
+        for (String deviceid : sortDevice) {
+            for (int i = 0; i < number; i++) {
+                HashMap map = (HashMap) resData.get("data").get(i);
                 if (map.get("deviceid") == deviceid) {
 
                     if (map.get("status").equals("normal")) {
@@ -189,8 +189,8 @@ public class DashboardRestController {
                         map.replace("status", "심각");
                     }
 
-                    devices.add((String)map.get("deviceid")); //장비값넣기
-                    status.add((String)map.get("status")); //상태값넣기
+                    devices.add((String) map.get("deviceid")); //장비값넣기
+                    status.add((String) map.get("status")); //상태값넣기
                     temp_brd.add((String) map.get("temp_brd")); // 온도값넣기
                     level.add((String) map.get("level")); //배출량값넣기
                     batt_level.add((String) map.get("batt_level")); //배터리잔량값넣기
@@ -202,17 +202,35 @@ public class DashboardRestController {
             }
         }
 
-        for(int i=0; i<number; i++) {
+
+        //log.info("위도 : " + gps_laDatas);
+        //log.info("경도 : " + gps_loDatas);
+        for (int i = 0; i < number; i++) {
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
+            if(gps_loData.equals("na") || gps_loData.equals(null) || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals(null) || gps_laData.equals("")) {
+                String gps_laSubStirng = "0.0";
+                String gps_loSubStirng = "0.0";
 
-            String gps_laSubStirng = gps_laData.substring(1);
-            String gps_loSubStirng = gps_loData.substring(1);
-
-            gps_laDatas2.add(gps_laSubStirng);
-            gps_loDatas2.add(gps_loSubStirng);
+                gps_laDatas2.add(gps_laSubStirng);
+                gps_loDatas2.add(gps_loSubStirng);
+            }else{
+                if(gps_laData.substring(0,1).equals("N")){
+                    String gps_laSubStirng = gps_laData.replace("N","+");
+                    gps_laDatas2.add(gps_laSubStirng);
+                }else if(gps_laData.substring(0,1).equals("S")){
+                    String gps_laSubStirng = gps_laData.replace("S","-");
+                    gps_laDatas2.add(gps_laSubStirng);
+                }
+                if(gps_loData.substring(0,1).equals("E")){
+                    String gps_loSubStirng = gps_loData.replace("E","+");
+                    gps_loDatas2.add(gps_loSubStirng);
+                }else if(gps_loData.substring(0,1).equals("W")){
+                    String gps_loSubStirng = gps_loData.replace("W","-");
+                    gps_loDatas2.add(gps_loSubStirng);
+                }
+            }
         }
-
 
         data.clear();
         data.put("devices",devices);
@@ -262,12 +280,12 @@ public class DashboardRestController {
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
 //        log.info("AWS 장치 list : "+resData);
-        log.info("AWS 장치 data : "+resData.get("data"));
+        //log.info("AWS 장치 data : "+resData.get("data"));
 //        log.info("AWS 장치 size : "+resData.get("datacounts"));
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
-//        log.info("number : "+number);
+        log.info("number : "+number);
 
         List<String> sortDevice = new ArrayList<>();
 
@@ -276,8 +294,8 @@ public class DashboardRestController {
             sortDevice.add((String) map.get("deviceid"));
         }
 
-//        sortDevice.sort(Comparator.naturalOrder()); // 오름차순 정렬시키기
-//        log.info("오름차순 : " + sortDevice);
+        sortDevice.sort(Comparator.naturalOrder()); // 오름차순 정렬시키기
+        //log.info("오름차순 : " + sortDevice);
 
         barDataColumns.add("쓰레기양"); // 배출량 막대그래프 첫번째값 y축이름 -> 쓰레기양
         for (String deviceid : sortDevice) {
@@ -323,7 +341,6 @@ public class DashboardRestController {
         statusMaster.add("심각");
 
 //        log.info("statusMaster : "+statusSize); // 정상,주의,심각 데이터가 있는지 확인할수있는 리스트
-//        log.info("statusMaster : "+statusSize);
 //        log.info("stateNames : "+stateNames);
 //        log.info("statusDatas : "+statusDatas);
 
@@ -354,17 +371,6 @@ public class DashboardRestController {
             }
             count = 0;
         }
-
-        // 값이 0일경우 넣기
-        if (!statusSize.contains("정상")) {
-            circleDataColumns.add(statusHardcording.get(0));
-        }
-        if (!statusSize.contains("주의")) {
-            circleDataColumns.add(statusHardcording.get(1));
-        }
-        if (!statusSize.contains("심각")) {
-            circleDataColumns.add(statusHardcording.get(2));
-        }
         //log.info("원형차트 들어갈 리스트 값 : "+circleDataColumns);
 
         // 각 상태값의 대한 장치 개수
@@ -383,26 +389,35 @@ public class DashboardRestController {
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
             if(gps_loData.equals("na") || gps_loData.equals(null) || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals(null) || gps_laData.equals("")) {
-                String gps_laSubStirng = "37.547418";
-                String gps_loSubStirng = "127.048172";
+                String gps_laSubStirng = "0.0";
+                String gps_loSubStirng = "0.0";
 
                 gps_laDatas2.add(gps_laSubStirng);
                 gps_loDatas2.add(gps_loSubStirng);
                 mapDataColumns.add(Arrays.asList((String) deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)), (String) statusDatas.get(i)));
             }else{
-                String gps_laSubStirng = gps_laData.substring(1);
-                String gps_loSubStirng = gps_loData.substring(1);
-
-                gps_laDatas2.add(gps_laSubStirng);
-                gps_loDatas2.add(gps_loSubStirng);
+                if(gps_laData.substring(0,1).equals("N")){
+                    String gps_laSubStirng = gps_laData.replace("N","+");
+                    gps_laDatas2.add(gps_laSubStirng);
+                }else if(gps_laData.substring(0,1).equals("S")){
+                    String gps_laSubStirng = gps_laData.replace("S","-");
+                    gps_laDatas2.add(gps_laSubStirng);
+                }
+                if(gps_loData.substring(0,1).equals("E")){
+                    String gps_loSubStirng = gps_loData.replace("E","+");
+                    gps_loDatas2.add(gps_loSubStirng);
+                }else if(gps_loData.substring(0,1).equals("W")){
+                    String gps_loSubStirng = gps_loData.replace("W","-");
+                    gps_loDatas2.add(gps_loSubStirng);
+                }
                 mapDataColumns.add(Arrays.asList((String) deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)), (String) statusDatas.get(i)));
             }
         }
 
 //        log.info("deviceIdNames : "+deviceIdNames);
-        log.info("gps_laDatas2 : "+gps_laDatas2);
-        log.info("gps_loDatas2 : "+gps_loDatas2);
-        log.info("mapDataColumns : "+mapDataColumns);
+//        log.info("gps_laDatas2 : "+gps_laDatas2);
+//        log.info("gps_loDatas2 : "+gps_loDatas2);
+//        log.info("mapDataColumns : "+mapDataColumns);
 
         data.put("statusDatas", statusDatas);
         data.put("map_data_columns", mapDataColumns);
@@ -492,17 +507,6 @@ public class DashboardRestController {
                 circleDataColumns.add(Arrays.asList(stateNames.get(cnt),stateNames.get(cnt2)));
             }
             count = 0;
-        }
-
-        // 값이 0일경우 넣기
-        if(!statusSize.contains("정상")) {
-            circleDataColumns.add(statusHardcording.get(0));
-        }
-        if(!statusSize.contains("주의")) {
-            circleDataColumns.add(statusHardcording.get(1));
-        }
-        if(!statusSize.contains("심각")) {
-            circleDataColumns.add(statusHardcording.get(2));
         }
 
         // 각 상태값의 대한 장치 개수
@@ -606,18 +610,27 @@ public class DashboardRestController {
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
             if(gps_loData.equals("na") || gps_loData.equals(null) || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals(null) || gps_laData.equals("")) {
-                String gps_laSubStirng = "37.547418";
-                String gps_loSubStirng = "127.048172";
+                String gps_laSubStirng = "0.0";
+                String gps_loSubStirng = "0.0";
 
                 gps_laDatas2.add(gps_laSubStirng);
                 gps_loDatas2.add(gps_loSubStirng);
                 mapDataColumns.add(Arrays.asList((String) deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)), (String) statusDatas.get(i)));
             }else{
-                String gps_laSubStirng = gps_laData.substring(1);
-                String gps_loSubStirng = gps_loData.substring(1);
-
-                gps_laDatas2.add(gps_laSubStirng);
-                gps_loDatas2.add(gps_loSubStirng);
+                if(gps_laData.substring(0,1).equals("N")){
+                    String gps_laSubStirng = gps_laData.replace("N","+");
+                    gps_laDatas2.add(gps_laSubStirng);
+                }else if(gps_laData.substring(0,1).equals("S")){
+                    String gps_laSubStirng = gps_laData.replace("S","-");
+                    gps_laDatas2.add(gps_laSubStirng);
+                }
+                if(gps_loData.substring(0,1).equals("E")){
+                    String gps_loSubStirng = gps_loData.replace("E","+");
+                    gps_loDatas2.add(gps_loSubStirng);
+                }else if(gps_loData.substring(0,1).equals("W")){
+                    String gps_loSubStirng = gps_loData.replace("W","-");
+                    gps_loDatas2.add(gps_loSubStirng);
+                }
                 mapDataColumns.add(Arrays.asList((String) deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)), (String) statusDatas.get(i)));
             }
         }
@@ -685,18 +698,30 @@ public class DashboardRestController {
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
             if(gps_loData.equals("na") || gps_loData.equals(null) || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals(null) || gps_laData.equals("")) {
-                String gps_laSubStirng = "37.547418";
-                String gps_loSubStirng = "127.048172";
+                String gps_laSubStirng = "+37.546700";
+                String gps_loSubStirng = "+127.048700";
+
+//                String gps_laSubStirng = "null";
+//                String gps_loSubStirng = "null";
 
                 gps_laDatas2.add(gps_laSubStirng);
                 gps_loDatas2.add(gps_loSubStirng);
                 mapDataColumns.add(Arrays.asList((String) deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)), (String) statusDatas.get(i)));
             }else{
-                String gps_laSubStirng = gps_laData.substring(1);
-                String gps_loSubStirng = gps_loData.substring(1);
-
-                gps_laDatas2.add(gps_laSubStirng);
-                gps_loDatas2.add(gps_loSubStirng);
+                if(gps_laData.substring(0,1).equals("N")){
+                    String gps_laSubStirng = gps_laData.replace("N","+");
+                    gps_laDatas2.add(gps_laSubStirng);
+                }else if(gps_laData.substring(0,1).equals("S")){
+                    String gps_laSubStirng = gps_laData.replace("S","-");
+                    gps_laDatas2.add(gps_laSubStirng);
+                }
+                if(gps_loData.substring(0,1).equals("E")){
+                    String gps_loSubStirng = gps_loData.replace("E","+");
+                    gps_loDatas2.add(gps_loSubStirng);
+                }else if(gps_loData.substring(0,1).equals("W")){
+                    String gps_loSubStirng = gps_loData.replace("W","-");
+                    gps_loDatas2.add(gps_loSubStirng);
+                }
                 mapDataColumns.add(Arrays.asList((String) deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)), (String) statusDatas.get(i)));
             }
         }

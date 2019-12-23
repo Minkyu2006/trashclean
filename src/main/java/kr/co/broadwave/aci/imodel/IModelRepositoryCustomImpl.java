@@ -7,6 +7,7 @@ import kr.co.broadwave.aci.equipment.EquipmentListDto;
 import kr.co.broadwave.aci.equipment.EquipmentRepositoryCustom;
 import kr.co.broadwave.aci.equipment.QEquipment;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

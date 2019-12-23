@@ -397,6 +397,6 @@ function ajaxErrorMsg(request) {
 	if (request.status == "403") {
 		alertCancel("로그인 정보가 만료되었거나, <BR>권한이 없습니다. <BR>다시 로그인 하세요.");
 	} else {
-		alertCancel("500에러");
+		alertCancel("데이터 문제가 생겼습니다.");
 	}
 }

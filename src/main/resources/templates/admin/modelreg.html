@@ -126,16 +126,14 @@
 						return;
 					}
 					$totalCnt.text(totCnt);
-					// var baseurl = res.data.awss3url;
-					console.log(res.data.datalist);
+					var baseurl = res.data.awss3url;
 					var html = '';
 					$.each(res.data.datalist, function(key, value){
 						html += '<tr >';
 							html += '<td >'+ nvl(value.mdNumber,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdName,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdType,"확 인 불 가") +'</td>';
-							html += '   <td><img width="50" src="'+nvl(value.mdFileid,"확 인 불 가")+'"</img></td>';
-							// html += '   <td><img width="50" src="'+baseurl+nvl(value.mdFileid,"확 인 불 가")+'"</img></td>';
+							html += '   <td><img width="50" src="'+baseurl+nvl(value.mdFileid,"확 인 불 가")+'"</img></td>';
 							html += '<td >'+ nvl(value.mdSubname,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdRemark,"확 인 불 가") +'</td>';
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:modelInfo(\''+nvl(value.id,"확 인 불 가")+'\');">보기</button></td>';

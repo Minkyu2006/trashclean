@@ -31,7 +31,8 @@ public class IModelListDto {
     private String mdRemark; // 모델특이사항
 
     public String getMdFileid() {
-        String fileurl = mdFileid.getFilePath()+"/s_"+mdFileid.getSaveFileName();
+        String fileurl = mdFileid.getFilePath()+"/"+mdFileid.getSaveFileName(); // 원본 크기
+        //String fileurl = mdFileid.getFilePath()+"/s_"+mdFileid.getSaveFileName(); //미리보기 크기
         return fileurl;
     }
 

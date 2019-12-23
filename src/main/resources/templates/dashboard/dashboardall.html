@@ -31,8 +31,7 @@
 				refleshBarChart();
 			});
 
-			// $("#monitoring").prop('checked',true)
-			$("#monitoring").prop('checked',false);
+			$("#monitoring").prop('checked',true)
 			$("#twomin").prop('checked',true);
 			refleshAutomatic();
 
@@ -696,6 +695,10 @@
 
 		// 장비위치이동 버튼을 누르면 실행되는 함수
 		function mapMove(lat,lng) {
+			if(lat==0 || lng==0){
+				alertCaution("위치 데이터가 없습니다.");
+				return false;
+			}
 			var center = new google.maps.LatLng(lat, lng);
 			var infowindow = new google.maps.InfoWindow();
 
@@ -1074,6 +1077,9 @@
 
 		// 장비위치이동 버튼을 누르면 실행되는 함수(삽질함수)
 		function mapMovetest(idx,deviceId,gps_la,gps_lo,status,level) {
+			console.log("gps_la : "+gps_la)
+			console.log("gps_lo : "+gps_lo)
+
 			var deviceIds = new Array();
 			var gps_las = new Array();
 			var gps_los = new Array();
@@ -1098,6 +1104,7 @@
 			var infowindow = new google.maps.InfoWindow();
 
 			for (i = 0; i < deviceIds.length; i++) {
+
 				marker = new google.maps.Marker({
 					position: new google.maps.LatLng(parseFloat(gps_las[i]), parseFloat(gps_los[i])),
 					map: map,
@@ -1124,6 +1131,8 @@
 
 		// 맵 차트
 		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
+			//console.log("map_data_columns : "+ map_data_columns)
+
 			var locations = map_data_columns
 
 			//var map;
@@ -1147,6 +1156,10 @@
 			var bounds = new google.maps.LatLngBounds()
 
 			for (i = 0; i < map_data_columns.length; i++) {
+				if(map_data_columns[i][1]==0 || map_data_columns[i][2]==0){
+					continue;
+				}
+
 				marker = new google.maps.Marker({
 					position: new google.maps.LatLng(map_data_columns[i][1], map_data_columns[i][2]),
 					map: map,

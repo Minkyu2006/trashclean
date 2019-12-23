@@ -44,6 +44,9 @@ import java.util.Optional;
 @RequestMapping("/api/model")
 public class IModelRestController {
 
+    @Value("${aci.aws.s3.bucket.url}")
+    private String AWSS3URL;
+
     private final ModelMapper modelMapper;
     private final AccountService accountService;
     private final MasterCodeService masterCodeService;
@@ -143,6 +146,8 @@ public class IModelRestController {
                                                         @RequestParam (value="mdType", defaultValue="") String  mdType,
                                                         @RequestParam (value="mdRemark", defaultValue="")String mdRemark,
                                                         @PageableDefault Pageable pageable){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         Long mdTypeId = null;
 
@@ -154,8 +159,28 @@ public class IModelRestController {
         Page<IModelListDto> iModelListDtos =
                 iModelService.findByIModelSearch(mdName,mdTypeId,mdRemark,pageable);
 
-        return CommonUtils.ResponseEntityPage(iModelListDtos);
+        if(iModelListDtos.getTotalElements()> 0 ){
 
+            data.clear();
+            data.put("datalist",iModelListDtos.getContent());
+            data.put("awss3url",AWSS3URL);
+            data.put("total_page",iModelListDtos.getTotalPages());
+            data.put("current_page",iModelListDtos.getNumber() + 1);
+            data.put("total_rows",iModelListDtos.getTotalElements());
+            data.put("current_rows",iModelListDtos.getNumberOfElements());
+
+            res.addResponse("data",data);
+        }else{
+            data.clear();
+            data.put("total_page",iModelListDtos.getTotalPages());
+            data.put("current_page",iModelListDtos.getNumber() + 1);
+            data.put("total_rows",iModelListDtos.getTotalElements());
+            data.put("current_rows",iModelListDtos.getNumberOfElements());
+
+            res.addResponse("data",data);
+        }
+
+        return ResponseEntity.ok(res.success());
     }
 
     // 모델 정보보기
