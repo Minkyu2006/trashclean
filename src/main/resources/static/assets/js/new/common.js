@@ -364,8 +364,13 @@ $(document).ready(function() {
         $(this).next('.c-scroll-table__footer').scrollLeft(xPoint);
     });
 	// 스크롤바 여부 파악
+	// 세로
 	$.fn.hasScrollBar = function() {
 		return this.get(0).scrollHeight > this.get(0).clientHeight;
+	}
+	// 가로
+	$.fn.hasHorizonScrollBar = function() {
+		return this.get(0).scrollWidth > this.get(0).clientWidth;
 	}
 	// 스크롤바 여부에 따른 클래스 추가
 	$('.c-scroll-table__body').on('click', function() {
@@ -373,6 +378,12 @@ $(document).ready(function() {
 			$(this).addClass('c-scroll-table__body--scrollbar');
 		} else {
 			$(this).removeClass('c-scroll-table__body--scrollbar');
+		}
+		
+		if($(this).hasHorizonScrollBar()) {
+			$(this).prev('.c-scroll-table__header').addClass('c-scroll-table__header--scrollbar');
+		} else {
+			$(this).prev('.c-scroll-table__header').removeClass('c-scroll-table__header--scrollbar');
 		}
 	});
 	$('.c-scroll-table__body').trigger("click");

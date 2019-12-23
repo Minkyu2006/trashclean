@@ -523,7 +523,7 @@ a.c-button {
 	width: 100%;
 }
 .c-scroll-table__body {
-	overflow: scroll;
+	overflow: auto;
 	width: 100%;
 	height: 500px;
 }
@@ -564,9 +564,7 @@ a.c-button {
     font-size: 14px;
     border: 1px solid #7e7e7e;
 }
-/*.c-scroll-table .c-scroll-table__header table {
-	width: calc(100% + 19px);
-}*/
+/* 세로 스크롤 */
 .c-scroll-table .c-scroll-table__header table,
 .c-scroll-table .c-scroll-table__header table tr:last-child th {
 	border-bottom: 0 none;
@@ -585,6 +583,9 @@ a.c-button {
 .c-scroll-table table th {
 	background-color: #c4c4c4;
 }
+/*.c-scroll-table table th:last-child{
+	display: none;
+}*/
 .c-scroll-table table th:first-child,
 .c-scroll-table table td:first-child {
 	border-left: 0;
@@ -607,6 +608,13 @@ a.c-button {
 .c-scroll-table table td input[type=checkbox] {
 	margin: 0;
 	vertical-align: bottom;
+}
+/* 가로 스크롤 */
+.c-scroll-table__header.c-scroll-table__header--scrollbar table {
+	width: 100%;
+}
+.c-scroll-table__header.c-scroll-table__header--scrollbar table th:last-child {
+	display: table-cell;
 }
 
 

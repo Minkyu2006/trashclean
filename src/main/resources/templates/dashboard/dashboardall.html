@@ -706,6 +706,7 @@
 			map.panTo(center);
 			$('html').scrollTop(70);
 		}
+		
 
 		// 타임스탬프 그래프함수
 		function timeStamp(pushValue,idx){
@@ -1103,14 +1104,27 @@
 
 			var infowindow = new google.maps.InfoWindow();
 
+			// animation
+			function toggleBounce() {
+				if (marker.getAnimation() !== null) {
+					marker.setAnimation(null);
+				} else {
+					marker.setAnimation(google.maps.Animation.BOUNCE);
+				}
+			}
+			
 			for (i = 0; i < deviceIds.length; i++) {
 
 				marker = new google.maps.Marker({
 					position: new google.maps.LatLng(parseFloat(gps_las[i]), parseFloat(gps_los[i])),
 					map: map,
+					animation: google.maps.Animation.DROP,
 					icon: iconSrc[statuss[i]]
 				});
+				marker.addListener('click', toggleBounce);
+				
 				google.maps.event.addListener(marker, 'click', (function(marker, i) {
+					
 					var content =
 							'<div class="iw-container" id="iw-container">' +
 							'<h2>' + deviceIds[i] + '</h2>' +
@@ -1153,7 +1167,9 @@
 
 			var infowindow = new google.maps.InfoWindow();
 
-			var bounds = new google.maps.LatLngBounds()
+			var bounds = new google.maps.LatLngBounds();
+			
+			
 
 			for (i = 0; i < map_data_columns.length; i++) {
 				if(map_data_columns[i][1]==0 || map_data_columns[i][2]==0){
@@ -1163,8 +1179,19 @@
 				marker = new google.maps.Marker({
 					position: new google.maps.LatLng(map_data_columns[i][1], map_data_columns[i][2]),
 					map: map,
+					animation: google.maps.Animation.DROP,
 					icon: iconSrc[locations[i][3]]
 				});
+				//marker.addListener('click', toggleBounce);
+				
+				// animation
+				function toggleBounce () {
+			        if (marker.getAnimation() != null) {
+			            marker.setAnimation(null);
+			        } else {
+			            marker.setAnimation(google.maps.Animation.BOUNCE);
+			        }
+			    }
 
 				bounds.extend(marker.position);
 
@@ -1180,6 +1207,8 @@
 					return function() {
 						infowindow.setContent(content);
 						infowindow.open(map, marker);
+						toggleBounce();
+						setTimeout(toggleBounce, 1500);
 					}
 				})(marker, i));
 			}
