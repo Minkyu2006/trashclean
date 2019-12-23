@@ -82,10 +82,12 @@ public class AdminController {
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
         List<MasterCodeDto> equipdUnits = masterCodeService.findCodeList(CodeType.C0008);
+        List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
 
         model.addAttribute("equipdTypes", equipdTypes);
         model.addAttribute("equipdCountrys", equipdCountrys);
         model.addAttribute("equipdUnits", equipdUnits);
+        model.addAttribute("modelTypes", modelTypes);
 
         return "admin/equipmentreg";
     }
@@ -93,9 +95,10 @@ public class AdminController {
     //모델등록
     @RequestMapping("modelreg")
     public String modelreg(Model model){
-
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
 
+        model.addAttribute("equipdTypes", equipdTypes);
         model.addAttribute("modelTypes", modelTypes);
 
         return "admin/modelreg";

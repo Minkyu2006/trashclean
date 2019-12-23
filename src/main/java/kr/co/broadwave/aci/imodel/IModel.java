@@ -40,8 +40,12 @@ public class IModel {
     private String mdName; // 모델명
 
     @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="em_type")
+    private MasterCode emType; // 모델타입
+
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
     @JoinColumn(name="md_type")
-    private MasterCode mdType; // 모델타입
+    private MasterCode mdType; // 모델종류
 
     @Column(name="md_subname")
     private String mdSubname; // 모델약칭

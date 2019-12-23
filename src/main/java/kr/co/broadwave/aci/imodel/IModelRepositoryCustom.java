@@ -11,5 +11,7 @@ import org.springframework.data.domain.Pageable;
  * Remark : IModelRepositoryCustom
  */
 public interface IModelRepositoryCustom {
-    Page<IModelListDto> findByIModelSearch(String mdName,Long mdTypeId, String mdRemark,Pageable pageable);
+    Page<IModelListDto> findByIModelSearch(String mdName,Long emTypeId,Long mdTypeId, String mdRemark,Pageable pageable);
+
+    Page<IModelListDto> findByIModelSearchList(String mdName, Long emTypeId, Long mdTypeId, Pageable pageable);
 }

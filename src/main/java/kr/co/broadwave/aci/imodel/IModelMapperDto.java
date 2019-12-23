@@ -20,7 +20,8 @@ public class IModelMapperDto {
 
     private String mdNumber; // 모델 번호
     private String mdName; // 모델명
-    private Long mdType; // 모델타입
+    private Long emType; // 모델타입
+    private Long mdType; // 모델종류
     private String mdSubname; // 모델약칭
     private String mdRemark; // 모델특이사항
 
@@ -30,6 +31,10 @@ public class IModelMapperDto {
 
     public String getMdName() {
         return mdName;
+    }
+
+    public Long getEmType() {
+        return emType;
     }
 
     public Long getMdType() {

@@ -26,7 +26,8 @@ public class IModelListDto {
     private FileUpload mdFileid;
     private String mdNumber; // 모델 번호
     private String mdName; // 모델명
-    private MasterCode mdType; // 모델타입
+    private MasterCode emType; // 모델타입
+    private MasterCode mdType; // 모델종류
     private String mdSubname; // 모델약칭
     private String mdRemark; // 모델특이사항
 
@@ -46,6 +47,10 @@ public class IModelListDto {
 
     public String getMdName() {
         return mdName;
+    }
+
+    public String getEmType() {
+        return emType.getName();
     }
 
     public String getMdType() {

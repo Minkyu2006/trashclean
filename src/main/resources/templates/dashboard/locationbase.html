@@ -119,6 +119,9 @@
 				var bounds = new google.maps.LatLngBounds()
 
 				for (i = 0; i < mapGps.length; i++) {
+					if(map_data_columns[i][1]==0 || map_data_columns[i][2]==0){
+						continue;
+					}
 					marker = new google.maps.Marker({
 						position: new google.maps.LatLng(mapGps[i][1], mapGps[i][2]),
 						map: map,

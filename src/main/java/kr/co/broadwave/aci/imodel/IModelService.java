@@ -58,8 +58,8 @@ public class IModelService {
         return iModelRepository.findByMdNumber(mdNumber);
     }
 
-    public Page<IModelListDto> findByIModelSearch(String mdName, Long mdTypeId, String mdRemark,Pageable pageable) {
-        return iModelRepositoryCustom.findByIModelSearch(mdName,mdTypeId,mdRemark,pageable);
+    public Page<IModelListDto> findByIModelSearch(String mdName,Long emTypeId, Long mdTypeId, String mdRemark,Pageable pageable) {
+        return iModelRepositoryCustom.findByIModelSearch(mdName,emTypeId,mdTypeId,mdRemark,pageable);
     }
 
     public IModelDto findById(Long id) {
@@ -75,32 +75,7 @@ public class IModelService {
         iModelRepository.delete(iModel);
     }
 
-
-//    public Page<EquipmentListDto> findByEquipmentSearch
-//            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable) {
-//        return equipmentRepositoryCustom.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,pageable);
-//    }
-//
-//
-//    public EquipmentDto findById(Long id) {
-//        Optional<Equipment> optionalEquipment = equipmentRepository.findById(id);
-//        if (optionalEquipment.isPresent()) {
-//            return modelMapper.map(optionalEquipment.get(), EquipmentDto.class);
-//        } else {
-//            return null;
-//        }
-//    }
-//
-//    public void delete(Equipment equipment) {
-//        equipmentRepository.delete(equipment);
-//    }
-//
-//    public Page<CompanyListDto> findByAgencySearch(String csNumber, String csOperator, Pageable pageable) {
-//        return companyRepositoryCustom.findByAgencySearch(csNumber,csOperator,pageable);
-//    }
-//
-//
-//    public List<Equipment> findAll() {
-//        return equipmentRepository.findAll();
-//    }
+    public Page<IModelListDto> findByIModelSearchList(String mdName, Long emTypeId, Long mdTypeId, Pageable pageable) {
+        return iModelRepositoryCustom.findByIModelSearchList(mdName,emTypeId,mdTypeId,pageable);
+    }
 }

@@ -86,6 +86,7 @@ public class IModelRestController {
 
         //모델타입 코드가 존재하지않으면
         Optional<MasterCode> optionalMdType = masterCodeService.findById(imodelMapperDto.getMdType());
+        Optional<MasterCode> optionalEmType = masterCodeService.findById(imodelMapperDto.getEmType());
 
         if (!optionalMdType.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(),
@@ -93,6 +94,7 @@ public class IModelRestController {
         } else {
             // 모델타입 저장
             iModel.setMdType(optionalMdType.get());
+            iModel.setEmType(optionalEmType.get());
         }
 
         // 모델번호 가져오기(고유값)
@@ -143,21 +145,27 @@ public class IModelRestController {
     // 모델 리스트
     @PostMapping("list")
     public ResponseEntity modelList(@RequestParam (value="mdName", defaultValue="") String mdName,
+                                                        @RequestParam (value="emType", defaultValue="") String  emType,
                                                         @RequestParam (value="mdType", defaultValue="") String  mdType,
                                                         @RequestParam (value="mdRemark", defaultValue="")String mdRemark,
                                                         @PageableDefault Pageable pageable){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
+        Long emTypeId = null;
         Long mdTypeId = null;
 
+        if(!emType.equals("")){
+            Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
+            emTypeId = emTypes.get().getId();
+        }
         if(!mdType.equals("")){
             Optional<MasterCode> mdTypes = masterCodeService.findByCode(mdType);
             mdTypeId = mdTypes.get().getId();
         }
 
         Page<IModelListDto> iModelListDtos =
-                iModelService.findByIModelSearch(mdName,mdTypeId,mdRemark,pageable);
+                iModelService.findByIModelSearch(mdName,emTypeId,mdTypeId,mdRemark,pageable);
 
         if(iModelListDtos.getTotalElements()> 0 ){
 

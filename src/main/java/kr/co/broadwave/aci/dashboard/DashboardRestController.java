@@ -698,11 +698,8 @@ public class DashboardRestController {
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
             if(gps_loData.equals("na") || gps_loData.equals(null) || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals(null) || gps_laData.equals("")) {
-                String gps_laSubStirng = "+37.546700";
-                String gps_loSubStirng = "+127.048700";
-
-//                String gps_laSubStirng = "null";
-//                String gps_loSubStirng = "null";
+                String gps_laSubStirng = "0.0";
+                String gps_loSubStirng = "0.0";
 
                 gps_laDatas2.add(gps_laSubStirng);
                 gps_loDatas2.add(gps_loSubStirng);

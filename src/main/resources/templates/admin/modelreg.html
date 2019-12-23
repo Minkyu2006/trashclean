@@ -95,6 +95,7 @@
 
 			var params = {
 				mdName:$('#s_mdName').val(),
+				emType:$('#s_emType').val(),
 				mdType:$('#s_mdType').val(),
 				mdRemark:$('#s_mdRemark').val(),
 			};
@@ -132,6 +133,7 @@
 						html += '<tr >';
 							html += '<td >'+ nvl(value.mdNumber,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdName,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(value.emType,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdType,"확 인 불 가") +'</td>';
 							html += '   <td><img width="50" src="'+baseurl+nvl(value.mdFileid,"확 인 불 가")+'"</img></td>';
 							html += '<td >'+ nvl(value.mdSubname,"확 인 불 가") +'</td>';
@@ -230,6 +232,8 @@
 					<col />
 					<col style="width: 80px;" />
 					<col />
+					<col style="width: 80px;" />
+					<col />
 					<col style="width: 62px;" />
 				</colgroup>
 				<tr>
@@ -240,6 +244,18 @@
 						</div>
 					</td>
 					<th>모델 타입</th>
+					<td>
+						<div class="c-select">
+							<select id="s_emType" class="c-select__input">
+								<option value="">전체</option>
+								<option th:each ="equipdType : ${equipdTypes}"
+										th:value="${equipdType.code}"
+										th:text="${equipdType.name}"
+								></option>
+							</select>
+						</div>
+					</td>
+					<th>모델 종류</th>
 					<td>
 						<div class="c-select">
 							<select id="s_mdType" class="c-select__input">
@@ -269,6 +285,7 @@
 					<col />
 					<col />
 					<col />
+					<col />
 					<col  />
 					<col />
 					<col />
@@ -278,6 +295,7 @@
 				<tr>
 					<th>모델 번호</th>
 					<th>모델명</th>
+					<th>모델 종류</th>
 					<th>모델 타입</th>
 					<th>이미지</th>
 					<th>모델명(약칭)</th>
@@ -324,16 +342,30 @@
 						</td>
 					</tr>
 					<tr>
-						<th>모델 타입</th>
+						<th>모델 타입/종류</th>
 						<td>
-							<div class="c-select">
-								<select id="mdType" name="mdType" class="c-select__input">
-									<option th:each ="modelType : ${modelTypes}"
-											th:value="${modelType.id}"
-											th:text="${modelType.name}"
-									></option>
-								</select>
-							</div>
+							<ul class="c-input-list">
+								<li>
+									<div class="c-select" style="width: 180px;">
+										<select id="emType" name="emType" class="c-select__input">
+											<option th:each ="equipdType : ${equipdTypes}"
+													th:value="${equipdType.id}"
+													th:text="${equipdType.name}"
+											></option>
+										</select>
+									</div>
+								</li>
+								<li>
+									<div class="c-select" style="width: 180px;">
+										<select id="mdType" name="mdType" class="c-select__input">
+											<option th:each ="modelType : ${modelTypes}"
+													th:value="${modelType.id}"
+													th:text="${modelType.name}"
+											></option>
+										</select>
+									</div>
+								</li>
+							</ul>
 						</td>
 						<th>이미지업로드</th>
 						<td>

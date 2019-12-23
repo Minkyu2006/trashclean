@@ -21,7 +21,10 @@ public class IModelDto {
     private Long id; // 장비 고유ID
     private String mdNumber; // 모델 번호
     private String mdName; // 모델명
-    private MasterCode mdTypeId; // 모델타입
+    private MasterCode emTypeId; // 모델종류ID
+    private MasterCode mdTypeId; // 모델타입ID
+    private MasterCode emTypeName; // 모델종류이름
+    private MasterCode mdTypeName; // 모델타입이름
     private String mdSubname; // 모델약칭
     private String mdRemark; // 모델특이사항
 
@@ -29,6 +32,15 @@ public class IModelDto {
     private String insert_id;
     private LocalDateTime modifyDateTime;
     private String modify_id;
+
+
+    public String getEmTypeName() {
+        return emTypeName.getName();
+    }
+
+    public String getMdTypeName() {
+        return mdTypeName.getName();
+    }
 
     public Long getId() {
         return id;
@@ -40,6 +52,10 @@ public class IModelDto {
 
     public String getMdName() {
         return mdName;
+    }
+
+    public Long getEmTypeId() {
+        return emTypeId.getId();
     }
 
     public Long getMdTypeId() {
