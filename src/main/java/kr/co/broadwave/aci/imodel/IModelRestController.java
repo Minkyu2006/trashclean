@@ -44,8 +44,8 @@ import java.util.Optional;
 @RequestMapping("/api/model")
 public class IModelRestController {
 
-    @Value("${aci.aws.s3.bucket.url}")
-    private String AWSS3URL;
+        @Value("${aci.aws.s3.bucket.url}")
+        private String AWSS3URL;
 
     private final ModelMapper modelMapper;
     private final AccountService accountService;
@@ -87,6 +87,7 @@ public class IModelRestController {
         //모델타입 코드가 존재하지않으면
         Optional<MasterCode> optionalMdType = masterCodeService.findById(imodelMapperDto.getMdType());
         Optional<MasterCode> optionalEmType = masterCodeService.findById(imodelMapperDto.getEmType());
+        Optional<MasterCode> optionalMdUnit = masterCodeService.findById(imodelMapperDto.getMdUnit());
 
         if (!optionalMdType.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(),
@@ -95,6 +96,7 @@ public class IModelRestController {
             // 모델타입 저장
             iModel.setMdType(optionalMdType.get());
             iModel.setEmType(optionalEmType.get());
+            iModel.setMdUnit(optionalMdUnit.get());
         }
 
         // 모델번호 가져오기(고유값)
@@ -135,6 +137,7 @@ public class IModelRestController {
                 iModel.setMdFileid(fileUploadDto.getFileUpload());
             }
         }
+
         IModel save = iModelService.save(iModel);
 
         log.info("모델등록 데이터 : "+save.toString());
@@ -202,6 +205,7 @@ public class IModelRestController {
 
         data.clear();
         data.put("iModel",iModel);
+        data.put("awss3url",AWSS3URL);
         res.addResponse("data",data);
 
         return ResponseEntity.ok(res.success());

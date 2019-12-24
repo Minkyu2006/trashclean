@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.dashboard;
 
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
@@ -19,13 +20,36 @@ public class DashboardDeviceListViewDto {
 
     private String emNumber; // 장비 번호
     private MasterCode emType; // 장비타입
-    private Double emMaximumPayload; // 최대적재량
-    private MasterCode emUnit; // 단위
+    private String mdName; // 모델명
+    private Double mdMaximumPayload; // 최대적재량
+    private String mdUnit; // 단위
     private Company company; // 소속운영사
     private MasterCode emLocation; // 지역
     private MasterCode emCountry; // 국가
     private String emInstallDate; // 설치일자
     private String emSubName; // 약칭
+    private String filePath; // 파일경로Path
+    private String saveFileName; // 저장된경로
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public String getSaveFileName() {
+        return saveFileName;
+    }
+
+    public String getMdName() {
+        return mdName;
+    }
+
+    public Double getMdMaximumPayload() {
+        return mdMaximumPayload;
+    }
+
+    public String getMdUnit() {
+        return mdUnit;
+    }
 
     public String getEmSubName() {
         return emSubName;
@@ -41,14 +65,6 @@ public class DashboardDeviceListViewDto {
 
     public String getEmType() {
         return emType.getName();
-    }
-
-    public Double getEmMaximumPayload() {
-        return emMaximumPayload;
-    }
-
-    public String getEmUnit() {
-        return emUnit.getName();
     }
 
     public String getCompany() {
@@ -67,8 +83,4 @@ public class DashboardDeviceListViewDto {
         return emInstallDate;
     }
 
-//    public String getEmInstallDate() {
-//        String installDate = emInstallDate.substring(0,4)+"년 "+emInstallDate.substring(4,6)+"월 "+emInstallDate.substring(6,8)+"일";
-//        return installDate;
-//    }
 }

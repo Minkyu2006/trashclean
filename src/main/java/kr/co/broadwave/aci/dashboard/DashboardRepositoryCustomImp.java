@@ -5,6 +5,7 @@ import com.querydsl.jpa.JPQLQuery;
 import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.company.QCompany;
 import kr.co.broadwave.aci.equipment.QEquipment;
+import kr.co.broadwave.aci.imodel.QIModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -30,20 +31,24 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
             (String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
+        QIModel qiModel = QIModel.iModel;
 
         JPQLQuery<DashboardDeviceListViewDto> query = from(equipment)
-
+                .innerJoin(equipment.mdId,qiModel)
                 .select(Projections.constructor(DashboardDeviceListViewDto.class,
                         equipment.id,
                         equipment.emNumber,
                         equipment.emType,
-                        equipment.emMaximumPayload,
-                        equipment.emUnit,
+                        qiModel.mdName,
+                        qiModel.mdMaximumPayload,
+                        qiModel.mdUnit.name,
                         equipment.company,
                         equipment.emLocation,
                         equipment.emCountry,
                         equipment.emInstallDate,
-                        equipment.emSubName
+                        equipment.emSubName,
+                        qiModel.mdFileid.filePath,
+                        qiModel.mdFileid.saveFileName
                 ));
 
         // 검색조건필터

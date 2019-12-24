@@ -24,6 +24,16 @@ public class IModelMapperDto {
     private Long mdType; // 모델종류
     private String mdSubname; // 모델약칭
     private String mdRemark; // 모델특이사항
+    private Double mdMaximumPayload; //최대적재량
+    private Long mdUnit; // 단위
+
+    public Double getMdMaximumPayload() {
+        return mdMaximumPayload;
+    }
+
+    public Long getMdUnit() {
+        return mdUnit;
+    }
 
     public String getMdNumber() {
         return mdNumber;

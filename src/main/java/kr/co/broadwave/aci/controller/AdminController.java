@@ -3,6 +3,8 @@ package kr.co.broadwave.aci.controller;
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.awsiot.ACIIoTService;
 import kr.co.broadwave.aci.bscodes.*;
+import kr.co.broadwave.aci.imodel.IModelDto;
+import kr.co.broadwave.aci.imodel.IModelService;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import kr.co.broadwave.aci.teams.TeamDto;
@@ -23,14 +25,14 @@ import java.util.List;
 @RequestMapping("admin")
 public class AdminController {
 
-
+    private final IModelService iModelService;
     private final MasterCodeService masterCodeService;
     private final TeamService teamService;
 
 
     @Autowired
-    public AdminController(MasterCodeService masterCodeService, TeamService teamService) {
-
+    public AdminController(MasterCodeService masterCodeService, TeamService teamService,IModelService iModelService) {
+        this.iModelService = iModelService;
         this.masterCodeService = masterCodeService;
         this.teamService = teamService;
     }
@@ -81,12 +83,10 @@ public class AdminController {
     public String equipreg(Model model){
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
-        List<MasterCodeDto> equipdUnits = masterCodeService.findCodeList(CodeType.C0008);
         List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
 
         model.addAttribute("equipdTypes", equipdTypes);
         model.addAttribute("equipdCountrys", equipdCountrys);
-        model.addAttribute("equipdUnits", equipdUnits);
         model.addAttribute("modelTypes", modelTypes);
 
         return "admin/equipmentreg";
@@ -97,7 +97,9 @@ public class AdminController {
     public String modelreg(Model model){
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
+        List<MasterCodeDto> equipdUnits = masterCodeService.findCodeList(CodeType.C0008);
 
+        model.addAttribute("equipdUnits", equipdUnits);
         model.addAttribute("equipdTypes", equipdTypes);
         model.addAttribute("modelTypes", modelTypes);
 

@@ -9,6 +9,9 @@ import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.company.*;
 import kr.co.broadwave.aci.dashboard.DashboardService;
+import kr.co.broadwave.aci.imodel.IModel;
+import kr.co.broadwave.aci.imodel.IModelDto;
+import kr.co.broadwave.aci.imodel.IModelService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
@@ -22,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -43,10 +47,11 @@ public class EquipmentRestController {
     private final CompanyService companyService;
     private final MasterCodeService masterCodeService;
     private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
-
+    private final IModelService iModelService;
     @Autowired
     public EquipmentRestController(ModelMapper modelMapper,
                                    AccountService accountService,
+                                   IModelService iModelService,
                                    CompanyService companyService,
                                    DashboardService dashboardService,
                                    MasterCodeService masterCodeService,
@@ -54,6 +59,7 @@ public class EquipmentRestController {
         this.accountService = accountService;
         this.dashboardService = dashboardService;
         this.companyService = companyService;
+        this.iModelService = iModelService;
         this.masterCodeService = masterCodeService;
         this.equipmentService = equipmentService;
         this.modelMapper = modelMapper;
@@ -81,7 +87,6 @@ public class EquipmentRestController {
         Optional<MasterCode> optionalEmType = masterCodeService.findById(equipmentMapperDto.getEmType());
         Optional<MasterCode> optionalEmCountry = masterCodeService.findById(equipmentMapperDto.getEmCountry());
         Optional<MasterCode> optionalEmLocation = masterCodeService.findById(equipmentMapperDto.getEmLocation());
-        Optional<MasterCode> optionalEmUnit = masterCodeService.findById(equipmentMapperDto.getEmUnit());
 
         //장비타입/국가/지역코드가 존재하지않으면
         if (!optionalEmType.isPresent() || !optionalEmCountry.isPresent() || !optionalEmLocation.isPresent()) {
@@ -92,7 +97,6 @@ public class EquipmentRestController {
             equipment.setEmType(optionalEmType.get());
             equipment.setEmCountry(optionalEmCountry.get());
             equipment.setEmLocation(optionalEmLocation.get());
-            equipment.setEmUnit(optionalEmUnit.get());
         }
 
         // 장비번호 가져오기(고유값)
@@ -121,6 +125,18 @@ public class EquipmentRestController {
         }else{
             Company company = optionalCompany.get();
             equipment.setCompany(company);
+        }
+
+        // 모델저장
+        Optional<IModel>  iModels = iModelService.findByModel(equipmentMapperDto.getMdId());
+        //log.info("iModelDto : "+iModelDto);
+
+        //모델이 존재하지않으면
+        if (iModels.equals(null)) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(), ResponseErrorCode.E021.getDesc()));
+        }else{
+            IModel iModel = iModels.get();
+            equipment.setMdId(iModel);
         }
 
         Equipment save = equipmentService.save(equipment);
@@ -173,6 +189,7 @@ public class EquipmentRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         EquipmentDto equipment = equipmentService.findById(id);
+        log.info("equipment : "+equipment);
         log.info("받아온 아이디값 : "+id);
 
         data.clear();
@@ -212,6 +229,7 @@ public class EquipmentRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 국가 셀렉트 선택시 지역변경
     @PostMapping("location")
     public ResponseEntity location(@RequestParam(value="emCountry", defaultValue="") Long emCountry){
         AjaxResponse res = new AjaxResponse();
@@ -221,6 +239,23 @@ public class EquipmentRestController {
         CodeType codeType = CodeType.valueOf("C0005");
 
         List<MasterCodeDto> ref = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,optionalCountry.get().getCode());
+
+        data.clear();
+        data.put("dataselect",ref);
+
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 타입 셀렉트 선택시 모델변경
+    @PostMapping("modelchange")
+    public ResponseEntity modelchange(@RequestParam(value="emType", defaultValue="") Long emType){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        Optional<MasterCode> optionalEmType= masterCodeService.findById(emType);
+
+        List<IModelDto> ref = iModelService.findByEmType(optionalEmType.get());
 
         data.clear();
         data.put("dataselect",ref);

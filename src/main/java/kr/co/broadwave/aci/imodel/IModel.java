@@ -53,6 +53,13 @@ public class IModel {
     @Column(name="md_remark")
     private String mdRemark; // 모델특이사항
 
+    @Column(name="md_maximum_payload")
+    private Double mdMaximumPayload; // 최대적재량
+
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="md_unit")
+    private MasterCode mdUnit; // 단위
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 

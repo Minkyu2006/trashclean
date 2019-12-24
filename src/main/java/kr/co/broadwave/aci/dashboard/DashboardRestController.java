@@ -13,6 +13,7 @@ import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -37,6 +38,8 @@ import java.util.*;
 @Slf4j
 public class DashboardRestController {
 
+    @Value("${aci.aws.s3.bucket.url}")
+    private String AWSS3URL;
 
     private final DashboardService dashboardService;
     private final EquipmentService equipmentService;
@@ -233,6 +236,7 @@ public class DashboardRestController {
         }
 
         data.clear();
+        data.put("awss3url",AWSS3URL);
         data.put("devices",devices);
         data.put("status",status);
         data.put("temp_brd",temp_brd);

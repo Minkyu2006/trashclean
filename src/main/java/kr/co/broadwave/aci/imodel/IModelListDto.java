@@ -19,9 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 @Setter
 public class IModelListDto {
 
-//    @Value("${aci.aws.s3.bucket.url}")
-//    private String AWSS3URL;
-
     private Long id;
     private FileUpload mdFileid;
     private String mdNumber; // 모델 번호
@@ -30,10 +27,11 @@ public class IModelListDto {
     private MasterCode mdType; // 모델종류
     private String mdSubname; // 모델약칭
     private String mdRemark; // 모델특이사항
+    private Double mdMaximumPayload; // 최대적재량
+    private MasterCode mdUnit; // 단위
 
     public String getMdFileid() {
-        String fileurl = mdFileid.getFilePath()+"/"+mdFileid.getSaveFileName(); // 원본 크기
-        //String fileurl = mdFileid.getFilePath()+"/s_"+mdFileid.getSaveFileName(); //미리보기 크기
+        String fileurl = mdFileid.getFilePath()+"/s_"+mdFileid.getSaveFileName(); //미리보기 크기
         return fileurl;
     }
 
@@ -65,5 +63,11 @@ public class IModelListDto {
         return mdRemark;
     }
 
+    public Double getMdMaximumPayload() {
+        return mdMaximumPayload;
+    }
 
+    public String getMdUnit() {
+        return mdUnit.getName();
+    }
 }

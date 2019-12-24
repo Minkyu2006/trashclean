@@ -24,14 +24,13 @@ public class EquipmentMapperDto {
     private String emCerealNumber; // 장비 시리얼 번호
     private String emDesignation; // 장비명칭
     private Long emType; // 장비타입
+    private Long mdId; // 모델ID저장
     private Long emCountry; // 국가
     private Long emLocation; // 지역
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
     private String emSubName;
     private String operator;
-    private Double emMaximumPayload;
-    private Long emUnit;
     private String emInstallDate;
     private Double emLatitude; // 위도
     private Double emHardness; // 경도
@@ -64,6 +63,10 @@ public class EquipmentMapperDto {
         return emType;
     }
 
+    public Long getMdId() {
+        return mdId;
+    }
+
     public Long getEmCountry() {
         return emCountry;
     }
@@ -82,14 +85,6 @@ public class EquipmentMapperDto {
 
     public String getOperator() {
         return operator;
-    }
-
-    public Double getEmMaximumPayload() {
-        return emMaximumPayload;
-    }
-
-    public Long getEmUnit() {
-        return emUnit;
     }
 
     public String getEmInstallDate() {

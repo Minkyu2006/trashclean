@@ -125,18 +125,21 @@
 			var deviceid = $("#deviceIds").val().split(',');
 			var deviceinstall = $("#deviceInstalls").val().split(',');
 			var devicesubname = $("#deviceSubnames").val().split(',');
+			var devicefile = $("#devicefiles").val().split(',');
 
 			var deviceidArr = new Array();
 			var deviceinstallArr = new Array();
 			var devicesubnameArr = new Array();
+			var devicefileArr = new Array();
 
 			for (var i = 0; i < deviceid.length; i++) {
 				deviceidArr.push(deviceid[i]);
 				deviceinstallArr.push(deviceinstall[i]);
 				devicesubnameArr.push(devicesubname[i]);
+				devicefileArr.push(devicefile[i]);
 			}
 
-			deviceAWSListViewReflesh(deviceidArr, deviceinstallArr);
+			deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr);
 			pushDeviceId(deviceidArr, devicesubnameArr,0);
 		}
 
@@ -146,22 +149,25 @@
 			var deviceid = $("#deviceIds").val().split(',');
 			var deviceinstall = $("#deviceInstalls").val().split(',');
 			var devicesubname = $("#deviceSubnames").val().split(',');
+			var devicefile = $("#devicefiles").val().split(',');
 
 			var deviceidArr = new Array();
 			var deviceinstallArr = new Array();
 			var devicesubnameArr = new Array();
+			var devicefileArr = new Array();
 
 			for (var i = 0; i < deviceid.length; i++) {
 				deviceidArr.push(deviceid[i]);
 				deviceinstallArr.push(deviceinstall[i]);
 				devicesubnameArr.push(devicesubname[i]);
+				devicefileArr.push(devicefile[i]);
 			}
 
 			timeprogress += 1;
 
 			if (timeprogress * 100 >= timeInterval) {
 				timeprogress = 0;
-				deviceAWSListViewReflesh(deviceidArr, deviceinstallArr);
+				deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr);
 				pushDeviceId(deviceidArr, devicesubnameArr,0);
 				$("#mapChartLoading").show();
 				$("#pieChartLoading").show();
@@ -308,6 +314,7 @@
 					var pushValue = new Array();
 					var installDate = new Array();
 					var subname = new Array();
+					var files = new Array();
 
 					var idx = 0;
 
@@ -330,24 +337,24 @@
 											html += '<span class="equipment__info-value">'+nvl(value.emNumber,"확 인 불 가")+'</span>';
 										html += '</li>'
 										html += '<li class="equipment__info-item">'
-											html += '<span class="equipment__info-title">'+'장비타입 : '+'</span>'
+											html += '<span class="equipment__info-title">'+'모델타입 : '+'</span>'
 											html += '<span class="equipment__info-value">'+nvl(value.emType,"확 인 불 가")+'</span>';
 										html += '</li>'
 										html += '<li class="equipment__info-item">'
+											html += '<span class="equipment__info-title">'+'모델명 : '+'</span>'
+											html += '<span class="equipment__info-value">'+nvl(value.mdName,"확 인 불 가")+'</span>';
+										html += '</li>'
+										html += '<li class="equipment__info-item">'
 											html += '<span class="equipment__info-title">'+'최대적재량 : '+'</span>'
-											html += '<span class="equipment__info-value">'+nvl(value.emMaximumPayload,"확 인 불 가")+' '+nvl(value.emUnit,"확 인 불 가")+'</span>';
+											html += '<span class="equipment__info-value">'+nvl(value.mdMaximumPayload,"확 인 불 가")+nvl(value.mdUnit,"확 인 불 가")+'</span>';
 										html += '</li>'
 										html += '<li class="equipment__info-item">'
 											html += '<span class="equipment__info-title">'+'운영사 : '+'</span>'
 											html += '<span class="equipment__info-value">'+nvl(value.company,"확 인 불 가")+'</span>';
 										html += '</li>'
 										html += '<li class="equipment__info-item">'
-											html += '<span class="equipment__info-title">'+'지역 : '+'</span>'
-											html += '<span class="equipment__info-value">'+nvl(value.emLocation,"확 인 불 가")+'</span>';
-										html += '</li>'
-										html += '<li class="equipment__info-item">'
-											html += '<span class="equipment__info-title">'+'국가 : '+'</span>'
-											html += '<span class="equipment__info-value">'+nvl(value.emCountry,"확 인 불 가")+'</span>';
+											html += '<span class="equipment__info-title">'+'국가/지역 : '+'</span>'
+											html += '<span class="equipment__info-value">'+nvl(value.emCountry,"확 인 불 가")+'/'+nvl(value.emLocation,"확 인 불 가")+'</span>';
 										html += '</li>'
 										html += '<li class="equipment__info-item">'
 											html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>'
@@ -363,6 +370,7 @@
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
 						subname.push(nvl(value.emSubName,"확 인 불 가"));
+						files.push(nvl(value.filePath+'/s_'+value.saveFileName,"확 인 불 가"));
 					});
 					//console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
 					$deviceList.html(html2);
@@ -372,21 +380,23 @@
 							$("#loading"+i).removeClass("c-loader__active c-loader__active--ring");
 						}
 						$deviceList.html(html);
-						deviceAWSListView(pushValue,installDate);
+						deviceAWSListView(pushValue,installDate,files);
 						pushDeviceId(pushValue,subname,1);
 						$("#deviceIds").val(pushValue);
 						$("#deviceInstalls").val(installDate);
 						$("#deviceSubnames").val(subname);
+						$("#devicefiles").val(files);
 					},1000);
 				}
 			});
 		}
 
 		// ASW 장치 데이터리스트
-		function deviceAWSListView(pushValue,installDate) {
+		function deviceAWSListView(pushValue,installDate,files) {
 			// console.log("장비리스트 뿌리기 시작")
 			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
+			//console.log("받은 파일경로 : "+files);
 
 			var deviceIds = new Array();
 			for(i=0; i<pushValue.length; i++){
@@ -442,6 +452,7 @@
 					var htmls3 = new Array();
 
 					var idx = 0;
+					var baseurl = res.data.awss3url;
 
 					$.each(res.data.devices, function (key, value) {
 
@@ -457,25 +468,25 @@
 								html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 								html2 += '<div class="equipment__img">';
-								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+								html2 += '<img src="'+baseurl+files[idx]+'" />';
 								html2 += '</div>';
 						}else if(res.data.status[idx]=="주의"){
 								html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 								html2 += '<div class="equipment__img">';
-								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+								html2 += '<img src="'+baseurl+files[idx]+'" />';
 								html2 += '</div>';
 						}else if(res.data.status[idx]=="심각"){
 								html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 								html2 += '<div class="equipment__img">';
-								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+								html2 += '<img src="'+baseurl+files[idx]+'" />';
 								html2 += '</div>';
 						}else{
 								html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 								html2 += '<div class="equipment__img">';
-								html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+								html2 += '<img src="'+baseurl+files[idx]+'" />';
 								html2 += '</div>';
 						}
 						html2 += '</div>';
@@ -542,7 +553,7 @@
 		}
 
 		// ASW 장치 데이터리스트(새로고침)
-		function deviceAWSListViewReflesh(pushValue,installDate) {
+		function deviceAWSListViewReflesh(pushValue,installDate,files) {
 			// console.log("장비리스트 뿌리기 시작")
 			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
@@ -601,6 +612,7 @@
 					var htmls3 = new Array();
 
 					var idx = 0;
+					var baseurl = res.data.awss3url;
 
 					$.each(res.data.devices, function (key, value) {
 						var html = '';
@@ -614,25 +626,26 @@
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
-							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+
+							html2 += '<img src="'+baseurl+files[idx]+'" />';
 							html2 += '</div>';
 						}else if(res.data.status[idx]=="주의"){
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
-							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+							html2 += '<img src="'+baseurl+files[idx]+'" />';
 							html2 += '</div>';
 						}else if(res.data.status[idx]=="심각"){
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
 							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html2 += '<div class="equipment__img">';
-							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+							html2 += '<img src="'+baseurl+files[idx]+'" />';
 							html2 += '</div>';
 						}else{
 							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
-							html2 += '<img src="/assets/images/dummy/iSolarbin.png" alt="" />';
+							html2 += '<img src="'+baseurl+files[idx]+'" />';
 							html2 += '</div>';
 						}
 
@@ -1168,8 +1181,16 @@
 			var infowindow = new google.maps.InfoWindow();
 
 			var bounds = new google.maps.LatLngBounds();
-			
-			
+
+			// animation
+			function toggleBounce () {
+				if (marker.getAnimation() != null) {
+					marker.setAnimation(null);
+				} else {
+					console.log("빠운스")
+					marker.setAnimation(google.maps.Animation.BOUNCE);
+				}
+			}
 
 			for (i = 0; i < map_data_columns.length; i++) {
 				if(map_data_columns[i][1]==0 || map_data_columns[i][2]==0){
@@ -1183,15 +1204,6 @@
 					icon: iconSrc[locations[i][3]]
 				});
 				//marker.addListener('click', toggleBounce);
-				
-				// animation
-				function toggleBounce () {
-			        if (marker.getAnimation() != null) {
-			            marker.setAnimation(null);
-			        } else {
-			            marker.setAnimation(google.maps.Animation.BOUNCE);
-			        }
-			    }
 
 				bounds.extend(marker.position);
 
@@ -1203,17 +1215,16 @@
 							'<dt>' +'상태 : '+statusDatas[i]+'</dt>' +
 							'<dd>' +'배출량 : '+bar_data_columns[i+1]+'%'+'</dd>' +
 							'</dl>' +
-							'</div>'
+							'</div>';
 					return function() {
 						infowindow.setContent(content);
 						infowindow.open(map, marker);
-						toggleBounce();
-						setTimeout(toggleBounce, 1500);
+						setTimeout(toggleBounce(), 1500);
 					}
-				})(marker, i));
+				})
+				(marker, i));
 			}
 			map.fitBounds(bounds);
-
 		}
 
 		//상태값 차트
@@ -1539,6 +1550,7 @@
 										<input type="hidden" id="deviceIds" value ="" readonly="readonly" />
 										<input type="hidden" id="deviceInstalls" value ="" readonly="readonly" />
 										<input type="hidden" id="deviceSubnames" value ="" readonly="readonly" />
+										<input type="hidden" id="devicefiles" value ="" readonly="readonly" />
 									</div>
 								</div>
 
@@ -1577,7 +1589,7 @@
 								</div>
 								<div class="c-float__item">
 									<div class="c-select">
-										<label for="s_emType" class="c-select__label">장비 타입</label>
+										<label for="s_emType" class="c-select__label">모델 타입</label>
 										<select id="s_emType" class="c-select__input">
 											<option value="">전체</option>
 											<option th:each ="equipdType : ${equipdTypes}"

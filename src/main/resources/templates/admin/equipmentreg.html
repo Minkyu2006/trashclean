@@ -8,6 +8,7 @@
 
 			//자동실행
 			LocationSetting();
+			ModelChange();
 
 			$('.pop__list').on('click', function(e) {
 				$('#pop__list').addClass('open');
@@ -61,6 +62,7 @@
 			$("#csNum").val('');
 			$("#operator").val('');
 			$("#emMaximumPayload").val('');
+			$("#addmdId").val('');
 			$("#addSell").val('');
 			$("#emInstallDate").val('');
 			$("#emSubName").val('');
@@ -68,22 +70,31 @@
 			$("#emHardness").val('');
 
 			$("#emTypeView").hide();
+			$("#mdIdView").hide();
 			$("#emCountryView").hide();
 			$("#emLocationView").hide();
+
 			$("#emType").show();
+			$("#mdId").show();
 			$("#emCountry").show();
 			$("#emLocation").show();
+
+			ModelChange();
 		}
 
 		// 장비저장
 		function save() {
 
-			if ($("#operator").val().trim() == '') {
-				alertCaution("소속 운영사를 선택해주세요.");
+			if ($("#mdId").val().trim() == '') {
+				alertCaution("모델을 선택해주세요.");
 				return false;
 			}
 			if ($("#emInstallDate").val().trim() == '') {
 				alertCaution("설치일자를 선택해주세요.");
+				return false;
+			}
+			if ($("#operator").val().trim() == '') {
+				alertCaution("소속 운영사를 선택해주세요.");
 				return false;
 			}
 
@@ -110,45 +121,10 @@
 					alertSuccess('저장되었습니다.')
 					init();
 					LocationSetting();
+					ModelChange();
 					callList(1);
 				}
 			});
-		}
-
-		//한글을 지우는 함수
-		function delHangle(evt){
-			var objTarget = evt.srcElement || evt.target;
-			var _value = event.srcElement.value;
-			if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
-				alert("숫자만 입력가능합니다.");
-				objTarget.value = null;
-			}
-		}
-
-		// 소수점한개로 제한한 실수값입력할수있게하는 함수
-		function isNumberKey(evt) {
-			var charCode = (evt.which) ? evt.which : event.keyCode;
-
-			var _value = event.srcElement.value;
-
-			if (event.keyCode < 48 || event.keyCode > 57) {
-				if (event.keyCode != 46) {
-					return false;
-				}
-			}
-			// 소수점(.)이 두번 이상 나오지 못하게
-			var _pattern0 = /^\d*[.]\d*$/;
-			if (_pattern0.test(_value)) {
-				if (charCode == 46) {
-					return false;
-				}
-			}
-			// 소수점 둘째자리까지만 입력가능
-			var _pattern2 = /^\d*[.]\d{2}$/;
-			if (_pattern2.test(_value)) {
-				alertCaution("소수점 둘째자리까지만 입력가능합니다.");
-				return false;
-			}
 		}
 
 		// 운영사 리스트보기
@@ -209,7 +185,7 @@
 			});
 		}
 
-		// 업체 리스트보기
+		// 장비 리스트보기
 		function callList(page) {
 
 			page = page - 1;
@@ -264,7 +240,7 @@
 						html += '<td >'+ echoNull2Blank(value.emCerealNumber) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.emDesignation) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
-						html += '<td >'+ echoNull2Blank(value.emAwsNumber) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.iModel) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.emCountry)+'-'+echoNull2Blank(value.emLocation)+'</td>';
 						html += '<td >'+ echoNull2Blank(value.emEmbeddedNumber) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.company) +'</td>';
@@ -277,7 +253,7 @@
 			});
 		}
 
-		// 업체정보보기
+		// 장비정보보기
 		function callInfo(id) {
 
 			var params = {
@@ -304,8 +280,6 @@
 					$("#emEmbeddedNumber").val(res.data.equipment.emEmbeddedNumber);
 					$("#csNum").val(res.data.equipment.company.csNumber);
 					$("#operator").val(res.data.equipment.company.csOperator);
-					$("#emMaximumPayload").val(res.data.equipment.emMaximumPayload);
-					$("#emUnit").val(res.data.equipment.emUnit);
 					$("#emSubName").val(res.data.equipment.emSubName);
 					$("#emLatitude").val(res.data.equipment.emLatitude);
 					$("#emHardness").val(res.data.equipment.emHardness);
@@ -319,20 +293,26 @@
 					$("#emType").hide();
 					$("#emCountry").hide();
 					$("#emLocation").hide();
+					$("#mdId").hide();
 
+					$("#mdIdView").show();
 					$("#emTypeView").show();
 					$("#emCountryView").show();
 					$("#emLocationView").show();
 
 					// 보기버튼 클릭시 나라/지역 변경
-					$("#emTypeView").val(res.data.equipment.emTypeName);
+					$("#emTypeView").val(res.data.equipment.emType);
 					$("#emCountryView").val(res.data.equipment.emCountryName);
 					$("#emLocationView").val(res.data.equipment.emLocationName);
+					$("#mdIdView").val(res.data.equipment.mdId.mdSubname)
 
 					$("#emType").val(res.data.equipment.emTypeId)
 					$("#emCountry").val(res.data.equipment.emCountryId)
 					$("#addSell").val(res.data.equipment.emLocationId)
+					$("#addmdId").val(res.data.equipment.mdId.mdId)
+
 					LocationSetting();
+					ModelChange();
 				}
 			});
 		}
@@ -341,6 +321,12 @@
 			if($("#addSell").val() != '') {
 				var addLocationSelect = $("#addSell").val();
 				$("#emLocation").val(addLocationSelect);
+			}
+		}
+		function selectBoxModel(){
+			if($("#addmdId").val() != '') {
+				var addModelSelect = $("#addmdId").val();
+				$("#mdId").val(addModelSelect);
 			}
 		}
 
@@ -440,6 +426,45 @@
 			});
 		}
 
+		function ModelChange() {
+			var params = {
+				emType: $("#emType").val()
+			};
+
+			var $schList = $("#mdId");
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/equipment/modelchange',
+				type: 'post',
+				data: params,
+				cache: false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var html = '';
+
+					if(res.data.dataselect==""){
+						html += '<option value ="">' +"등록된 모델없음"+ '</option>';
+					}else{
+						$.each(res.data.dataselect, function (key, value) {
+							html += '<option value ="' + echoNull2Blank(value.id) + '">' + echoNull2Blank(value.mdSubname)+ '</option>';
+						});
+					}
+					$schList.html(html);
+					selectBoxModel()
+				}
+			});
+		}
+
     </script>
 
 </head>
@@ -479,7 +504,7 @@
 							<input type="text" id="s_emDesignation" class="c-text__input" />
 						</div>
 					</td>
-					<th>장비 타입</th>
+					<th>모델 타입</th>
 					<td>
 						<div class="c-select">
 							<select id="s_emType" class="c-select__input">
@@ -515,20 +540,20 @@
 					<col />
 					<col />
 					<col />
-					<col style="width: 90px;" />
+					<col />
+					<col />
+					<col />
+					<col />
 					<col />
 					<col style="width: 100px;" />
-					<col />
-					<col />
-					<col style="width: 50px;" />
 				</colgroup>
 				<thead>
 					<tr>
 						<th>장비 번호</th>
 						<th>장비 시리얼 번호</th>
 						<th>장비 명칭</th>
-						<th>장비 타입</th>
-						<th>AWS상 Device ID</th>
+						<th>모델 타입</th>
+						<th>모델명/종류</th>
 						<th>국가/지역</th>
 						<th>임베디드 기판 번호</th>
 						<th>소속운영사</th>
@@ -580,17 +605,29 @@
 								<input type="text" name="emDesignation" id="emDesignation" class="c-text__input" />
 							</div>
 						</td>
-						<th>장비 타입</th>
+						<th>모델 선택</th>
 						<td>
-							<div class="c-select">
-								<input id="emTypeView" class="c-text__input" style="display:none;" readonly="readonly" />
-								<select name="emType" id="emType" class="c-select__input">
-									<option th:each ="equipdType : ${equipdTypes}"
-											th:value="${equipdType.id}"
-											th:text="${equipdType.name}"
-									></option>
-								</select>
-							</div>
+							<ul class="c-input-list">
+								<li>
+									<div class="c-select" style="width: 180px;">
+										<input id="emTypeView" class="c-text__input" style="display:none;" readonly="readonly" />
+										<select name="emType" id="emType" class="c-select__input" onchange="ModelChange()">
+											<option th:each ="equipdType : ${equipdTypes}"
+													th:value="${equipdType.id}"
+													th:text="${equipdType.name}"
+											></option>
+										</select>
+									</div>
+								</li>
+								<li>
+									<div class="c-select" style="width: 180px;">
+										<input id="mdIdView" class="c-text__input" style="display:none;" readonly="readonly" />
+										<input id="addmdId" class="c-text__input" style="display:none;" readonly="readonly" />
+										<select name="mdId" id="mdId" class="c-select__input" >
+										</select>
+									</div>
+								</li>
+							</ul>
 						</td>
 					</tr>
 					<tr>
@@ -606,7 +643,7 @@
 						<td>
 							<ul class="c-input-list">
 								<li>
-									<div class="c-select" style="width: 125px;">
+									<div class="c-select" style="width: 180px;">
 										<input id="emCountryView" class="c-text__input" style="display:none;" readonly="readonly" />
 										<select name="emCountry" id="emCountry" class="c-select__input" onchange="LocationSetting()">
 											<option th:each ="equipdCountry : ${equipdCountrys}"
@@ -617,7 +654,7 @@
 									</div>
 								</li>
 								<li>
-									<div class="c-select" style="width: 125px;">
+									<div class="c-select" style="width: 180px;">
 										<input id="emLocationView" class="c-text__input" style="display:none;" readonly="readonly" />
 										<input id="addSell" class="c-text__input" style="display:none;" readonly="readonly" />
 										<select name="emLocation" id="emLocation" class="c-select__input" >
@@ -644,25 +681,11 @@
 						</td>
 					</tr>
 					<tr>
-						<th>최대적재랑/단위</th>
+						<th>AWS상 Device ID</th>
 						<td>
-							<ul class="c-input-list">
-								<li>
-									<div class="c-select" style="width: 170px;">
-										<input name="emMaximumPayload" id="emMaximumPayload" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-									</div>
-								</li>
-								<li>
-									<div class="c-select" style="width: 80px;">
-										<select name="emUnit" id="emUnit" class="c-select__input" >
-											<option th:each ="equipdUnit : ${equipdUnits}"
-													th:value="${equipdUnit.id}"
-													th:text="${equipdUnit.name}">
-											</option>
-										</select>
-									</div>
-								</li>
-							</ul>
+							<div class="c-text">
+								<input type="text" name="emAwsNumber" id="emAwsNumber" class="c-text__input" />
+							</div>
 						</td>
 						<th>장비약칭(사용자지정)</th>
 						<td>
@@ -684,16 +707,6 @@
 								<input type="text" name="emHardness" id="emHardness" class="c-text__input" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
-					</tr>
-					<tr>
-						<th>AWS상 Device ID</th>
-						<td>
-							<div class="c-text">
-								<input type="text" name="emAwsNumber" id="emAwsNumber" class="c-text__input" />
-							</div>
-						</td>
-						<th></th>
-						<td></td>
 					</tr>
 				</tbody>
 			</table>

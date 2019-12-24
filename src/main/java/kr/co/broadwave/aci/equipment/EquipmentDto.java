@@ -5,6 +5,7 @@ import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.EmType;
 import kr.co.broadwave.aci.bscodes.NowStateType;
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
@@ -25,30 +26,26 @@ import java.time.format.DateTimeFormatter;
 public class EquipmentDto {
     private Long id; // 장비 고유ID
     private String emNumber; // 장비 번호
-
     private String emCerealNumber; // 장비 시리얼 번호
     private String emDesignation; // 장비명칭
-    private MasterCode emTypeId; // 장비타입(Id값)
-    private MasterCode emTypeName; // 장비타입(Name값)
+
+    private MasterCode emType; // 모델타입 이름
+    private MasterCode emTypeId; // 모델타입 아이디
     private MasterCode emCountryId; // 국가(Id값)
     private MasterCode emCountryName; // 국가(Name값)
     private MasterCode emLocationId; // 지역(Id값)
     private MasterCode emLocationName; // 지역(Name값)
+
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
+
     private Company company; // 소속운영사
-    private Double emMaximumPayload; // 최대적재량
-    private MasterCode emUnit; // 단위
-    private MasterCode emUnitName; // 단위이름
+    private IModel mdId; // 모델
+
     private String emInstallDate; // 설치일자
     private String emSubName; // 장비약칭
     private Double emLatitude; // 위도
     private Double emHardness; // 경도
-
-    private LocalDateTime insertDateTime;
-    private String insert_id;
-    private LocalDateTime modifyDateTime;
-    private String modify_id;
 
     public Double getEmLatitude() {
         return emLatitude;
@@ -56,10 +53,6 @@ public class EquipmentDto {
 
     public Double getEmHardness() {
         return emHardness;
-    }
-
-    public String getEmUnitName() {
-        return emUnitName.getName();
     }
 
     public Long getId() {
@@ -78,12 +71,12 @@ public class EquipmentDto {
         return emDesignation;
     }
 
-    public Long getEmTypeId() {
-        return emTypeId.getId();
+    public String getEmType() {
+        return emType.getName();
     }
 
-    public String getEmTypeName() {
-        return emTypeName.getName();
+    public Long getEmTypeId() {
+        return emTypeId.getId();
     }
 
     public Long getEmCountryId() {
@@ -102,14 +95,6 @@ public class EquipmentDto {
         return emLocationName.getName();
     }
 
-    public Double getEmMaximumPayload() {
-        return emMaximumPayload;
-    }
-
-    public Long getEmUnit() {
-        return emUnit.getId();
-    }
-
     public String getEmAwsNumber() {
         return emAwsNumber;
     }
@@ -122,27 +107,16 @@ public class EquipmentDto {
         return company;
     }
 
-    public String getEmInstallDate() {
-        return emInstallDate;
+    public IModel getMdId() {
+        return mdId;
     }
 
-    public LocalDateTime getInsertDateTime() {
-        return insertDateTime;
+    public String getEmInstallDate() {
+        return emInstallDate;
     }
 
     public String getEmSubName() {
         return emSubName;
     }
 
-    public String getInsert_id() {
-        return insert_id;
-    }
-
-    public LocalDateTime getModifyDateTime() {
-        return modifyDateTime;
-    }
-
-    public String getModify_id() {
-        return modify_id;
-    }
 }

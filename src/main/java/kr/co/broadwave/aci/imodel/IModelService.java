@@ -1,10 +1,13 @@
 package kr.co.broadwave.aci.imodel;
 
+import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.company.CompanyRepositoryCustom;
 import kr.co.broadwave.aci.equipment.*;
 import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
+import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Minkyu
@@ -75,7 +79,15 @@ public class IModelService {
         iModelRepository.delete(iModel);
     }
 
-    public Page<IModelListDto> findByIModelSearchList(String mdName, Long emTypeId, Long mdTypeId, Pageable pageable) {
-        return iModelRepositoryCustom.findByIModelSearchList(mdName,emTypeId,mdTypeId,pageable);
+    public List<IModelDto> findByEmType(MasterCode id) {
+        List<IModel> iModels = iModelRepository.findByEmType(id);
+        return iModels.stream()
+                .map(iModel -> modelMapper.map(iModel, IModelDto.class)
+                ).collect(Collectors.toList());
+    }
+
+
+    public Optional<IModel> findByModel(Long mdId) {
+        return iModelRepository.findById(mdId);
     }
 }

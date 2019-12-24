@@ -1,9 +1,11 @@
 package kr.co.broadwave.aci.imodel;
 
 import kr.co.broadwave.aci.equipment.Equipment;
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -16,4 +18,5 @@ public interface IModelRepository extends JpaRepository<IModel,Long>, QuerydslPr
 
     Optional<IModel> findByMdNumber(String mdNumber);
 
+    List<IModel> findByEmType(MasterCode id);
 }

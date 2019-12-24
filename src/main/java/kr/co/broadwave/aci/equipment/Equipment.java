@@ -5,6 +5,7 @@ import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.EmType;
 import kr.co.broadwave.aci.bscodes.NowStateType;
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.teams.Team;
 import lombok.*;
@@ -61,16 +62,13 @@ public class Equipment {
     @Column(name="em_embedded_number")
     private String emEmbeddedNumber; // 임베디드 기판 번호
 
+    @ManyToOne(targetEntity = IModel.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="md_id")
+    private IModel mdId; // 소속운영사
+
     @ManyToOne(targetEntity = Company.class,fetch = FetchType.EAGER)
     @JoinColumn(name="cs_id")
     private Company company; // 소속운영사
-
-    @Column(name="em_maximum_payload")
-    private Double emMaximumPayload; // 최대적재량
-
-    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
-    @JoinColumn(name="em_unit")
-    private MasterCode emUnit; // 단위
 
     @Column(name="em_install_date")
     private String emInstallDate; // 설치일자

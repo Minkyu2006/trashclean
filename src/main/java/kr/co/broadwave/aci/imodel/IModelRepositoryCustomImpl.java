@@ -43,7 +43,9 @@ public class IModelRepositoryCustomImpl extends QuerydslRepositorySupport implem
                         iModel.emType,
                         iModel.mdType,
                         iModel.mdSubname,
-                        iModel.mdRemark
+                        iModel.mdRemark,
+                        iModel.mdMaximumPayload,
+                        iModel.mdUnit
                 ));
 
         // 검색조건필터
@@ -61,43 +63,6 @@ public class IModelRepositoryCustomImpl extends QuerydslRepositorySupport implem
 
         if (mdRemark != null && !mdRemark.isEmpty()){
             query.where(iModel.mdRemark.containsIgnoreCase(mdRemark));
-        }
-
-        query.orderBy(iModel.id.desc());
-
-        final List<IModelListDto> iModels = getQuerydsl().applyPagination(pageable, query).fetch();
-        return new PageImpl<>(iModels, pageable, query.fetchCount());
-
-    }
-
-    @Override
-    public Page<IModelListDto> findByIModelSearchList(String mdName, Long emTypeId, Long mdTypeId, Pageable pageable){
-
-        QIModel iModel = QIModel.iModel;
-
-        JPQLQuery<IModelListDto> query = from(iModel)
-                .select(Projections.constructor(IModelListDto.class,
-                        iModel.id,
-                        iModel.mdFileid,
-                        iModel.mdNumber,
-                        iModel.mdName,
-                        iModel.emType,
-                        iModel.mdType,
-                        iModel.mdSubname,
-                        iModel.mdRemark
-                ));
-
-        // 검색조건필터
-        if (mdName != null && !mdName.isEmpty()){
-            query.where(iModel.mdName.likeIgnoreCase(mdName.concat("%")));
-        }
-
-        if (emTypeId != null ){
-            query.where(iModel.emType.id.eq(emTypeId));
-        }
-
-        if (mdTypeId != null ){
-            query.where(iModel.mdType.id.eq(mdTypeId));
         }
 
         query.orderBy(iModel.id.desc());

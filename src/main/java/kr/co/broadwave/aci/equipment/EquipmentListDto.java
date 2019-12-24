@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.equipment;
 import kr.co.broadwave.aci.bscodes.EmType;
 import kr.co.broadwave.aci.bscodes.NowStateType;
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
@@ -31,7 +32,10 @@ public class EquipmentListDto {
     private MasterCode emLocation; // 지역
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
+
     private Company company;
+    private IModel iModel;
+
 
     public Long getId() {
         return id;
@@ -71,5 +75,9 @@ public class EquipmentListDto {
 
     public String getCompany() {
         return company.getCsOperator();
+    }
+
+    public String getiModel() {
+        return iModel.getMdName()+"-"+iModel.getMdType().getName();
     }
 }

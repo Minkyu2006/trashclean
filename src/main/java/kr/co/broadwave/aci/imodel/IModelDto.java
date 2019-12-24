@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.imodel;
 
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
@@ -27,12 +28,24 @@ public class IModelDto {
     private MasterCode mdTypeName; // 모델타입이름
     private String mdSubname; // 모델약칭
     private String mdRemark; // 모델특이사항
+    private Double mdMaximumPayload; // 최대적재량
+    private MasterCode mdUnitId; // 단위
+    private FileUpload mdFileid;
 
     private LocalDateTime insertDateTime;
     private String insert_id;
     private LocalDateTime modifyDateTime;
     private String modify_id;
 
+
+    public String getMdFileid() {
+        String fileurl = mdFileid.getFilePath()+"/s_"+mdFileid.getSaveFileName(); //미리보기 크기
+        return fileurl;
+    }
+
+    public Double getMdMaximumPayload() {
+        return mdMaximumPayload;
+    }
 
     public String getEmTypeName() {
         return emTypeName.getName();
@@ -60,6 +73,10 @@ public class IModelDto {
 
     public Long getMdTypeId() {
         return mdTypeId.getId();
+    }
+
+    public Long getMdUnitId() {
+        return mdUnitId.getId();
     }
 
     public String getMdSubname() {

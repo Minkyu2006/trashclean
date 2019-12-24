@@ -3,6 +3,8 @@ package kr.co.broadwave.aci.equipment;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.imodel.QIModel;
+import kr.co.broadwave.aci.teams.QTeam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +43,8 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                         equipment.emLocation,
                         equipment.emAwsNumber,
                         equipment.emEmbeddedNumber,
-                        equipment.company
+                        equipment.company,
+                        equipment.mdId
                 ));
 
 
