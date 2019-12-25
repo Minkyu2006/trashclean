@@ -747,7 +747,9 @@ public class DashboardRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         EquipmentDto deviceDetailList = dashboardService.findByEmNumber(pushValue);
+        log.info("deviceDetailList : "+deviceDetailList);
 
+        data.put("awss3url",AWSS3URL);
         data.put("deviceDetailList",deviceDetailList);
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());
