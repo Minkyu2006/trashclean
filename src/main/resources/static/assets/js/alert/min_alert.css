@@ -58,19 +58,19 @@
 }
 .popup__stat.success {
     background-color: #01b257;
-    background-image: url(/assets/images/icon__check.png);
+    background-image: url(./images/icon__check.png);
     -webkit-animation: heartbeat 1.5s ease-in-out 2 ;
 	        animation: heartbeat 1.5s ease-in-out 2 ;
 }
 .popup__stat.check {
     background-color: #97c8d6;
-    background-image: url(/assets/images/icon__double-check.png);
+    background-image: url(./images/icon__double-check.png);
     -webkit-animation: bounce-top 1.5s;
 	        animation: bounce-top 1.5s;
 }
 .popup__stat.cancel {
 	background-color: #f08583;
-	background-image: url(/assets/images/icon__X.png);
+	background-image: url(./images/icon__X.png);
 	-webkit-animation: shake-horizontal 1.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) 2 ;
 	animation: shake-horizontal 1.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) 2 ;
 }
