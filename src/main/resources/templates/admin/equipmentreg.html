@@ -69,13 +69,9 @@
 			$("#emLatitude").val('');
 			$("#emHardness").val('');
 
-			$("#emTypeView").hide();
-			$("#mdIdView").hide();
 			$("#emCountryView").hide();
 			$("#emLocationView").hide();
 
-			$("#emType").show();
-			$("#mdId").show();
 			$("#emCountry").show();
 			$("#emLocation").show();
 
@@ -121,7 +117,6 @@
 					alertSuccess('저장되었습니다.')
 					init();
 					LocationSetting();
-					ModelChange();
 					callList(1);
 				}
 			});
@@ -290,29 +285,22 @@
 					var installArray = install2.join('');
 					$("#emInstallDate").val(installArray);
 
-					$("#emType").hide();
 					$("#emCountry").hide();
 					$("#emLocation").hide();
-					$("#mdId").hide();
 
-					$("#mdIdView").show();
-					$("#emTypeView").show();
 					$("#emCountryView").show();
 					$("#emLocationView").show();
 
 					// 보기버튼 클릭시 나라/지역 변경
-					$("#emTypeView").val(res.data.equipment.emType);
 					$("#emCountryView").val(res.data.equipment.emCountryName);
 					$("#emLocationView").val(res.data.equipment.emLocationName);
-					$("#mdIdView").val(res.data.equipment.mdId.mdSubname)
 
 					$("#emType").val(res.data.equipment.emTypeId)
+					$("#mdId").val(res.data.equipment.mdId.id)
 					$("#emCountry").val(res.data.equipment.emCountryId)
 					$("#addSell").val(res.data.equipment.emLocationId)
-					$("#addmdId").val(res.data.equipment.mdId.mdId)
 
 					LocationSetting();
-					ModelChange();
 				}
 			});
 		}
@@ -321,12 +309,6 @@
 			if($("#addSell").val() != '') {
 				var addLocationSelect = $("#addSell").val();
 				$("#emLocation").val(addLocationSelect);
-			}
-		}
-		function selectBoxModel(){
-			if($("#addmdId").val() != '') {
-				var addModelSelect = $("#addmdId").val();
-				$("#mdId").val(addModelSelect);
 			}
 		}
 
@@ -460,7 +442,6 @@
 						});
 					}
 					$schList.html(html);
-					selectBoxModel()
 				}
 			});
 		}
@@ -610,7 +591,6 @@
 							<ul class="c-input-list">
 								<li>
 									<div class="c-select" style="width: 180px;">
-										<input id="emTypeView" class="c-text__input" style="display:none;" readonly="readonly" />
 										<select name="emType" id="emType" class="c-select__input" onchange="ModelChange()">
 											<option th:each ="equipdType : ${equipdTypes}"
 													th:value="${equipdType.id}"
@@ -621,8 +601,6 @@
 								</li>
 								<li>
 									<div class="c-select" style="width: 180px;">
-										<input id="mdIdView" class="c-text__input" style="display:none;" readonly="readonly" />
-										<input id="addmdId" class="c-text__input" style="display:none;" readonly="readonly" />
 										<select name="mdId" id="mdId" class="c-select__input" >
 										</select>
 									</div>
