@@ -8,36 +8,37 @@
 
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
 
-		<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
-		<!-- default header name is X-CSRF-TOKEN -->
-		<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+        <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+        <!-- default header name is X-CSRF-TOKEN -->
+        <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
 
-		<!-- 공통으로 쓰이는 css파일을넣는다.-->
-		<link rel="stylesheet" href="/assets/css/main.css" />
-		<link rel="stylesheet" href="/assets/css/new/component.css" />
-		<link rel="stylesheet" href="/assets/css/new/common.css" />
-		<link rel="stylesheet" href="/assets/js/alert/min_alert.css" />
-		<link rel="stylesheet" href="/assets/js/charts/Chart.min.css" />
-		<link rel="stylesheet" href="/assets/js/c3/c3.css" />
+        <!-- 공통으로 쓰이는 css파일을넣는다.-->
+        <link rel="stylesheet" href="/assets/css/main.css"/>
+        <link rel="stylesheet" href="/assets/css/new/component.css"/>
+        <link rel="stylesheet" href="/assets/css/new/common.css"/>
+        <link rel="stylesheet" href="/assets/js/alert/min_alert.css"/>
+        <link rel="stylesheet" href="/assets/js/charts/Chart.min.css"/>
+        <link rel="stylesheet" href="/assets/js/c3/c3.css"/>
 
-		<!-- 공통으로 쓰이는 js파일을넣는다.-->
-		<script src="/assets/js/jquery.min.js"></script>
-		<script src="/assets/js/jquery-ui.min.js"></script>
-		<script src="/assets/js/broadwave.common.js"></script>
-		<!--<script src="/assets/js/common-pc.js"></script>-->
-		<script src="/assets/js/broadwave.ajax.js"></script>
-		<script src="/assets/js/charts/Chart.min.js"></script>
-		<script src="/assets/js/charts/ChartBundle.min.js"></script>
-		<script src="/assets/js/d3/d3.js"></script>
-		<script src="/assets/js/c3/c3.js"></script>
-		<script src="/assets/js/new/common.js"></script>
-		<script src="/assets/js/alert/min_alert.js"></script>
-<!--		구글지도-->
-		<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
+        <!-- 공통으로 쓰이는 js파일을넣는다.-->
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/jquery-ui.min.js"></script>
+        <script src="/assets/js/broadwave.common.js"></script>
+        <!--<script src="/assets/js/common-pc.js"></script>-->
+        <script src="/assets/js/broadwave.ajax.js"></script>
+        <script src="/assets/js/charts/Chart.min.js"></script>
+        <script src="/assets/js/charts/ChartBundle.min.js"></script>
+        <script src="/assets/js/d3/d3.js"></script>
+        <script src="/assets/js/c3/c3.js"></script>
+        <script src="/assets/js/new/common.js"></script>
+        <script src="/assets/js/alert/min_alert.js"></script>
+        <!--		구글지도-->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async
+                defer></script>
 
-	</head>
+    </head>
 
 	<div class="wrap">
     		<header th:replace="fragments/header :: headerFragment"></header>

@@ -11,6 +11,10 @@
 				save();
 			});
 
+			$(document).on("click","#successBtn",function(){
+				window.location.href="/sionup";
+			});
+
 		});
 
 		function save(){
@@ -71,7 +75,6 @@
 						return;
 					}
 					alertSuccess('사용자등록이 완료 되었습니다.');
-					location.href="/";
 				}
 			});
 		}
@@ -85,7 +88,7 @@
 
 
 <div layout:fragment="content" class="contents-body">
-	
+
 	<div class="join">
 		<h2 class="join__logo"><a href="/dashboard/dashboardall">자연상점</a></h2>
 				<div class="join__form">
@@ -110,7 +113,7 @@
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="join__form__article">
 							<div class="join__form-item">
 								<div class="c-text">
@@ -131,7 +134,7 @@
 								</div>
 							</div>
 						</div>
-						
+
 						<div class="join__form__article">
 							<div class="join__form-item">
 								<div class="c-select">
@@ -140,7 +143,7 @@
 										<option th:each ="team : ${teams}"
 												th:value="${team.teamcode}"
 												th:text="${team.teamname}"></option>
-	
+
 									</select>
 								</div>
 							</div>
@@ -151,7 +154,7 @@
 										<option th:each ="position : ${positions}"
 												th:value="${position.id}"
 												th:text="${position.name}"></option>
-	
+
 									</select>
 								</div>
 							</div>
@@ -166,8 +169,8 @@
 								</div>
 							</div>
 						</div>
-						
-						
+
+
 
 					</form>
 					<button class="join__btn" id="btnSave">등록</button>
