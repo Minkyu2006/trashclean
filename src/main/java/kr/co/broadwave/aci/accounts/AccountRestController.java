@@ -216,6 +216,8 @@ public class AccountRestController {
             account.setApprovalType(optionalAccount.get().getApprovalType());
             account.setPosition(optionalAccount.get().getPosition());
             account.setRole(optionalAccount.get().getRole());
+            account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
+            account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
         }
         account.setModify_id(currentuserid);
         account.setModifyDateTime(LocalDateTime.now());
@@ -259,6 +261,8 @@ public class AccountRestController {
         account.setInsertDateTime(LocalDateTime.now());
         //account.setApprovalType(ApprovalType.AT01); // 미승인상태로 회원가입
         account.setApprovalType(ApprovalType.AT02); // 등록시 승인처리 2019/12/16 - 김민규
+        account.setUserRefleshCheck(1); // 등록시 새로고침체크 2020/01/02 - 김민규 (기본값 체크1)
+        account.setUserRefleshCount(3); // 등록시 새로고침주기 2020/01/02 - 김민규 (기본값 2분)
 
         //부서코드가 존재하지않으면
         if (!optionalTeam.isPresent()) {

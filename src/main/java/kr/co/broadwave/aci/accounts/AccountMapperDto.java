@@ -28,4 +28,6 @@ public class AccountMapperDto {
     private String teamcode;
     private String mode;
     private Long positionid;
+    private Integer userRefleshCheck;
+    private Integer userRefleshCount;
 }

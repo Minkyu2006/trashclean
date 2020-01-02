@@ -23,9 +23,19 @@ public class AccountDto {
     private String username;
     private String email;
     private String cellphone;
+    private Integer userRefleshCheck;
+    private Integer userRefleshCount;
     private AccountRole role;
     private ApprovalType approvalType;
     private LocalDateTime insertDateTime;
+
+    public Integer getUserRefleshCheck() {
+        return userRefleshCheck;
+    }
+
+    public Integer getUserRefleshCount() {
+        return userRefleshCount;
+    }
 
     public String getUserid() {
         return userid;

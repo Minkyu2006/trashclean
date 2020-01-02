@@ -31,8 +31,26 @@
 				refleshBarChart();
 			});
 
-			$("#monitoring").prop('checked',true)
-			$("#twomin").prop('checked',true);
+			// 자동 새로고침 유저 정보의따라 바뀌기 작업
+			if($('#refleshCheck').val()=="1"){
+				$("#monitoring").prop('checked',true);
+			}else{
+				$("#monitoring").prop('checked',false);
+			}
+
+			if($('#refleshCount').val()=="1"){
+				$("#tensec").prop('checked',true);
+			}else if($('#refleshCount').val()=="2"){
+				$("#onemin").prop('checked',true);
+			}else if($('#refleshCount').val()=="3"){
+				$("#twomin").prop('checked',true);
+			}else if($('#refleshCount').val()=="4"){
+				$("#fivemin").prop('checked',true);
+			}else if($('#refleshCount').val()=="5"){
+				$("#ftmin").prop('checked',true);
+			}else{
+				$("#tensec").prop('checked',true);
+			}
 			refleshAutomatic();
 
 			$("#closeMasterfold").on('click',function(){
@@ -86,24 +104,68 @@
 		});
 
 		//자동새로고침시작 함수
+		var checknum;
+		var timenum;
 		function refleshAutomatic(timevalue) {
 			var check = $("#monitoring").is(":checked");
-			//console.log("check : "+check)
-
-			if(timevalue==null){
-				var monitorTime = $('input[name="monitorTime"]:checked').val();
-			}else{
-				monitorTime=timevalue
-			}
+			var tensec = $('#tensec').is(":checked");
+			var onemin = $('#onemin').is(":checked");
+			var twomin = $('#twomin').is(":checked");
+			var fivemin = $('#fivemin').is(":checked");
+			var ftmin = $('#ftmin').is(":checked");
 
 			if(check==true){
-				//console.log("자동 새로고침 시작")
-				AutoStart(monitorTime)
-			}else if(check==false){
-				//console.log("자동 새로고침 종료")
-				callStop()
+				checknum = 1;
+			}else{
+				checknum = 0;
 			}
 
+			if(tensec==true){
+				timenum=1;
+			}else if(onemin==true){
+				timenum=2;
+			}else if(twomin==true){
+				timenum=3;
+			}else if(fivemin==true){
+				timenum=4;
+			}else if(ftmin==true){
+				timenum=5;
+			}
+
+			var params = {
+				userid:$('#userid').val(),
+				checknum:checknum,
+				timenum:timenum,
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$.ajax({
+				url:'/api/dashboard/refleshcheck',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error) {
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					//console.log("아작스 실행완료!");
+
+					if(timevalue==null){
+						var monitorTime = $('input[name="monitorTime"]:checked').val();
+					}else{
+						monitorTime=timevalue
+					}
+
+					if(check==true){
+						AutoStart(monitorTime)
+					}else if(check==false){
+						callStop()
+					}
+
+				}
+			});
 		}
 
 		var timerId = null;
@@ -876,7 +938,7 @@
 										time: {
 											min: min_milliseconds,
 											max: max_milliseconds,
-											tooltipFormat: 'YYYY'+'년'+'MM'+'월'+'DD'+'일 '+'HH:mm:ss:a',
+											tooltipFormat: 'YYYY'+'년'+'MM'+'월'+'DD'+'일 '+'HH:mm:ss a',
 										}
 										}],
 									yAxes: [{
@@ -1653,6 +1715,11 @@
 			</div>
 		</div>
 	</div>
+
+	<input type="hidden" id="userid" th:value="${userId}" readonly="readonly" />
+	<input type="hidden" id="refleshCheck" th:value="${refleshCheck}" readonly="readonly" />
+	<input type="hidden" id="refleshCount" th:value="${refleshCount}" readonly="readonly" />
+
 	<div id='alertpop'>
 	</div>
 </div>

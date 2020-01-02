@@ -61,6 +61,11 @@ public class Account {
     @JoinColumn(name="position_id")
     private MasterCode position;
 
+    @Column(name="user_reflesh_check")
+    private Integer userRefleshCheck;
+
+    @Column(name="user_reflesh_count")
+    private Integer userRefleshCount;
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;

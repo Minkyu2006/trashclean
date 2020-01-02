@@ -1,31 +1,29 @@
 package kr.co.broadwave.aci.dashboard;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.co.broadwave.aci.accounts.*;
+import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
-import kr.co.broadwave.aci.equipment.Equipment;
+import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.equipment.EquipmentDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.rmi.CORBA.ValueHandler;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -44,12 +42,18 @@ public class DashboardRestController {
     private final DashboardService dashboardService;
     private final EquipmentService equipmentService;
     private final MasterCodeService masterCodeService;
+    private final AccountService accountService;
+    private final ModelMapper modelMapper;
 
     @Autowired
     public DashboardRestController(DashboardService dashboardService,
-                                                    MasterCodeService masterCodeService,
-                                                    EquipmentService equipmentService) {
+                                   ModelMapper modelMapper,
+                                   AccountService accountService,
+                                   MasterCodeService masterCodeService,
+                                   EquipmentService equipmentService) {
+        this.modelMapper = modelMapper;
         this.dashboardService = dashboardService;
+        this.accountService = accountService;
         this.equipmentService = equipmentService;
         this.masterCodeService = masterCodeService;
     }
@@ -743,7 +747,7 @@ public class DashboardRestController {
     // 위치기반 상세데이터 보내기
     @PostMapping("deviceDetail")
     public ResponseEntity deviceDetail(@RequestParam(value="pushValue", defaultValue="") String pushValue) {
-        AjaxResponse res = new AjaxResponse();
+            AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         EquipmentDto deviceDetailList = dashboardService.findByEmNumber(pushValue);
@@ -755,14 +759,49 @@ public class DashboardRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 새로고침체크여부의기 따라 유저정보 저장하기
+    @PostMapping("refleshcheck")
+    public ResponseEntity refleshcheck(@ModelAttribute AccountMapperDto accountMapperDto,
+                                       @RequestParam(value="userid", defaultValue="") String userid,
+                                       @RequestParam(value="checknum", defaultValue="") Integer checknum,
+                                       @RequestParam(value="timenum", defaultValue="") Integer timenum) {
+        AjaxResponse res = new AjaxResponse();
+
+        Account account = modelMapper.map(accountMapperDto, Account.class);
+        Optional<Account> optionalAccount = accountService.findByUserid(userid);
+
+        if(!optionalAccount.isPresent()){
+            log.info("사용자 일반 관리자(일반정보) : 사용자아이디: '" + account.getUserid() + "'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+        }else{
+            account.setId(optionalAccount.get().getId());
+            account.setUserid(userid);
+            account.setUsername(optionalAccount.get().getUsername());
+            account.setPassword(optionalAccount.get().getPassword());
+            account.setEmail(optionalAccount.get().getEmail());
+            account.setCellphone(optionalAccount.get().getCellphone());
+            account.setRole(optionalAccount.get().getRole());
+            account.setApprovalType(optionalAccount.get().getApprovalType());
+            account.setTeam(optionalAccount.get().getTeam());
+            account.setPosition(optionalAccount.get().getPosition());
+            account.setUserRefleshCheck(checknum);
+            account.setUserRefleshCount(timenum);
+            account.setInsert_id(optionalAccount.get().getInsert_id());
+            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
+        }
+
+        accountService.saveAccount(account);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 지역 select바뀌기
     @PostMapping("location")
     public ResponseEntity location(@RequestParam(value="s_emCountry", defaultValue="")String emCountry){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         CodeType codeType = CodeType.valueOf("C0005");
-//        log.info("emCountry : "+emCountry);
-//        log.info("codeType : "+codeType);
 
         if (emCountry.equals("")) {
             List<MasterCodeDto> locationData = null;

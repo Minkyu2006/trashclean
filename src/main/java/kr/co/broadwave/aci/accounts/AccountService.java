@@ -1,8 +1,11 @@
 package kr.co.broadwave.aci.accounts;
 
 import kr.co.broadwave.aci.bscodes.ApprovalType;
+import kr.co.broadwave.aci.equipment.Equipment;
+import kr.co.broadwave.aci.equipment.EquipmentDto;
 import kr.co.broadwave.aci.teams.Team;
 import kr.co.broadwave.aci.teams.TeamService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +31,8 @@ import java.util.*;
  */
 @Service
 public class AccountService implements UserDetailsService {
+    @Autowired
+    ModelMapper modelMapper;
 
     @Autowired
     AccountRepository accountRepository;
@@ -136,7 +141,5 @@ public class AccountService implements UserDetailsService {
     private Collection<? extends GrantedAuthority> getAuthorities(Account account) {
         return Arrays.asList(new SimpleGrantedAuthority(account.getRole().getCode()));
     }
-
-
 
 }
