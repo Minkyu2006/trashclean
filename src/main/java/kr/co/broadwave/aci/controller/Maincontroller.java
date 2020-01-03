@@ -115,19 +115,13 @@ public class Maincontroller {
 
     @RequestMapping("/signup")
     public String siguup(HttpServletRequest request,Model model){
-        HttpSession session = request.getSession();
-        if(session.getAttribute("role") == "ROLE_ADMIN"){
-            List<MasterCodeDto> positions = masterCodeService.findCodeList(CodeType.C0001); // 직급코드가져오기
-            List<TeamDto> teams = teamService.findTeamList();
+        List<MasterCodeDto> positions = masterCodeService.findCodeList(CodeType.C0001); // 직급코드가져오기
+        List<TeamDto> teams = teamService.findTeamList();
 
-            model.addAttribute("roles", AccountRole.values());
-            model.addAttribute("positions", positions);
-            model.addAttribute("teams", teams);
-
-            return "signup";
-        }else{
-            return "redirect:/403";
-        }
+        model.addAttribute("roles", AccountRole.values());
+        model.addAttribute("positions", positions);
+        model.addAttribute("teams", teams);
+        return "signup";
     }
 
 }
