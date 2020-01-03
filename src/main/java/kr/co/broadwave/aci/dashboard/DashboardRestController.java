@@ -767,30 +767,29 @@ public class DashboardRestController {
                                        @RequestParam(value="timenum", defaultValue="") Integer timenum) {
         AjaxResponse res = new AjaxResponse();
 
-        Account account = modelMapper.map(accountMapperDto, Account.class);
-        Optional<Account> optionalAccount = accountService.findByUserid(userid);
-
-        if(!optionalAccount.isPresent()){
-            log.info("사용자 일반 관리자(일반정보) : 사용자아이디: '" + account.getUserid() + "'");
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
-        }else{
-            account.setId(optionalAccount.get().getId());
-            account.setUserid(userid);
-            account.setUsername(optionalAccount.get().getUsername());
-            account.setPassword(optionalAccount.get().getPassword());
-            account.setEmail(optionalAccount.get().getEmail());
-            account.setCellphone(optionalAccount.get().getCellphone());
-            account.setRole(optionalAccount.get().getRole());
-            account.setApprovalType(optionalAccount.get().getApprovalType());
-            account.setTeam(optionalAccount.get().getTeam());
-            account.setPosition(optionalAccount.get().getPosition());
-            account.setUserRefleshCheck(checknum);
-            account.setUserRefleshCount(timenum);
-            account.setInsert_id(optionalAccount.get().getInsert_id());
-            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
-        }
-
-        accountService.saveAccount(account);
+//        Account account = modelMapper.map(accountMapperDto, Account.class);
+//        Optional<Account> optionalAccount = accountService.findByUserid(userid);
+//
+//        if(!optionalAccount.isPresent()){
+//            log.info("사용자 일반 관리자(일반정보) : 사용자아이디: '" + account.getUserid() + "'");
+//            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+//        }else{
+//            account.setId(optionalAccount.get().getId());
+//            account.setUserid(userid);
+//            account.setUsername(optionalAccount.get().getUsername());
+//            account.setEmail(optionalAccount.get().getEmail());
+//            account.setCellphone(optionalAccount.get().getCellphone());
+//            account.setRole(optionalAccount.get().getRole());
+//            account.setApprovalType(optionalAccount.get().getApprovalType());
+//            account.setTeam(optionalAccount.get().getTeam());
+//            account.setPosition(optionalAccount.get().getPosition());
+//            account.setUserRefleshCheck(checknum);
+//            account.setUserRefleshCount(timenum);
+//            account.setInsert_id(optionalAccount.get().getInsert_id());
+//            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
+//        }
+//
+//        accountService.saveAccount(account);
 
         return ResponseEntity.ok(res.success());
     }
