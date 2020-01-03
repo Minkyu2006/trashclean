@@ -12,10 +12,19 @@
 			});
 
 			$(document).on("click","#successBtn",function(){
-				window.location.href="/sionup";
+				init();
 			});
 
 		});
+
+		function init() {
+			$("#userid").val('');
+			$("#password").val('');
+			$("#password2").val('');
+			$("#username").val('');
+			$("#cellphone").val('');
+			$("#email").val('');
+		}
 
 		function save(){
 			if ($("#userid").val().trim() == '') {
