@@ -403,28 +403,28 @@
     				<div class="member">
 						<form name="frmreg">
 							<div class="member__form-item">
-								<label for="userid" class="join__label">아이디</label>
-								<input type="text" class="join__input" readonly id="userid" name ="userid" />
+								<label for="userid" class="c-text__label">아이디</label>
+								<input type="text" class="c-text__input" readonly id="userid" name ="userid" />
 							</div>
 							<div class="member__form-item">
-								<label for="username" class="join__label">이름</label>
-								<input type="text" class="join__input" id="username" name ="username" />
+								<label for="username" class="c-text__label">이름</label>
+								<input type="text" class="c-text__input" id="username" name ="username" />
 							</div>
 							<div class="member__form-item">
-								<label for="password" class="join__label">비밀번호</label>
-								<input type="password" class="join__input" id="password" name ="password" />
+								<label for="password" class="c-text__label">비밀번호</label>
+								<input type="password" class="c-text__input" id="password" name ="password" />
 							</div>
 							<div class="member__form-item">
-								<label for="cellphone" class="join__label">전화번호</label>
-								<input type="text" class="join__input" id="cellphone" name ="cellphone" />
+								<label for="cellphone" class="c-text__label">전화번호</label>
+								<input type="text" class="c-text__input" id="cellphone" name ="cellphone" />
 							</div>
 							<div class="member__form-item">
-								<label for="email" class="join__label">이메일</label>
-								<input type="text" class="join__input" id="email" name ="email" />
+								<label for="email" class="c-text__label">이메일</label>
+								<input type="text" class="c-text__input" id="email" name ="email" />
 							</div>
 
 							<div class="member__form-item">
-								<label for="teamcode" class="join__label">부서</label>
+								<label for="teamcode" class="c-text__label">부서</label>
 								<select name="teamcode" id="teamcode" class="c-select__input">
 									<option th:each ="team : ${teams}"
 											th:value="${team.teamcode}"
@@ -433,7 +433,7 @@
 								</select>
 							</div>
 							<div class="member__form-item">
-								<label for="positionid" class="join__label">직급</label>
+								<label for="positionid" class="c-text__label">직급</label>
 								<select name="positionid" id="positionid" class="c-select__input">
 									<option th:each ="position : ${positions}"
 											th:value="${position.id}"
@@ -443,7 +443,7 @@
 							</div>
 
 							<div class="member__form-item">
-								<label for="role" class="join__label">권한</label>
+								<label for="role" class="c-text__label">권한</label>
 								<div class="c-select">
 									<select class="c-select__input" id="role" name="role">
 										<option th:each ="role : ${roles}"
@@ -455,7 +455,7 @@
 							</div>
 
 							<div class="member__form-item">
-								<label for="approvalType" class="join__label">상태</label>
+								<label for="approvalType" class="c-text__label">상태</label>
 								<div class="c-select">
 									<select class="c-select__input" id="approvalType" name="approvalType">
 										<option th:each ="approvalType : ${approvalTypes}"

@@ -759,126 +759,122 @@ table {
 	background-color: #5b7b73;
 }
 .login__message {
-    position: absolute;
-    bottom: 25px;
-    left: 40px;
-    color: #fff;
-    font-size: 14px;
+	position: absolute;
+	bottom: 25px;
+	left: 40px;
+	color: #fff;
+	font-size: 14px;
 }
 
 /* join */
 .join {
-    position: absolute;
-    top: 50px;
-    left: 50%;
-    width: 800%;
-    max-width: 580px;
-    margin: 0 auto;
-    background-color: #fff;
-    border: 1px solid #dfdfdf;
-    padding: 20px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    -webkit-transform: translateX(-50%);
-    -moz-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-    -o-transform: translateX(-50%);
-    transform: translateX(-50%);
+	position: absolute;
+	top: 50px;
+	left: 50%;
+	width: 800%;
+	max-width: 580px;
+	margin: 0 auto;
+	background-color: #fff;
+	border: 1px solid #dfdfdf;
+	padding: 20px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	-webkit-transform: translateX(-50%);
+	-moz-transform: translateX(-50%);
+	-ms-transform: translateX(-50%);
+	-o-transform: translateX(-50%);
+	transform: translateX(-50%);
 }
-
 .join__logo {
-    margin-bottom: 20px;
+	margin-bottom: 20px;
 }
-
 .join__logo a {
-    display: block;
-    width: 229px;
-    height: 55px;
-    margin: 0 auto;
-    background: url(/assets/images/logo.png) no-repeat;
-    -webkit-background-size: 80%;
-    background-size: 80%;
-    background-position: 20px center;
-    text-indent: -9999px;
+	display: block;
+	width: 229px;
+	height: 55px;
+	margin: 0 auto;
+	background: url(/assets/images/logo.png) no-repeat;
+	-webkit-background-size: 80%;
+	background-size: 80%;
+	background-position: 20px center;
+	text-indent: -9999px;
 }
-
 .join__form {
-    position: relative;
-    width: 100%;
-
+	position: relative;
+	width: 100%;
+	
 }
-
 .join__form form {
-    display: block;
+	display: block;
 }
-
 .join__form form:before {
-    content: " ";
-    display: table;
+	content: " ";
+	display: table;
 }
-
 .join__form form:after {
-    content: " ";
-    display: table;
-    clear: both;
+	content: " ";
+	display: table;
+	clear: both;
 }
-
 .join__form__article {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #dfdfdf;
-    background-color: #efefef;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+	display: block;
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #dfdfdf;
+	background-color: #efefef;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
-
 .join__form__article + .join__form__article {
-    margin-top: 10px;
+	margin-top: 10px;
 }
-
 .join__form-item {
-    width: 100%;
-    padding: 5px;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+	width: 100%;
+	padding: 5px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
-
 .join__form .c-function {
-    margin-top: 10px;
+	margin-top: 10px;
+}
+.join__btn {
+	display: block;
+	width: 100%;
+	height: 36px;
+	margin-top: 20px;
+	text-align: center;
+	background-color: #007e37;
+	border: 0;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 700;
+	line-height: 36px;
+	cursor: pointer;
+	-webkit-box-shadow: 0 1px 3px 5px rgba(185, 220, 210, .2);
+	-moz-box-shadow: 0 1px 3px 5px rgba(185, 220, 210, .2);
+	box-shadow: 0 1px 3px 5px rgba(185, 220, 210, .2);
 }
 
-.join__btn {
-    display: block;
-    width: 100%;
-    height: 36px;
-    margin-top: 20px;
-    text-align: center;
-    background-color: #007e37;
-    border: 0;
-    color: #fff;
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 36px;
-    cursor: pointer;
-    -webkit-box-shadow: 0 1px 3px 5px rgba(185, 220, 210, .2);
-    -moz-box-shadow: 0 1px 3px 5px rgba(185, 220, 210, .2);
-    box-shadow: 0 1px 3px 5px rgba(185, 220, 210, .2);
+/* member */
+.member {
+	position: relative;
+}
+.member__form-item + .member__form-item {
+	margin-top: 10px;
 }
 
 /* dashboard */
 .dashboard {
-    position: relative;
-    width: 100%;
+	position: relative;
+	width: 100%;
 }
-
 .dashboard__count {
-    overflow: hidden;
-    position: relative;
-    width: 100%;
+	overflow: hidden;
+	position: relative;
+	width: 100%;
 	min-height: 74px;
 } 
 .dashboard__count-item {
