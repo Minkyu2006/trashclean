@@ -111,19 +111,14 @@ public class AccountRepositoryCustomImplTest {
         assertThat(accounts1.getContent().size()).isEqualTo(2);
         assertThat(accounts1.getTotalElements()).isEqualTo(3);
 
-
         assertThat(accounts2.getTotalPages()).isEqualTo(1);
         assertThat(accounts2.getContent().size()).isEqualTo(2);
-
-
 
         accountRepository.delete(a1);
         accountRepository.delete(a2);
         accountRepository.delete(a3);
         teamRepository.delete(t1);
         masterCodeRepository.delete(p1);
-
-
 
     }
 
@@ -157,6 +152,8 @@ public class AccountRepositoryCustomImplTest {
                 .insertDateTime(LocalDateTime.now())
                 .team(t1)
                 .position(p1)
+                .userRefleshCount(1)
+                .userRefleshCheck(3)
                 .build();
         Account a2 = Account.builder()
                 .userid("S0002")
@@ -168,6 +165,8 @@ public class AccountRepositoryCustomImplTest {
                 .insertDateTime(LocalDateTime.now())
                 .team(t1)
                 .position(p1)
+                .userRefleshCount(1)
+                .userRefleshCheck(3)
                 .build();
         Account a3 = Account.builder()
                 .userid("S0003")
@@ -179,6 +178,8 @@ public class AccountRepositoryCustomImplTest {
                 .insertDateTime(LocalDateTime.now())
                 .team(t1)
                 .position(p1)
+                .userRefleshCount(1)
+                .userRefleshCheck(3)
                 .build();
         accountRepository.save(a1);
         accountRepository.save(a2);
@@ -186,7 +187,7 @@ public class AccountRepositoryCustomImplTest {
 
         Pageable pageable = PageRequest.of(0, 2, Sort.Direction.ASC, "userid");
 
-        //when
+        //whenx
         Page<AccountDto> accounts1 = accountRepositoryCustom.findAllByApproval("", "", "", pageable);
         Page<AccountDto> accounts2 = accountRepositoryCustom.findAllByApproval("신규유저", "", "", pageable);
 
