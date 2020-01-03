@@ -769,13 +769,14 @@ public class DashboardRestController {
 
 //        Account account = modelMapper.map(accountMapperDto, Account.class);
 //        Optional<Account> optionalAccount = accountService.findByUserid(userid);
-//
+
 //        if(!optionalAccount.isPresent()){
 //            log.info("사용자 일반 관리자(일반정보) : 사용자아이디: '" + account.getUserid() + "'");
 //            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
 //        }else{
 //            account.setId(optionalAccount.get().getId());
 //            account.setUserid(userid);
+//            account.setPassword(userpass);
 //            account.setUsername(optionalAccount.get().getUsername());
 //            account.setEmail(optionalAccount.get().getEmail());
 //            account.setCellphone(optionalAccount.get().getCellphone());
@@ -787,8 +788,10 @@ public class DashboardRestController {
 //            account.setUserRefleshCount(timenum);
 //            account.setInsert_id(optionalAccount.get().getInsert_id());
 //            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
+//            account.setModify_id(optionalAccount.get().getModify_id());
+//            account.setModifyDateTime(optionalAccount.get().getModifyDateTime());
 //        }
-//
+
 //        accountService.saveAccount(account);
 
         return ResponseEntity.ok(res.success());
