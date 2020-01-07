@@ -4,6 +4,9 @@ import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
+import kr.co.broadwave.aci.files.FileUpload;
+import kr.co.broadwave.aci.files.FileUploadDto;
+import kr.co.broadwave.aci.files.FileUploadService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Optional;
 
 /**
@@ -31,10 +37,14 @@ public class MasterCodeRestcontroller {
 
     private final ModelMapper modelMapper;
     private final MasterCodeService masterCodeService;
+    private final FileUploadService fileUploadService;
 
     @Autowired
-    public MasterCodeRestcontroller(ModelMapper modelMapper, MasterCodeService masterCodeService) {
+    public MasterCodeRestcontroller(ModelMapper modelMapper,
+                                    FileUploadService fileUploadService,
+                                    MasterCodeService masterCodeService) {
         this.modelMapper = modelMapper;
+        this.fileUploadService = fileUploadService;
         this.masterCodeService = masterCodeService;
     }
 
@@ -57,16 +67,13 @@ public class MasterCodeRestcontroller {
         return CommonUtils.ResponseEntityPage(masterCodes);
 
     }
-    //
+
     @PostMapping("reg")
-    public ResponseEntity noticeSave(@ModelAttribute MasterCodeMapperDto masterCodeMapperDto , HttpServletRequest request){
+    public ResponseEntity noticeSave(@ModelAttribute MasterCodeMapperDto masterCodeMapperDto,
+                                     HttpServletRequest request) throws Exception {
         MasterCode masterCode = modelMapper.map(masterCodeMapperDto, MasterCode.class);
 
         String currentuserid = CommonUtils.getCurrentuser(request);
-
-        if(!masterCode.getCodeType().getCode().equals("C0005")){
-            masterCode.setBcRef1(null);
-        }
 
         //이미값이 존재하는지 확인
         Optional<MasterCode> optionalMasterCode = masterCodeService.findByCoAndCodeTypeAndCode(masterCode.getCodeType(), masterCode.getCode());
@@ -80,7 +87,6 @@ public class MasterCodeRestcontroller {
             masterCode.setModify_id(currentuserid);
             masterCode.setModifyDateTime(LocalDateTime.now());
         }
-
 
         MasterCode saveMastercode = masterCodeService.save(masterCode);
 
@@ -114,8 +120,7 @@ public class MasterCodeRestcontroller {
 
     @PostMapping("del")
     public ResponseEntity teamdel(@RequestParam(value="codetype", defaultValue="") String codetype,
-                                  @RequestParam(value="code", defaultValue="") String code
-    ){
+                                  @RequestParam(value="code", defaultValue="") String code){
         CodeType codeType = null;
 
         if (!codetype.equals("")){
@@ -124,10 +129,7 @@ public class MasterCodeRestcontroller {
 
         log.info("마스터코드 삭제 / codetype: '" + codetype + "', code ='" + code + "'");
 
-
         Optional<MasterCode> optionalMasterCode = masterCodeService.findByCoAndCodeTypeAndCode(codeType, code);
-
-
 
         //정보가있는지 체크
         if (!optionalMasterCode.isPresent()){
@@ -135,13 +137,9 @@ public class MasterCodeRestcontroller {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(),ResponseErrorCode.E003.getDesc()));
         }
         MasterCode masterCode = optionalMasterCode.get();
-        //사용중인지 체크
-//        if (accountService.countByTeam(team) > 0){
-//            log.info("부서삭제실패 : Account에서 사용중인데이터 , 삭제대상 teamcode : " + teamcode);
-//            return ResponseEntity.ok(res.fail(ResponseErrorCode.E002.getCode(),ResponseErrorCode.E002.getDesc()));
-//        }
 
         masterCodeService.delete(masterCode);
+
         return ResponseEntity.ok(res.success());
     }
 

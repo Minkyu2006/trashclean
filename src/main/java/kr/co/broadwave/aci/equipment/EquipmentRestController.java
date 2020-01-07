@@ -10,6 +10,7 @@ import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.company.*;
 import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.imodel.IModel;
+import kr.co.broadwave.aci.imodel.IModelChangeDto;
 import kr.co.broadwave.aci.imodel.IModelDto;
 import kr.co.broadwave.aci.imodel.IModelService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
@@ -255,7 +256,7 @@ public class EquipmentRestController {
 
         Optional<MasterCode> optionalEmType= masterCodeService.findById(emType);
 
-        List<IModelDto> ref = iModelService.findByEmType(optionalEmType.get());
+        List<IModelChangeDto> ref = iModelService.findByEmType(optionalEmType.get());
 
         data.clear();
         data.put("dataselect",ref);

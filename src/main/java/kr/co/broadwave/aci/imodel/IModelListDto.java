@@ -17,10 +17,14 @@ import org.springframework.beans.factory.annotation.Value;
 @AllArgsConstructor
 @ToString
 @Setter
+@Slf4j
 public class IModelListDto {
 
     private Long id;
-    private FileUpload mdFileid;
+
+    private String filePath; // 파일경로 1
+    private String saveFileName; // 파일경로 2
+
     private String mdNumber; // 모델 번호
     private String mdName; // 모델명
     private MasterCode emType; // 모델타입
@@ -30,9 +34,23 @@ public class IModelListDto {
     private Double mdMaximumPayload; // 최대적재량
     private MasterCode mdUnit; // 단위
 
-    public String getMdFileid() {
-        String fileurl = mdFileid.getFilePath()+"/s_"+mdFileid.getSaveFileName(); //미리보기 크기
-        return fileurl;
+    public String getFilePath() {
+        if(filePath==null){
+            filePath = "/defaultimage";
+            return filePath;
+        }else{
+            return filePath;
+        }
+    }
+
+    public String getSaveFileName() {
+        if(saveFileName==null){
+            saveFileName = "/model.jpg";
+            return saveFileName;
+        }else{
+            String savefile = "/s_"+saveFileName;
+            return savefile;
+        }
     }
 
     public Long getId() {

@@ -79,10 +79,10 @@ public class IModelService {
         iModelRepository.delete(iModel);
     }
 
-    public List<IModelDto> findByEmType(MasterCode id) {
+    public List<IModelChangeDto> findByEmType(MasterCode id) {
         List<IModel> iModels = iModelRepository.findByEmType(id);
         return iModels.stream()
-                .map(iModel -> modelMapper.map(iModel, IModelDto.class)
+                .map(iModel -> modelMapper.map(iModel, IModelChangeDto.class)
                 ).collect(Collectors.toList());
     }
 

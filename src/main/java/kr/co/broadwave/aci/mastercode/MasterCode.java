@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.mastercode;
 
 import kr.co.broadwave.aci.bscodes.CodeType;
+import kr.co.broadwave.aci.files.FileUpload;
 import lombok.*;
 
 import javax.persistence.*;

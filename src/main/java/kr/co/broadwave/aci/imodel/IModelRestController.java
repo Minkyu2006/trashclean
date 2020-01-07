@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.imodel;
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
 import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
+import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
@@ -13,6 +14,7 @@ import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.files.FileUploadService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -31,6 +33,7 @@ import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -93,15 +96,14 @@ public class IModelRestController {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(),
                     ResponseErrorCode.E021.getDesc()));
         } else {
-            // 모델타입 저장
+            //모델타입 저장
             iModel.setMdType(optionalMdType.get());
             iModel.setEmType(optionalEmType.get());
             iModel.setMdUnit(optionalMdUnit.get());
         }
 
-        // 모델번호 가져오기(고유값)
+        //모델번호 가져오기(고유값)
         Optional<IModel> optionalImodel = iModelService.findByMdNumber(iModel.getMdNumber());
-
         if (optionalImodel.isPresent()) {
             //수정
             iModel.setId(optionalImodel.get().getId());
@@ -119,28 +121,31 @@ public class IModelRestController {
 
         //파일저장
         Iterator<String> files = multi.getFileNames();
+        String uploadFile = files.next();
+        MultipartFile mFile = multi.getFile(uploadFile);
 
-        while(files.hasNext()) {
-            String uploadFile = files.next();
-            MultipartFile mFile = multi.getFile(uploadFile);
-            // 저장할 파일이 존재할때만 실행
-            if (!mFile.isEmpty()) {
-//            if(iModel.getMdFileid()!=null){
-//                log.info("기존에 존재하는 이미지는 삭제");
-//                fileUploadService.del(optionalImodel.get().getMdFileid().getId());
-//            }
-                FileUpload save = fileUploadService.save(mFile);
-                //log.info("저장한 이미지 아이디값 : "+save.getId());
-                //====================다른파일저장로직시 활용부분!!!!!!!=========================
-                //저장후 해당저장 값의 객체를반환하기때문에 다른테이블에 fk로 저장할수있다.
-                FileUploadDto fileUploadDto = fileUploadService.findById(save.getId());
-                iModel.setMdFileid(fileUploadDto.getFileUpload());
+        // 저장할 파일이 존재할때만 실행
+        if(!mFile.isEmpty()) {
+            FileUpload fileUpload = fileUploadService.save(mFile);
+            iModel.setMdFileid(fileUpload);
+        }else{
+            //파일은 존재하지않으나, 기존파일이 존재할경우
+            if (optionalImodel.isPresent()) {
+                iModel.setMdFileid(optionalImodel.get().getMdFileid());
+            }else{
+                //파일은 존재하지않으나, 기존파일이 없을경
+                iModel.setMdFileid(null);
+            }
+        }
+        iModelService.save(iModel);
+
+        //파일수정일때 실행
+        if(optionalImodel.isPresent()) {
+            if(optionalImodel.get().getMdFileid() != null) {
+                fileUploadService.del(optionalImodel.get().getMdFileid().getId());
             }
         }
 
-        IModel save = iModelService.save(iModel);
-
-        log.info("모델등록 데이터 : "+save.toString());
         return ResponseEntity.ok(res.success());
     }
 
@@ -162,6 +167,7 @@ public class IModelRestController {
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
             emTypeId = emTypes.get().getId();
         }
+
         if(!mdType.equals("")){
             Optional<MasterCode> mdTypes = masterCodeService.findByCode(mdType);
             mdTypeId = mdTypes.get().getId();
@@ -171,7 +177,6 @@ public class IModelRestController {
                 iModelService.findByIModelSearch(mdName,emTypeId,mdTypeId,mdRemark,pageable);
 
         if(iModelListDtos.getTotalElements()> 0 ){
-
             data.clear();
             data.put("datalist",iModelListDtos.getContent());
             data.put("awss3url",AWSS3URL);
@@ -190,7 +195,6 @@ public class IModelRestController {
 
             res.addResponse("data",data);
         }
-
         return ResponseEntity.ok(res.success());
     }
 
@@ -201,9 +205,17 @@ public class IModelRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         IModelDto iModel = iModelService.findById(id);
-        log.info("받아온 아이디값 : "+id);
+        log.info("받아온 모아이디값 : "+id);
 
         data.clear();
+        if(iModel.getMdFileid()==null){
+            data.put("filepath","/defaultimage");
+            data.put("filename","/model.jpg");
+        }else{
+            data.put("filepath",iModel.getMdFileid().getFilePath());
+            data.put("filename","/s_"+iModel.getMdFileid().getSaveFileName());
+        }
+
         data.put("iModel",iModel);
         data.put("awss3url",AWSS3URL);
         res.addResponse("data",data);

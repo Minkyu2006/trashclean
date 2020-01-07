@@ -36,7 +36,6 @@ public class TestpageController {
 
     @RequestMapping("dashboardfront")
     public String dashboardfront(){
-
         return "testpage/dashboardfront";
     }
 
@@ -68,6 +67,11 @@ public class TestpageController {
     @RequestMapping("listtest3")
     public String listtest3(){
         return "testpage/listtest3";
+    }
+
+    @RequestMapping("daysdevicetest")
+    public String daysdevicetest(){
+        return "testpage/daysdevicetest";
     }
 
     @RequestMapping("filedownload/{fileid}")

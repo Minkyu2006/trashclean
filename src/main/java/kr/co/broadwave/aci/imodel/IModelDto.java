@@ -4,6 +4,7 @@ import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @ToString
 @Setter
+@Slf4j
 public class IModelDto {
     private Long id; // 장비 고유ID
     private String mdNumber; // 모델 번호
@@ -30,17 +32,15 @@ public class IModelDto {
     private String mdRemark; // 모델특이사항
     private Double mdMaximumPayload; // 최대적재량
     private MasterCode mdUnitId; // 단위
-    private FileUpload mdFileid;
+    private FileUpload mdFileid; //파일업로
 
     private LocalDateTime insertDateTime;
     private String insert_id;
     private LocalDateTime modifyDateTime;
     private String modify_id;
 
-
-    public String getMdFileid() {
-        String fileurl = mdFileid.getFilePath()+"/s_"+mdFileid.getSaveFileName(); //미리보기 크기
-        return fileurl;
+    public FileUpload getMdFileid() {
+        return mdFileid;
     }
 
     public Double getMdMaximumPayload() {

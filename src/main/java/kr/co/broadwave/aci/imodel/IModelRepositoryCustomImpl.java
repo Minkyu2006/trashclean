@@ -6,6 +6,8 @@ import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.equipment.EquipmentListDto;
 import kr.co.broadwave.aci.equipment.EquipmentRepositoryCustom;
 import kr.co.broadwave.aci.equipment.QEquipment;
+import kr.co.broadwave.aci.files.QFileUpload;
+import kr.co.broadwave.aci.mastercode.QMasterCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -30,14 +32,17 @@ public class IModelRepositoryCustomImpl extends QuerydslRepositorySupport implem
     }
 
     @Override
-    public Page<IModelListDto> findByIModelSearch(String mdName,Long emTypeId, Long mdTypeId, String mdRemark,Pageable pageable){
+    public Page<IModelListDto> findByIModelSearch(String mdName,Long emTypeId,Long mdTypeId,String mdRemark,Pageable pageable){
 
         QIModel iModel = QIModel.iModel;
+        QFileUpload fileUpload = QFileUpload.fileUpload;
 
         JPQLQuery<IModelListDto> query = from(iModel)
+                .leftJoin(iModel.mdFileid,fileUpload)
                 .select(Projections.constructor(IModelListDto.class,
                         iModel.id,
-                        iModel.mdFileid,
+                        fileUpload.filePath,
+                        fileUpload.saveFileName,
                         iModel.mdNumber,
                         iModel.mdName,
                         iModel.emType,

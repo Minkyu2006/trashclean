@@ -9,11 +9,9 @@
 			$("#btnSave").on('click',function(){
 				save();
 			});
-
 			$("#btnSearch").on('click',function(){
 				callList(1);
 			});
-
 			$("#btnNew").on('click',function(){
 				init();
 			});
@@ -23,7 +21,7 @@
 		});
 
 		function save(){
-
+			console.log("저장시작");
 			if ($("#codeType").val().trim() == '') {
 				alertCaution("대분류를 선택하세요");
 				return false;
@@ -40,9 +38,7 @@
 			}
 
 			var $form = $('form[name="frmreg"]');
-
 			var params = $form.serialize();
-
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -51,7 +47,6 @@
 			$.ajax({
 				url:'/api/mastercode/reg',
 				type : 'post',
-				//dataType: 'html',
 				data : params,
 				cache:false,
 				error:function(request,status,error){
@@ -61,15 +56,11 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alertSuccess('저장되었습니다. ');
+					alertSuccess('저장되었습니다.');
 					init();
 					callList(1);
-
-
 				}
-
 			});
-
 		}
 
 		function init(){
@@ -83,7 +74,6 @@
 			$("#bcRef4").val('');
 			$("#code").removeAttr("readonly");
 			$("#codeType").removeAttr("readonly");
-
 		}
 
 		function callList(page) {
@@ -93,8 +83,6 @@
 			var perPage = 10;
 			var perArea = 5;
 			var totCnt = 0;
-
-
 
 			var $schList = $('#schList');
 			var $totalCnt = $('#totalCnt');
@@ -111,11 +99,9 @@
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
 
-
 			$.ajax({
 				url:'/api/mastercode/list?size='+ perPage + '&page=' + page,
 				type : 'post',
-				//dataType: json,
 				data : params,
 				cache:false,
 				error:function(request,status,error){
@@ -149,11 +135,8 @@
 						html += '</tr>';
 					});
 					$schList.html(html);
-
 				}
-
 			});
-
 		}
 
 		function callinfo(id) {
@@ -171,14 +154,12 @@
 			$.ajax({
 				url:'/api/mastercode/mastercode',
 				type : 'post',
-				//dataType: 'html',
 				data : params,
 				cache:false,
 				error:function(request,status,error){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
-
 					$("#codeType").val(res.data.datarow.codeType);
 					$("#code").val(res.data.datarow.code);
 					$("#name").val(res.data.datarow.name);
@@ -190,30 +171,20 @@
 					$("#codeType").attr("readonly",true);
 					$("#code").attr("readonly",true);
 				}
-
 			});
-
 		}
 
 		function del(){
 
 			if ($("#codeType").attr("readonly") != "readonly"){
-
 				alertCaution("삭제하고자하는 코드를 하단에서 <BR> 선택 후 삭제하세요.");
 				return false;
 			}
-
-
-			// if (confirm("정말 삭제하시겠습니까??") == false){
-			// 	return false;
-			// }
-
 
 			var params = {
 				codetype:$("#codeType").val(),
 				code:$("#code").val()
 			};
-
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -222,11 +193,10 @@
 			$.ajax({
 				url:'/api/mastercode/del',
 				type : 'post',
-				//dataType: 'html',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				error:function(request){
+					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
@@ -235,21 +205,13 @@
 					alertSuccess('삭제되었습니다.');
 					init();
 					callList(1);
-
-
-
 				}
-
 			});
-
 		}
 
 	</script>
 
 </head>
-
-
-
 	<div layout:fragment="content" class="contents-body">
 		<section class="section">
 			<article class="article">

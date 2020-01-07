@@ -19,4 +19,5 @@ public interface IModelRepository extends JpaRepository<IModel,Long>, QuerydslPr
     Optional<IModel> findByMdNumber(String mdNumber);
 
     List<IModel> findByEmType(MasterCode id);
+
 }

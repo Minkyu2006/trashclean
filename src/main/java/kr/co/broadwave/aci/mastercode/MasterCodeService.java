@@ -65,7 +65,6 @@ public class MasterCodeService {
 
     public List<MasterCodeDto> findAllByCodeTypeEqualsAndBcRef1(CodeType codeType, String emCountry) {
         List<MasterCode> masterCodes = masterCodeRepository.findAllByCodeTypeEqualsAndBcRef1(codeType,emCountry);
-
         return masterCodes.stream()
                 .map(masterCode -> modelMapper.map(masterCode, MasterCodeDto.class)
                 ).collect(Collectors.toList());
@@ -73,10 +72,6 @@ public class MasterCodeService {
 
     public Optional<MasterCode> findByCode(String emCountry) {
         return masterCodeRepository.findByCode(emCountry);
-    }
-
-    public Optional<MasterCode> findByBcRef1(String emCountry) {
-        return masterCodeRepository.findByBcRef1(emCountry);
     }
 
 }
