@@ -6,6 +6,9 @@
 	<script type="text/javascript">
 
 		$(function(){
+			$("#file").change(function() {
+				fileURL(this);
+			});
 
 			$("#mdSaveBtn").on('click',function(){
 				save();
@@ -27,7 +30,19 @@
 				del();
 			});
 
-		})
+		});
+
+		// 파일업로드시 미리보기 함
+		function fileURL(input) {
+			if (input.files && input.files[0]) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					$('#modelfile').show();
+					$('#modelfile').attr('src', e.target.result);
+				};
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
 
 		// 조건초기화
 		function reset() {
