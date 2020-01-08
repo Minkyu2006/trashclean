@@ -36,7 +36,7 @@
         <script src="/assets/js/alert/min_alert.js"></script>
         <!--		구글지도-->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
-
+		
     </head>
 
 	<div class="wrap">
@@ -58,7 +58,8 @@
 			    			<span class="contents-profile__info">배꼼씨</span>
 		    			</a>
 		    			<div class="profile-context">
-			    			<a href="#" class="profile-context--profile">Profile</a>
+			    			<a href="#" class="profile-context--profile profile-pop__btn">Profile</a>
+			    			<a href="#" class="profile-context--password profile-pop__btn--password">Password</a>
 			    			<form th:action="@{/logout}" method="post">
 			    				<span class="profile-context--logout">
 			    					<input type="submit" value="Logout" title="Logout" />
@@ -66,6 +67,97 @@
 						    </form>
 		    			</div>
 	    			</div>
+				</div>
+				
+				<div class="profile-pop">
+					<form action="" class="profile-pop__form">
+						<div class="profile-pop__picture">
+							<div class="profile-pop__picture-img">
+								<img src="/assets/images/dummy/profile2.png" alt="" />
+							</div>
+							<div class="profile-pop__picture-upload">
+								<label for="pop-profile"></label>
+								<input type="file" id="pop-profile" />
+							</div>
+						</div>
+						<div class="profile-pop__list">
+							<div class="profile-pop__item">
+								<div class="c-text">
+									<label for="" class="c-text__label">이름</label>
+									<input type="text" class="c-text__input" />
+								</div>
+							</div>
+							<div class="profile-pop__item">
+								<div class="c-text">
+									<label for="" class="c-text__label">전화번호</label>
+									<input type="text" class="c-text__input" />
+								</div>
+							</div>
+							<div class="profile-pop__item">
+								<div class="c-text">
+									<label for="" class="c-text__label">이메일</label>
+									<input type="text" class="c-text__input" />
+								</div>
+							</div>
+							<div class="profile-pop__item">
+								<div class="c-select">
+									<label for="" class="c-select__label">부서</label>
+									<select name="" id="" class="c-select__input">
+										<option value=""></option>
+										<option value=""></option>
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+							<div class="profile-pop__item">
+								<div class="c-select">
+									<label for="" class="c-select__label">직급</label>
+									<select name="" id="" class="c-select__input">
+										<option value=""></option>
+										<option value=""></option>
+										<option value=""></option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="c-function">
+						<div class="c-function__group c-function__group--right">
+							<div class="c-function__item"><button class="c-button c-button--point">저장</button></div>
+							<div class="c-function__item"><button class="c-button profile-pop__close">취소</button></div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="password-pop">
+					<form action="" class="password-pop__form">
+						<div class="password-pop__list">
+							<div class="passowrd-pop__item">
+								<div class="c-text">
+									<label for="" class="c-text__label">현재 비밀번호 확인</label>
+									<input type="password" class="c-text__input" />
+								</div>
+							</div>
+							<div class="passowrd-pop__item">
+								<div class="c-text">
+									<label for="" class="c-text__label">새 비밀번호</label>
+									<input type="password" class="c-text__input" />
+								</div>
+							</div>
+							<div class="passowrd-pop__item">
+								<div class="c-text">
+									<label for="" class="c-text__label">새 비밀번호 확인</label>
+									<input type="password" class="c-text__input" />
+								</div>
+							</div>
+						</div>
+					</form>
+					<div class="c-function">
+						<div class="c-function__group c-function__group--right">
+							<div class="c-function__item"><button class="c-button c-button--point">저장</button></div>
+							<div class="c-function__item"><button class="c-button password-pop__close">취소</button></div>
+						</div>
+					</div>
 				</div>
 				
 				<div layout:fragment="content"></div>

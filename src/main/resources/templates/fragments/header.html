@@ -145,7 +145,13 @@
 		<!-- 설정: 사진등록 -->
 		<form th:action="@{/logout}" method="post" id="logout">
 			<ul>
-				<li><a href="#" class="header-setting__btn-setting" title="Setting">Setting</a></li>
+				<li>
+					<a href="#" class="header-setting__btn-setting" title="Setting">Setting</a>
+					<ul class="header-setting__sub">
+						<li><a href="#" class="header-setting__sub-btn header-setting__sub-btn--profile profile-pop__btn" title="profile">profile</a></li>
+						<li><a href="#" class="header-setting__sub-btn header-setting__sub-btn--password profile-pop__btn--password" title="password">password</a></li>
+					</ul>
+				</li>
 				<li><a href="#" onclick="document.getElementById('logout').submit();" value="Logout" class="header-setting__btn-logout" title="logout">Logout</a></li>
 			</ul>
 		</form>

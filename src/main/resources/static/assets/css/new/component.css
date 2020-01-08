@@ -797,6 +797,18 @@ a.c-button {
 .c-input-list li + li {
 	margin-left: 10px;
 }
+.c-input-list li .c-select {
+	width: 100%;
+}
+.c-input-list.c-input-list--flex {
+	display: flex;
+}
+.c-input-list.c-input-list--flex li {
+	flex: 1;
+}
+.c-input-list.c-input-list--flex li + li {
+	margin-left: 10px;
+}
 
 .c-search-form {
 	position: relative;
@@ -851,6 +863,7 @@ a.c-button {
 	background-size: 24px 24px;
 	background-position: center center;
 }
+
 
 
 /* loader */

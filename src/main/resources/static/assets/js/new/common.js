@@ -124,6 +124,36 @@ $(document).ready(function() {
 		e.preventDefault();
 	})
 	
+	$('.profile-pop__btn').on('click', function(e) {
+		$('.profile-pop').addClass('active');
+		
+		e.preventDefault();
+	});
+	
+	$('.profile-pop__close').on('click', function(e) {
+		$('.profile-pop').removeClass('active');
+		
+		e.preventDefault();
+	});
+	$('.profile-pop__btn--password').on('click', function(e) {
+		$('.password-pop').addClass('active');
+		
+		e.preventDefault();
+	});
+	
+	$('.password-pop__close').on('click', function(e) {
+		$('.password-pop').removeClass('active');
+		
+		e.preventDefault();
+	});
+	
+	$('.header-setting__btn-setting').mouseenter(function () {
+		$(this).next('.header-setting__sub').addClass('active');
+	})
+	$('.header-setting__sub').mouseleave(function () {
+		$(this).removeClass('active');
+	})
+	
 	// btn-group
 	$('.c-btn-group').on('click', '.c-btn-group__button', function(e) {
 		var $this = $(this);
