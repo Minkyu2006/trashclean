@@ -401,93 +401,105 @@
 			<h2 class="article__heading">모델 등록</h2>
 			<form id ="mdreg" enctype="multipart/form-data">
 				<table class="c-table">
+					<colgroup>
+						<col style="width: 150px;" />
+						<col />
+						<col style="width: 150px;" />
+						<col />
+					</colgroup>
 					<tbody>
-					<tr>
-						<th>모델 번호</th>
-						<td>
-							<div class="c-text">
-								<input type="text" name="mdNumber" id="mdNumber" class="c-text__input" readonly="readonly" />
-							</div>
-						</td>
-						<th>모델명</th>
-						<td>
-							<div class="c-text">
-								<input type="text" name="mdName" id="mdName" class="c-text__input" />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>모델 타입/종류</th>
-						<td>
-							<ul class="c-input-list">
-								<li>
-									<div class="c-select" style="width: 180px;">
-										<select id="emType" name="emType" class="c-select__input">
-											<option th:each ="equipdType : ${equipdTypes}"
-													th:value="${equipdType.id}"
-													th:text="${equipdType.name}"
-											></option>
-										</select>
-									</div>
-								</li>
-								<li>
-									<div class="c-select" style="width: 180px;">
-										<select id="mdType" name="mdType" class="c-select__input">
-											<option th:each ="modelType : ${modelTypes}"
-													th:value="${modelType.id}"
-													th:text="${modelType.name}"
-											></option>
-										</select>
-									</div>
-								</li>
-							</ul>
-						</td>
-						<th>최대적재량/단위</th>
-						<td>
-							<ul class="c-input-list">
-								<li>
-									<div class="c-select" style="width: 297px;">
-										<input name="mdMaximumPayload" id="mdMaximumPayload" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-									</div>
-								</li>
-								<li>
-									<div class="c-select" style="width: 80px;">
-										<select name="mdUnit" id="mdUnit" class="c-select__input" >
-											<option th:each ="equipdUnit : ${equipdUnits}"
-													th:value="${equipdUnit.id}"
-													th:text="${equipdUnit.name}">
-											</option>
-										</select>
-									</div>
-								</li>
-							</ul>
-						</td>
-					</tr>
-					<tr>
-						<th>모델명(약칭)</th>
-						<td>
-							<div class="c-text">
-								<input type="text" name="mdSubname" id="mdSubname" class="c-date__input" />
-							</div>
-						</td>
-						<th>특이사항</th>
-						<td>
-							<div class="c-text">
-								<input type="text" name="mdRemark" id="mdRemark" class="c-date__input" />
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<th>이미지업로드</th>
-						<td>
-							<div class="c-text">
-								<input class="c-button" value="파일선택" type="file" id="file" name="file" />
-								<img width="70" id="modelfile" src="" style="display:none;" />
-							</div>
-						</td>
-						<th></th>
-						<td></td>
-					</tr>
+						<tr>
+							<th>모델 번호</th>
+							<td>
+								<div class="c-text">
+									<input type="text" name="mdNumber" id="mdNumber" class="c-text__input" readonly="readonly" />
+								</div>
+							</td>
+							<th>모델명</th>
+							<td>
+								<div class="c-text">
+									<input type="text" name="mdName" id="mdName" class="c-text__input" />
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th>모델 타입/종류</th>
+							<td>
+								<ul class="c-input-list c-input-list--flex">
+									<li>
+										<div class="c-select">
+											<select id="emType" name="emType" class="c-select__input">
+												<option th:each ="equipdType : ${equipdTypes}"
+														th:value="${equipdType.id}"
+														th:text="${equipdType.name}"
+												></option>
+											</select>
+										</div>
+									</li>
+									<li>
+										<div class="c-select">
+											<select id="mdType" name="mdType" class="c-select__input">
+												<option th:each ="modelType : ${modelTypes}"
+														th:value="${modelType.id}"
+														th:text="${modelType.name}"
+												></option>
+											</select>
+										</div>
+									</li>
+								</ul>
+							</td>
+							<th>최대적재량/단위</th>
+							<td>
+								<ul class="c-input-list c-input-list--flex">
+									<li>
+										<div class="c-select">
+											<input name="mdMaximumPayload" id="mdMaximumPayload" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+										</div>
+									</li>
+									<li class="flex-auto" style="width: 60px;">
+										<div class="c-select">
+											<select name="mdUnit" id="mdUnit" class="c-select__input" >
+												<option th:each ="equipdUnit : ${equipdUnits}"
+														th:value="${equipdUnit.id}"
+														th:text="${equipdUnit.name}">
+												</option>
+											</select>
+										</div>
+									</li>
+								</ul>
+							</td>
+						</tr>
+						<tr>
+							<th>모델명(약칭)</th>
+							<td>
+								<div class="c-text">
+									<input type="text" name="mdSubname" id="mdSubname" class="c-date__input" />
+								</div>
+							</td>
+							<th>특이사항</th>
+							<td>
+								<div class="c-text">
+									<input type="text" name="mdRemark" id="mdRemark" class="c-date__input" />
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th>이미지업로드</th>
+							<td>
+								<div class="c-picfile">
+									<img src="" alt="파일선택 전 이미지" class="c-picfile__default" />
+									<img src="" alt="파일 선택 후 이미지" class="c-picfile__picture" id="modelfile" />
+									<input type="text" readonly="readonly" class="c-picfile__filename" placeholder="파일을 선택해주세요" />
+									<div class="c-picfile__upload"><label for="">파일선택<input type="file" /></label></div>
+								</div>
+								<div class="c-text">
+									<input class="c-button" value="파일선택" type="file" id="file" name="file" />
+									<img width="70" id="modelfile" src="" style="display:none;" />
+								</div>
+							</td>
+							<th></th>
+							<td></td>
+						</tr>
 					</tbody>
 				</table>
 			</form>

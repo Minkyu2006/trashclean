@@ -806,6 +806,9 @@ a.c-button {
 .c-input-list.c-input-list--flex li {
 	flex: 1;
 }
+.c-input-list.c-input-list--flex li.flex-auto {
+	flex: 0 1 auto;
+}
 .c-input-list.c-input-list--flex li + li {
 	margin-left: 10px;
 }
