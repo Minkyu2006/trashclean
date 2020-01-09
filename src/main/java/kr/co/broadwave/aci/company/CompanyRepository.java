@@ -1,6 +1,5 @@
 package kr.co.broadwave.aci.company;
 
-import kr.co.broadwave.aci.teams.Team;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 

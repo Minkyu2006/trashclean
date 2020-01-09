@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.accounts;
 
 import kr.co.broadwave.aci.bscodes.ApprovalType;
+import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.teams.Team;
 import lombok.*;
@@ -67,6 +68,10 @@ public class Account {
     @Column(name="user_reflesh_count")
     private Integer userRefleshCount;
 
+    @ManyToOne(targetEntity = FileUpload.class,fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_photo")
+    private FileUpload userPhoto;
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 
@@ -84,13 +89,5 @@ public class Account {
 
     @Column(name="approval_id")
     private String approval_id;
-
-
-
-
-
-
-
-
 
 }

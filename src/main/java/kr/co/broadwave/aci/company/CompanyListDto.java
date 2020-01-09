@@ -1,11 +1,7 @@
 package kr.co.broadwave.aci.company;
 
-import kr.co.broadwave.aci.bscodes.DivisionType;
-import kr.co.broadwave.aci.bscodes.RegionalType;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
-
-import java.time.LocalDateTime;
 
 /**
  * @author Minkyu

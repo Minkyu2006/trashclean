@@ -3,6 +3,8 @@ package kr.co.broadwave.aci.accounts;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.equipment.Equipment;
 import kr.co.broadwave.aci.equipment.EquipmentDto;
+import kr.co.broadwave.aci.imodel.IModel;
+import kr.co.broadwave.aci.imodel.IModelDto;
 import kr.co.broadwave.aci.teams.Team;
 import kr.co.broadwave.aci.teams.TeamService;
 import org.modelmapper.ModelMapper;
@@ -82,6 +84,15 @@ public class AccountService implements UserDetailsService {
 
     public Long countByTeam(Team team){
         return accountRepository.countByTeam(team);
+    }
+
+    public AccountDtoProfile findByUseridProfile(String userid) {
+        Optional<Account> optionalAccount = this.accountRepository.findByUserid(userid);
+        if (optionalAccount.isPresent()) {
+            return modelMapper.map(optionalAccount.get(), AccountDtoProfile.class);
+        } else {
+            return null;
+        }
     }
 
     ////////아래는 테스트코드

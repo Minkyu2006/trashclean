@@ -36,7 +36,175 @@
         <script src="/assets/js/alert/min_alert.js"></script>
         <!--		구글지도-->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
-		
+
+		<script>
+			$(function(){
+				teamAndposition();
+				profileInfo();
+
+				$("#profilebtnSave").on('click',function(){
+					profileSave();
+				});
+
+				$("#passwordbtnPassSave").on('click',function(){
+					passSave();
+				});
+
+				$("#pop-profile").change(function() {
+					profileURL(this);
+				});
+			});
+
+			//부서,직급 select
+			function teamAndposition() {
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				var $teamList = $("#profileteamcode");
+				var $positionList = $("#profilepositionid");
+
+				$.ajax({
+					url:'/api/account/teamAndposition',
+					type : 'post',
+					cache:false,
+					error:function(request){
+						ajaxErrorMsg(request);
+					},
+					success: function(res){
+						if (!Ajax.checkResult(res)) {
+							return;
+						}
+
+						var html = '';
+						var html2 = '';
+
+						if(res.data.profilepositions=="" || res.data.profilepositions==null){
+							html += '<option value ="">' +"등록된 직급없음"+ '</option>';
+						}else{
+							$.each(res.data.profilepositions, function (key, value) {
+								html += '<option value ="' + echoNull2Blank(value.id) + '">' + echoNull2Blank(value.name)+ '</option>';
+							});
+						}
+						$positionList.html(html);
+
+						if(res.data.profileteams=="" || res.data.profileteams==null){
+							html2 += '<option value ="">' +"등록된 부서없음"+ '</option>';
+						}else{
+							$.each(res.data.profileteams, function (key, value) {
+								html2 += '<option value ="' + echoNull2Blank(value.teamcode) + '">' + echoNull2Blank(value.teamname)+ '</option>';
+							});
+						}
+						$teamList.html(html2);
+
+					}
+				});
+			}
+
+			//프로필 변경
+			function profileSave() {
+				if ($("#prousername").val().trim() == '') {
+					alertCaution("이름을 입력하세요.");
+					$("#prousername").trigger('focus');
+					return false;
+				}
+
+				if ($("#procellphone").val().trim() == '') {
+					alertCaution("전화번호를 입력하세요.");
+					$("#procellphone").trigger('focus');
+					return false;
+				}
+
+				if ($("#proemail").val().trim() == '') {
+					alertCaution("이메일을 입력하세요.");
+					$("#proemail").trigger('focus');
+					return false;
+				}
+
+				var formData = new FormData(document.getElementById('proreg'));
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url:'/api/account/profilereg',
+					type : 'post',
+					data : formData,
+					processData : false,
+					contentType : false,
+					enctype: 'multipart/form-data',
+					cache:false,
+					error:function(request){
+						ajaxErrorMsg(request);
+					},
+					success: function(res){
+						if (!Ajax.checkResult(res)) {
+							return;
+						}
+						alertSuccess('저장되었습니다.');
+					}
+				});
+			}
+
+			//프로필정보
+			function profileInfo() {
+
+				var params = {
+					prouserid:$("#prouserid").val()
+				};
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url: '/api/account/profileinfo',
+					type: 'post',
+					data: params,
+					cache: false,
+					error: function (request, status, error) {
+						ajaxErrorMsg(request);
+					},
+					success: function(res){
+						if (!Ajax.checkResult(res)) {
+							return;
+						}
+
+						var AWSS3URL = res.data.AWSS3URL;
+						$("#baseprofilename").html(res.data.accountProfile.username);
+						$("#baseprofilePhoto").attr("src",AWSS3URL+res.data.profilefilepath+res.data.profilefilename);
+						$("#headerprofilename").html(res.data.accountProfile.username);
+						$("#headerprofilePhoto").attr("src",AWSS3URL+res.data.profilefilepath+res.data.profilefilename);
+
+						$("#profilePhoto").attr("src",AWSS3URL+res.data.profilefilepath+res.data.profilefilename);
+						$("#prousername").val(res.data.accountProfile.username);
+						$("#proemail").val(res.data.accountProfile.email);
+						$("#procellphone").val(res.data.accountProfile.cellphone);
+						$("#profileteamcode").val(res.data.accountteamcode);
+						$("#profilepositionid").val(res.data.accountposition);
+					}
+				});
+			}
+
+			//비밀번호 변경
+			function passSave() {
+
+			}
+
+			// 파일업로드시 미리보기 함
+			function profileURL(input) {
+				if (input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = function(e) {
+						$('#profile').attr('src', e.target.result);
+					};
+					reader.readAsDataURL(input.files[0]);
+				}
+			}
+
+		</script>
+
     </head>
 
 	<div class="wrap">
@@ -53,9 +221,9 @@
 					<div class="contents-profile">
 		    			<a href="#" class="contents-profile__btn">
 			    			<span class="contents-profile__pic">
-			    				<img src="/assets/images/dummy/profile2.png" alt="">
+			    				<img id="baseprofilePhoto" src="" />
 			    			</span>
-			    			<span class="contents-profile__info">배꼼씨</span>
+			    			<span id="baseprofilename" class="contents-profile__info"></span>
 		    			</a>
 		    			<div class="profile-context">
 			    			<a href="#" class="profile-context--profile profile-pop__btn">Profile</a>
@@ -68,12 +236,13 @@
 		    			</div>
 	    			</div>
 				</div>
-				
+
+
 				<div class="profile-pop">
-					<form action="" class="profile-pop__form">
+					<form class="profile-pop__form" id ="proreg" enctype="multipart/form-data">
 						<div class="profile-pop__picture">
 							<div class="profile-pop__picture-img">
-								<img src="/assets/images/dummy/profile2.png" alt="" />
+								<img id="profilePhoto" src="" />
 							</div>
 							<div class="profile-pop__picture-upload">
 								<label for="pop-profile"></label>
@@ -83,39 +252,33 @@
 						<div class="profile-pop__list">
 							<div class="profile-pop__item">
 								<div class="c-text">
-									<label for="" class="c-text__label">이름</label>
-									<input type="text" class="c-text__input" />
+									<label for="prousername" class="c-text__label">이름</label>
+									<input id="prousername" name="username" type="text" class="c-text__input" />
 								</div>
 							</div>
 							<div class="profile-pop__item">
 								<div class="c-text">
-									<label for="" class="c-text__label">전화번호</label>
-									<input type="text" class="c-text__input" />
+									<label for="procellphone" class="c-text__label">전화번호</label>
+									<input id="procellphone" name="cellphone" type="text" class="c-text__input" />
 								</div>
 							</div>
 							<div class="profile-pop__item">
 								<div class="c-text">
-									<label for="" class="c-text__label">이메일</label>
-									<input type="text" class="c-text__input" />
+									<label for="proemail" class="c-text__label">이메일</label>
+									<input id="proemail" name="email" type="text" class="c-text__input" />
 								</div>
 							</div>
 							<div class="profile-pop__item">
 								<div class="c-select">
-									<label for="" class="c-select__label">부서</label>
-									<select name="" id="" class="c-select__input">
-										<option value=""></option>
-										<option value=""></option>
-										<option value=""></option>
+									<label for="profileteamcode" class="c-text__label">부서</label>
+									<select name="team" id="profileteamcode" class="c-select__input">
 									</select>
 								</div>
 							</div>
 							<div class="profile-pop__item">
 								<div class="c-select">
-									<label for="" class="c-select__label">직급</label>
-									<select name="" id="" class="c-select__input">
-										<option value=""></option>
-										<option value=""></option>
-										<option value=""></option>
+									<label for="profilepositionid" class="c-text__label">직급</label>
+									<select name="position" id="profilepositionid" class="c-select__input">
 									</select>
 								</div>
 							</div>
@@ -123,12 +286,15 @@
 					</form>
 					<div class="c-function">
 						<div class="c-function__group c-function__group--right">
-							<div class="c-function__item"><button class="c-button c-button--point">저장</button></div>
+							<div class="c-function__item"><button id="profilebtnSave" class="c-button c-button--point">저장</button></div>
 							<div class="c-function__item"><button class="c-button profile-pop__close">취소</button></div>
 						</div>
 					</div>
 				</div>
-				
+
+
+
+
 				<div class="password-pop">
 					<form action="" class="password-pop__form">
 						<div class="password-pop__list">
@@ -154,7 +320,7 @@
 					</form>
 					<div class="c-function">
 						<div class="c-function__group c-function__group--right">
-							<div class="c-function__item"><button class="c-button c-button--point">저장</button></div>
+							<div class="c-function__item"><button id="passwordbtnPassSave" class="c-button c-button--point">저장</button></div>
 							<div class="c-function__item"><button class="c-button password-pop__close">취소</button></div>
 						</div>
 					</div>
@@ -164,11 +330,10 @@
 				
 				<footer th:replace="fragments/footer:: footerFragment"></footer>
 			</div>
-		    
-		
-		    
+
     </div>
 
-    
+	<div id='alertpop'>
+	</div>
 
 </html>

@@ -25,19 +25,16 @@ import java.util.List;
 @RequestMapping("admin")
 public class AdminController {
 
-    private final IModelService iModelService;
     private final MasterCodeService masterCodeService;
     private final TeamService teamService;
 
-
     @Autowired
-    public AdminController(MasterCodeService masterCodeService, TeamService teamService,IModelService iModelService) {
-        this.iModelService = iModelService;
+    public AdminController(MasterCodeService masterCodeService, TeamService teamService) {
         this.masterCodeService = masterCodeService;
         this.teamService = teamService;
     }
 
-    //사용자등록화면
+    //사용자관리화면
     @RequestMapping("accountreg")
     public String accoutrreg(Model model){
 

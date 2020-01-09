@@ -1,25 +1,38 @@
 package kr.co.broadwave.aci.accounts;
 
 import kr.co.broadwave.aci.bscodes.ApprovalType;
+import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
+import kr.co.broadwave.aci.files.FileUpload;
+import kr.co.broadwave.aci.files.FileUploadService;
+import kr.co.broadwave.aci.imodel.IModelChangeDto;
+import kr.co.broadwave.aci.imodel.IModelDto;
 import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import kr.co.broadwave.aci.teams.Team;
+import kr.co.broadwave.aci.teams.TeamDto;
 import kr.co.broadwave.aci.teams.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -34,6 +47,9 @@ import java.util.Optional;
 @RequestMapping("/api/account")
 public class AccountRestController {
 
+    @Value("${aci.aws.s3.bucket.url}")
+    private String AWSS3URL;
+
     private AjaxResponse res = new AjaxResponse();
     HashMap<String, Object> data = new HashMap<>();
 
@@ -42,11 +58,12 @@ public class AccountRestController {
     private final ModelMapper modelMapper;
     private final LoginlogService loginlogService;
     private final MasterCodeService masterCodeService;
-
+    private final FileUploadService fileUploadService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AccountRestController(AccountService accountService, ModelMapper modelMapper
+    public AccountRestController(AccountService accountService, ModelMapper modelMapper,
+                                 FileUploadService fileUploadService
             , TeamService teamService, LoginlogService loginlogService, MasterCodeService masterCodeService, PasswordEncoder passwordEncoder) {
         this.accountService = accountService;
         this.modelMapper = modelMapper;
@@ -54,11 +71,11 @@ public class AccountRestController {
         this.loginlogService = loginlogService;
         this.masterCodeService = masterCodeService;
         this.passwordEncoder = passwordEncoder;
+        this.fileUploadService = fileUploadService;
     }
 
     @PostMapping("reg")
     public ResponseEntity accountSave(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
-
 
         Account account = modelMapper.map(accountMapperDto, Account.class);
 
@@ -497,28 +514,137 @@ public class AccountRestController {
 
     }
 
-    /*
-    @PostMapping ("team")
-    public ResponseEntity team(@RequestParam (value="teamcode", defaultValue="") String teamcode
-                            ){
-        log.info("단일부서  / teamcode: " + teamcode );
-        Optional<Team> optionalTeam = teamService.findByTeamcode(teamcode);
 
-        if (!optionalTeam.isPresent()){
-            log.info("단일부서조회실패 : 조회할 데이터가 존재하지않음 , 조회대상 teamcode : " + teamcode);
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(),ResponseErrorCode.E004.getDesc()));
+    @PostMapping("profilereg")
+    public ResponseEntity profilereg(@ModelAttribute AccountMapperDtoProfile accountMapperDtoProfile,
+                                                    MultipartHttpServletRequest multi,
+                                                    HttpServletRequest request){
+
+        Account account = modelMapper.map(accountMapperDtoProfile, Account.class);
+        Optional<Team> optionalTeam = teamService.findByTeamcode(accountMapperDtoProfile.getTeam());
+        Optional<MasterCode> optionalPositionCode = masterCodeService.findById(accountMapperDtoProfile.getPosition());
+
+        //부서코드가 존재하지않으면
+        if (!optionalTeam.isPresent()) {
+            log.info(" 선택한 부서 DB 존재 여부 체크.  부서코드: '" + accountMapperDtoProfile.getTeam() +"'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E005.getCode(), ResponseErrorCode.E005.getDesc()));
+        }else{
+            Team team = optionalTeam.get();
+            account.setTeam(team);
         }
-        Team team = optionalTeam.get();
+        //직급코드가 존재하지않으면
+        if (!optionalPositionCode.isPresent()) {
+            log.info(" 선택한 직급 DB 존재 여부 체크.  직급코드: '" + accountMapperDtoProfile.getPosition() +"'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E016.getCode(), ResponseErrorCode.E016.getDesc()));
+        }else{
+            account.setPosition(optionalPositionCode.get());
+        }
 
-        data.clear();
-        data.put("datarow",team);
-        res.addResponse("data",data);
+        String currentuserid = CommonUtils.getCurrentuser(request);
+        log.info("현재아이디 : "+currentuserid);
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+        log.info("현재유저정보 : "+optionalAccount);
 
-        log.info("단일부서 조회 성공 : " + team.toString() );
+        //수정시작
+        if(optionalAccount.isPresent()){
+            account.setId(optionalAccount.get().getId());
+            account.setUserid(currentuserid);
+            account.setPassword(optionalAccount.get().getPassword());
+            account.setRole(optionalAccount.get().getRole());
+            account.setApprovalType(optionalAccount.get().getApprovalType());
+            account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
+            account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
+            account.setInsert_id(optionalAccount.get().getInsert_id());
+            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
+            account.setModify_id(currentuserid);
+            account.setModifyDateTime(LocalDateTime.now());
+            account.setApprovalDateTime(optionalAccount.get().getApprovalDateTime());
+            account.setApproval_id(optionalAccount.get().getApproval_id());
+        }else{
+            log.info("사용자정보 수정실패 : 사용자아이디: '" + account.getUserid() + "'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+        }
+
+        //파일저장
+        Iterator<String> files = multi.getFileNames();
+        String uploadFile = files.next();
+        MultipartFile mFile = multi.getFile(uploadFile);
+
+        // 저장할 파일이 존재할때만 실행
+        if(!mFile.isEmpty()) {
+            FileUpload fileUpload = fileUploadService.save(mFile);
+            account.setUserPhoto(fileUpload);
+        }else{
+            //파일은 존재하지않으나, 기존파일이 존재할경우
+            if (optionalAccount.isPresent()) {
+                account.setUserPhoto(optionalAccount.get().getUserPhoto());
+            }else{
+                //파일은 존재하지않으나, 기존파일이 없을경
+                account.setUserPhoto(null);
+            }
+        }
+
+        Account accountSave =  this.accountService.updateAccount(account);
+
+        //파일수정일때 실행
+        if(optionalAccount.isPresent()) {
+            if(optionalAccount.get().getUserPhoto() != null) {
+                fileUploadService.del(optionalAccount.get().getUserPhoto().getId());
+            }
+        }
+
+        log.info("프로필 수정 성공 '" + accountSave.getUserid() +"'" );
         return ResponseEntity.ok(res.success());
 
     }
-     */
+
+    // 프로필 정보보기
+    @PostMapping ("profileinfo")
+    public ResponseEntity profileinfo(HttpServletRequest request){
+
+        String currentuserid = CommonUtils.getCurrentuser(request);
+
+        Optional<Account> accountProfile = accountService.findByUserid(currentuserid);
+//        AccountDtoProfile accountProfile = accountService.findByUseridProfile(currentuserid);
+//        log.info("유저ID : "+currentuserid);
+//        log.info("유저정보 : "+accountProfile);
+
+        data.clear();
+        if(accountProfile.get().getUserPhoto()==null){
+            data.put("profilefilepath","/defaultimage");
+            data.put("profilefilename","/profile.png");
+        }else{
+            data.put("profilefilepath",accountProfile.get().getUserPhoto().getFilePath());
+            data.put("profilefilename","/s_"+accountProfile.get().getUserPhoto().getSaveFileName());
+        }
+
+        data.put("accountProfile",accountProfile);
+        data.put("accountteamcode",accountProfile.get().getTeam().getTeamcode());
+        data.put("accountposition",accountProfile.get().getPosition().getId());
+        data.put("AWSS3URL",AWSS3URL);
+        res.addResponse("data",data);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    @PostMapping("teamAndposition")
+    public ResponseEntity teamAndposition(){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        List<MasterCodeDto> profilepositions = masterCodeService.findCodeList(CodeType.C0001); // 직급코드가져오기
+        List<TeamDto> profileteams = teamService.findTeamList();
+
+//        log.info("profilepositions : "+profilepositions);
+//        log.info("profileteams : " +profileteams);
+
+        data.clear();
+        data.put("profilepositions",profilepositions);
+        data.put("profileteams",profileteams);
+        res.addResponse("data",data);
+
+        return ResponseEntity.ok(res.success());
+    }
 
 
 }

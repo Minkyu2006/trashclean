@@ -1,6 +1,5 @@
 package kr.co.broadwave.aci.files;
 
-import kr.co.broadwave.aci.imodel.IModel;
 import lombok.*;
 
 import javax.persistence.*;

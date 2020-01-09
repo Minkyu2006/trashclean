@@ -1,15 +1,9 @@
 package kr.co.broadwave.aci.company;
 
-import kr.co.broadwave.aci.accounts.AccountRole;
-import kr.co.broadwave.aci.bscodes.ApprovalType;
-import kr.co.broadwave.aci.bscodes.DivisionType;
-import kr.co.broadwave.aci.bscodes.RegionalType;
 import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.teams.Team;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.swing.plaf.synth.Region;
 import java.time.LocalDateTime;
 
 /**

@@ -48,6 +48,7 @@ public interface AccountRepository extends JpaRepository<Account,Long>,QuerydslP
 
         return builder;
     }
+
     /*
     public default Predicate makePredicate(String email, String name) {
         BooleanBuilder builder = new BooleanBuilder();

@@ -2,19 +2,12 @@ package kr.co.broadwave.aci.imodel;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
-import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
-import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
-import kr.co.broadwave.aci.company.CompanyService;
-import kr.co.broadwave.aci.dashboard.DashboardService;
-import kr.co.broadwave.aci.equipment.*;
 import kr.co.broadwave.aci.files.FileUpload;
-import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.files.FileUploadService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -29,11 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -47,8 +38,8 @@ import java.util.Optional;
 @RequestMapping("/api/model")
 public class IModelRestController {
 
-        @Value("${aci.aws.s3.bucket.url}")
-        private String AWSS3URL;
+    @Value("${aci.aws.s3.bucket.url}")
+    private String AWSS3URL;
 
     private final ModelMapper modelMapper;
     private final AccountService accountService;

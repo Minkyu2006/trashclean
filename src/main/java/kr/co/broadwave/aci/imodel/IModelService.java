@@ -1,13 +1,7 @@
 package kr.co.broadwave.aci.imodel;
 
-import kr.co.broadwave.aci.bscodes.CodeType;
-import kr.co.broadwave.aci.company.CompanyListDto;
-import kr.co.broadwave.aci.company.CompanyRepositoryCustom;
-import kr.co.broadwave.aci.equipment.*;
-import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

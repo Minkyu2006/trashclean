@@ -1,13 +1,8 @@
 package kr.co.broadwave.aci.equipment;
 
-import kr.co.broadwave.aci.accounts.AccountRole;
-import kr.co.broadwave.aci.bscodes.ApprovalType;
-import kr.co.broadwave.aci.bscodes.EmType;
-import kr.co.broadwave.aci.bscodes.NowStateType;
 import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.teams.Team;
 import lombok.*;
 
 import javax.persistence.*;

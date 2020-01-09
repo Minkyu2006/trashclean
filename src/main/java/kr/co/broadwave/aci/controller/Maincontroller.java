@@ -48,12 +48,6 @@ public class Maincontroller {
         return "index";
     }
 
-    @RequestMapping("/testwebpage")
-    public String test(){
-
-        return "testwebpage";
-    }
-
     @RequestMapping("/mypage")
     public String mypage(Model model, HttpServletRequest request){
         String userid = CommonUtils.getCurrentuser(request);
@@ -62,7 +56,6 @@ public class Maincontroller {
         model.addAttribute("account",account);
         return "mypage";
     }
-
 
     @RequestMapping("/loginsuccess")
     public String loginsuccess(HttpServletRequest request){

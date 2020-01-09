@@ -1,6 +1,5 @@
 package kr.co.broadwave.aci.imodel;
 
-import kr.co.broadwave.aci.equipment.EquipmentListDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

@@ -1,6 +1,5 @@
 package kr.co.broadwave.aci.imodel;
 
-import kr.co.broadwave.aci.equipment.Equipment;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
