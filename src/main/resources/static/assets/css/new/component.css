@@ -867,6 +867,66 @@ a.c-button {
 	background-position: center center;
 }
 
+.c-picfile {
+	position: relative;
+	width: 100%;
+	padding: 20px;
+	border: 1px solid #dfdfdf;
+	text-align: center;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.c-picfile__default {
+	display: block;
+	width: 84px;
+	margin: 0 auto;
+}
+.c-picfile__picture {
+	display: none;
+	width: 84px;
+}
+.c-picfile.active .c-picfile__default {
+	display: none;
+}
+.c-picfile.active .c-picfile__picture {
+	display: block;
+}
+.c-picfile__filename {
+	margin-top: 10px;
+	width: 100%;
+	height: 24px;
+	line-height: 24px;
+	text-align: center;
+	border: 0;
+}
+.c-picfile__upload {
+	margin-top: 10px;
+}
+.c-picfile__upload label {
+	display: inline-block;
+	padding: 10px 15px;
+	background-color: #007e37;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 700;
+	cursor: pointer;
+}
+.c-picfile__upload input[type=file] {
+	overflow: hidden;
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	clear: rect(0, 0, 0, 0);
+	border: 0;
+}
 
 
 /* loader */

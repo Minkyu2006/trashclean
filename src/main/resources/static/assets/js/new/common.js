@@ -417,6 +417,32 @@ $(document).ready(function() {
 		}
 	});
 	$('.c-scroll-table__body').trigger("click");
+	
+	
+	// 파일업로드시 미리보기 함
+	function fileURL(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function(e) {
+				$('#modelfile').show();
+				$('#defaultfile').hide();
+				$('#modelfile').attr('src', e.target.result);
+			};
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+	// file name
+	$('.c-picfile__input').change(function(){
+		var txt = [];
+		for(var i=0; i<this.files.length; i++){
+			txt.push(this.files[i].name);
+		}
+		$(this).closest('.c-picfile').find('.c-picfile__filename').val( txt.join() );
+		
+		
+		fileURL(this);
+	}).change();
+	
 })
 
 
