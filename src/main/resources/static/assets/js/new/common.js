@@ -132,7 +132,7 @@ $(document).ready(function() {
 	
 	$('.profile-pop__close').on('click', function(e) {
 		$('.profile-pop').removeClass('active');
-		
+		profileInfo();
 		e.preventDefault();
 	});
 	$('.profile-pop__btn--password').on('click', function(e) {
@@ -397,11 +397,11 @@ $(document).ready(function() {
 	// 세로
 	$.fn.hasScrollBar = function() {
 		return this.get(0).scrollHeight > this.get(0).clientHeight;
-	}
+	};
 	// 가로
 	$.fn.hasHorizonScrollBar = function() {
 		return this.get(0).scrollWidth > this.get(0).clientWidth;
-	}
+	};
 	// 스크롤바 여부에 따른 클래스 추가
 	$('.c-scroll-table__body').on('click', function() {
 		if($(this).hasScrollBar()) {
@@ -438,8 +438,8 @@ $(document).ready(function() {
 			txt.push(this.files[i].name);
 		}
 		$(this).closest('.c-picfile').find('.c-picfile__filename').val( txt.join() );
-		
-		
+
+
 		fileURL(this);
 	}).change();
 	
