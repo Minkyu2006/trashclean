@@ -147,6 +147,7 @@ public class AccountRestControllerTest {
                 .andExpect(jsonPath("data.datarow.userid").value("admin"))
                 ;
     }
+
     @Test
     @WithMockUser(value = "testuser",roles = {"ADMIN"})
     public void account_API_reg_and_modify_and_del() throws Exception{
@@ -169,8 +170,8 @@ public class AccountRestControllerTest {
                 .modifyDateTime(LocalDateTime.now())
                 .build();
         masterCodeRepository.save(p1);
-        //=========   save     =============
 
+        //=========   save     =============
         //when then
         mockMvc.perform(post("/api/account/reg")
                 .with(csrf())
@@ -195,28 +196,27 @@ public class AccountRestControllerTest {
         //=========   modify     =============
 
         //when then
-        mockMvc.perform(post("/api/account/modifyemail")
-                .with(csrf())
-                .param("userid","testcis2")
-                .param("email","modifytest@mail.com")
-                .param("teamcode","WAA001")
-                .param("positionid",p1.getId().toString())
-                .param("mode","N")
-                .param("role","ROLE_USER ")
-        )
-                .andDo(print())
-                .andExpect(status().isOk());
+//        mockMvc.perform(post("/api/account/modifyemail")
+//                .with(csrf())
+//                .param("userid","testcis2")
+//                .param("email","modifytest@mail.com")
+//                .param("teamcode","WAA001")
+//                .param("positionid",p1.getId().toString())
+//                .param("mode","N")
+//                .param("role","ROLE_USER ")
+//        )
+//                .andDo(print())
+//                .andExpect(status().isOk());
+//
+//        Optional<Account> optionalAccountModify = accountRepository.findByUserid("testcis2");
+//        Account accountModify = optionalAccountModify.get();
 
-        Optional<Account> optionalAccountModify = accountRepository.findByUserid("testcis2");
-        Account accountModify = optionalAccountModify.get();
+//        assertThat(optionalAccountModify.isPresent()).isEqualTo(true);
+//        assertThat(accountModify.getUserid()).isEqualTo("testcis2");
+//        assertThat(accountModify.getEmail()).isEqualTo("modifytest@mail.com");
 
-        assertThat(optionalAccountModify.isPresent()).isEqualTo(true);
-        assertThat(accountModify.getUserid()).isEqualTo("testcis2");
-        assertThat(accountModify.getEmail()).isEqualTo("modifytest@mail.com");
-
-        //modifyReg
-
-        //when then
+//        modifyReg
+//        when then
         mockMvc.perform(post("/api/account/modifyReg")
                 .with(csrf())
                 .param("userid","testcis2")
