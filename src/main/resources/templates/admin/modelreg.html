@@ -6,9 +6,6 @@
 	<script type="text/javascript">
 
 		$(function(){
-			/*$("#file").change(function() {
-				fileURL(this);
-			});*/
 
 			$("#mdSaveBtn").on('click',function(){
 				save();
@@ -30,15 +27,6 @@
 				del();
 			});
 
-			
-			// file name
-			/*$('.c-picfile__input input').change(function(){
-				var txt = [];
-				for(var i=0; i<this.files.length; i++){
-					txt.push(this.files[i].name);
-				}
-				$(this).parent().prev('.c-picfile__filename').val( txt.join() );
-			}).change();*/
 		});
 
 		
@@ -69,7 +57,9 @@
 			$("#mdSubname").val('');
 			$("#mdRemark").val('');
 			$("#mdMaximumPayload").val('');
+			$("#defaultfile").show();
 			$("#modelfile").hide();
+			$("#filename").val('');
 			$("#modelfile").attr("src","");
 		}
 
@@ -197,6 +187,7 @@
 				},
 				success: function (res) {
 					var baseurl = res.data.awss3url;
+					$("#defaultfile").hide();
 					$("#modelfile").show();
 					$("#mdNumber").val(res.data.iModel.mdNumber);
 					$("#mdName").val(res.data.iModel.mdName);
@@ -206,6 +197,7 @@
 					$("#mdMaximumPayload").val(res.data.iModel.mdMaximumPayload);
 					$("#mdUnit").val(res.data.iModel.mdUnitId);
 					$("#mdRemark").val(res.data.iModel.mdRemark);
+					$("#filename").val(res.data.filerealname);
 					$("#modelfile").attr("src",baseurl+res.data.filepath+res.data.filename);
 				}
 			});
@@ -488,13 +480,9 @@
 								<div class="c-picfile">
 									<img src="/assets/images/icon__picfile.png" alt="파일선택 " class="c-picfile__default" id="defaultfile" />
 									<img src="" alt="파일 선택 후 이미지" class="c-picfile__picture" id="modelfile" />
-									<input type="text" readonly="readonly" class="c-picfile__filename" placeholder="파일을 선택해주세요" />
-									<div class="c-picfile__upload"><label for="file">파일선택<input type="file" id="file" class="c-picfile__input" accept="image/*" /></label></div>
+									<input type="text" readonly="readonly" id="filename" class="c-picfile__filename" placeholder="파일을 선택해주세요." />
+									<div class="c-picfile__upload"><label for="file">파일선택<input type="file" id="file" name="file" class="c-picfile__input" accept="image/*" /></label></div>
 								</div>
-								<!-- <div class="c-text">
-									<input class="c-button" value="파일선택" type="file" id="file" name="file" />
-									<img width="70" id="modelfile" src="" style="display:none;" />
-								</div> -->
 							</td>
 							<th></th>
 							<td></td>

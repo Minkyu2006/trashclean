@@ -205,9 +205,11 @@ public class IModelRestController {
         if(iModel.getMdFileid()==null){
             data.put("filepath","/defaultimage");
             data.put("filename","/model.jpg");
+            data.put("filerealname","등록된 이미지가 없습니다.");
         }else{
             data.put("filepath",iModel.getMdFileid().getFilePath());
             data.put("filename","/s_"+iModel.getMdFileid().getSaveFileName());
+            data.put("filerealname",iModel.getMdFileid().getFileName());
         }
 
         data.put("iModel",iModel);
