@@ -81,6 +81,7 @@ public class AppRunner implements ApplicationRunner {
                 .position(position1)
                 .userRefleshCheck(1)
                 .userRefleshCount(3)
+                .userPhoto(null)
                 .approvalType(ApprovalType.AT02)
                 .insertDateTime(LocalDateTime.now())
                 .insert_id("system")

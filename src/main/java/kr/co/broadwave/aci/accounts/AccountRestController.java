@@ -7,8 +7,6 @@ import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.files.FileUploadService;
-import kr.co.broadwave.aci.imodel.IModelChangeDto;
-import kr.co.broadwave.aci.imodel.IModelDto;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
@@ -23,12 +21,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -307,112 +305,53 @@ public class AccountRestController {
 
     }
 
-    @PostMapping("modifyemail")
-    public ResponseEntity accountSaveEmail(@ModelAttribute AccountMapperDtoModify accountMapperDto, HttpServletRequest request){
-
-
-        Account account = modelMapper.map(accountMapperDto, Account.class);
-
-
-        //아이디를 입력하세요.
-        if (accountMapperDto.getUserid() == null || accountMapperDto.getUserid().equals("")){
-            log.info(ResponseErrorCode.E009.getDesc());
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E009.getCode(), ResponseErrorCode.E009.getDesc()));
-        }
-
-
-        Optional<Account> optionalAccount = accountService.findByUserid(account.getUserid());
-
-        String currentuserid = CommonUtils.getCurrentuser(request);
-
-
-        //수정일때
-        if(!optionalAccount.isPresent()){
-            log.info("사용자정보 수정실패 : 사용자아이디: '" + account.getUserid() + "'");
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
-        }else{
-            account.setId(optionalAccount.get().getId());
-            account.setInsert_id(optionalAccount.get().getInsert_id());
-            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
-            account.setPassword(optionalAccount.get().getPassword());
-            account.setTeam(optionalAccount.get().getTeam());
-            account.setRole(optionalAccount.get().getRole());
-            account.setUsername(optionalAccount.get().getUsername());
-            account.setApprovalType(optionalAccount.get().getApprovalType());
-            account.setPosition(optionalAccount.get().getPosition());
-
-        }
-        account.setModify_id(currentuserid);
-        account.setModifyDateTime(LocalDateTime.now());
-
-
-
-
-        Account accountSave =  this.accountService.modifyAccount(account);
-
-        log.info("사용자정보 수정 성공 : + " + accountMapperDto.getUserid() +"'" );
-        return ResponseEntity.ok(res.success());
-
-    }
-
-    @PostMapping("modifypassword")
-    public ResponseEntity accountSavepassword(@ModelAttribute AccountMapperDtoModify accountMapperDto, HttpServletRequest request){
-
-
-        Account account = modelMapper.map(accountMapperDto, Account.class);
-
-
-
-        //아이디를 입력하세요.
-        if (accountMapperDto.getUserid() == null || accountMapperDto.getUserid() ==""){
-            log.info(ResponseErrorCode.E009.getDesc());
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E009.getCode(), ResponseErrorCode.E009.getDesc()));
-        }
-
-
-        Optional<Account> optionalAccount = accountService.findByUserid(account.getUserid());
-
-        String currentuserid = CommonUtils.getCurrentuser(request);
-
-
-
-        //수정일때
-        if(!optionalAccount.isPresent()){
-            log.info("사용자정보(패스워드)수정 실패 : 사용자아이디: '" + account.getUserid() + "'");
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
-        }else{
-            //현재암호비교
-            if (!passwordEncoder.matches(accountMapperDto.getOldpassword(),optionalAccount.get().getPassword())){
-                return ResponseEntity.ok(res.fail(ResponseErrorCode.E010.getCode(), ResponseErrorCode.E010.getDesc()));
-            }
-            if( !accountMapperDto.getPassword().equals(accountMapperDto.getPasswordconfirm()) ){
-                return ResponseEntity.ok(res.fail(ResponseErrorCode.E011.getCode(), ResponseErrorCode.E011.getDesc()));
-            }
-
-            account.setId(optionalAccount.get().getId());
-            account.setInsert_id(optionalAccount.get().getInsert_id());
-            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
-            account.setEmail(optionalAccount.get().getEmail());
-            account.setTeam(optionalAccount.get().getTeam());
-            account.setRole(optionalAccount.get().getRole());
-            account.setUsername(optionalAccount.get().getUsername());
-            account.setApprovalType(optionalAccount.get().getApprovalType());
-            account.setPosition(optionalAccount.get().getPosition());
-
-        }
-        account.setModify_id(currentuserid);
-        account.setModifyDateTime(LocalDateTime.now());
-
-
-
-
-        Account accountSave =  this.accountService.saveAccount(account);
-
-        log.info("사용자정보(패스워드)수정 성공 :  " + accountMapperDto.getUserid() +"'" );
-        return ResponseEntity.ok(res.success());
-
-    }
-
+//    @PostMapping("modifyemail")
+//    public ResponseEntity accountSaveEmail(@ModelAttribute AccountMapperDtoModify accountMapperDto, HttpServletRequest request){
+//
+//
+//        Account account = modelMapper.map(accountMapperDto, Account.class);
+//
+//
+//        //아이디를 입력하세요.
+//        if (accountMapperDto.getUserid() == null || accountMapperDto.getUserid().equals("")){
+//            log.info(ResponseErrorCode.E009.getDesc());
+//            return ResponseEntity.ok(res.fail(ResponseErrorCode.E009.getCode(), ResponseErrorCode.E009.getDesc()));
+//        }
+//
+//
+//        Optional<Account> optionalAccount = accountService.findByUserid(account.getUserid());
+//
+//        String currentuserid = CommonUtils.getCurrentuser(request);
+//
+//
+//        //수정일때
+//        if(!optionalAccount.isPresent()){
+//            log.info("사용자정보 수정실패 : 사용자아이디: '" + account.getUserid() + "'");
+//            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+//        }else{
+//            account.setId(optionalAccount.get().getId());
+//            account.setInsert_id(optionalAccount.get().getInsert_id());
+//            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
+//            account.setPassword(optionalAccount.get().getPassword());
+//            account.setTeam(optionalAccount.get().getTeam());
+//            account.setRole(optionalAccount.get().getRole());
+//            account.setUsername(optionalAccount.get().getUsername());
+//            account.setApprovalType(optionalAccount.get().getApprovalType());
+//            account.setPosition(optionalAccount.get().getPosition());
+//
+//        }
+//        account.setModify_id(currentuserid);
+//        account.setModifyDateTime(LocalDateTime.now());
+//
+//
+//
+//
+//        Account accountSave =  this.accountService.modifyAccount(account);
+//
+//        log.info("사용자정보 수정 성공 : + " + accountMapperDto.getUserid() +"'" );
+//        return ResponseEntity.ok(res.success());
+//
+//    }
 
     @PostMapping("list")
     public ResponseEntity accountList(@RequestParam(value="userid", defaultValue="") String userid,
@@ -514,11 +453,11 @@ public class AccountRestController {
 
     }
 
-
+    // 프로필변경
     @PostMapping("profilereg")
     public ResponseEntity profilereg(@ModelAttribute AccountMapperDtoProfile accountMapperDtoProfile,
                                                     MultipartHttpServletRequest multi,
-                                                    HttpServletRequest request){
+                                                    HttpServletRequest request) throws Exception{
 
         Account account = modelMapper.map(accountMapperDtoProfile, Account.class);
         Optional<Team> optionalTeam = teamService.findByTeamcode(accountMapperDtoProfile.getTeam());
@@ -532,6 +471,7 @@ public class AccountRestController {
             Team team = optionalTeam.get();
             account.setTeam(team);
         }
+
         //직급코드가 존재하지않으면
         if (!optionalPositionCode.isPresent()) {
             log.info(" 선택한 직급 DB 존재 여부 체크.  직급코드: '" + accountMapperDtoProfile.getPosition() +"'");
@@ -541,9 +481,7 @@ public class AccountRestController {
         }
 
         String currentuserid = CommonUtils.getCurrentuser(request);
-        log.info("현재아이디 : "+currentuserid);
         Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
-        log.info("현재유저정보 : "+optionalAccount);
 
         //수정시작
         if(optionalAccount.isPresent()){
@@ -556,16 +494,16 @@ public class AccountRestController {
             account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
             account.setInsert_id(optionalAccount.get().getInsert_id());
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
-            account.setModify_id(currentuserid);
-            account.setModifyDateTime(LocalDateTime.now());
             account.setApprovalDateTime(optionalAccount.get().getApprovalDateTime());
             account.setApproval_id(optionalAccount.get().getApproval_id());
         }else{
             log.info("사용자정보 수정실패 : 사용자아이디: '" + account.getUserid() + "'");
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
         }
+        account.setModify_id(currentuserid);
+        account.setModifyDateTime(LocalDateTime.now());
 
-        //파일저장
+        //프로필사진 저장
         Iterator<String> files = multi.getFileNames();
         String uploadFile = files.next();
         MultipartFile mFile = multi.getFile(uploadFile);
@@ -584,16 +522,17 @@ public class AccountRestController {
             }
         }
 
-        Account accountSave =  this.accountService.updateAccount(account);
+        accountService.updateAccount(account);
 
         //파일수정일때 실행
-        if(optionalAccount.isPresent()) {
-            if(optionalAccount.get().getUserPhoto() != null) {
-                fileUploadService.del(optionalAccount.get().getUserPhoto().getId());
+        if(!mFile.isEmpty()) {
+            if (optionalAccount.isPresent()) {
+                if (optionalAccount.get().getUserPhoto() != null) {
+                    fileUploadService.del(optionalAccount.get().getUserPhoto().getId());
+                }
             }
         }
 
-        log.info("프로필 수정 성공 '" + accountSave.getUserid() +"'" );
         return ResponseEntity.ok(res.success());
 
     }
@@ -627,6 +566,7 @@ public class AccountRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 프로필 부서,직급 select호출
     @PostMapping("teamAndposition")
     public ResponseEntity teamAndposition(){
         AjaxResponse res = new AjaxResponse();
@@ -646,5 +586,56 @@ public class AccountRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 프로필 비밀번호변경
+    @Transactional
+    @PostMapping("modifypassword")
+    public ResponseEntity modifypassword(@ModelAttribute AccountMapperDtoModify accountMapperDtoModify,
+                                              HttpServletRequest request){
+
+        Account account = modelMapper.map(accountMapperDtoModify, Account.class);
+
+        String currentuserid = CommonUtils.getCurrentuser(request);
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+
+        //수정일때
+        if(!optionalAccount.isPresent()){
+            log.info("사용자정보(패스워드)수정 실패 : 사용자아이디: '" + currentuserid + "'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+        }else{
+            //현재암호비교
+            if (!passwordEncoder.matches(accountMapperDtoModify.getOldpassword(),optionalAccount.get().getPassword())){
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E010.getCode(), ResponseErrorCode.E010.getDesc()));
+            }
+            if( !accountMapperDtoModify.getNewpassword().equals(accountMapperDtoModify.getPasswordconfirm()) ){
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E011.getCode(), ResponseErrorCode.E011.getDesc()));
+            }
+
+            account.setId(optionalAccount.get().getId());
+            account.setUserid(currentuserid);
+            account.setUserPhoto(optionalAccount.get().getUserPhoto());
+            account.setUsername(optionalAccount.get().getUsername());
+            account.setCellphone(optionalAccount.get().getCellphone());
+            account.setEmail(optionalAccount.get().getEmail());
+            account.setRole(optionalAccount.get().getRole());
+            account.setTeam(optionalAccount.get().getTeam());
+            account.setPosition(optionalAccount.get().getPosition());
+            account.setApprovalType(optionalAccount.get().getApprovalType());
+            account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
+            account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
+            account.setInsert_id(optionalAccount.get().getInsert_id());
+            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
+            account.setApprovalDateTime(optionalAccount.get().getApprovalDateTime());
+            account.setApproval_id(optionalAccount.get().getApproval_id());
+            account.setPassword(accountMapperDtoModify.getPasswordconfirm());
+        }
+        account.setModify_id(currentuserid);
+        account.setModifyDateTime(LocalDateTime.now());
+
+        Account accountSave =  this.accountService.saveAccount(account);
+
+        log.info("사용자정보(패스워드)수정 성공 :  " + accountSave.toString() +"'" );
+        return ResponseEntity.ok(res.success());
+
+    }
 
 }

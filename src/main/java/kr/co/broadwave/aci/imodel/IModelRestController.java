@@ -62,7 +62,8 @@ public class IModelRestController {
 
     // 모델등록
     @PostMapping ("reg")
-    public ResponseEntity modelReg(@ModelAttribute IModelMapperDto imodelMapperDto,MultipartHttpServletRequest multi,
+    public ResponseEntity modelReg(@ModelAttribute IModelMapperDto imodelMapperDto,
+                                   MultipartHttpServletRequest multi,
                                    HttpServletRequest request) throws Exception {
 
         AjaxResponse res = new AjaxResponse();
@@ -131,9 +132,11 @@ public class IModelRestController {
         iModelService.save(iModel);
 
         //파일수정일때 실행
-        if(optionalImodel.isPresent()) {
-            if(optionalImodel.get().getMdFileid() != null) {
-                fileUploadService.del(optionalImodel.get().getMdFileid().getId());
+        if(!mFile.isEmpty()) {
+            if (optionalImodel.isPresent()) {
+                if (optionalImodel.get().getMdFileid() != null) {
+                    fileUploadService.del(optionalImodel.get().getMdFileid().getId());
+                }
             }
         }
 

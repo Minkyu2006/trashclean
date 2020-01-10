@@ -786,6 +786,7 @@ public class DashboardRestController {
             account.setPosition(optionalAccount.get().getPosition());
             account.setUserRefleshCheck(checknum);
             account.setUserRefleshCount(timenum);
+            account.setUserPhoto(optionalAccount.get().getUserPhoto());
             account.setInsert_id(optionalAccount.get().getInsert_id());
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
             account.setModify_id(optionalAccount.get().getModify_id());

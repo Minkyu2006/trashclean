@@ -40,7 +40,6 @@
 		<script>
 			$(function(){
 				teamAndposition();
-				profileInfo();
 
 				$("#profilebtnSave").on('click',function(){
 					profileSave();
@@ -50,9 +49,10 @@
 					passSave();
 				});
 
-				$("#pop-profile").change(function() {
+				$("#profile").change(function() {
 					profileURL(this);
 				});
+
 			});
 
 			//부서,직급 select
@@ -97,6 +97,7 @@
 						}
 						$teamList.html(html2);
 
+						profileInfo();
 					}
 				});
 			}
@@ -143,6 +144,13 @@
 							return;
 						}
 						alertSuccess('저장되었습니다.');
+						profileInfo();
+						profileReset();
+
+						$(document).on("click","#successBtn",function(e){
+							$('.profile-pop').removeClass('active');
+							e.preventDefault();
+						});
 					}
 				});
 			}
@@ -170,13 +178,12 @@
 						if (!Ajax.checkResult(res)) {
 							return;
 						}
-
 						var AWSS3URL = res.data.AWSS3URL;
+
 						$("#baseprofilename").html(res.data.accountProfile.username);
 						$("#baseprofilePhoto").attr("src",AWSS3URL+res.data.profilefilepath+res.data.profilefilename);
 						$("#headerprofilename").html(res.data.accountProfile.username);
 						$("#headerprofilePhoto").attr("src",AWSS3URL+res.data.profilefilepath+res.data.profilefilename);
-
 						$("#profilePhoto").attr("src",AWSS3URL+res.data.profilefilepath+res.data.profilefilename);
 						$("#prousername").val(res.data.accountProfile.username);
 						$("#proemail").val(res.data.accountProfile.email);
@@ -189,7 +196,56 @@
 
 			//비밀번호 변경
 			function passSave() {
+				if ($("#oldpassword").val().trim() == '') {
+					alertCaution("현재비밀번호를 입력하세요..");
+					$("#oldpassword").trigger('focus');
+					return false;
+				}
 
+				if ($("#newpassword").val().trim() == '') {
+					alertCaution("신규비밀번호를 입력하세요.");
+					$("#newpassword").trigger('focus');
+					return false;
+				}
+
+				if ($("#passwordconfirm").val().trim() == '') {
+					alertCaution("비밀번호 확인을 주세요.");
+					$("#passwordconfirm").trigger('focus');
+					return false;
+				}
+
+				var $form = $('form[name="profilepassword"]');
+				var params = $form.serialize();
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url:'/api/account/modifypassword',
+					type : 'post',
+					data : params,
+					cache:false,
+					error:function(request){
+						ajaxErrorMsg(request);
+					},
+					success: function(res){
+						if (!Ajax.checkResult(res)) {
+							return;
+						}
+						alertSuccess('비밀번호가 변경되었습니다.');
+						profileInfo();
+
+						$(document).on("click","#successBtn",function(e){
+							$('.password-pop').removeClass('active');
+							e.preventDefault();
+						});
+
+						$("#oldpassword").val('');
+						$("#newpassword").val('');
+						$("#passwordconfirm").val('');
+					}
+				});
 			}
 
 			// 파일업로드시 미리보기 함
@@ -197,9 +253,19 @@
 				if (input.files && input.files[0]) {
 					var reader = new FileReader();
 					reader.onload = function(e) {
-						$('#profile').attr('src', e.target.result);
+						$('#profilePhoto').attr('src', e.target.result);
 					};
 					reader.readAsDataURL(input.files[0]);
+				}
+			}
+
+			// 파일초기화
+			function profileReset() {
+				var agent = navigator.userAgent.toLowerCase();
+				if ( (navigator.appName == 'Netscape' && navigator.userAgent.search('Trident') != -1) || (agent.indexOf("msie") != -1) ){
+					$("#profile").replaceWith( $("#profile").clone(true) );
+				} else {
+					$("#profile").val("");
 				}
 			}
 
@@ -245,8 +311,8 @@
 								<img id="profilePhoto" src="" />
 							</div>
 							<div class="profile-pop__picture-upload">
-								<label for="pop-profile"></label>
-								<input type="file" id="pop-profile" />
+								<label for="profile"></label>
+								<input type="file" id="profile" name="profile" />
 							</div>
 						</div>
 						<div class="profile-pop__list">
@@ -296,24 +362,24 @@
 
 
 				<div class="password-pop">
-					<form action="" class="password-pop__form">
+					<form name="profilepassword" class="password-pop__form">
 						<div class="password-pop__list">
 							<div class="passowrd-pop__item">
 								<div class="c-text">
-									<label for="" class="c-text__label">현재 비밀번호 확인</label>
-									<input type="password" class="c-text__input" />
+									<label for="oldpassword" class="c-text__label">현재 비밀번호 확인</label>
+									<input id="oldpassword" name="oldpassword" type="password" class="c-text__input" />
 								</div>
 							</div>
 							<div class="passowrd-pop__item">
 								<div class="c-text">
-									<label for="" class="c-text__label">새 비밀번호</label>
-									<input type="password" class="c-text__input" />
+									<label for="newpassword" class="c-text__label">새 비밀번호</label>
+									<input id="newpassword" name="newpassword" type="password" class="c-text__input" />
 								</div>
 							</div>
 							<div class="passowrd-pop__item">
 								<div class="c-text">
-									<label for="" class="c-text__label">새 비밀번호 확인</label>
-									<input type="password" class="c-text__input" />
+									<label for="passwordconfirm" class="c-text__label">새 비밀번호 확인</label>
+									<input id="passwordconfirm" name="passwordconfirm" type="password" class="c-text__input" />
 								</div>
 							</div>
 						</div>

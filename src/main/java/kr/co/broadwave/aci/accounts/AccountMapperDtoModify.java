@@ -6,9 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author InSeok
- * Date : 2019-06-11
- * Time : 10:29
+ * @author Minkyu
+ * Date : 2020-01-09
+ * Time :
  * Remark :
  */
 @Data
@@ -16,12 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountMapperDtoModify {
-    private String userid;
-    private String username;
-    private String password;
     private String oldpassword;
+    private String newpassword;
     private String passwordconfirm;
-    private String email;
-    private String cellphone;
-
 }
