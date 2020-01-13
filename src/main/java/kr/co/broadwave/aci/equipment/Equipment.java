@@ -77,6 +77,21 @@ public class Equipment {
     @Column(name="em_hardness")
     private Double emHardness; // 경도
 
+    @Column(name="v_interval")
+    private Double vInterval; // 센서 데이터 주기적 송신시간
+
+    @Column(name="v_presstime")
+    private Double vPresstime; // 압축 정지시간
+
+    @Column(name="v_inputtime")
+    private Double vInputtime; // 투입구 열림 시간
+
+    @Column(name="v_solenoidtime")
+    private Double vSolenoidtime; // 솔레노이드 열림 시간
+
+    @Column(name="v_greenledlimit")
+    private Double vGreenledlimit; // 쓰레기량에 따른 녹색등의 경계값
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 

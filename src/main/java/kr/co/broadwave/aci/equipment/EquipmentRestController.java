@@ -74,6 +74,21 @@ public class EquipmentRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         Equipment equipment = modelMapper.map(equipmentMapperDto, Equipment.class);
+        if(equipment.getVGreenledlimit()==null){
+            equipment.setVGreenledlimit(60.0);
+        }
+        if(equipment.getVInputtime()==null){
+            equipment.setVInputtime(3.0);
+        }
+        if(equipment.getVInterval()==null){
+            equipment.setVInterval(10.0);
+        }
+        if(equipment.getVPresstime()==null){
+            equipment.setVPresstime(5.0);
+        }
+        if(equipment.getVSolenoidtime()==null){
+            equipment.setVSolenoidtime(60.0);
+        }
 
         String currentuserid = CommonUtils.getCurrentuser(request);
 

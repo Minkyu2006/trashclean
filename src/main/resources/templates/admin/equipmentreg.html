@@ -67,6 +67,11 @@
 			$("#emSubName").val('');
 			$("#emLatitude").val('');
 			$("#emHardness").val('');
+			$("#vInterval").val('');
+			$("#vPresstime").val('');
+			$("#vInputtime").val('');
+			$("#vSolenoidtime").val('');
+			$("#vGreenledlimit").val('');
 
 			$("#emCountryView").hide();
 			$("#emLocationView").hide();
@@ -113,7 +118,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alertSuccess('저장되었습니다.')
+					alertSuccess('저장되었습니다.');
 					init();
 					LocationSetting();
 					callList(1);
@@ -277,6 +282,11 @@
 					$("#emSubName").val(res.data.equipment.emSubName);
 					$("#emLatitude").val(res.data.equipment.emLatitude);
 					$("#emHardness").val(res.data.equipment.emHardness);
+					$("#vInterval").val(res.data.equipment.vInterval);
+					$("#vPresstime").val(res.data.equipment.vPresstime);
+					$("#vInputtime").val(res.data.equipment.vInputtime);
+					$("#vSolenoidtime").val(res.data.equipment.vSolenoidtime);
+					$("#vGreenledlimit").val(res.data.equipment.vGreenledlimit);
 
 					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
 					var install = res.data.equipment.emInstallDate;
@@ -315,7 +325,7 @@
 		function callName(id) {
 			var params = {
 				id:id
-			}
+			};
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
@@ -443,6 +453,42 @@
 					$schList.html(html);
 				}
 			});
+		}
+
+		//한글을 지우는 함수
+		function delHangle(evt){
+			var objTarget = evt.srcElement || evt.target;
+			var _value = event.srcElement.value;
+			if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
+				alertCaution("숫자만 입력가능합니다.");
+				objTarget.value = null;
+			}
+		}
+
+		// 소수점한개로 제한한 실수값입력할수있게하는 함수
+		function isNumberKey(evt) {
+			var charCode = (evt.which) ? evt.which : event.keyCode;
+
+			var _value = event.srcElement.value;
+
+			if (event.keyCode < 48 || event.keyCode > 57) {
+				if (event.keyCode != 46) {
+					return false;
+				}
+			}
+			// 소수점(.)이 두번 이상 나오지 못하게
+			var _pattern0 = /^\d*[.]\d*$/;
+			if (_pattern0.test(_value)) {
+				if (charCode == 46) {
+					return false;
+				}
+			}
+			// 소수점 둘째자리까지만 입력가능
+			var _pattern2 = /^\d*[.]\d{2}$/;
+			if (_pattern2.test(_value)) {
+				alertCaution("소수점 둘째자리까지만 입력가능합니다.");
+				return false;
+			}
 		}
 
     </script>
@@ -675,15 +721,53 @@
 						<th>위도</th>
 						<td>
 							<div class="c-text">
-								<input type="text" name="emLatitude" id="emLatitude" class="c-text__input" onkeyup="return delHangle(event)" />
+								<input type="text" name="emLatitude" id="emLatitude" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
 						<th>경도</th>
 						<td>
 							<div class="c-text">
-								<input type="text" name="emHardness" id="emHardness" class="c-text__input" onkeyup="return delHangle(event)" />
+								<input type="text" name="emHardness" id="emHardness" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
+					</tr>
+					<tr>
+						<th>센서 데이터 주기적 송신시간(단위:분)</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vInterval" id="vInterval" placeholder="기본값 미정 일단 60" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+							</div>
+						</td>
+						<th>압축 정지시간</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vPresstime" id="vPresstime" placeholder="기본값 3" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>투입구 열림 시간</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vInputtime" id="vInputtime" placeholder="기본값 10" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+							</div>
+						</td>
+						<th>솔레노이드 열림 시간</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vSolenoidtime" id="vSolenoidtime" placeholder="기본값 5" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>쓰레기량에 따른 경계값</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vGreenledlimit" id="vGreenledlimit" placeholder="기본값 60" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+							</div>
+						</td>
+						<th></th>
+						<td></td>
 					</tr>
 				</tbody>
 			</table>

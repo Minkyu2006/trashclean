@@ -3,6 +3,8 @@ package kr.co.broadwave.aci.equipment;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.Column;
+
 /**
  * @author Minkyu
  * Date : 2019-11-01
@@ -32,6 +34,32 @@ public class EquipmentMapperDto {
     private String emInstallDate;
     private Double emLatitude; // 위도
     private Double emHardness; // 경도
+
+    private Double vInterval; // 센서 데이터 주기적 송신시간
+    private Double vPresstime; // 압축 정지시간
+    private Double vInputtime; // 투입구 열림 시간
+    private Double vSolenoidtime; // 솔레노이드 열림 시간
+    private Double vGreenledlimit; // 쓰레기량에 따른 녹색등의 경계값
+
+    public Double getvInterval() {
+        return vInterval;
+    }
+
+    public Double getvPresstime() {
+        return vPresstime;
+    }
+
+    public Double getvInputtime() {
+        return vInputtime;
+    }
+
+    public Double getvSolenoidtime() {
+        return vSolenoidtime;
+    }
+
+    public Double getvGreenledlimit() {
+        return vGreenledlimit;
+    }
 
     public Double getEmLatitude() {
         return emLatitude;
