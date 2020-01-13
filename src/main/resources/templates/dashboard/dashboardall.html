@@ -331,9 +331,8 @@
 					var subName = new Array();
 					$.each(res.data.datalist, function(key, value){
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-						subName.push(nvl(value.emSubName,"확 인 불 가"));
 					});
-					BarChartDeviceId(pushValue,subName);
+					BarChartDeviceId(pushValue);
 				}
 			});
 		}
@@ -433,7 +432,6 @@
 
 						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
-						subname.push(nvl(value.emSubName,"확 인 불 가"));
 						files.push(nvl(value.filePath+'/s_'+value.saveFileName,"확 인 불 가"));
 					});
 					//console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
@@ -445,7 +443,7 @@
 						}
 						$deviceList.html(html);
 						deviceAWSListView(pushValue,installDate,files);
-						pushDeviceId(pushValue,subname,1);
+						pushDeviceId(pushValue,1);
 						$("#deviceIds").val(pushValue);
 						$("#deviceInstalls").val(installDate);
 						$("#deviceSubnames").val(subname);
@@ -824,14 +822,14 @@
 							if(seconds < 10){
 								seconds = "0"+seconds;
 							}
-							var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds
+							var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds;
 
 							// console.log("날짜 : "+time)
 							// console.log("")
 							testTimeStamp.push(parseInt(value.timestamp));
-							timeStamp.push(time)
-							temp_brd.push(value.temp_brd)
-							level.push(value.level)
+							timeStamp.push(time);
+							temp_brd.push(value.temp_brd);
+							level.push(value.level);
 							batt_level.push(value.batt_level);
 						});
 						var days = $("#intervaltime").val(); // 기간선택 시간
@@ -864,7 +862,6 @@
 						var min_milliseconds = nowDate.setHours(nowDate.getHours()-$("#intervaltime").val());
 						// console.log("현재날짜 : "+max_milliseconds);
 						// console.log("이전날짜 : "+min_milliseconds);
-
 						var barChartData = {
 							labels: testTimeStamp,
 							datasets: [{
@@ -970,6 +967,84 @@
 			});
 		}
 
+		//쓰레기양 차트
+		function barChart(barData,nowtimestamp,beforetimestamp,timestamps) {
+			// console.log("barData : "+barData);
+			// console.log("barData길이 : "+barData.length);
+			// console.log("어제날짜 타임스탬프 : "+nowtimestamp);
+			// console.log("30일전 타임스탬프 : "+beforetimestamp);
+			// console.log("timestamps : "+timestamps);
+
+			var ctx = document.getElementById('bar_chart');
+
+			var barChartData = {
+				labels: timestamps,
+				datasets: [{
+						type: 'line',
+						label: '평균값',
+						yAxisID: '평균',
+						backgroundColor: "#48ae63",
+						borderWidth: 3,
+						borderColor: "#48ae63",
+						data: barData,
+						fill: false
+					}]
+				};
+
+			new Chart(ctx, {
+				data: barChartData,
+				options: {
+					// legend: {
+					// 	display: false
+					// },
+					elements: {
+						point:{
+							radius: 0
+						}
+					},
+					maintainAspectRatio: false,
+					stacked : true,
+					tooltips: { //팁(모드설정)
+						mode: 'index',
+						intersect: false
+					},
+					hover: { //점 나오기
+						mode: 'index',
+						intersect: false
+					},
+					scales: {
+						xAxes: [{
+							gridLines: {
+								drawOnChartArea: false
+							},
+							display: false,
+							type: 'time',
+							time: {
+								min: beforetimestamp,
+								max: nowtimestamp,
+								tooltipFormat: 'YYYY'+'년'+'MM'+'월'+'DD'+'일 '+'HH:mm:ss a',
+							}
+						}],
+						yAxes: [{
+							ticks: {
+								callback: function(value) {
+									return value+'%';
+								},
+								max: 100,
+								min: 0,
+								stepSize: 10
+							},
+							id: '평균',
+							type: 'linear',
+							display: true,
+							position: 'left'
+						}]
+					}
+				}
+			});
+			$("#barChartLoading").hide();
+		}
+
 		// Map 새로고침
 		function MapChartDeviceId(pushValue) {
 			var token = $("meta[name='_csrf']").attr("content");
@@ -1045,7 +1120,7 @@
 		}
 
 		// Bar그래프 새로고침
-		function BarChartDeviceId(pushValue,subname) {
+		function BarChartDeviceId(pushValue) {
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
@@ -1076,14 +1151,13 @@
 						return;
 					}
 					//쓰레기양 차트
-					barChart(res.data.bar_data_columns,res.data.device_list_columns,subname);
-					$("#barChartLoading").hide();
+					barChart(res.data.bar_data_columns,res.data.nowtimestamp,res.data.beforetimestamp,res.data.timestamps);
 				}
 			});
 		}
 
 		// aws deviceID값 push하는 함수 next -> 차트만들기
-		function pushDeviceId(pushValue,subname,num) {
+		function pushDeviceId(pushValue,num) {
 			// console.log("pushValue : "+pushValue)
 			// console.log("subname : "+subname)
 			// console.log("차트그래프 그리기 시작")
@@ -1123,14 +1197,13 @@
 					//상태값 차트
 					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
 					//쓰레기양 차트
-					barChart(res.data.bar_data_columns,res.data.device_list_columns,subname);
+					barChart(res.data.bar_data_columns,res.data.nowtimestamp,res.data.beforetimestamp,res.data.timestamps);
 					//맵에 장치보기
 					if(num==1){
 						mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
 						$("#mapChartLoading").hide();
 					}
 					$("#pieChartLoading").hide();
-					$("#barChartLoading").hide();
 					//console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
 				}
 			});
@@ -1155,7 +1228,7 @@
 
 			iconSrc['정상'] = "/assets/images/marker.png";
 			iconSrc['주의'] = "/assets/images/marker--caution.png";
-			iconSrc['심각'] = "/assets/images/marker--severe.png"
+			iconSrc['심각'] = "/assets/images/marker--severe.png";
 
 			var infowindow = new google.maps.InfoWindow();
 
@@ -1240,54 +1313,6 @@
 			});
 		}
 
-		//쓰레기양 차트
-		function barChart(barData,deviceList,subname) {
-			// console.log("barData : "+barData);
-			// console.log("deviceList : "+deviceList);
-			// console.log("subname : "+subname);
-			var barchart = c3.generate({
-				bindto: "#bar_chart",
-				data: {
-					columns: [barData],
-					type: "bar"
-				},
-				tooltip: {
-					format: {
-						value: function (value) {
-							return value + '%'
-						}
-					}
-				},
-				axis: {
-					x: {
-						label: {
-							text: '장비명',
-							position: 'outer-center'
-						},
-						type: 'category',
-						categories: subname,
-						tick: {
-							centered: true
-						}
-					},
-					y: {
-						label: {
-							text: '쓰레기양',
-							position: 'outer-middle'
-						},
-						max: 100,
-						min: 10
-					}
-				},
-				legend: {
-					hide: true
-				},
-				color: {
-					pattern: ['#48ae63']
-				}
-			});
-		}
-
 		// 기간선택에 따라 보내는시간 변경하는 함수
 		function intervaltimeChange(text) {
 			if (text == "1Hours") {
@@ -1331,7 +1356,7 @@
 			// console.log("date : " + date); 받아온날짜
 			var today = new Date();
 			var year = today.getFullYear();
-			var month = today.getMonth()+1
+			var month = today.getMonth()+1;
 			var day = today.getDate();
 			if(month < 10){
 				month = "0"+month;
@@ -1508,8 +1533,8 @@
 						<div id="levelfold" class="panel__body">
 							<div class="c-loader">
 								<div id="barChartLoading" class="c-loader__active c-loader__active--ring"></div>
+								<canvas class="panel__stat" id="bar_chart"></canvas>
 							</div>
-							<div class="panel__stat" id="bar_chart"></div>
 						</div>
 					</div>
 				</div>

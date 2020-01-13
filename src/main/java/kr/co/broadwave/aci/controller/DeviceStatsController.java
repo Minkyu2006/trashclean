@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 
 @Controller
-@RequestMapping("/devicestatus")
-public class DeviceStatusController {
+@RequestMapping("/devicestats")
+public class DeviceStatsController {
 
     @RequestMapping("daysdevice")
     public String daysdevice(){
-        return "devicestatus/daysdevice";
+        return "devicestats/daysdevice";
     }
 
 }
