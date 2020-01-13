@@ -571,7 +571,7 @@
 					<col />
 					<col />
 					<col />
-					<col style="width: 100px;" />
+					<col style="width: 50px;" />
 				</colgroup>
 				<thead>
 					<tr>
@@ -633,9 +633,9 @@
 						</td>
 						<th>모델 선택</th>
 						<td>
-							<ul class="c-input-list">
+							<ul class="c-input-list c-input-list--flex">
 								<li>
-									<div class="c-select" style="width: 180px;">
+									<div class="c-select">
 										<select name="emType" id="emType" class="c-select__input" onchange="ModelChange()">
 											<option th:each ="equipdType : ${equipdTypes}"
 													th:value="${equipdType.id}"
@@ -645,7 +645,7 @@
 									</div>
 								</li>
 								<li>
-									<div class="c-select" style="width: 180px;">
+									<div class="c-select">
 										<select name="mdId" id="mdId" class="c-select__input" >
 										</select>
 									</div>
@@ -664,9 +664,9 @@
 						</td>
 						<th>국가/지역</th>
 						<td>
-							<ul class="c-input-list">
+							<ul class="c-input-list c-input-list--flex">
 								<li>
-									<div class="c-select" style="width: 180px;">
+									<div class="c-select">
 										<input id="emCountryView" class="c-text__input" style="display:none;" readonly="readonly" />
 										<select name="emCountry" id="emCountry" class="c-select__input" onchange="LocationSetting()">
 											<option th:each ="equipdCountry : ${equipdCountrys}"
@@ -677,7 +677,7 @@
 									</div>
 								</li>
 								<li>
-									<div class="c-select" style="width: 180px;">
+									<div class="c-select">
 										<input id="emLocationView" class="c-text__input" style="display:none;" readonly="readonly" />
 										<input id="addSell" class="c-text__input" style="display:none;" readonly="readonly" />
 										<select name="emLocation" id="emLocation" class="c-select__input" >

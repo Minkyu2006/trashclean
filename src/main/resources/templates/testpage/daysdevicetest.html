@@ -4,11 +4,554 @@
       layout:decorate ="~{layout/default}">
 <head>
     <script>
+		var data = [
+			{item: 1, hour: 1, value: 16},
+			{item: 1, hour:	2, value:	20},
+			{item: 1, hour:	3, value:	0},
+			{item: 1, hour:	4, value:	0},
+			{item: 1, hour:	5, value:	0},
+			{item: 1, hour:	6, value:	2},
+			{item: 1, hour:	7, value:	0},
+			{item: 1, hour:	8, value:	9},
+			{item: 1, hour:	9, value:	25},
+			{item: 1, hour:	10, value:	49},
+			{item: 1, hour:	11, value:	57},
+			{item: 1, hour:	12, value:	61},
+			{item: 1, hour:	13, value:	37},
+			{item: 1, hour:	14, value:	66},
+			{item: 1, hour:	15, value:	70},
+			{item: 1, hour:	16, value:	55},
+			{item: 1, hour:	17, value:	51},
+			{item: 1, hour:	18, value:	55},
+			{item: 1, hour:	19, value:	17},
+			{item: 1, hour:	20, value:	20},
+			{item: 1, hour:	21, value:	9},
+			{item: 1, hour:	22, value:	4},
+			{item: 1, hour:  23, value:	0},
+			{item: 1, hour:	24, value:	12},
+			{item: 2, hour:	1, value:	6},
+			{item: 2, hour:	2, value:	2},
+			{item: 2, hour:  3, value:    0},
+			{item: 2, hour:	4, value:	0},
+			{item: 2, hour:	5, value:	0},
+			{item: 2, hour:	6, value:	2},
+			{item: 2, hour:	7, value:	4},
+			{item: 2, hour:	8, value:	11},
+			{item: 2, hour:	9, value:	28},
+			{item: 2, hour:	10, value:	49},
+			{item: 2, hour:	11, value:	51},
+			{item: 2, hour:	12, value:	47},
+			{item: 2, hour:	13, value:	38},
+			{item: 2, hour:	14, value:	65},
+			{item: 2, hour:	15, value:	60},
+			{item: 2, hour:	16, value:	50},
+			{item: 2, hour:	17, value:	65},
+			{item: 2, hour:	18, value:	50},
+			{item: 2, hour:	19, value:	22},
+			{item: 2, hour:	20, value:	11},
+			{item: 2, hour:	21, value:	12},
+			{item: 2, hour:	22, value:	9},
+			{item: 2, hour:	23, value:	0},
+			{item: 2, hour:	24, value:	13},
+			{item: 3, hour:	1, value:	5},
+			{item: 3, hour:	2, value:	8},
+			{item: 3, hour:	3, value:	8},
+			{item: 3, hour:	4, value:	0},
+			{item: 3, hour:	5, value:	0},
+			{item: 3, hour:	6, value:	2},
+			{item: 3, hour:	7, value:	5},
+			{item: 3, hour:	8, value:	12},
+			{item: 3, hour:	9, value:	34},
+			{item: 3, hour:	10, value:	43},
+			{item: 3, hour:	11, value:	54},
+			{item: 3, hour:	12, value:	44},
+			{item: 3, hour:	13, value:	40},
+			{item: 3, hour:	14, value:	48},
+			{item: 3, hour:	15, value:	54},
+			{item: 3, hour:	16, value:	59},
+			{item: 3, hour:	17, value:	60},
+			{item: 3, hour:  18, value:	51},
+			{item: 3, hour:	19, value:	21},
+			{item: 3, hour:	20, value:	16},
+			{item: 3, hour:	21, value:	9},
+			{item: 3, hour:	22, value:	5},
+			{item: 3, hour:	23, value:	4},
+			{item: 3, hour:	24, value:	7}
+		]
 		
+		var width = 880,
+			height = 294,
+			gridSize = Math.floor(width / 24),
+			legendElementWidth = gridSize*2,
+			buckets = 9,
+			colors = ['#f7fcfd', '#e5f5f9', '#ccece6', '#99d8c9', '#66c2a4', '#41ae76', '#238b45', '#006d2c', '#00441b'],
+			items = ['배출 횟수', '투입구 걸림', '액추에이터'],
+			times = ["1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12am", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm", "12pm"];
+		
+		var colorScale = d3.scale.quantile()
+	        .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
+	        .range(colors);
+		
+        var svg = d3.select("#heatmap").append("svg")
+	        .attr("width", width)
+	        .attr("height", height)
+	        .append("g")
+	        //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+	        var dayLabels = svg.selectAll(".itemLabel")
+	            .data(items)
+	            .enter().append("text")
+					.text(function (d) { return d; })
+					.attr("x", 0)
+					.attr("y", function (d, i) { return i * gridSize; })
+					.style("text-anchor", "end")
+					.attr("transform", "translate(-6," + gridSize / 1.5 + ")")
+					.attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "itemLabel mono axis axis-workweek" : "itemLabel mono axis"); });
+	        
+	        var timeLabels = svg.selectAll(".timeLabel")
+	            .data(times)
+	            .enter().append("text")
+					.text(function(d) { return d; })
+					.attr("x", function(d, i) { return i * gridSize; })
+					.attr("y", 0)
+					.style("text-anchor", "middle")
+					.attr("transform", "translate(" + gridSize / 2 + ", -6)")
+					.attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
+	        
+	        var heatMap = svg.selectAll(".hour")
+	            .data(data)
+	            .enter().append("rect")
+	            .attr("x", function(d) { return (d.hour - 1) * gridSize; })
+	            .attr("y", function(d) { return (d.day - 1) * gridSize; })
+	            .attr("rx", 0)
+	            .attr("ry", 0)
+	            .attr("class", "hour bordered")
+	            .attr("width", gridSize)
+	            .attr("height", gridSize)
+	            .style("fill", colors[0]);
+	        
+	        heatMap.transition().duration(1000)
+            	.style("fill", function(d) { return colorScale(d.value); });
+
+        	heatMap.append("title").text(function(d) { return d.value; });
+        	
+        	var legend = svg.selectAll(".legend")
+	            .data([0].concat(colorScale.quantiles()), function(d) { return d; })
+	            .enter().append("g")
+	            .attr("class", "legend");
+        	
+        	legend.append("rect")
+	            .attr("x", function(d, i) { return legendElementWidth * i; })
+	            .attr("y", height)
+	            .attr("width", legendElementWidth)
+	            .attr("height", gridSize / 4)
+	            .style("fill", function(d, i) { return colors[i]; });
+        	
+        	legend.append("text")
+	            .attr("class", "mono")
+	            .text(function(d) { return "≥ " + Math.round(d); })
+	            .attr("x", function(d, i) { return legendElementWidth * i; })
+	            .attr("y", height + gridSize);
     </script>
 </head>
 
 <div layout:fragment="content" class="contents-body">
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>일자별 장비 현황</h2>
+			</div>
+		</div>
+		<div class="dashboard">
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__body panel__body--height-auto">
+							<div class="c-float c-float--flex">
+								<div class="c-float__item">
+									<div class="c-text">
+										<label for="num" class="c-text__label"></label>
+										<input type="text" class="c-text__input" id="num" />
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-select">
+										<label for="" class="c-select__label"></label>
+										<select name="" id="" class="c-select__input">
+											<option>전체</option>
+											<option>권역</option>
+											<option>거점</option>
+											<option></option>
+										</select>
+									</div>
+								</div>
+								<div class="c-float__item">
+									<div class="c-date-group c-date-group--flex">
+										<div class="c-date">
+											<label for="from" class="c-date__label"></label>
+											<input type="date" class="c-date__input" id="from" />
+										</div>
+										<div class="c-date">
+											<label for="to" class="c-date__label"></label>
+											<input type="date" class="c-date__input" id="to" />
+										</div>
+									</div>
+								</div>
+								<div class="c-float__item c-float__item--flex--auto">
+									<button class="c-button c-button--point">조회</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		
+			<div class="dashboard__row">
+				
+				<div class="panel panel--duo">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">표</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+							</div>
+						</div>
+						<div class="panel__body">
+							<div class="panel__table">
+								<div class="c-scroll-table">
+									<div class="c-scroll-table__header">
+										<table style="width: 491px;">
+											<colgroup>
+												<col style="width: 50px;" />
+												<col style="width: 110px;" />
+												<col style="width: 110px;" />
+												<col style="width: 110px;" />
+												<col style="width: 110px;" />
+												<col style="width: 110px;" />
+												<col style="width: 19px;" />
+											</colgroup>
+											<thead>
+												<tr>
+													<th>날짜</th>
+													<th>액추에이터</th>
+													<th>투입구 걸림</th>
+													<th>솔레노이드센서</th>
+													<th>배출횟수</th>
+													<th>쓰레기 양</th>
+													<th></th>
+												</tr>
+											</thead>
+										</table>
+									</div>
+									<div class="c-scroll-table__body" style="height: 269px;">
+										<table style="width: 472px;">
+											<colgroup>
+												<col style="width: 50px;" />
+												<col style="width: 110px;" />
+												<col style="width: 110px;" />
+												<col style="width: 110px;" />
+												<col style="width: 110px;" />
+												<col style="width: 110px;" />
+											</colgroup>
+											<tbody>
+												<tr>
+													<td>1</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>2</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>3</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>4</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>5</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>6</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>7</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>8</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>9</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>10</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>11</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>12</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>13</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>14</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>15</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>16</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>17</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>18</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>19</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>20</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>21</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>22</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>23</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>24</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>25</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>26</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>27</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>28</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>29</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+												<tr>
+													<td>30</td>
+													<td>1</td>
+													<td>0</td>
+													<td>15</td>
+													<td>1</td>
+													<td>80%</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="panel panel--duo">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">지도</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+							</div>
+						</div>
+						<div class="panel__body">
+							<!-- <div class="c-loader">
+								<div id="mapChartLoading" class="c-loader__active c-loader__active--ring"></div>
+							</div> -->
+							<div class="map" id="map"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="dashboard__row">
+				<div class="panel panel--duo">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">꺽은선 그래프</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+							</div>
+						</div>
+						<div class="panel__body"></div>
+					</div>
+				</div>
+				
+				<div class="panel panel--duo">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h4 class="panel__title">히트맵?</h4>
+							<div class="panel__console">
+								<button class="panel__button refresh">새로고침</button>
+							</div>
+						</div>
+						<div class="panel__body">
+							<div id="heatmap"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+		</div>
+	</div>
 
 	<div id='alertpop'>
 	</div>
