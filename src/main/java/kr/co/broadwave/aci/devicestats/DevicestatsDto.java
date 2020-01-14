@@ -14,12 +14,14 @@ import lombok.*;
 @ToString
 @Setter
 public class DevicestatsDto {
-//    private String id;
-    private Double fullLevel; // 해당일자의 쓰레기양(%)
 
-//    public String getId() {
-//        return id;
-//    }
+    private String yyyymmdd;
+
+    private Double fullLevel;
+
+    public String getYyyymmdd() {
+        return yyyymmdd;
+    }
 
     public Double getFullLevel() {
         return fullLevel;

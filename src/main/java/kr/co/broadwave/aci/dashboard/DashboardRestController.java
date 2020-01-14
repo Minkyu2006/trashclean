@@ -1,5 +1,7 @@
 package kr.co.broadwave.aci.dashboard;
 
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountMapperDto;
 import kr.co.broadwave.aci.accounts.AccountService;
@@ -19,10 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.inject.Provider;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -276,7 +282,7 @@ public class DashboardRestController {
         statusHardcording.add(Arrays.asList("정상", "0"));
         statusHardcording.add(Arrays.asList("주의", "0"));
         statusHardcording.add(Arrays.asList("심각", "0"));
-
+        List<String> barDataColumns = new ArrayList<>(); //쓰레기양
         List<List<String>> circleDataColumns = new ArrayList<>(); //상태값
         List<Integer> circleDataCount = new ArrayList<>(); // 상태값 개수
 
@@ -306,7 +312,7 @@ public class DashboardRestController {
 
         sortDevice.sort(Comparator.naturalOrder()); // 오름차순 정렬시키기
         //log.info("오름차순 : " + sortDevice);
-
+        barDataColumns.add("쓰레기양");
         for (String deviceid : sortDevice) {
             for (int i = 0; i < number; i++) {
                 HashMap map = (HashMap) resData.get("data").get(i);
@@ -320,6 +326,7 @@ public class DashboardRestController {
                     } else if (map.get("status").equals("severe")) {
                         map.replace("status", "심각");
                     }
+                    barDataColumns.add((String) map.get("level")); //배출량 리스트
                     statusDatas.add(map.get("status")); //상태값차트
 
                     deviceIdNames.add((String) map.get("deviceid")); //맵 데이터 차트
@@ -344,6 +351,8 @@ public class DashboardRestController {
 
         //log.info("AWS 장치 deviceid : " +deviceIdNames);
         //log.info("장치id 0번째 : " +deviceIdNames.get(0));
+
+        // html파일에 타임스탬프 보내기
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat ( "yyyyMMdd");
         SimpleDateFormat timestampformatter = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
@@ -354,45 +363,44 @@ public class DashboardRestController {
         cal.add(Calendar.DATE, -1);
         today = timestampformatter.format(cal.getTime());
         Timestamp nowtimestamp = Timestamp.valueOf(today);
+        String yyyymmdd1 = format.format(cal.getTime());
 
         cal.setTime(time);
         cal.add(Calendar.DATE, -31);
         today = timestampformatter.format(cal.getTime());
         Timestamp beforetimestamp = Timestamp.valueOf(today);
+        String yyyymmdd2 = format.format(cal.getTime());
+
 //        log.info("어제날짜 타임스탬프 : " +nowtimestamp);
+//        log.info("어제날짜 yyyymmdd1 : " +yyyymmdd1);
 //        log.info("30일전날짜 타임스탬프 : " +beforetimestamp);
-//        log.info("어제날짜 : " +nowday);
-//        log.info("30일전 날짜 : " +format.format(cal.getTime()));
+//        log.info("30일전날짜 yyyymmdd2 : " +yyyymmdd2);
 
         List<Double> averages = new ArrayList<>();
         List<Timestamp> timestamps = new ArrayList<>();
+
+        // 쿼리dsl활용
+        List<DevicestatsDto> devicestatsDto = devicestatusService.getDevicestatsAvgQuerydsl(deviceIdNames,yyyymmdd1,yyyymmdd2);
+        int d=0;
         for(int j=0; j<31; j++) {
-            Double plus=0.0;
-            Double level;
-            int count2=0;
             cal.setTime(time);
             cal.add(Calendar.DATE, -31+j);
             today = timestampformatter.format(cal.getTime());
             Timestamp timestamp = Timestamp.valueOf(today);
-            //log.info("호출할 날짜 : " +format.format(cal.getTime()));
-            for (int i = 0; i < number; i++) {
-                //log.info("호출할 아이디 : " +format.format(cal.getTime()) + deviceIdNames.get(i));
-                DevicestatsDto devicestatsDto = devicestatusService.findById(format.format(cal.getTime()) + deviceIdNames.get(i));
-                if (devicestatsDto != null) {
-                    plus = plus + devicestatsDto.getFullLevel();
-                    count2++;
-                }
-            }
-            level = plus/count2;
-//            log.info("평균값 : " + level);
             timestamps.add(timestamp);
-            if (count2!=0) {
-                averages.add(Math.round(level*10)/10.0);
-            } else {
+
+            String today2 = format.format(cal.getTime());
+            if(d<devicestatsDto.size()) {
+                if (today2.equals(devicestatsDto.get(d).getYyyymmdd())) {
+                    averages.add((double) Math.round(devicestatsDto.get(d).getFullLevel() * 10 / 10.0));
+                    d++;
+                }else {
+                    averages.add(0.0);
+                }
+            }else {
                 averages.add(0.0);
             }
         }
-        //log.info("averages : " + averages);
 
 //        log.info("바차트 들어갈 리스트 값 : " +barDataColumns);
         List<String> statusMaster = new ArrayList<>(); //정상,주의,심각 리스트
@@ -484,8 +492,8 @@ public class DashboardRestController {
         data.put("map_data_columns", mapDataColumns);
         data.put("circle_data_columns", circleDataColumns);
         data.put("circle_data_count", circleDataCount);
-
-        data.put("bar_data_columns", averages);
+        data.put("bar_data_columns",barDataColumns);
+        data.put("averages", averages);
         data.put("nowtimestamp", nowtimestamp);
         data.put("beforetimestamp", beforetimestamp);
         data.put("timestamps", timestamps);
@@ -618,46 +626,52 @@ public class DashboardRestController {
             }
         }
 
+        // html파일에 타임스탬프 보내기
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat ( "yyyyMMdd");
         SimpleDateFormat timestampformatter = new SimpleDateFormat ("yyyy-MM-dd hh:mm:ss");
         Date time = new Date();
         String today = null;
+
         cal.setTime(time);
         cal.add(Calendar.DATE, -1);
         today = timestampformatter.format(cal.getTime());
         Timestamp nowtimestamp = Timestamp.valueOf(today);
+        String yyyymmdd1 = format.format(cal.getTime());
+
         cal.setTime(time);
         cal.add(Calendar.DATE, -31);
         today = timestampformatter.format(cal.getTime());
         Timestamp beforetimestamp = Timestamp.valueOf(today);
+        String yyyymmdd2 = format.format(cal.getTime());
+
         List<Double> averages = new ArrayList<>();
         List<Timestamp> timestamps = new ArrayList<>();
+
+        // 쿼리dsl활용하기 프로젝트
+        List<DevicestatsDto> devicestatsDto = devicestatusService.getDevicestatsAvgQuerydsl(deviceIdNames,yyyymmdd1,yyyymmdd2);
+        int d=0;
         for(int j=0; j<31; j++) {
-            Double plus=0.0;
-            Double level;
-            int count2=0;
             cal.setTime(time);
             cal.add(Calendar.DATE, -31+j);
             today = timestampformatter.format(cal.getTime());
             Timestamp timestamp = Timestamp.valueOf(today);
-            for (int i = 0; i < number; i++) {
-                DevicestatsDto devicestatsDto = devicestatusService.findById(format.format(cal.getTime()) + deviceIdNames.get(i));
-                if (devicestatsDto != null) {
-                    plus = plus + devicestatsDto.getFullLevel();
-                    count2++;
-                }
-            }
-            level = plus/count2;
             timestamps.add(timestamp);
-            if (count2!=0) {
-                averages.add(Math.round(level*10)/10.0);
-            } else {
+
+            String today2 = format.format(cal.getTime());
+            if(d<devicestatsDto.size()) {
+                if (today2.equals(devicestatsDto.get(d).getYyyymmdd())) {
+                    averages.add((double) Math.round(devicestatsDto.get(d).getFullLevel() * 10 / 10.0));
+                    d++;
+                }else {
+                    averages.add(0.0);
+                }
+            }else {
                 averages.add(0.0);
             }
         }
 
-        data.put("bar_data_columns", averages);
+        data.put("averages", averages);
         data.put("nowtimestamp", nowtimestamp);
         data.put("beforetimestamp", beforetimestamp);
         data.put("timestamps", timestamps);

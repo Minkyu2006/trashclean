@@ -1,13 +1,11 @@
 package kr.co.broadwave.aci.devicestats;
 
-import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.company.CompanyDto;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  * @author Minkyu
@@ -20,20 +18,18 @@ import java.util.Optional;
 public class DevicestatusService {
     private final ModelMapper modelMapper;
     private final DevicestatusRepository devicestatusRepository;
+    private final DevicestatsRepositoryCustom devicestatsRepositoryCustom;
+
     @Autowired
     public DevicestatusService(ModelMapper modelMapper,
+                               DevicestatsRepositoryCustom devicestatsRepositoryCustom,
                                DevicestatusRepository devicestatusRepository) {
         this.modelMapper = modelMapper;
+        this.devicestatsRepositoryCustom = devicestatsRepositoryCustom;
         this.devicestatusRepository = devicestatusRepository;
     }
 
-    public DevicestatsDto findById(String yyyymmddDeviceid) {
-        Optional<Devicestatus> optionalDevicestatus = devicestatusRepository.findById(yyyymmddDeviceid);
-        if (optionalDevicestatus.isPresent()) {
-            return modelMapper.map(optionalDevicestatus.get(), DevicestatsDto.class);
-        } else {
-            return null;
-        }
+    public List<DevicestatsDto> getDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2) {
+        return devicestatsRepositoryCustom.getDevicestatsAvgQuerydsl(deviceid,yyyymmdd1,yyyymmdd2);
     }
-
 }

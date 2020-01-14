@@ -9,6 +9,404 @@
 </head>
 
 <div layout:fragment="content" class="contents-body">
+    <div class="page">
+        <div class="page-title">
+            <div class="page-title__left">
+                <h2>일자별 장비 현황</h2>
+            </div>
+        </div>
+        <div class="dashboard">
+            <div class="dashboard__row">
+                <div class="panel">
+                    <div class="panel__inner">
+                        <div class="panel__body panel__body--height-auto">
+                            <div class="c-float c-float--flex">
+                                <div class="c-float__item">
+                                    <div class="c-text">
+                                        <label for="num" class="c-text__label"></label>
+                                        <input type="text" class="c-text__input" id="num" />
+                                    </div>
+                                </div>
+                                <div class="c-float__item">
+                                    <div class="c-select">
+                                        <label for="" class="c-select__label"></label>
+                                        <select name="" id="" class="c-select__input">
+                                            <option>전체</option>
+                                            <option>권역</option>
+                                            <option>거점</option>
+                                            <option></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="c-float__item">
+                                    <div class="c-date-group c-date-group--flex">
+                                        <div class="c-date">
+                                            <label for="from" class="c-date__label"></label>
+                                            <input type="date" class="c-date__input" id="from" />
+                                        </div>
+                                        <div class="c-date">
+                                            <label for="to" class="c-date__label"></label>
+                                            <input type="date" class="c-date__input" id="to" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="c-float__item c-float__item--flex--auto">
+                                    <button class="c-button c-button--point">조회</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <div class="dashboard__row">
+
+                <div class="panel panel--duo">
+                    <div class="panel__inner">
+                        <div class="panel__header">
+                            <h4 class="panel__title">표</h4>
+                            <div class="panel__console">
+                                <button class="panel__button refresh">새로고침</button>
+                            </div>
+                        </div>
+                        <div class="panel__body">
+                            <div class="panel__table">
+                                <div class="c-scroll-table">
+                                    <div class="c-scroll-table__header">
+                                        <table style="width: 491px;">
+                                            <colgroup>
+                                                <col style="width: 50px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 19px;" />
+                                            </colgroup>
+                                            <thead>
+                                            <tr>
+                                                <th>날짜</th>
+                                                <th>액추에이터</th>
+                                                <th>투입구 걸림</th>
+                                                <th>솔레노이드센서</th>
+                                                <th>배출횟수</th>
+                                                <th>쓰레기 양</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                    <div class="c-scroll-table__body" style="height: 269px;">
+                                        <table style="width: 472px;">
+                                            <colgroup>
+                                                <col style="width: 50px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 110px;" />
+                                                <col style="width: 110px;" />
+                                            </colgroup>
+                                            <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>7</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>8</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>9</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>10</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>11</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>12</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>13</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>14</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>16</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>17</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>18</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>19</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>20</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>21</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>22</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>23</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>24</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>25</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>26</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>27</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>28</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>29</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            <tr>
+                                                <td>30</td>
+                                                <td>1</td>
+                                                <td>0</td>
+                                                <td>15</td>
+                                                <td>1</td>
+                                                <td>80%</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel--duo">
+                    <div class="panel__inner">
+                        <div class="panel__header">
+                            <h4 class="panel__title">지도</h4>
+                            <div class="panel__console">
+                                <button class="panel__button refresh">새로고침</button>
+                            </div>
+                        </div>
+                        <div class="panel__body">
+                            <!-- <div class="c-loader">
+                                <div id="mapChartLoading" class="c-loader__active c-loader__active--ring"></div>
+                            </div> -->
+                            <div class="map" id="map"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard__row">
+                <div class="panel panel--duo">
+                    <div class="panel__inner">
+                        <div class="panel__header">
+                            <h4 class="panel__title">꺽은선 그래프</h4>
+                            <div class="panel__console">
+                                <button class="panel__button refresh">새로고침</button>
+                            </div>
+                        </div>
+                        <div class="panel__body"></div>
+                    </div>
+                </div>
+
+                <div class="panel panel--duo">
+                    <div class="panel__inner">
+                        <div class="panel__header">
+                            <h4 class="panel__title">히트맵?</h4>
+                            <div class="panel__console">
+                                <button class="panel__button refresh">새로고침</button>
+                            </div>
+                        </div>
+                        <div class="panel__body">
+                            <div id="heatmap"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div id='alertpop'>
+    </div>
 </div>
 </html>

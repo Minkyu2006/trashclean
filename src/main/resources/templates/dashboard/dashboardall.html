@@ -1151,7 +1151,7 @@
 						return;
 					}
 					//쓰레기양 차트
-					barChart(res.data.bar_data_columns,res.data.nowtimestamp,res.data.beforetimestamp,res.data.timestamps);
+					barChart(res.data.averages,res.data.nowtimestamp,res.data.beforetimestamp,res.data.timestamps);
 				}
 			});
 		}
@@ -1197,7 +1197,7 @@
 					//상태값 차트
 					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
 					//쓰레기양 차트
-					barChart(res.data.bar_data_columns,res.data.nowtimestamp,res.data.beforetimestamp,res.data.timestamps);
+					barChart(res.data.averages,res.data.nowtimestamp,res.data.beforetimestamp,res.data.timestamps);
 					//맵에 장치보기
 					if(num==1){
 						mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
