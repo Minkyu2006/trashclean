@@ -91,4 +91,8 @@ public class EquipmentService {
     public List<Equipment> findAll() {
         return equipmentRepository.findAll();
     }
+
+    public List<EquipmentEmnumberDto> queryDslDeviceEmNumber(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId) {
+        return equipmentRepositoryCustom.queryDslDeviceEmNumber(emNumber,emTypeId,emCountryId,emLocationId);
+    }
 }

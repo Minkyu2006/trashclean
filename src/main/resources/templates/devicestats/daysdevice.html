@@ -4,6 +4,221 @@
       layout:decorate ="~{layout/default}">
 <head>
     <script>
+        var map;
+
+        $(function() {
+            LocationSetting("");
+
+            document.getElementById('s_monthDate').valueAsDate = new Date();
+            countInfoView();
+
+            $("#btnSearch").on('click',function(){
+                countInfoView();
+            });
+
+        });
+
+        function countInfoView() {
+            if ($("#s_monthDate").val().trim() == '') {
+                alertCaution("조회할 날짜를 선택해주세요");
+                return false;
+            }
+
+            var $countInfo = $('#countInfo');
+
+            var params = {
+                monthDate:$('#s_monthDate').val(),
+                emNumber:$('#s_emNumber').val(),
+                emType:$('#s_emType').val(),
+                emCountry:$('#s_emCountry').val(),
+                emLocation:$('#s_emLocation').val(),
+            };
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+            $.ajax({
+                url: '/api/deviestats/countListView',
+                type: 'post',
+                data: params,
+                cache: false,
+                error: function (request) {
+                    ajaxErrorMsg(request);
+                },
+                success: function (res) {
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+
+                    var html = '';
+                    var j = 0;
+                    var i = 1;
+
+                    if(res.data.sDay<10){
+                        var sDay = '0'+res.data.sDay;
+                    }else{
+                        var sDay = res.data.sDay;
+                    }
+
+                    $.each(res.data.actuaterCnt, function (key, value) {
+                        html += '<tr>';
+                        if(i<10){
+                            html += '<td>'+res.data.sYear+'-'+sDay+'-'+'0'+i+'</td>';
+                        }else{
+                            html += '<td>'+res.data.sYear+'-'+sDay+'-'+i+'</td>';
+                        }
+                            html += '<td>'+res.data.emitCnt[j]+'</td>';
+                            html += '<td>'+res.data.actuaterCnt[j]+'</td>';
+                            html += '<td>'+res.data.inputdoorjammingCnt[j]+'</td>';
+                            html += '<td>'+res.data.frontdoorsolopenCnt[j]+'</td>';
+                            html += '<td>'+res.data.fullLevel[j]+'%'+'</td>';
+                        html += '</tr>';
+                        j++;
+                        i++;
+                    });
+
+                    LocationDeviceId(res.data.deviceid);
+
+
+                    $countInfo.html(html);
+                }
+            });
+        }
+
+        function LocationDeviceId(pushValue) {
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr, options) {xhr.setRequestHeader(header, token);});
+
+            var deviceIds = new Array();
+            for (var i = 0; i < pushValue.length; i++) {
+                deviceIds.push(pushValue[i]);
+            }
+
+            var itemJson = new Object();
+            itemJson.deviceids = deviceIds;
+            var devicestr = JSON.stringify(itemJson);
+
+            var params = {
+                deviceids:devicestr
+            };
+
+            $.ajax({
+                url: '/api/dashboard/dataGraph',
+                type: 'post',
+                data : params,
+                cache: false,
+                error: function (request) {
+                    ajaxErrorMsg(request);
+                },
+                success: function (res) {
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+                    mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
+                }
+            });
+        }
+
+        // 맵 차트
+        function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
+
+            var locations = map_data_columns
+
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 37.14450, lng: 127.03312},
+                zoom: 8,
+                mapTypeControl: false,
+                streetViewControl: false
+            });
+
+            var i;
+            var iconSrc = [];
+
+            iconSrc['정상'] = "/assets/images/marker.png";
+            iconSrc['주의'] = "/assets/images/marker--caution.png";
+            iconSrc['심각'] = "/assets/images/marker--severe.png";
+
+            var infowindow = new google.maps.InfoWindow();
+
+            var bounds = new google.maps.LatLngBounds();
+
+            for (i = 0; i < map_data_columns.length; i++) {
+                if(map_data_columns[i][1]==0 || map_data_columns[i][2]==0){
+                    continue;
+                }
+
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(map_data_columns[i][1], map_data_columns[i][2]),
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                    icon: iconSrc[locations[i][3]]
+                });
+
+                bounds.extend(marker.position);
+
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    var content =
+                        '<div class="iw-container" id="iw-container">' +
+                        '<h2>' + (map_data_columns[i][0]) + '</h2>' +
+                        '<dl>' +
+                        '<dt>' +'상태 : '+statusDatas[i]+'</dt>' +
+                        '<dd>' +'배출량 : '+bar_data_columns[i+1]+'%'+'</dd>' +
+                        '</dl>' +
+                        '</div>';
+                    return function() {
+                        infowindow.setContent(content);
+                        infowindow.open(map, marker);
+
+                        if (marker.getAnimation() != null) {
+                            marker.setAnimation(null);
+                        } else {
+                            marker.setAnimation(google.maps.Animation.BOUNCE);
+                        }
+
+                    }
+                })(marker, i));
+            }
+            map.fitBounds(bounds);
+        }
+
+        // 국가,지역검색
+        function LocationSetting(value) {
+            // console.log("value : "+value);
+
+            var params = {
+                s_emCountry:value
+            };
+
+            var $s_emLocation = $("#s_emLocation");
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url: '/api/dashboard/location',
+                type: 'post',
+                data: params,
+                cache: false,
+                error:function(request){
+                    ajaxErrorMsg(request);
+                },
+                success: function (res) {
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+
+                    var html = '';
+                    html += '<option value ="">'+'전체'+'</option>';
+                    $.each(res.data.locationData, function (key, value) {
+                        html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name)+ '</option>';
+                    });
+                    $s_emLocation.html(html);
+                }
+            });
+        }
 
     </script>
 </head>
@@ -22,36 +237,52 @@
                         <div class="panel__body panel__body--height-auto">
                             <div class="c-float c-float--flex">
                                 <div class="c-float__item">
-                                    <div class="c-text">
-                                        <label for="num" class="c-text__label"></label>
-                                        <input type="text" class="c-text__input" id="num" />
+                                    <div class="c-date-group c-date-group—flex">
+                                        <div class="c-date">
+                                            <label for="s_monthDate" class="c-date__label"></label>
+                                            <input type="date" id="s_monthDate" />
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="c-float__item">
                                     <div class="c-select">
-                                        <label for="" class="c-select__label"></label>
-                                        <select name="" id="" class="c-select__input">
-                                            <option>전체</option>
-                                            <option>권역</option>
-                                            <option>거점</option>
-                                            <option></option>
+                                        <label for="s_emType" class="c-select__label">모델 타입</label>
+                                        <select id="s_emType" class="c-select__input">
+                                            <option value="">전체</option>
+                                            <option th:each ="equipdType : ${equipdTypes}"
+                                                    th:value="${equipdType.code}"
+                                                    th:text="${equipdType.name}">
+                                            </option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="c-float__item">
-                                    <div class="c-date-group c-date-group--flex">
-                                        <div class="c-date">
-                                            <label for="from" class="c-date__label"></label>
-                                            <input type="date" class="c-date__input" id="from" />
-                                        </div>
-                                        <div class="c-date">
-                                            <label for="to" class="c-date__label"></label>
-                                            <input type="date" class="c-date__input" id="to" />
-                                        </div>
+                                    <div class="c-select">
+                                        <label for="s_emCountry" class="c-select__label">국가</label>
+                                        <select id="s_emCountry" class="c-select__input" onchange="LocationSetting(this.value)">
+                                            <option value="">전체</option>
+                                            <option th:each ="equipdCountry : ${equipdCountrys}"
+                                                    th:value="${equipdCountry.code}"
+                                                    th:text="${equipdCountry.name}">
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="c-float__item c-float__item--flex--auto">
-                                    <button class="c-button c-button--point">조회</button>
+                                <div class="c-float__item">
+                                    <div class="c-select">
+                                        <label for="s_emLocation" class="c-select__label">지역</label>
+                                        <select id="s_emLocation" class="c-select__input">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="c-float__item">
+                                    <div class="c-text">
+                                        <label for="s_emNumber" class="c-text__label">장비번호</label>
+                                        <input id="s_emNumber" type="text" class="c-text__input" />
+                                    </div>
+                                </div>
+                                <div class="c-float__item" style="padding-top: 15px;">
+                                    <button id="btnSearch" class="c-button c-button--point">조회</button>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +295,7 @@
                 <div class="panel panel--duo">
                     <div class="panel__inner">
                         <div class="panel__header">
-                            <h4 class="panel__title">표</h4>
+                            <h4 class="panel__title">작동횟수 및 평균배출량</h4>
                             <div class="panel__console">
                                 <button class="panel__button refresh">새로고침</button>
                             </div>
@@ -75,7 +306,7 @@
                                     <div class="c-scroll-table__header">
                                         <table style="width: 491px;">
                                             <colgroup>
-                                                <col style="width: 50px;" />
+                                                <col style="width: 100px;" />
                                                 <col style="width: 110px;" />
                                                 <col style="width: 110px;" />
                                                 <col style="width: 110px;" />
@@ -86,11 +317,11 @@
                                             <thead>
                                             <tr>
                                                 <th>날짜</th>
-                                                <th>액추에이터</th>
-                                                <th>투입구 걸림</th>
+                                                <th>투입횟수</th>
+                                                <th>모터작동횟수</th>
+                                                <th>투입구걸림횟수</th>
                                                 <th>솔레노이드센서</th>
-                                                <th>배출횟수</th>
-                                                <th>쓰레기 양</th>
+                                                <th>평균배출량(%)</th>
                                                 <th></th>
                                             </tr>
                                             </thead>
@@ -99,254 +330,15 @@
                                     <div class="c-scroll-table__body" style="height: 269px;">
                                         <table style="width: 472px;">
                                             <colgroup>
-                                                <col style="width: 50px;" />
+                                                <col style="width: 100px;" />
                                                 <col style="width: 110px;" />
                                                 <col style="width: 110px;" />
                                                 <col style="width: 110px;" />
                                                 <col style="width: 110px;" />
                                                 <col style="width: 110px;" />
                                             </colgroup>
-                                            <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>5</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>6</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>7</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>8</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>9</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>10</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>11</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>12</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>13</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>14</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>16</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>17</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>18</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>19</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>20</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>21</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>22</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>23</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>24</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>25</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>26</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>27</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>28</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>29</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
-                                            <tr>
-                                                <td>30</td>
-                                                <td>1</td>
-                                                <td>0</td>
-                                                <td>15</td>
-                                                <td>1</td>
-                                                <td>80%</td>
-                                            </tr>
+                                            <tbody id="countInfo">
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -359,7 +351,7 @@
                 <div class="panel panel--duo">
                     <div class="panel__inner">
                         <div class="panel__header">
-                            <h4 class="panel__title">지도</h4>
+                            <h4 class="panel__title">Location</h4>
                             <div class="panel__console">
                                 <button class="panel__button refresh">새로고침</button>
                             </div>

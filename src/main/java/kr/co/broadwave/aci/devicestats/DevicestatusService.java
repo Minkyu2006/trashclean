@@ -29,7 +29,11 @@ public class DevicestatusService {
         this.devicestatusRepository = devicestatusRepository;
     }
 
-    public List<DevicestatsDto> getDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2) {
-        return devicestatsRepositoryCustom.getDevicestatsAvgQuerydsl(deviceid,yyyymmdd1,yyyymmdd2);
+    public List<DevicestatsDto> queryDslDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2) {
+        return devicestatsRepositoryCustom.queryDslDevicestatsAvgQuerydsl(deviceid,yyyymmdd1,yyyymmdd2);
+    }
+
+    public List<DevicestatsDailyDto> queryDslDeviceDaily(List<String> deviceid,String sMonth) {
+        return devicestatsRepositoryCustom.queryDslDeviceDaily(deviceid,sMonth);
     }
 }

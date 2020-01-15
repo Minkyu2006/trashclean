@@ -1171,7 +1171,7 @@
 			for (var i=0; i<pushValue.length; i++){
 				deviceIds.push(pushValue[i]);
 			}
-			//console.log("deviceIds : "+deviceIds)
+			console.log("deviceIds : "+deviceIds)
 			// deviceIds.push("ISOL-KR-SEL-0004");
 
 			var itemJson = new Object();
@@ -1594,12 +1594,6 @@
 
 							<div class="c-float c-float--flex">
 								<div class="c-float__item">
-									<div class="c-text">
-										<label for="s_emNumber" class="c-text__label">장비번호</label>
-										<input id="s_emNumber" type="text" class="c-text__input" />
-									</div>
-								</div>
-								<div class="c-float__item">
 									<div class="c-select">
 										<label for="s_emType" class="c-select__label">모델 타입</label>
 										<select id="s_emType" class="c-select__input">
@@ -1630,6 +1624,12 @@
 										</select>
 									</div>
 								</div>
+								<div class="c-float__item">
+									<div class="c-text">
+										<label for="s_emNumber" class="c-text__label">장비번호</label>
+										<input id="s_emNumber" type="text" class="c-text__input" />
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -1641,27 +1641,11 @@
 					<div class="panel__inner">
 						<div class="panel__header">
 							<h4 class="panel__title">기기</h4>
-<!--    									<div class="panel__console">-->
-<!--    										<div class="c-search">-->
-<!--	    										<input type="text" class="c-search__input" />-->
-<!--	    										<button class="c-search__btn">검색</button>-->
-<!--    										</div>-->
-<!--    									</div>-->
 						</div>
 						<div class="panel__body panel__body--height-auto panel__body--non-padding">
 							<ul id="deviceList" class="c-list equipment">
 							</ul>
 						</div>
-<!--								<div class="c-pager">-->
-<!--									<div class="c-paging" id="paging">-->
-<!--									</div>-->
-<!--									<div class="c-paging__total">-->
-<!--										<div class="c-paging__total-group">-->
-<!--											Total-->
-<!--										</div>-->
-<!--										<div class="c-paging__total-group" id="totalCnt">0</div>-->
-<!--									</div>-->
-<!--								</div>-->
 					</div>
 				</div>
 			</div>

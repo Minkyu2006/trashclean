@@ -2,7 +2,10 @@ package kr.co.broadwave.aci.equipment;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.devicestats.DevicestatsDto;
+import kr.co.broadwave.aci.devicestats.QDevicestatus;
 import kr.co.broadwave.aci.imodel.QIModel;
 import kr.co.broadwave.aci.teams.QTeam;
 import org.springframework.data.domain.Page;
@@ -67,4 +70,34 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         final List<EquipmentListDto> equipments = getQuerydsl().applyPagination(pageable, query).fetch();
         return new PageImpl<>(equipments, pageable, query.fetchCount());
     }
+
+    // 일자별 장비현황 검색의 따른 장비아이디 보내기
+    @Override
+    public List<EquipmentEmnumberDto> queryDslDeviceEmNumber(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId) {
+
+        QEquipment equipment = QEquipment.equipment;
+
+        JPQLQuery<EquipmentEmnumberDto> query = from(equipment)
+                .select(Projections.constructor(EquipmentEmnumberDto.class,
+                        equipment.emNumber))
+                .groupBy(equipment.emNumber);
+
+        if (emNumber != null && !emNumber.isEmpty()){
+            query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
+        }
+        if (emTypeId != null ){
+            query.where(equipment.emType.id.eq(emTypeId));
+        }
+        if (emCountryId != null ){
+            query.where(equipment.emCountry.id.eq(emCountryId));
+        }
+        if (emLocationId != null ){
+            query.where(equipment.emLocation.id.eq(emLocationId));
+        }
+
+        return query.fetch();
+    }
+
+
+
 }

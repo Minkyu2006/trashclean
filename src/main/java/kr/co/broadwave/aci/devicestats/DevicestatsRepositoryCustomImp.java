@@ -1,7 +1,10 @@
 package kr.co.broadwave.aci.devicestats;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import kr.co.broadwave.aci.equipment.EquipmentEmnumberDto;
+import kr.co.broadwave.aci.equipment.QEquipment;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +24,7 @@ public class DevicestatsRepositoryCustomImp extends QuerydslRepositorySupport im
 
     // 대시보드 종합페이지 배출량 Querydsl
     @Override
-    public List<DevicestatsDto> getDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2) {
+    public List<DevicestatsDto> queryDslDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2) {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
 
@@ -34,6 +37,32 @@ public class DevicestatsRepositoryCustomImp extends QuerydslRepositorySupport im
                 .where(devicestatus.deviceid.in(deviceid))
                 .groupBy(devicestatus.yyyymmdd)
                 .fetch();
+    }
+
+    // 일자별장비현황 합계,배출량평균 Querydsl
+    @Override
+    public List<DevicestatsDailyDto> queryDslDeviceDaily(List<String> deviceid,String sMonth) {
+
+        QDevicestatusdaily devicestatusdaily = QDevicestatusdaily.devicestatusdaily;
+
+        JPQLQuery<DevicestatsDailyDto> query = from(devicestatusdaily)
+                .select(Projections.constructor(DevicestatsDailyDto.class,
+                        devicestatusdaily.yyyymmdd,
+                        devicestatusdaily.actuaterCnt.sum(),
+                        devicestatusdaily.inputdoorjammingCnt.sum(),
+                        devicestatusdaily.frontdoorsolopenCnt.sum(),
+                        devicestatusdaily.emitCnt.sum(),
+                        devicestatusdaily.fullLevel.avg()))
+                .groupBy(devicestatusdaily.yyyymmdd);
+
+        if (deviceid != null){
+            query.where(devicestatusdaily.deviceid.in(deviceid));
+        }
+        if (sMonth != null){
+            query.where(devicestatusdaily.yyyymmdd.likeIgnoreCase(sMonth.concat("%")));
+        }
+
+        return query.fetch();
     }
 
 }

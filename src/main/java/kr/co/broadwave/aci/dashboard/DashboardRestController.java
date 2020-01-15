@@ -292,7 +292,7 @@ public class DashboardRestController {
         List<String> gps_loDatas = new ArrayList<>(); // AWS 장비 gps_lo값 리스트
         List<String> gps_laDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
         List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
-
+        log.info("deviceids : " +deviceids);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
         //log.info("AWS 장치 list : "+resData);
@@ -380,7 +380,7 @@ public class DashboardRestController {
         List<Timestamp> timestamps = new ArrayList<>();
 
         // 쿼리dsl활용
-        List<DevicestatsDto> devicestatsDto = devicestatusService.getDevicestatsAvgQuerydsl(deviceIdNames,yyyymmdd1,yyyymmdd2);
+        List<DevicestatsDto> devicestatsDto = devicestatusService.queryDslDevicestatsAvgQuerydsl(deviceIdNames,yyyymmdd1,yyyymmdd2);
         int d=0;
         for(int j=0; j<31; j++) {
             cal.setTime(time);
@@ -649,7 +649,7 @@ public class DashboardRestController {
         List<Timestamp> timestamps = new ArrayList<>();
 
         // 쿼리dsl활용하기 프로젝트
-        List<DevicestatsDto> devicestatsDto = devicestatusService.getDevicestatsAvgQuerydsl(deviceIdNames,yyyymmdd1,yyyymmdd2);
+        List<DevicestatsDto> devicestatsDto = devicestatusService.queryDslDevicestatsAvgQuerydsl(deviceIdNames,yyyymmdd1,yyyymmdd2);
         int d=0;
         for(int j=0; j<31; j++) {
             cal.setTime(time);

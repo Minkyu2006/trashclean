@@ -8,5 +8,7 @@ import java.util.List;
  * Remark :
  */
 public interface DevicestatsRepositoryCustom {
-    List<DevicestatsDto> getDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2);
+    List<DevicestatsDto> queryDslDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2);
+
+    List<DevicestatsDailyDto> queryDslDeviceDaily(List<String> deviceid,String sMonth);
 }

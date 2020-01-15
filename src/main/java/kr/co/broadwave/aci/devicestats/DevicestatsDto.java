@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Setter
+//대시보드 배출량그래프용
 public class DevicestatsDto {
 
     private String yyyymmdd;
