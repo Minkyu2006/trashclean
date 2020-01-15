@@ -3,155 +3,202 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate ="~{layout/default}">
 <head>
+	<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
     <script>
-		var data = [
-			{item: 1, hour: 1, value: 16},
-			{item: 1, hour:	2, value:	20},
-			{item: 1, hour:	3, value:	0},
-			{item: 1, hour:	4, value:	0},
-			{item: 1, hour:	5, value:	0},
-			{item: 1, hour:	6, value:	2},
-			{item: 1, hour:	7, value:	0},
-			{item: 1, hour:	8, value:	9},
-			{item: 1, hour:	9, value:	25},
-			{item: 1, hour:	10, value:	49},
-			{item: 1, hour:	11, value:	57},
-			{item: 1, hour:	12, value:	61},
-			{item: 1, hour:	13, value:	37},
-			{item: 1, hour:	14, value:	66},
-			{item: 1, hour:	15, value:	70},
-			{item: 1, hour:	16, value:	55},
-			{item: 1, hour:	17, value:	51},
-			{item: 1, hour:	18, value:	55},
-			{item: 1, hour:	19, value:	17},
-			{item: 1, hour:	20, value:	20},
-			{item: 1, hour:	21, value:	9},
-			{item: 1, hour:	22, value:	4},
-			{item: 1, hour:  23, value:	0},
-			{item: 1, hour:	24, value:	12},
-			{item: 2, hour:	1, value:	6},
-			{item: 2, hour:	2, value:	2},
-			{item: 2, hour:  3, value:    0},
-			{item: 2, hour:	4, value:	0},
-			{item: 2, hour:	5, value:	0},
-			{item: 2, hour:	6, value:	2},
-			{item: 2, hour:	7, value:	4},
-			{item: 2, hour:	8, value:	11},
-			{item: 2, hour:	9, value:	28},
-			{item: 2, hour:	10, value:	49},
-			{item: 2, hour:	11, value:	51},
-			{item: 2, hour:	12, value:	47},
-			{item: 2, hour:	13, value:	38},
-			{item: 2, hour:	14, value:	65},
-			{item: 2, hour:	15, value:	60},
-			{item: 2, hour:	16, value:	50},
-			{item: 2, hour:	17, value:	65},
-			{item: 2, hour:	18, value:	50},
-			{item: 2, hour:	19, value:	22},
-			{item: 2, hour:	20, value:	11},
-			{item: 2, hour:	21, value:	12},
-			{item: 2, hour:	22, value:	9},
-			{item: 2, hour:	23, value:	0},
-			{item: 2, hour:	24, value:	13},
-			{item: 3, hour:	1, value:	5},
-			{item: 3, hour:	2, value:	8},
-			{item: 3, hour:	3, value:	8},
-			{item: 3, hour:	4, value:	0},
-			{item: 3, hour:	5, value:	0},
-			{item: 3, hour:	6, value:	2},
-			{item: 3, hour:	7, value:	5},
-			{item: 3, hour:	8, value:	12},
-			{item: 3, hour:	9, value:	34},
-			{item: 3, hour:	10, value:	43},
-			{item: 3, hour:	11, value:	54},
-			{item: 3, hour:	12, value:	44},
-			{item: 3, hour:	13, value:	40},
-			{item: 3, hour:	14, value:	48},
-			{item: 3, hour:	15, value:	54},
-			{item: 3, hour:	16, value:	59},
-			{item: 3, hour:	17, value:	60},
-			{item: 3, hour:  18, value:	51},
-			{item: 3, hour:	19, value:	21},
-			{item: 3, hour:	20, value:	16},
-			{item: 3, hour:	21, value:	9},
-			{item: 3, hour:	22, value:	5},
-			{item: 3, hour:	23, value:	4},
-			{item: 3, hour:	24, value:	7}
-		]
-		
-		var width = 880,
-			height = 294,
-			gridSize = Math.floor(width / 24),
-			legendElementWidth = gridSize*2,
-			buckets = 9,
-			colors = ['#f7fcfd', '#e5f5f9', '#ccece6', '#99d8c9', '#66c2a4', '#41ae76', '#238b45', '#006d2c', '#00441b'],
-			items = ['배출 횟수', '투입구 걸림', '액추에이터'],
-			times = ["1am", "2am", "3am", "4am", "5am", "6am", "7am", "8am", "9am", "10am", "11am", "12am", "1pm", "2pm", "3pm", "4pm", "5pm", "6pm", "7pm", "8pm", "9pm", "10pm", "11pm", "12pm"];
-		
-		var colorScale = d3.scale.quantile()
-	        .domain([0, buckets - 1, d3.max(data, function (d) { return d.value; })])
-	        .range(colors);
-		
-        var svg = d3.select("#heatmap").append("svg")
-	        .attr("width", width)
-	        .attr("height", height)
-	        .append("g")
-	        //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-        
-	        var dayLabels = svg.selectAll(".itemLabel")
-	            .data(items)
-	            .enter().append("text")
-					.text(function (d) { return d; })
-					.attr("x", 0)
-					.attr("y", function (d, i) { return i * gridSize; })
-					.style("text-anchor", "end")
-					.attr("transform", "translate(-6," + gridSize / 1.5 + ")")
-					.attr("class", function (d, i) { return ((i >= 0 && i <= 4) ? "itemLabel mono axis axis-workweek" : "itemLabel mono axis"); });
-	        
-	        var timeLabels = svg.selectAll(".timeLabel")
-	            .data(times)
-	            .enter().append("text")
-					.text(function(d) { return d; })
-					.attr("x", function(d, i) { return i * gridSize; })
-					.attr("y", 0)
-					.style("text-anchor", "middle")
-					.attr("transform", "translate(" + gridSize / 2 + ", -6)")
-					.attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
-	        
-	        var heatMap = svg.selectAll(".hour")
-	            .data(data)
-	            .enter().append("rect")
-	            .attr("x", function(d) { return (d.hour - 1) * gridSize; })
-	            .attr("y", function(d) { return (d.day - 1) * gridSize; })
-	            .attr("rx", 0)
-	            .attr("ry", 0)
-	            .attr("class", "hour bordered")
-	            .attr("width", gridSize)
-	            .attr("height", gridSize)
-	            .style("fill", colors[0]);
-	        
-	        heatMap.transition().duration(1000)
-            	.style("fill", function(d) { return colorScale(d.value); });
-
-        	heatMap.append("title").text(function(d) { return d.value; });
-        	
-        	var legend = svg.selectAll(".legend")
-	            .data([0].concat(colorScale.quantiles()), function(d) { return d; })
-	            .enter().append("g")
-	            .attr("class", "legend");
-        	
-        	legend.append("rect")
-	            .attr("x", function(d, i) { return legendElementWidth * i; })
-	            .attr("y", height)
-	            .attr("width", legendElementWidth)
-	            .attr("height", gridSize / 4)
-	            .style("fill", function(d, i) { return colors[i]; });
-        	
-        	legend.append("text")
-	            .attr("class", "mono")
-	            .text(function(d) { return "≥ " + Math.round(d); })
-	            .attr("x", function(d, i) { return legendElementWidth * i; })
-	            .attr("y", height + gridSize);
+  
+	Utils.load(function() {
+		Chart.defaults.global.defaultFontSize = 9;
+		var ctx = document.getElementById("heatmap").getContext("2d");
+		window.myMatrix = new Chart(ctx, {
+			type: 'matrix',
+			data: {
+				datasets: [{
+					label: '일자별',
+					data: [
+						{x: '01:00', y: '액츄에이터', v: 0},
+						{x: '01:00', y: '투입구 걸림', v: 10},
+						{x: '01:00', y: '솔레노이드센서', v: 20},
+						{x: '01:00', y: '배출횟수', v: 30},
+						{x: '02:00', y: '액츄에이터', v: 40},
+						{x: '02:00', y: '투입구 걸림', v: 50},
+						{x: '02:00', y: '솔레노이드센서', v: 60},
+						{x: '02:00', y: '배출횟수', v: 70},
+						{x: '03:00', y: '액츄에이터', v: 80},
+						{x: '03:00', y: '투입구 걸림', v: 90},
+						{x: '03:00', y: '솔레노이드센서', v: 100},
+						{x: '03:00', y: '배출횟수', v: 0},
+						{x: '04:00', y: '액츄에이터', v: 10},
+						{x: '04:00', y: '투입구 걸림', v: 20},
+						{x: '04:00', y: '솔레노이드센서', v: 30},
+						{x: '04:00', y: '배출횟수', v: 40},
+						{x: '05:00', y: '액츄에이터', v: 50},
+						{x: '05:00', y: '투입구 걸림', v: 60},
+						{x: '05:00', y: '솔레노이드센서', v: 70},
+						{x: '05:00', y: '배출횟수', v: 80},
+						{x: '06:00', y: '액츄에이터', v: 90},
+						{x: '06:00', y: '투입구 걸림', v: 100},
+						{x: '06:00', y: '솔레노이드센서', v: 90},
+						{x: '06:00', y: '배출횟수', v: 80},
+						{x: '07:00', y: '액츄에이터', v: 70},
+						{x: '07:00', y: '투입구 걸림', v: 60},
+						{x: '07:00', y: '솔레노이드센서', v: 50},
+						{x: '07:00', y: '배출횟수', v: 40},
+						{x: '08:00', y: '액츄에이터', v: 30},
+						{x: '08:00', y: '투입구 걸림', v: 30},
+						{x: '08:00', y: '솔레노이드센서', v: 20},
+						{x: '08:00', y: '배출횟수', v: 10},
+						{x: '09:00', y: '액츄에이터', v: 20},
+						{x: '09:00', y: '투입구 걸림', v: 30},
+						{x: '09:00', y: '솔레노이드센서', v: 40},
+						{x: '09:00', y: '배출횟수', v: 50},
+						{x: '10:00', y: '액츄에이터', v: 60},
+						{x: '10:00', y: '투입구 걸림', v: 70},
+						{x: '10:00', y: '솔레노이드센서', v: 80},
+						{x: '10:00', y: '배출횟수', v: 90},
+						{x: '11:00', y: '액츄에이터', v: 100},
+						{x: '11:00', y: '투입구 걸림', v: 90},
+						{x: '11:00', y: '솔레노이드센서', v: 80},
+						{x: '11:00', y: '배출횟수', v: 70},
+						{x: '12:00', y: '액츄에이터', v: 60},
+						{x: '12:00', y: '투입구 걸림', v: 50},
+						{x: '12:00', y: '솔레노이드센서', v: 40},
+						{x: '12:00', y: '배출횟수', v: 30},
+						{x: '13:00', y: '액츄에이터', v: 20},
+						{x: '13:00', y: '투입구 걸림', v: 10},
+						{x: '13:00', y: '솔레노이드센서', v: 0},
+						{x: '13:00', y: '배출횟수', v: 10},
+						{x: '14:00', y: '액츄에이터', v: 20},
+						{x: '14:00', y: '투입구 걸림', v: 30},
+						{x: '14:00', y: '솔레노이드센서', v: 40},
+						{x: '14:00', y: '배출횟수', v: 50},
+						{x: '15:00', y: '액츄에이터', v: 60},
+						{x: '15:00', y: '투입구 걸림', v: 70},
+						{x: '15:00', y: '솔레노이드센서', v: 80},
+						{x: '15:00', y: '배출횟수', v: 90},
+						{x: '16:00', y: '액츄에이터', v: 100},
+						{x: '16:00', y: '투입구 걸림', v: 90},
+						{x: '16:00', y: '솔레노이드센서', v: 80},
+						{x: '16:00', y: '배출횟수', v: 70},
+						{x: '17:00', y: '액츄에이터', v: 60},
+						{x: '17:00', y: '투입구 걸림', v: 50},
+						{x: '17:00', y: '솔레노이드센서', v: 40},
+						{x: '17:00', y: '배출횟수', v: 30},
+						{x: '18:00', y: '액츄에이터', v: 20},
+						{x: '18:00', y: '투입구 걸림', v: 10},
+						{x: '18:00', y: '솔레노이드센서', v: 0},
+						{x: '18:00', y: '배출횟수', v: 10},
+						{x: '19:00', y: '액츄에이터', v: 20},
+						{x: '19:00', y: '투입구 걸림', v: 30},
+						{x: '19:00', y: '솔레노이드센서', v: 40},
+						{x: '19:00', y: '배출횟수', v: 50},
+						{x: '20:00', y: '액츄에이터', v: 60},
+						{x: '20:00', y: '투입구 걸림', v: 70},
+						{x: '20:00', y: '솔레노이드센서', v: 80},
+						{x: '20:00', y: '배출횟수', v: 90},
+						{x: '21:00', y: '액츄에이터', v: 100},
+						{x: '21:00', y: '투입구 걸림', v: 90},
+						{x: '21:00', y: '솔레노이드센서', v: 80},
+						{x: '21:00', y: '배출횟수', v: 70},
+						{x: '22:00', y: '액츄에이터', v: 60},
+						{x: '22:00', y: '투입구 걸림', v: 50},
+						{x: '22:00', y: '솔레노이드센서', v: 40},
+						{x: '22:00', y: '배출횟수', v: 30},
+						{x: '23:00', y: '액츄에이터', v: 20},
+						{x: '23:00', y: '투입구 걸림', v: 10},
+						{x: '23:00', y: '솔레노이드센서', v: 0},
+						{x: '23:00', y: '배출횟수', v: 10},
+						{x: '24:00', y: '액츄에이터', v: 20},
+						{x: '24:00', y: '투입구 걸림', v: 30},
+						{x: '24:00', y: '솔레노이드센서', v: 40},
+						{x: '24:00', y: '배출횟수', v: 50}
+					],
+					backgroundColor: function(ctx) {
+						var value = ctx.dataset.data[ctx.dataIndex].v;
+						var alpha = (value - 5) / 100;
+						return Color('#007e37').alpha(alpha).rgbString();
+					},
+					borderColor: function(ctx) {
+						var value = ctx.dataset.data[ctx.dataIndex].v;
+						var alpha = (value - 5) / 100;
+						return Color('#007e37').alpha(alpha).darken(0.3).rgbString();
+					},
+					borderWidth: 1,
+					borderSkipped: false,
+					hoverBorderColor: 'yellow',
+					width: function(ctx) {
+						var a = ctx.chart.chartArea;
+						return (a.right - a.left) / 30;
+					},
+					height: function(ctx) {
+						var a = ctx.chart.chartArea;
+						return (a.bottom - a.top) / 3 - 2;
+					}
+				}]
+			},
+			options: {
+				legend: {
+					display: false
+				},
+				maintainAspectRatio: false,
+				//stacked : true,
+				tooltips: {
+					callbacks: {
+						title: function() { return '';},
+						label: function(item, data) {
+							var v = data.datasets[item.datasetIndex].data[item.index];
+							return ["시간: " + v.x, v.y + ": " + v.v];
+						}
+					}
+				},
+				scales: {
+					xAxes: [{
+						type: 'time',
+						labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'],
+						time: {
+							unit: 'hour',
+							parser: 'HH',
+							min: '00:00',
+							max: '24:00',
+							displayFormats: {
+								hour: 'HH'
+							}
+						},
+						/*ticks: {
+							source: 'labels',
+							reverse: false
+						},
+						gridLines: {
+							display: false
+						}*/
+						ticks: {
+							maxRotation: 0,
+							autoSkip: true
+						},
+						gridLines: {
+							display: false,
+							drawBorder: false,
+							tickMarkLength: 0,
+						}
+					}],
+					yAxes: [{
+						type: 'category',
+						labels: ['액츄에이터', '투입구 걸림', '솔레노이드센서', '배출횟수'],
+						/*gridLines: {
+							display: false
+						}*/
+						ticks: {
+							maxRotation: 90
+						},
+						gridLines: {
+							display: false,
+							drawBorder: false,
+							tickMarkLength: 0
+						}
+					}]
+				}
+			}
+		})
+	});
     </script>
 </head>
 
@@ -543,7 +590,10 @@
 							</div>
 						</div>
 						<div class="panel__body">
-							<div id="heatmap"></div>
+							<!-- <div id="heatmap"></div> -->
+							<div class="heatmap-area">
+								<canvas id="heatmap" style="width: 100%;height: 293px;"></canvas>
+							</div>
 						</div>
 					</div>
 				</div>
