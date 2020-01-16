@@ -976,6 +976,8 @@
 			// console.log("timestamps : "+timestamps);
 
 			var ctx = document.getElementById('bar_chart');
+			var context = ctx.getContext('2d');
+			context.clearRect(0, 0, ctx.width, ctx.height);
 
 			var barChartData = {
 				labels: timestamps,
@@ -984,7 +986,7 @@
 						label: '평균값',
 						yAxisID: '평균',
 						backgroundColor: "#48ae63",
-						borderWidth: 3,
+						borderWidth: 4,
 						borderColor: "#48ae63",
 						data: barData,
 						fill: false
@@ -1171,7 +1173,7 @@
 			for (var i=0; i<pushValue.length; i++){
 				deviceIds.push(pushValue[i]);
 			}
-			console.log("deviceIds : "+deviceIds)
+			//console.log("deviceIds : "+deviceIds)
 			// deviceIds.push("ISOL-KR-SEL-0004");
 
 			var itemJson = new Object();

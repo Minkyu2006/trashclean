@@ -65,4 +65,32 @@ public class DevicestatsRepositoryCustomImp extends QuerydslRepositorySupport im
         return query.fetch();
     }
 
+    // 일자별장비현황 배출량평균 꺾은선그래프 그리는 Querydsl
+    @Override
+    public List<DevicestatsDailyHourLevelDto> queryDslDeviceDailyHourLevel(List<String> deviceid,String sendDate) {
+
+        QDevicestatusdaily devicestatusdaily = QDevicestatusdaily.devicestatusdaily;
+
+        JPQLQuery<DevicestatsDailyHourLevelDto> query = from(devicestatusdaily)
+                .select(Projections.constructor(DevicestatsDailyHourLevelDto.class,
+                        devicestatusdaily.hh,
+                        devicestatusdaily.yyyymmdd,
+                        devicestatusdaily.emitCnt.sum(),
+                        devicestatusdaily.actuaterCnt.sum(),
+                        devicestatusdaily.inputdoorjammingCnt.sum(),
+                        devicestatusdaily.frontdoorsolopenCnt.sum(),
+                        devicestatusdaily.fullLevel.avg()))
+                .groupBy(devicestatusdaily.hh);
+
+        if (deviceid != null){
+            query.where(devicestatusdaily.deviceid.in(deviceid));
+        }
+
+        if (!sendDate.equals("")){
+            query.where(devicestatusdaily.yyyymmdd.eq(sendDate));
+        }
+
+        return query.fetch();
+    }
+
 }

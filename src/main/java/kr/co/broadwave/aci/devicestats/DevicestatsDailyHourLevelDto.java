@@ -4,9 +4,9 @@ import lombok.*;
 
 /**
  * @author Minkyu
- * Date : 2020-01-15
+ * Date : 2020-01-16
  * Time :
- * Remark : DevicestatsDailyDto
+ * Remark : DevicestatsDailyHourLevelDto
  */
 @Builder
 @NoArgsConstructor
@@ -14,15 +14,20 @@ import lombok.*;
 @ToString
 @Setter
 // 일자별장비현황용
-public class DevicestatsDailyDto {
+public class DevicestatsDailyHourLevelDto {
 
-    private String yyyymmdd; //날짜(그룹바이)
+    private String hh; //시간(그룹바이)
 
+    private String yyyymmdd; // 검색한 해당날짜
+    private Double emitCnt; // 일일장비 투입횟수 -> (합계)
     private Double actuaterCnt; // 엑추에이터 작동횟수 -> (합계)
     private Double inputdoorjammingCnt; // 투일구걸림횟수 -> (합계)
     private Double frontdoorsolopenCnt; // 솔레노이드센서 열림 횟수 -> (합계)
-    private Double emitCnt; // 일일장비 투입횟수 -> (합계)
     private Double fullLevel; // 해당일자의 쓰레기양 -> (평균)
+
+    public String getHh() {
+        return hh;
+    }
 
     public String getYyyymmdd() {
         return yyyymmdd;

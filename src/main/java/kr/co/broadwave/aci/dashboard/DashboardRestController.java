@@ -292,7 +292,7 @@ public class DashboardRestController {
         List<String> gps_loDatas = new ArrayList<>(); // AWS 장비 gps_lo값 리스트
         List<String> gps_laDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
         List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
-        log.info("deviceids : " +deviceids);
+        //log.info("deviceids : " +deviceids);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
         //log.info("AWS 장치 list : "+resData);
@@ -487,7 +487,7 @@ public class DashboardRestController {
 //        log.info("gps_loDatas2 : "+gps_loDatas2);
 //        log.info("mapDataColumns : "+mapDataColumns);
 
-
+        data.put("deviceIdNames", deviceIdNames);
         data.put("statusDatas", statusDatas);
         data.put("map_data_columns", mapDataColumns);
         data.put("circle_data_columns", circleDataColumns);

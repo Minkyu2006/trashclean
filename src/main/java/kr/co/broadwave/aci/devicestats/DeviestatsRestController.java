@@ -104,7 +104,7 @@ public class DeviestatsRestController {
         //log.info("조회할 장비아이디 : "+deviceid);
 
         List<DevicestatsDailyDto> devicestatsDailyDtos = devicestatusService.queryDslDeviceDaily(deviceid,sMonth);
-        log.info("devicestatsDailyDtos : "+devicestatsDailyDtos);
+        //log.info("devicestatsDailyDtos : "+devicestatsDailyDtos);
 
         // 조회한 월의 일수구하기
         int year = sYear;
@@ -112,7 +112,7 @@ public class DeviestatsRestController {
         int day = 1;
         Calendar days = new GregorianCalendar(year, month, day);
         int daysOfMonth = days.getActualMaximum(Calendar.DAY_OF_MONTH);
-        log.info(year+"년 " + (month+1)+"월의 일수: " +daysOfMonth);
+        //log.info(year+"년 " + (month+1)+"월의 일수: " +daysOfMonth);
 
         // 조회한 월의 yyyymmdd 구하고, 데이터를 리스트에 담기
         Calendar cal = Calendar.getInstance();
@@ -123,7 +123,7 @@ public class DeviestatsRestController {
         List<Double> actuaterCnt = new ArrayList<>(); // 엑추에이터 작동횟수 -> (합계)
         List<Double> inputdoorjammingCnt = new ArrayList<>(); //투일구걸림횟수 -> (합계)
         List<Double> frontdoorsolopenCnt = new ArrayList<>(); // 솔레노이드센서 열림 횟수 -> (합계)
-        List<Double> emitCnt = new ArrayList<>(); // 일일장비 배출횟수 -> (합계)
+        List<Double> emitCnt = new ArrayList<>(); // 일일장비 투입횟수 -> (합계)
         List<Double> fullLevel = new ArrayList<>(); // 해당일자의 쓰레기양 -> (평균)
 
         int d=0;
@@ -174,6 +174,85 @@ public class DeviestatsRestController {
         data.put("deviceid",deviceid);
 
         res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 조회할 시간그래프 그리기
+    @PostMapping ("hourInfoGraph")
+    public ResponseEntity hourInfoGraph(@RequestParam(value="sendDate", defaultValue="") String sendDate,
+                                        @RequestParam(value="deviceid", defaultValue="") List<String> deviceid) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        List<DevicestatsDailyHourLevelDto> devicestatsDailyHourLevelDtos =
+                devicestatusService.queryDslDeviceDailyHourLevel(deviceid,sendDate);
+        log.info("받은 날짜 : "+sendDate);
+        log.info("받은 장치아이디 : "+deviceid);
+        log.info("devicestatsDailyHourLevelDtos : "+devicestatsDailyHourLevelDtos);
+
+        List<String> xhour = new ArrayList<>(); // 24시간 넣는 리스트
+
+        List<Double> hourFullLevel = new ArrayList<>(); // 평균배출량(시간) -> (평균)
+
+        List<Double> hourEmitCnt = new ArrayList<>(); // 일일장비 투입횟수(시간) -> (합계)
+        List<Double> hourActuaterCnt = new ArrayList<>(); // 엑추에이터 작동횟수(시간) -> (합계)
+        List<Double> hourInputdoorjammingCnt = new ArrayList<>(); //투일구걸림횟수(시간) -> (합계)
+        List<Double> hourFrontdoorsolopenCnt = new ArrayList<>(); // 솔레노이드센서 열림 횟수(시간) -> (합계)
+
+
+        String yyyy = sendDate.substring(0, 4);
+        String mm = sendDate.substring(4, 6);
+        String dd = sendDate.substring(6, 8);
+
+        int d=0;
+        for(int i=1; i<25; i++) {
+            if (i < 10) {
+                xhour.add(yyyy + '년' + mm + '월' + dd + '일' + '0' + i + '시');
+            } else {
+                xhour.add(yyyy + '년' + mm + '월' + dd + '일' + i + '시');
+            }
+
+            if (d < devicestatsDailyHourLevelDtos.size()) {
+                if (i == (Integer.parseInt(devicestatsDailyHourLevelDtos.get(d).getHh()))) {
+                    hourEmitCnt.add(devicestatsDailyHourLevelDtos.get(d).getEmitCnt());
+                    hourActuaterCnt.add(devicestatsDailyHourLevelDtos.get(d).getActuaterCnt());
+                    hourInputdoorjammingCnt.add(devicestatsDailyHourLevelDtos.get(d).getInputdoorjammingCnt());
+                    hourFrontdoorsolopenCnt.add(devicestatsDailyHourLevelDtos.get(d).getFrontdoorsolopenCnt());
+                    hourFullLevel.add((double) Math.round(devicestatsDailyHourLevelDtos.get(d).getFullLevel() * 10 / 10.0));
+                    d++;
+                } else {
+                    hourEmitCnt.add(0.0);
+                    hourActuaterCnt.add(0.0);
+                    hourInputdoorjammingCnt.add(0.0);
+                    hourFrontdoorsolopenCnt.add(0.0);
+                    hourFullLevel.add(0.0);
+                }
+            } else {
+                hourEmitCnt.add(0.0);
+                hourActuaterCnt.add(0.0);
+                hourInputdoorjammingCnt.add(0.0);
+                hourFrontdoorsolopenCnt.add(0.0);
+                hourFullLevel.add(0.0);
+            }
+        }
+
+        log.info("총 시간(x축) : "+xhour);
+        log.info("꺾은선그래프 데이터 : "+hourFullLevel);
+
+        log.info("히트맵그래프 데이터 투입횟수 : "+hourEmitCnt);
+        log.info("히트맵그래프 데이터 모터작동 : "+hourActuaterCnt);
+        log.info("히트맵그래프 데이터 투입구걸림 : "+hourInputdoorjammingCnt);
+        log.info("히트맵그래프 데이터 솔레노이드 : "+hourFrontdoorsolopenCnt);
+
+        data.clear();
+        data.put("xhour",xhour);
+        data.put("hourFullLevel",hourFullLevel);
+        data.put("hourEmitCnt",hourEmitCnt);
+        data.put("hourActuaterCnt",hourActuaterCnt);
+        data.put("hourInputdoorjammingCnt",hourInputdoorjammingCnt);
+        data.put("hourFrontdoorsolopenCnt",hourFrontdoorsolopenCnt);
+
+        res.addResponse("data", data);
         return ResponseEntity.ok(res.success());
     }
 

@@ -37,6 +37,7 @@
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
             $(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
             $.ajax({
                 url: '/api/deviestats/countListView',
                 type: 'post',
@@ -61,10 +62,11 @@
                     }
 
                     $.each(res.data.actuaterCnt, function (key, value) {
-                        html += '<tr>';
                         if(i<10){
+                            html += '<tr onclick="hourInfoGraph(\''+res.data.sYear+sDay+'0'+i+'\',\''+res.data.deviceid+'\');">';
                             html += '<td>'+res.data.sYear+'-'+sDay+'-'+'0'+i+'</td>';
                         }else{
+                            html += '<tr onclick="hourInfoGraph(\''+res.data.sYear+sDay+i+'\',\''+res.data.deviceid+'\');">';
                             html += '<td>'+res.data.sYear+'-'+sDay+'-'+i+'</td>';
                         }
                             html += '<td>'+res.data.emitCnt[j]+'</td>';
@@ -76,14 +78,340 @@
                         j++;
                         i++;
                     });
-
                     LocationDeviceId(res.data.deviceid);
-
-
                     $countInfo.html(html);
                 }
             });
         }
+
+        function hourInfoGraph(sendDate,pushValue) {
+            Canvasclear();
+            $("#hour_levelchart").hide();
+            $("#hourLevelChartLoading").show();
+
+            // if (sendDate==null) {
+            //     alertCaution("조회할 날짜가 없습니다.");
+            //     return false;
+            // }
+
+            var params = {
+                sendDate:sendDate,
+                deviceid:pushValue
+            };
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url: '/api/deviestats/hourInfoGraph',
+                type: 'post',
+                data: params,
+                cache: false,
+                error: function (request) {
+                    ajaxErrorMsg(request);
+                },
+                success: function (res) {
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+                    console.log("아작스호출");
+                    hourLevelChart(res.data.xhour,res.data.hourFullLevel)
+                    hourCountChart(res.data.xhour,res.data.hourEmitCnt,res.data.hourActuaterCnt,res.data.hourInputdoorjammingCnt,res.data.hourFrontdoorsolopenCnt);
+                }
+            });
+        }
+
+        function Canvasclear() {
+            var ctx = document.getElementById('hour_levelchart');
+            var context = ctx.getContext('2d');
+            context.clearRect(0, 0, ctx.width, ctx.height);
+        }
+
+        //꺾은선그래프(배출량그래프)
+        function hourLevelChart(xhour,hourFullLevel) {
+            // console.log("xhour : "+xhour);
+            // console.log("hourFullLevel : "+hourFullLevel);
+            var ctx = document.getElementById('hour_levelchart').getContext('2d');
+
+            var hourLevelChartData = {
+                labels: xhour,
+                datasets: [{
+                    type: 'line',
+                    label: '배출량',
+                    yAxisID: 'x',
+                    backgroundColor: "#48ae63",
+                    borderWidth: 4,
+                    borderColor: "#48ae63",
+                    data: hourFullLevel,
+                    fill: false
+                }]
+            };
+
+            new Chart(ctx, {
+                data: hourLevelChartData,
+                options: {
+                    legend: {
+                    	display: false
+                    },
+                    elements: {
+                        point:{
+                            radius: 0
+                        }
+                    },
+                    maintainAspectRatio: false,
+                    stacked : true,
+                    tooltips: { //팁(모드설정)
+                        titleFontSize: 15,
+                        bodyFontSize: 15,
+                        mode: 'index',
+                        intersect: false
+                    },
+                    hover: { //점 나오기
+                        mode: 'index',
+                        intersect: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            gridLines: {
+                                drawOnChartArea: false
+                            },
+                            display: false,
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                callback: function(value) {
+                                    return value+'%';
+                                },
+                                max: 100,
+                                min: 0,
+                                stepSize: 20,
+                                fontSize: 15,
+                            },
+                            id: 'x',
+                            type: 'linear',
+                            display: true,
+                            position: 'left'
+                        }]
+                    }
+                }
+            });
+            setTimeout(function(){
+                $("#hourLevelChartLoading").hide();
+                $("#hour_levelchart").show();
+            },1000);
+        }
+
+        function hourCountChart(xhour,hourEmitCnt,hourActuaterCnt,hourInputdoorjammingCnt,hourFrontdoorsolopenCnt){
+            console.log('매트릭스 함수실행');
+            Utils.load(function() {
+                var length = xhour.length;
+                console.log('xhour : '+xhour);
+                console.log('반복수 : '+length);
+                // console.log('hourEmitCn : '+hourEmitCnt[1]);
+                // console.log('hourActuaterCnt : '+hourActuaterCnt[2]);
+                // console.log('hourInputdoorjammingCnt : '+hourInputdoorjammingCnt[3]);
+                // console.log('hourFrontdoorsolopenCnt : '+hourFrontdoorsolopenCnt[4]);
+
+                var emitCnt = '투입횟수';
+                var actuaterCnt = '모터작동횟수';
+                var inputdoorjammingCnt = '투입구걸림횟수';
+                var frontdoorsolopenCnt = '문열림횟수';
+
+                var heatMapData = new Array();
+                for(var i=0; i<length; i++){
+
+                }
+                console.log('heatMapData : '+heatMapData);
+
+                // heatMapData.set(x,'01:00');
+                // heatMapData.set(y,emitCnt);
+                // heatMapData.set(v,hourEmitCnt[0]);
+                // console.log('heatMapData : '+heatMapData);
+
+                var ctx = document.getElementById("hour_heatmapchart").getContext('2d');
+                new Chart(ctx, {
+                    type: 'matrix',
+                    data: {
+                        datasets: [{
+                            data: [
+                                {d:xhour[0] ,x: '01:00', y: emitCnt, v: hourEmitCnt[0]},
+                                {d:xhour[0] ,x: '01:00', y: actuaterCnt, v: hourActuaterCnt[0]},
+                                {d:xhour[0] ,x: '01:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[0]},
+                                {d:xhour[0] ,x: '01:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[0]},
+                                {d:xhour[1] ,x: '02:00', y: emitCnt, v: hourEmitCnt[1]},
+                                {d:xhour[1] ,x: '02:00', y: actuaterCnt, v: hourActuaterCnt[1]},
+                                {d:xhour[1] ,x: '02:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[1]},
+                                {d:xhour[1] ,x: '02:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[1]},
+                                {d:xhour[2] ,x: '03:00', y: emitCnt, v: hourEmitCnt[2]},
+                                {d:xhour[2] ,x: '03:00', y: actuaterCnt, v: hourActuaterCnt[2]},
+                                {d:xhour[2] ,x: '03:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[2]},
+                                {d:xhour[2] ,x: '03:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[2]},
+                                {d:xhour[3] ,x: '04:00', y: emitCnt, v: hourEmitCnt[3]},
+                                {d:xhour[3] ,x: '04:00', y: actuaterCnt, v: hourActuaterCnt[3]},
+                                {d:xhour[3] ,x: '04:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[3]},
+                                {d:xhour[3] ,x: '04:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[3]},
+                                {d:xhour[4] ,x: '05:00', y: emitCnt, v: hourEmitCnt[4]},
+                                {d:xhour[4] ,x: '05:00', y: actuaterCnt, v: hourActuaterCnt[4]},
+                                {d:xhour[4] ,x: '05:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[4]},
+                                {d:xhour[4] ,x: '05:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[4]},
+                                {d:xhour[5] ,x: '06:00', y: emitCnt, v: hourEmitCnt[5]},
+                                {d:xhour[5] ,x: '06:00', y: actuaterCnt, v: hourActuaterCnt[5]},
+                                {d:xhour[5] ,x: '06:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[5]},
+                                {d:xhour[5] ,x: '06:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[5]},
+                                {d:xhour[6] ,x: '07:00', y: emitCnt, v: hourEmitCnt[6]},
+                                {d:xhour[6] ,x: '07:00', y: actuaterCnt, v: hourActuaterCnt[6]},
+                                {d:xhour[6] ,x: '07:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[6]},
+                                {d:xhour[6] ,x: '07:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[6]},
+                                {d:xhour[7] ,x: '08:00', y: emitCnt, v: hourEmitCnt[7]},
+                                {d:xhour[7] ,x: '08:00', y: actuaterCnt, v: hourActuaterCnt[7]},
+                                {d:xhour[7] ,x: '08:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[7]},
+                                {d:xhour[7] ,x: '08:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[7]},
+                                {d:xhour[8] ,x: '09:00', y: emitCnt, v: hourEmitCnt[8]},
+                                {d:xhour[8] ,x: '09:00', y: actuaterCnt, v: hourActuaterCnt[8]},
+                                {d:xhour[8] ,x: '09:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[8]},
+                                {d:xhour[8] ,x: '09:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[8]},
+                                {d:xhour[9] ,x: '10:00', y: emitCnt, v: hourEmitCnt[9]},
+                                {d:xhour[9] ,x: '10:00', y: actuaterCnt, v: hourActuaterCnt[9]},
+                                {d:xhour[9] ,x: '10:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[9]},
+                                {d:xhour[9] ,x: '10:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[9]},
+                                {d:xhour[10] ,x: '11:00', y: emitCnt, v: hourEmitCnt[10]},
+                                {d:xhour[10] ,x: '11:00', y: actuaterCnt, v: hourActuaterCnt[10]},
+                                {d:xhour[10] ,x: '11:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[10]},
+                                {d:xhour[10] ,x: '11:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[10]},
+                                {d:xhour[11] ,x: '12:00', y: emitCnt, v: hourEmitCnt[11]},
+                                {d:xhour[11] ,x: '12:00', y: actuaterCnt, v: hourActuaterCnt[11]},
+                                {d:xhour[11] ,x: '12:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[11]},
+                                {d:xhour[11] ,x: '12:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[11]},
+                                {d:xhour[12] ,x: '13:00', y: emitCnt, v: hourEmitCnt[12]},
+                                {d:xhour[12] ,x: '13:00', y: actuaterCnt, v: hourActuaterCnt[12]},
+                                {d:xhour[12] ,x: '13:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[12]},
+                                {d:xhour[12] ,x: '13:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[12]},
+                                {d:xhour[13] ,x: '14:00', y: emitCnt, v: hourEmitCnt[13]},
+                                {d:xhour[13] ,x: '14:00', y: actuaterCnt, v: hourActuaterCnt[13]},
+                                {d:xhour[13] ,x: '14:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[13]},
+                                {d:xhour[13] ,x: '14:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[13]},
+                                {d:xhour[14] ,x: '15:00', y: emitCnt, v: hourEmitCnt[14]},
+                                {d:xhour[14] ,x: '15:00', y: actuaterCnt, v: hourActuaterCnt[14]},
+                                {d:xhour[14] ,x: '15:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[14]},
+                                {d:xhour[14] ,x: '15:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[14]},
+                                {d:xhour[15] ,x: '16:00', y: emitCnt, v: hourEmitCnt[15]},
+                                {d:xhour[15] ,x: '16:00', y: actuaterCnt, v: hourActuaterCnt[15]},
+                                {d:xhour[15] ,x: '16:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[15]},
+                                {d:xhour[15] ,x: '16:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[15]},
+                                {d:xhour[16] ,x: '17:00', y: emitCnt, v: hourEmitCnt[16]},
+                                {d:xhour[16] ,x: '17:00', y: actuaterCnt, v: hourActuaterCnt[16]},
+                                {d:xhour[16] ,x: '17:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[16]},
+                                {d:xhour[16] ,x: '17:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[16]},
+                                {d:xhour[17] ,x: '18:00', y: emitCnt, v: hourEmitCnt[17]},
+                                {d:xhour[17] ,x: '18:00', y: actuaterCnt, v: hourActuaterCnt[17]},
+                                {d:xhour[17] ,x: '18:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[17]},
+                                {d:xhour[17] ,x: '18:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[17]},
+                                {d:xhour[18] ,x: '19:00', y: emitCnt, v: hourEmitCnt[18]},
+                                {d:xhour[18] ,x: '19:00', y: actuaterCnt, v: hourActuaterCnt[18]},
+                                {d:xhour[18] ,x: '19:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[18]},
+                                {d:xhour[18] ,x: '19:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[18]},
+                                {d:xhour[19] ,x: '20:00', y: emitCnt, v: hourEmitCnt[19]},
+                                {d:xhour[19] ,x: '20:00', y: actuaterCnt, v: hourActuaterCnt[19]},
+                                {d:xhour[19] ,x: '20:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[19]},
+                                {d:xhour[19] ,x: '20:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[19]},
+                                {d:xhour[20] ,x: '21:00', y: emitCnt, v: hourEmitCnt[20]},
+                                {d:xhour[20] ,x: '21:00', y: actuaterCnt, v: hourActuaterCnt[20]},
+                                {d:xhour[20] ,x: '21:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[20]},
+                                {d:xhour[20] ,x: '21:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[20]},
+                                {d:xhour[21] ,x: '22:00', y: emitCnt, v: hourEmitCnt[21]},
+                                {d:xhour[21] ,x: '22:00', y: actuaterCnt, v: hourActuaterCnt[21]},
+                                {d:xhour[21] ,x: '22:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[21]},
+                                {d:xhour[21] ,x: '22:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[21]},
+                                {d:xhour[22] ,x: '23:00', y: emitCnt, v: hourEmitCnt[22]},
+                                {d:xhour[22] ,x: '23:00', y: actuaterCnt, v: hourActuaterCnt[22]},
+                                {d:xhour[22] ,x: '23:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[22]},
+                                {d:xhour[22] ,x: '23:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[22]},
+                                {d:xhour[23] ,x: '24:00', y: emitCnt, v: hourEmitCnt[23]},
+                                {d:xhour[23] ,x: '24:00', y: actuaterCnt, v: hourActuaterCnt[23]},
+                                {d:xhour[23] ,x: '24:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[23]},
+                                {d:xhour[23] ,x: '24:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[23]},
+                            ],
+                            backgroundColor: function(ctx) {
+                                var value = ctx.dataset.data[ctx.dataIndex].v;
+                                var alpha = (value - 5) / 5;
+                                return Color('#007e37').alpha(alpha).rgbString();
+                            },
+                            borderColor: function(ctx) {
+                                var value = ctx.dataset.data[ctx.dataIndex].v;
+                                var alpha = (value - 5) / 5;
+                                return Color('#007e37').alpha(alpha).darken(0.3).rgbString();
+                            },
+                            borderWidth: 1,
+                            borderSkipped: false,
+                            hoverBorderColor: 'yellow',
+                            width: function(ctx) {
+                                var a = ctx.chart.chartArea;
+                                return (a.right - a.left) / 30;
+                            },
+                            height: function(ctx) {
+                                var a = ctx.chart.chartArea;
+                                return (a.bottom - a.top) / 3 - 2;
+                            }
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        maintainAspectRatio: false,
+                        tooltips: {
+                            titleFontSize: 17,
+                            bodyFontSize: 17,
+                            callbacks: {
+                                title: function() {return '';},
+                                label: function(item, data) {
+                                    var v = data.datasets[item.datasetIndex].data[item.index];
+                                    return [v.d +" "+v.y + ": " + v.v];
+                                }
+                            }
+                        },
+                        scales: {
+                            xAxes: [{
+                                display: false,
+                                type: 'time',
+                                time: {
+                                    unit: 'hour',
+                                    parser: 'HH',
+                                    min: '00:00',
+                                    max: '24:00',
+                                    displayFormats: {
+                                        hour: 'HH'
+                                    }
+                                },
+                                ticks: {
+                                    maxRotation: 0,
+                                    autoSkip: true
+                                },
+                                gridLines: {
+                                    display: false,
+                                    drawBorder: false,
+                                    tickMarkLength: 0,
+                                }
+                            }],
+                            yAxes: [{
+                                type: 'category',
+                                labels: [emitCnt,actuaterCnt,inputdoorjammingCnt,frontdoorsolopenCnt],
+                                ticks: {
+                                    fontSize: 15
+                                },
+                                gridLines: {
+                                    display: false,
+                                    drawBorder: false,
+                                    tickMarkLength: 0
+                                }
+                            }]
+                        }
+                    }
+                });
+            });
+        }
+
 
         function LocationDeviceId(pushValue) {
 
@@ -116,13 +444,13 @@
                     if (!Ajax.checkResult(res)) {
                         return;
                     }
-                    mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
+                    mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
                 }
             });
         }
 
         // 맵 차트
-        function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
+        function mapDeviceId(deviceId,map_data_columns,bar_data_columns,statusDatas) {
 
             var locations = map_data_columns
 
@@ -170,7 +498,7 @@
                     return function() {
                         infowindow.setContent(content);
                         infowindow.open(map, marker);
-
+                        hourInfoGraph('20200101',deviceId[i]);
                         if (marker.getAnimation() != null) {
                             marker.setAnimation(null);
                         } else {
@@ -239,8 +567,8 @@
                                 <div class="c-float__item">
                                     <div class="c-date-group c-date-group—flex">
                                         <div class="c-date">
-                                            <label for="s_monthDate" class="c-date__label"></label>
-                                            <input type="date" id="s_monthDate" />
+                                            <label for="s_monthDate" class="c-date__label">월 선택</label>
+                                            <input type="date" class="c-date__input" id="s_monthDate" />
                                         </div>
                                     </div>
                                 </div>
@@ -295,14 +623,14 @@
                 <div class="panel panel--duo">
                     <div class="panel__inner">
                         <div class="panel__header">
-                            <h4 class="panel__title">작동횟수 및 평균배출량</h4>
+                            <h4 class="panel__title">일자별 ...</h4>
                             <div class="panel__console">
                                 <button class="panel__button refresh">새로고침</button>
                             </div>
                         </div>
                         <div class="panel__body">
                             <div class="panel__table">
-                                <div class="c-scroll-table">
+                                <div class="c-scroll-table c-scroll-table--hover">
                                     <div class="c-scroll-table__header">
                                         <table style="width: 491px;">
                                             <colgroup>
@@ -320,7 +648,7 @@
                                                 <th>투입횟수</th>
                                                 <th>모터작동횟수</th>
                                                 <th>투입구걸림횟수</th>
-                                                <th>솔레노이드센서</th>
+                                                <th>문열림횟수</th>
                                                 <th>평균배출량(%)</th>
                                                 <th></th>
                                             </tr>
@@ -351,7 +679,7 @@
                 <div class="panel panel--duo">
                     <div class="panel__inner">
                         <div class="panel__header">
-                            <h4 class="panel__title">Location</h4>
+                            <h4 class="panel__title">장비위치</h4>
                             <div class="panel__console">
                                 <button class="panel__button refresh">새로고침</button>
                             </div>
@@ -370,25 +698,30 @@
                 <div class="panel panel--duo">
                     <div class="panel__inner">
                         <div class="panel__header">
-                            <h4 class="panel__title">꺽은선 그래프</h4>
+                            <h4 class="panel__title">시간대별 ...</h4>
                             <div class="panel__console">
                                 <button class="panel__button refresh">새로고침</button>
                             </div>
                         </div>
-                        <div class="panel__body"></div>
+                        <div class="panel__body">
+                            <div id="hourLevelChartLoading" class="c-loader__active c-loader__active--ring" style="display: none"></div>
+                            <canvas class="panel__stat" id="hour_levelchart" style="display: none"></canvas>
+                        </div>
                     </div>
                 </div>
 
                 <div class="panel panel--duo">
                     <div class="panel__inner">
                         <div class="panel__header">
-                            <h4 class="panel__title">히트맵?</h4>
+                            <h4 class="panel__title">시간대별 ...</h4>
                             <div class="panel__console">
                                 <button class="panel__button refresh">새로고침</button>
                             </div>
                         </div>
                         <div class="panel__body">
-                            <div id="heatmap"></div>
+                            <div class="heatmap-area">
+                                <canvas id="hour_heatmapchart" style="width: 100%;height: 293px;"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
