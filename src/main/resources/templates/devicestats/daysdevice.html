@@ -85,14 +85,13 @@
         }
 
         function hourInfoGraph(sendDate,pushValue) {
-            Canvasclear();
             $("#hour_levelchart").hide();
             $("#hourLevelChartLoading").show();
 
-            // if (sendDate==null) {
-            //     alertCaution("조회할 날짜가 없습니다.");
-            //     return false;
-            // }
+            if (sendDate==null) {
+                alertCaution("조회할 날짜가 없습니다.");
+                return false;
+            }
 
             var params = {
                 sendDate:sendDate,
@@ -115,17 +114,11 @@
                     if (!Ajax.checkResult(res)) {
                         return;
                     }
-                    console.log("아작스호출");
+                    //console.log("아작스호출");
                     hourLevelChart(res.data.xhour,res.data.hourFullLevel)
-                    hourCountChart(res.data.xhour,res.data.hourEmitCnt,res.data.hourActuaterCnt,res.data.hourInputdoorjammingCnt,res.data.hourFrontdoorsolopenCnt);
+                    hourCountChart(res.data.heatMaphourEmitCnt,res.data.heatMaphourActuaterCnt,res.data.heatMaphourInputdoorjammingCnt,res.data.heatMaphourFrontdoorsolopenCnt);
                 }
             });
-        }
-
-        function Canvasclear() {
-            var ctx = document.getElementById('hour_levelchart');
-            var context = ctx.getContext('2d');
-            context.clearRect(0, 0, ctx.width, ctx.height);
         }
 
         //꺾은선그래프(배출량그래프)
@@ -202,144 +195,22 @@
             },1000);
         }
 
-        function hourCountChart(xhour,hourEmitCnt,hourActuaterCnt,hourInputdoorjammingCnt,hourFrontdoorsolopenCnt){
-            console.log('매트릭스 함수실행');
+        function hourCountChart(heatMaphourEmitCnt,heatMaphourActuaterCnt,heatMaphourInputdoorjammingCnt,heatMaphourFrontdoorsolopenCnt){
             Utils.load(function() {
-                var length = xhour.length;
-                console.log('xhour : '+xhour);
-                console.log('반복수 : '+length);
-                // console.log('hourEmitCn : '+hourEmitCnt[1]);
-                // console.log('hourActuaterCnt : '+hourActuaterCnt[2]);
-                // console.log('hourInputdoorjammingCnt : '+hourInputdoorjammingCnt[3]);
-                // console.log('hourFrontdoorsolopenCnt : '+hourFrontdoorsolopenCnt[4]);
-
-                var emitCnt = '투입횟수';
-                var actuaterCnt = '모터작동횟수';
-                var inputdoorjammingCnt = '투입구걸림횟수';
-                var frontdoorsolopenCnt = '문열림횟수';
-
-                var heatMapData = new Array();
-                for(var i=0; i<length; i++){
-
-                }
-                console.log('heatMapData : '+heatMapData);
-
-                // heatMapData.set(x,'01:00');
-                // heatMapData.set(y,emitCnt);
-                // heatMapData.set(v,hourEmitCnt[0]);
-                // console.log('heatMapData : '+heatMapData);
-
                 var ctx = document.getElementById("hour_heatmapchart").getContext('2d');
                 new Chart(ctx, {
                     type: 'matrix',
                     data: {
                         datasets: [{
-                            data: [
-                                {d:xhour[0] ,x: '01:00', y: emitCnt, v: hourEmitCnt[0]},
-                                {d:xhour[0] ,x: '01:00', y: actuaterCnt, v: hourActuaterCnt[0]},
-                                {d:xhour[0] ,x: '01:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[0]},
-                                {d:xhour[0] ,x: '01:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[0]},
-                                {d:xhour[1] ,x: '02:00', y: emitCnt, v: hourEmitCnt[1]},
-                                {d:xhour[1] ,x: '02:00', y: actuaterCnt, v: hourActuaterCnt[1]},
-                                {d:xhour[1] ,x: '02:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[1]},
-                                {d:xhour[1] ,x: '02:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[1]},
-                                {d:xhour[2] ,x: '03:00', y: emitCnt, v: hourEmitCnt[2]},
-                                {d:xhour[2] ,x: '03:00', y: actuaterCnt, v: hourActuaterCnt[2]},
-                                {d:xhour[2] ,x: '03:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[2]},
-                                {d:xhour[2] ,x: '03:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[2]},
-                                {d:xhour[3] ,x: '04:00', y: emitCnt, v: hourEmitCnt[3]},
-                                {d:xhour[3] ,x: '04:00', y: actuaterCnt, v: hourActuaterCnt[3]},
-                                {d:xhour[3] ,x: '04:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[3]},
-                                {d:xhour[3] ,x: '04:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[3]},
-                                {d:xhour[4] ,x: '05:00', y: emitCnt, v: hourEmitCnt[4]},
-                                {d:xhour[4] ,x: '05:00', y: actuaterCnt, v: hourActuaterCnt[4]},
-                                {d:xhour[4] ,x: '05:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[4]},
-                                {d:xhour[4] ,x: '05:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[4]},
-                                {d:xhour[5] ,x: '06:00', y: emitCnt, v: hourEmitCnt[5]},
-                                {d:xhour[5] ,x: '06:00', y: actuaterCnt, v: hourActuaterCnt[5]},
-                                {d:xhour[5] ,x: '06:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[5]},
-                                {d:xhour[5] ,x: '06:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[5]},
-                                {d:xhour[6] ,x: '07:00', y: emitCnt, v: hourEmitCnt[6]},
-                                {d:xhour[6] ,x: '07:00', y: actuaterCnt, v: hourActuaterCnt[6]},
-                                {d:xhour[6] ,x: '07:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[6]},
-                                {d:xhour[6] ,x: '07:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[6]},
-                                {d:xhour[7] ,x: '08:00', y: emitCnt, v: hourEmitCnt[7]},
-                                {d:xhour[7] ,x: '08:00', y: actuaterCnt, v: hourActuaterCnt[7]},
-                                {d:xhour[7] ,x: '08:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[7]},
-                                {d:xhour[7] ,x: '08:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[7]},
-                                {d:xhour[8] ,x: '09:00', y: emitCnt, v: hourEmitCnt[8]},
-                                {d:xhour[8] ,x: '09:00', y: actuaterCnt, v: hourActuaterCnt[8]},
-                                {d:xhour[8] ,x: '09:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[8]},
-                                {d:xhour[8] ,x: '09:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[8]},
-                                {d:xhour[9] ,x: '10:00', y: emitCnt, v: hourEmitCnt[9]},
-                                {d:xhour[9] ,x: '10:00', y: actuaterCnt, v: hourActuaterCnt[9]},
-                                {d:xhour[9] ,x: '10:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[9]},
-                                {d:xhour[9] ,x: '10:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[9]},
-                                {d:xhour[10] ,x: '11:00', y: emitCnt, v: hourEmitCnt[10]},
-                                {d:xhour[10] ,x: '11:00', y: actuaterCnt, v: hourActuaterCnt[10]},
-                                {d:xhour[10] ,x: '11:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[10]},
-                                {d:xhour[10] ,x: '11:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[10]},
-                                {d:xhour[11] ,x: '12:00', y: emitCnt, v: hourEmitCnt[11]},
-                                {d:xhour[11] ,x: '12:00', y: actuaterCnt, v: hourActuaterCnt[11]},
-                                {d:xhour[11] ,x: '12:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[11]},
-                                {d:xhour[11] ,x: '12:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[11]},
-                                {d:xhour[12] ,x: '13:00', y: emitCnt, v: hourEmitCnt[12]},
-                                {d:xhour[12] ,x: '13:00', y: actuaterCnt, v: hourActuaterCnt[12]},
-                                {d:xhour[12] ,x: '13:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[12]},
-                                {d:xhour[12] ,x: '13:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[12]},
-                                {d:xhour[13] ,x: '14:00', y: emitCnt, v: hourEmitCnt[13]},
-                                {d:xhour[13] ,x: '14:00', y: actuaterCnt, v: hourActuaterCnt[13]},
-                                {d:xhour[13] ,x: '14:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[13]},
-                                {d:xhour[13] ,x: '14:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[13]},
-                                {d:xhour[14] ,x: '15:00', y: emitCnt, v: hourEmitCnt[14]},
-                                {d:xhour[14] ,x: '15:00', y: actuaterCnt, v: hourActuaterCnt[14]},
-                                {d:xhour[14] ,x: '15:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[14]},
-                                {d:xhour[14] ,x: '15:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[14]},
-                                {d:xhour[15] ,x: '16:00', y: emitCnt, v: hourEmitCnt[15]},
-                                {d:xhour[15] ,x: '16:00', y: actuaterCnt, v: hourActuaterCnt[15]},
-                                {d:xhour[15] ,x: '16:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[15]},
-                                {d:xhour[15] ,x: '16:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[15]},
-                                {d:xhour[16] ,x: '17:00', y: emitCnt, v: hourEmitCnt[16]},
-                                {d:xhour[16] ,x: '17:00', y: actuaterCnt, v: hourActuaterCnt[16]},
-                                {d:xhour[16] ,x: '17:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[16]},
-                                {d:xhour[16] ,x: '17:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[16]},
-                                {d:xhour[17] ,x: '18:00', y: emitCnt, v: hourEmitCnt[17]},
-                                {d:xhour[17] ,x: '18:00', y: actuaterCnt, v: hourActuaterCnt[17]},
-                                {d:xhour[17] ,x: '18:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[17]},
-                                {d:xhour[17] ,x: '18:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[17]},
-                                {d:xhour[18] ,x: '19:00', y: emitCnt, v: hourEmitCnt[18]},
-                                {d:xhour[18] ,x: '19:00', y: actuaterCnt, v: hourActuaterCnt[18]},
-                                {d:xhour[18] ,x: '19:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[18]},
-                                {d:xhour[18] ,x: '19:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[18]},
-                                {d:xhour[19] ,x: '20:00', y: emitCnt, v: hourEmitCnt[19]},
-                                {d:xhour[19] ,x: '20:00', y: actuaterCnt, v: hourActuaterCnt[19]},
-                                {d:xhour[19] ,x: '20:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[19]},
-                                {d:xhour[19] ,x: '20:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[19]},
-                                {d:xhour[20] ,x: '21:00', y: emitCnt, v: hourEmitCnt[20]},
-                                {d:xhour[20] ,x: '21:00', y: actuaterCnt, v: hourActuaterCnt[20]},
-                                {d:xhour[20] ,x: '21:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[20]},
-                                {d:xhour[20] ,x: '21:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[20]},
-                                {d:xhour[21] ,x: '22:00', y: emitCnt, v: hourEmitCnt[21]},
-                                {d:xhour[21] ,x: '22:00', y: actuaterCnt, v: hourActuaterCnt[21]},
-                                {d:xhour[21] ,x: '22:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[21]},
-                                {d:xhour[21] ,x: '22:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[21]},
-                                {d:xhour[22] ,x: '23:00', y: emitCnt, v: hourEmitCnt[22]},
-                                {d:xhour[22] ,x: '23:00', y: actuaterCnt, v: hourActuaterCnt[22]},
-                                {d:xhour[22] ,x: '23:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[22]},
-                                {d:xhour[22] ,x: '23:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[22]},
-                                {d:xhour[23] ,x: '24:00', y: emitCnt, v: hourEmitCnt[23]},
-                                {d:xhour[23] ,x: '24:00', y: actuaterCnt, v: hourActuaterCnt[23]},
-                                {d:xhour[23] ,x: '24:00', y: inputdoorjammingCnt, v: hourInputdoorjammingCnt[23]},
-                                {d:xhour[23] ,x: '24:00', y: frontdoorsolopenCnt, v: hourFrontdoorsolopenCnt[23]},
-                            ],
+                            data: heatMaphourEmitCnt,
                             backgroundColor: function(ctx) {
                                 var value = ctx.dataset.data[ctx.dataIndex].v;
-                                var alpha = (value - 5) / 5;
+                                var alpha = (value - 5) / 10;
                                 return Color('#007e37').alpha(alpha).rgbString();
                             },
                             borderColor: function(ctx) {
                                 var value = ctx.dataset.data[ctx.dataIndex].v;
-                                var alpha = (value - 5) / 5;
+                                var alpha = (value - 5) / 10;
                                 return Color('#007e37').alpha(alpha).darken(0.3).rgbString();
                             },
                             borderWidth: 1,
@@ -351,9 +222,82 @@
                             },
                             height: function(ctx) {
                                 var a = ctx.chart.chartArea;
-                                return (a.bottom - a.top) / 3 - 2;
+                                return (a.bottom - a.top) / 4 - 2;
                             }
-                        }]
+                        },
+                            {
+                                data: heatMaphourActuaterCnt,
+                                backgroundColor: function(ctx) {
+                                    var value = ctx.dataset.data[ctx.dataIndex].v;
+                                    var alpha = (value - 5) / 10;
+                                    return Color('#ff1744').alpha(alpha).rgbString();
+                                },
+                                borderColor: function(ctx) {
+                                    var value = ctx.dataset.data[ctx.dataIndex].v;
+                                    var alpha = (value - 5) / 10;
+                                    return Color('#ff1744').alpha(alpha).darken(0.3).rgbString();
+                                },
+                                borderWidth: 1,
+                                borderSkipped: false,
+                                hoverBorderColor: 'yellow',
+                                width: function(ctx) {
+                                    var a = ctx.chart.chartArea;
+                                    return (a.right - a.left) / 30;
+                                },
+                                height: function(ctx) {
+                                    var a = ctx.chart.chartArea;
+                                    return (a.bottom - a.top) / 4 - 2;
+                                }
+                            },
+                            {
+                                data: heatMaphourInputdoorjammingCnt,
+                                backgroundColor: function(ctx) {
+                                    var value = ctx.dataset.data[ctx.dataIndex].v;
+                                    var alpha = (value - 5) / 10;
+                                    return Color('#fbc02d').alpha(alpha).rgbString();
+                                },
+                                borderColor: function(ctx) {
+                                    var value = ctx.dataset.data[ctx.dataIndex].v;
+                                    var alpha = (value - 5) / 10;
+                                    return Color('#fbc02d').alpha(alpha).darken(0.3).rgbString();
+                                },
+                                borderWidth: 1,
+                                borderSkipped: false,
+                                hoverBorderColor: 'yellow',
+                                width: function(ctx) {
+                                    var a = ctx.chart.chartArea;
+                                    return (a.right - a.left) / 30;
+                                },
+                                height: function(ctx) {
+                                    var a = ctx.chart.chartArea;
+                                    return (a.bottom - a.top) / 4 - 2;
+                                }
+                            },
+                            {
+                                data: heatMaphourFrontdoorsolopenCnt,
+                                backgroundColor: function(ctx) {
+                                    var value = ctx.dataset.data[ctx.dataIndex].v;
+                                    var alpha = (value - 5) / 10;
+                                    return Color('#2979ff').alpha(alpha).rgbString();
+                                },
+                                borderColor: function(ctx) {
+                                    var value = ctx.dataset.data[ctx.dataIndex].v;
+                                    var alpha = (value - 5) / 10;
+                                    return Color('#2979ff').alpha(alpha).darken(0.3).rgbString();
+                                },
+                                borderWidth: 1,
+                                borderSkipped: false,
+                                hoverBorderColor: 'yellow',
+                                width: function(ctx) {
+                                    var a = ctx.chart.chartArea;
+                                    return (a.right - a.left) / 30;
+                                },
+                                height: function(ctx) {
+                                    var a = ctx.chart.chartArea;
+                                    return (a.bottom - a.top) / 4 - 2;
+                                }
+                            }
+                        ]
                     },
                     options: {
                         legend: {
@@ -364,26 +308,18 @@
                             titleFontSize: 17,
                             bodyFontSize: 17,
                             callbacks: {
-                                title: function() {return '';},
+                                title: function() {
+                                    return '';
+                                },
                                 label: function(item, data) {
                                     var v = data.datasets[item.datasetIndex].data[item.index];
-                                    return [v.d +" "+v.y + ": " + v.v];
+                                    return ["날짜: "+v.d,v.y + ": " + v.v];
                                 }
                             }
                         },
                         scales: {
                             xAxes: [{
                                 display: false,
-                                type: 'time',
-                                time: {
-                                    unit: 'hour',
-                                    parser: 'HH',
-                                    min: '00:00',
-                                    max: '24:00',
-                                    displayFormats: {
-                                        hour: 'HH'
-                                    }
-                                },
                                 ticks: {
                                     maxRotation: 0,
                                     autoSkip: true
@@ -396,9 +332,10 @@
                             }],
                             yAxes: [{
                                 type: 'category',
-                                labels: [emitCnt,actuaterCnt,inputdoorjammingCnt,frontdoorsolopenCnt],
+                                labels: ['투입횟수', '모터작동횟수', '투입구걸림횟수', '문열림횟수'],
                                 ticks: {
-                                    fontSize: 15
+                                    fontSize: 15,
+                                    maxRotation: 90
                                 },
                                 gridLines: {
                                     display: false,
@@ -406,9 +343,17 @@
                                     tickMarkLength: 0
                                 }
                             }]
+                        },
+                        layout: {
+                            padding: {
+                                left: 0,
+                                right: 20,
+                                top: 50,
+                                bottom: 50
+                            }
                         }
                     }
-                });
+                })
             });
         }
 
@@ -719,6 +664,7 @@
                             </div>
                         </div>
                         <div class="panel__body">
+                            <div id="d" class="c-loader__active c-loader__active--ring" style="display: none"></div>
                             <div class="heatmap-area">
                                 <canvas id="hour_heatmapchart" style="width: 100%;height: 293px;"></canvas>
                             </div>

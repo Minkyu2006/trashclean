@@ -206,6 +206,7 @@ public class DeviestatsRestController {
 
         int d=0;
         for(int i=1; i<25; i++) {
+
             if (i < 10) {
                 xhour.add(yyyy + '년' + mm + '월' + dd + '일' + '0' + i + '시');
             } else {
@@ -236,21 +237,69 @@ public class DeviestatsRestController {
             }
         }
 
-        log.info("총 시간(x축) : "+xhour);
-        log.info("꺾은선그래프 데이터 : "+hourFullLevel);
+        List<HashMap<String,Object>> heatMaphourEmitCnt = new ArrayList<>(); // 히트맵에 들어갈 데이터 투입횟수(시간)
+        List<HashMap<String,Object>> heatMaphourActuaterCnt = new ArrayList<>(); // 히트맵에 들어갈 데이터 엑추에이터 작동횟수(시간)
+        List<HashMap<String,Object>> heatMaphourInputdoorjammingCnt = new ArrayList<>(); // 히트맵에 들어갈 데이터 투일구걸림횟수(시간)
+        List<HashMap<String,Object>> heatMaphourFrontdoorsolopenCnt = new ArrayList<>(); // 히트맵에 들어갈 데이터 솔레노이드센서 열림 횟수(시간)
+        HashMap<String,Object> emitmapData;
+        HashMap<String,Object> actuaterData;
+        HashMap<String,Object> inputdoorjammingData;
+        HashMap<String,Object> frontdoorsolopenData;
 
-        log.info("히트맵그래프 데이터 투입횟수 : "+hourEmitCnt);
-        log.info("히트맵그래프 데이터 모터작동 : "+hourActuaterCnt);
-        log.info("히트맵그래프 데이터 투입구걸림 : "+hourInputdoorjammingCnt);
-        log.info("히트맵그래프 데이터 솔레노이드 : "+hourFrontdoorsolopenCnt);
+        for(int i=0; i<24; i++){
+            emitmapData = new HashMap<>();
+            actuaterData = new HashMap<>();
+            inputdoorjammingData = new HashMap<>();
+            frontdoorsolopenData = new HashMap<>();
+
+            String strxhour = xhour.get(i);
+            String strxhour2 = xhour.get(i).substring(11,13)+":00";
+            Double emitCnt = hourEmitCnt.get(i);
+            Double actuaterCnt = hourActuaterCnt.get(i);
+            Double inputdoorjammingCnt = hourInputdoorjammingCnt.get(i);
+            Double frontdoorsolopenCnt = hourFrontdoorsolopenCnt.get(i);
+
+            emitmapData.put("d",strxhour);
+            emitmapData.put("x",strxhour2);
+            emitmapData.put("y","투입횟수");
+            emitmapData.put("v",emitCnt);
+
+            actuaterData.put("d",strxhour);
+            actuaterData.put("x",strxhour2);
+            actuaterData.put("y","모터작동횟수");
+            actuaterData.put("v",actuaterCnt);
+
+            inputdoorjammingData.put("d",strxhour);
+            inputdoorjammingData.put("x",strxhour2);
+            inputdoorjammingData.put("y","투입구걸림횟수");
+            inputdoorjammingData.put("v",inputdoorjammingCnt);
+
+            frontdoorsolopenData.put("d",strxhour);
+            frontdoorsolopenData.put("x",strxhour2);
+            frontdoorsolopenData.put("y","문열림횟수");
+            frontdoorsolopenData.put("v",frontdoorsolopenCnt);
+
+            heatMaphourEmitCnt.add(emitmapData);
+            heatMaphourActuaterCnt.add(actuaterData);
+            heatMaphourInputdoorjammingCnt.add(inputdoorjammingData);
+            heatMaphourFrontdoorsolopenCnt.add(frontdoorsolopenData);
+
+        }
+
+//        log.info("총 시간(x축) : "+xhour);
+//        log.info("꺾은선그래프 데이터 : "+hourFullLevel);
+//        log.info("히트맵그래프 데이터 투입횟수 : "+heatMaphourEmitCnt);
+//        log.info("히트맵그래프 데이터 모터작동횟수 : "+heatMaphourActuaterCnt);
+//        log.info("히트맵그래프 데이터 투입구걸림횟수 : "+heatMaphourInputdoorjammingCnt);
+//        log.info("히트맵그래프 데이터 문열림횟수 : "+hourFrontdoorsolopenCnt);
 
         data.clear();
         data.put("xhour",xhour);
         data.put("hourFullLevel",hourFullLevel);
-        data.put("hourEmitCnt",hourEmitCnt);
-        data.put("hourActuaterCnt",hourActuaterCnt);
-        data.put("hourInputdoorjammingCnt",hourInputdoorjammingCnt);
-        data.put("hourFrontdoorsolopenCnt",hourFrontdoorsolopenCnt);
+        data.put("heatMaphourEmitCnt",heatMaphourEmitCnt);
+        data.put("heatMaphourActuaterCnt",heatMaphourActuaterCnt);
+        data.put("heatMaphourInputdoorjammingCnt",heatMaphourInputdoorjammingCnt);
+        data.put("heatMaphourFrontdoorsolopenCnt",heatMaphourFrontdoorsolopenCnt);
 
         res.addResponse("data", data);
         return ResponseEntity.ok(res.success());
