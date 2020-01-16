@@ -6,136 +6,212 @@
 	<script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
     <script>
   
-	Utils.load(function() {
-		Chart.defaults.global.defaultFontSize = 9;
+    Utils.load(function() {
+		Chart.defaults.global.defaultFontSize = 11;
 		var ctx = document.getElementById("heatmap").getContext("2d");
 		window.myMatrix = new Chart(ctx, {
 			type: 'matrix',
 			data: {
-				datasets: [{
-					label: '일자별',
-					data: [
-						{x: '01:00', y: '액츄에이터', v: 0},
-						{x: '01:00', y: '투입구 걸림', v: 10},
-						{x: '01:00', y: '솔레노이드센서', v: 20},
-						{x: '01:00', y: '배출횟수', v: 30},
-						{x: '02:00', y: '액츄에이터', v: 40},
-						{x: '02:00', y: '투입구 걸림', v: 50},
-						{x: '02:00', y: '솔레노이드센서', v: 60},
-						{x: '02:00', y: '배출횟수', v: 70},
-						{x: '03:00', y: '액츄에이터', v: 80},
-						{x: '03:00', y: '투입구 걸림', v: 90},
-						{x: '03:00', y: '솔레노이드센서', v: 100},
-						{x: '03:00', y: '배출횟수', v: 0},
-						{x: '04:00', y: '액츄에이터', v: 10},
-						{x: '04:00', y: '투입구 걸림', v: 20},
-						{x: '04:00', y: '솔레노이드센서', v: 30},
-						{x: '04:00', y: '배출횟수', v: 40},
-						{x: '05:00', y: '액츄에이터', v: 50},
-						{x: '05:00', y: '투입구 걸림', v: 60},
-						{x: '05:00', y: '솔레노이드센서', v: 70},
-						{x: '05:00', y: '배출횟수', v: 80},
-						{x: '06:00', y: '액츄에이터', v: 90},
-						{x: '06:00', y: '투입구 걸림', v: 100},
-						{x: '06:00', y: '솔레노이드센서', v: 90},
-						{x: '06:00', y: '배출횟수', v: 80},
-						{x: '07:00', y: '액츄에이터', v: 70},
-						{x: '07:00', y: '투입구 걸림', v: 60},
-						{x: '07:00', y: '솔레노이드센서', v: 50},
-						{x: '07:00', y: '배출횟수', v: 40},
-						{x: '08:00', y: '액츄에이터', v: 30},
-						{x: '08:00', y: '투입구 걸림', v: 30},
-						{x: '08:00', y: '솔레노이드센서', v: 20},
-						{x: '08:00', y: '배출횟수', v: 10},
-						{x: '09:00', y: '액츄에이터', v: 20},
-						{x: '09:00', y: '투입구 걸림', v: 30},
-						{x: '09:00', y: '솔레노이드센서', v: 40},
-						{x: '09:00', y: '배출횟수', v: 50},
-						{x: '10:00', y: '액츄에이터', v: 60},
-						{x: '10:00', y: '투입구 걸림', v: 70},
-						{x: '10:00', y: '솔레노이드센서', v: 80},
-						{x: '10:00', y: '배출횟수', v: 90},
-						{x: '11:00', y: '액츄에이터', v: 100},
-						{x: '11:00', y: '투입구 걸림', v: 90},
-						{x: '11:00', y: '솔레노이드센서', v: 80},
-						{x: '11:00', y: '배출횟수', v: 70},
-						{x: '12:00', y: '액츄에이터', v: 60},
-						{x: '12:00', y: '투입구 걸림', v: 50},
-						{x: '12:00', y: '솔레노이드센서', v: 40},
-						{x: '12:00', y: '배출횟수', v: 30},
-						{x: '13:00', y: '액츄에이터', v: 20},
-						{x: '13:00', y: '투입구 걸림', v: 10},
-						{x: '13:00', y: '솔레노이드센서', v: 0},
-						{x: '13:00', y: '배출횟수', v: 10},
-						{x: '14:00', y: '액츄에이터', v: 20},
-						{x: '14:00', y: '투입구 걸림', v: 30},
-						{x: '14:00', y: '솔레노이드센서', v: 40},
-						{x: '14:00', y: '배출횟수', v: 50},
-						{x: '15:00', y: '액츄에이터', v: 60},
-						{x: '15:00', y: '투입구 걸림', v: 70},
-						{x: '15:00', y: '솔레노이드센서', v: 80},
-						{x: '15:00', y: '배출횟수', v: 90},
-						{x: '16:00', y: '액츄에이터', v: 100},
-						{x: '16:00', y: '투입구 걸림', v: 90},
-						{x: '16:00', y: '솔레노이드센서', v: 80},
-						{x: '16:00', y: '배출횟수', v: 70},
-						{x: '17:00', y: '액츄에이터', v: 60},
-						{x: '17:00', y: '투입구 걸림', v: 50},
-						{x: '17:00', y: '솔레노이드센서', v: 40},
-						{x: '17:00', y: '배출횟수', v: 30},
-						{x: '18:00', y: '액츄에이터', v: 20},
-						{x: '18:00', y: '투입구 걸림', v: 10},
-						{x: '18:00', y: '솔레노이드센서', v: 0},
-						{x: '18:00', y: '배출횟수', v: 10},
-						{x: '19:00', y: '액츄에이터', v: 20},
-						{x: '19:00', y: '투입구 걸림', v: 30},
-						{x: '19:00', y: '솔레노이드센서', v: 40},
-						{x: '19:00', y: '배출횟수', v: 50},
-						{x: '20:00', y: '액츄에이터', v: 60},
-						{x: '20:00', y: '투입구 걸림', v: 70},
-						{x: '20:00', y: '솔레노이드센서', v: 80},
-						{x: '20:00', y: '배출횟수', v: 90},
-						{x: '21:00', y: '액츄에이터', v: 100},
-						{x: '21:00', y: '투입구 걸림', v: 90},
-						{x: '21:00', y: '솔레노이드센서', v: 80},
-						{x: '21:00', y: '배출횟수', v: 70},
-						{x: '22:00', y: '액츄에이터', v: 60},
-						{x: '22:00', y: '투입구 걸림', v: 50},
-						{x: '22:00', y: '솔레노이드센서', v: 40},
-						{x: '22:00', y: '배출횟수', v: 30},
-						{x: '23:00', y: '액츄에이터', v: 20},
-						{x: '23:00', y: '투입구 걸림', v: 10},
-						{x: '23:00', y: '솔레노이드센서', v: 0},
-						{x: '23:00', y: '배출횟수', v: 10},
-						{x: '24:00', y: '액츄에이터', v: 20},
-						{x: '24:00', y: '투입구 걸림', v: 30},
-						{x: '24:00', y: '솔레노이드센서', v: 40},
-						{x: '24:00', y: '배출횟수', v: 50}
-					],
-					backgroundColor: function(ctx) {
-						var value = ctx.dataset.data[ctx.dataIndex].v;
-						var alpha = (value - 5) / 100;
-						return Color('#007e37').alpha(alpha).rgbString();
-					},
-					borderColor: function(ctx) {
-						var value = ctx.dataset.data[ctx.dataIndex].v;
-						var alpha = (value - 5) / 100;
-						return Color('#007e37').alpha(alpha).darken(0.3).rgbString();
-					},
-					borderWidth: 1,
-					borderSkipped: false,
-					hoverBorderColor: 'yellow',
-					width: function(ctx) {
-						var a = ctx.chart.chartArea;
-						return (a.right - a.left) / 30;
-					},
-					height: function(ctx) {
-						var a = ctx.chart.chartArea;
-						return (a.bottom - a.top) / 3 - 2;
-					}
-				}]
-			},
-			options: {
+				datasets: [
+                    {
+						data: [
+    						{x: '01:00', y: '액츄에이터', v: 0},
+    						{x: '02:00', y: '액츄에이터', v: 40},
+    						{x: '03:00', y: '액츄에이터', v: 80},
+    						{x: '04:00', y: '액츄에이터', v: 10},
+    						{x: '05:00', y: '액츄에이터', v: 50},
+    						{x: '06:00', y: '액츄에이터', v: 90},
+    						{x: '07:00', y: '액츄에이터', v: 70},
+    						{x: '08:00', y: '액츄에이터', v: 30},
+    						{x: '09:00', y: '액츄에이터', v: 20},
+    						{x: '10:00', y: '액츄에이터', v: 60},
+    						{x: '11:00', y: '액츄에이터', v: 100},
+    						{x: '12:00', y: '액츄에이터', v: 60},
+    						{x: '13:00', y: '액츄에이터', v: 20},
+    						{x: '14:00', y: '액츄에이터', v: 20},
+    						{x: '15:00', y: '액츄에이터', v: 60},
+    						{x: '16:00', y: '액츄에이터', v: 100},
+    						{x: '17:00', y: '액츄에이터', v: 60},
+    						{x: '18:00', y: '액츄에이터', v: 20},
+    						{x: '19:00', y: '액츄에이터', v: 20},
+    						{x: '20:00', y: '액츄에이터', v: 60},
+    						{x: '21:00', y: '액츄에이터', v: 100},
+    						{x: '22:00', y: '액츄에이터', v: 60},
+    						{x: '23:00', y: '액츄에이터', v: 20},
+    						{x: '24:00', y: '액츄에이터', v: 20},
+    					],
+                        backgroundColor: function(ctx) {
+                            var value = ctx.dataset.data[ctx.dataIndex].v;
+                            var alpha = (value - 5) / 100;
+                            return Color('#007e37').alpha(alpha).rgbString();
+                        },
+                        borderColor: function(ctx) {
+                            var value = ctx.dataset.data[ctx.dataIndex].v;
+                            var alpha = (value - 5) / 100;
+                            return Color('#007e37').alpha(alpha).darken(0.3).rgbString();
+                        },
+                        borderWidth: 1,
+                        borderSkipped: false,
+                        hoverBorderColor: 'yellow',
+                        width: function(ctx) {
+                            var a = ctx.chart.chartArea;
+                            return (a.right - a.left) / 30;
+                        },
+                        height: function(ctx) {
+                            var a = ctx.chart.chartArea;
+                            return (a.bottom - a.top) / 4 - 2;
+                        }
+					}, 
+                    {
+						data: [
+    						{x: '01:00', y: '투입구 걸림', v: 10},
+    						{x: '02:00', y: '투입구 걸림', v: 50},
+    						{x: '03:00', y: '투입구 걸림', v: 90},
+    						{x: '04:00', y: '투입구 걸림', v: 20},
+    						{x: '05:00', y: '투입구 걸림', v: 60},
+    						{x: '06:00', y: '투입구 걸림', v: 100},
+    						{x: '07:00', y: '투입구 걸림', v: 60},
+    						{x: '08:00', y: '투입구 걸림', v: 30},
+    						{x: '09:00', y: '투입구 걸림', v: 30},
+    						{x: '10:00', y: '투입구 걸림', v: 70},
+    						{x: '11:00', y: '투입구 걸림', v: 90},
+    						{x: '12:00', y: '투입구 걸림', v: 50},
+    						{x: '13:00', y: '투입구 걸림', v: 10},
+    						{x: '14:00', y: '투입구 걸림', v: 30},
+    						{x: '15:00', y: '투입구 걸림', v: 70},
+    						{x: '16:00', y: '투입구 걸림', v: 90},
+    						{x: '17:00', y: '투입구 걸림', v: 50},
+    						{x: '18:00', y: '투입구 걸림', v: 10},
+    						{x: '19:00', y: '투입구 걸림', v: 30},
+    						{x: '20:00', y: '투입구 걸림', v: 70},
+    						{x: '21:00', y: '투입구 걸림', v: 90},
+    						{x: '22:00', y: '투입구 걸림', v: 50},
+    						{x: '23:00', y: '투입구 걸림', v: 10},
+    						{x: '24:00', y: '투입구 걸림', v: 30}
+    					],
+                        backgroundColor: function(ctx) {
+                            var value = ctx.dataset.data[ctx.dataIndex].v;
+                            var alpha = (value - 5) / 100;
+                            return Color('#ff1744').alpha(alpha).rgbString();
+                        },
+                        borderColor: function(ctx) {
+    						var value = ctx.dataset.data[ctx.dataIndex].v;
+    						var alpha = (value - 5) / 100;
+    						return Color('#ff1744').alpha(alpha).darken(0.3).rgbString();
+    					},
+                        borderWidth: 1,
+    					borderSkipped: false,
+    					hoverBorderColor: 'yellow',
+    					width: function(ctx) {
+    						var a = ctx.chart.chartArea;
+    						return (a.right - a.left) / 30;
+    					},
+    					height: function(ctx) {
+    						var a = ctx.chart.chartArea;
+    						return (a.bottom - a.top) / 4 - 2;
+    					}
+					}, 
+                    {
+						data: [
+    						{x: '01:00', y: '솔레노이드센서', v: 20},
+    						{x: '02:00', y: '솔레노이드센서', v: 60},
+    						{x: '03:00', y: '솔레노이드센서', v: 100},
+    						{x: '04:00', y: '솔레노이드센서', v: 30},
+    						{x: '05:00', y: '솔레노이드센서', v: 70},
+    						{x: '06:00', y: '솔레노이드센서', v: 90},
+    						{x: '07:00', y: '솔레노이드센서', v: 50},
+    						{x: '08:00', y: '솔레노이드센서', v: 20},
+    						{x: '09:00', y: '솔레노이드센서', v: 40},
+    						{x: '10:00', y: '솔레노이드센서', v: 80},
+    						{x: '11:00', y: '솔레노이드센서', v: 80},
+    						{x: '12:00', y: '솔레노이드센서', v: 40},
+    						{x: '13:00', y: '솔레노이드센서', v: 0},
+    						{x: '14:00', y: '솔레노이드센서', v: 40},
+    						{x: '15:00', y: '솔레노이드센서', v: 80},
+    						{x: '16:00', y: '솔레노이드센서', v: 80},
+    						{x: '17:00', y: '솔레노이드센서', v: 40},
+    						{x: '18:00', y: '솔레노이드센서', v: 0},
+    						{x: '19:00', y: '솔레노이드센서', v: 40},
+    						{x: '20:00', y: '솔레노이드센서', v: 80},
+    						{x: '21:00', y: '솔레노이드센서', v: 80},
+    						{x: '22:00', y: '솔레노이드센서', v: 40},
+    						{x: '23:00', y: '솔레노이드센서', v: 0},
+    						{x: '24:00', y: '솔레노이드센서', v: 40}
+    					],
+                        backgroundColor: function(ctx) {
+                            var value = ctx.dataset.data[ctx.dataIndex].v;
+                            var alpha = (value - 5) / 100;
+                            return Color('#fbc02d').alpha(alpha).rgbString();
+                        },
+                        borderColor: function(ctx) {
+    						var value = ctx.dataset.data[ctx.dataIndex].v;
+    						var alpha = (value - 5) / 100;
+    						return Color('#fbc02d').alpha(alpha).darken(0.3).rgbString();
+    					},
+                        borderWidth: 1,
+    					borderSkipped: false,
+    					hoverBorderColor: 'yellow',
+    					width: function(ctx) {
+    						var a = ctx.chart.chartArea;
+    						return (a.right - a.left) / 30;
+    					},
+    					height: function(ctx) {
+    						var a = ctx.chart.chartArea;
+    						return (a.bottom - a.top) / 4 - 2;
+    					}
+					}, 
+                    {
+						data: [
+    						{x: '01:00', y: '배출횟수', v: 30},
+    						{x: '02:00', y: '배출횟수', v: 70},
+    						{x: '03:00', y: '배출횟수', v: 0},
+    						{x: '04:00', y: '배출횟수', v: 40},
+    						{x: '05:00', y: '배출횟수', v: 80},
+    						{x: '06:00', y: '배출횟수', v: 80},
+    						{x: '07:00', y: '배출횟수', v: 40},
+    						{x: '08:00', y: '배출횟수', v: 10},
+    						{x: '09:00', y: '배출횟수', v: 50},
+    						{x: '10:00', y: '배출횟수', v: 90},
+    						{x: '11:00', y: '배출횟수', v: 70},
+    						{x: '12:00', y: '배출횟수', v: 30},
+    						{x: '13:00', y: '배출횟수', v: 10},
+    						{x: '14:00', y: '배출횟수', v: 50},
+    						{x: '15:00', y: '배출횟수', v: 90},
+    						{x: '16:00', y: '배출횟수', v: 70},
+    						{x: '17:00', y: '배출횟수', v: 30},
+    						{x: '18:00', y: '배출횟수', v: 10},
+    						{x: '19:00', y: '배출횟수', v: 50},
+    						{x: '20:00', y: '배출횟수', v: 90},
+    						{x: '21:00', y: '배출횟수', v: 70},
+    						{x: '22:00', y: '배출횟수', v: 30},
+    						{x: '23:00', y: '배출횟수', v: 10},
+    						{x: '24:00', y: '배출횟수', v: 50}
+    					],
+                            backgroundColor: function(ctx) {
+                                var value = ctx.dataset.data[ctx.dataIndex].v;
+                                var alpha = (value - 5) / 100;
+                                return Color('#2979ff').alpha(alpha).rgbString();
+                            },
+                            borderColor: function(ctx) {
+        						var value = ctx.dataset.data[ctx.dataIndex].v;
+        						var alpha = (value - 5) / 100;
+        						return Color('#2979ff').alpha(alpha).darken(0.3).rgbString();
+        					},
+                            borderWidth: 1,
+        					borderSkipped: false,
+        					hoverBorderColor: 'yellow',
+        					width: function(ctx) {
+        						var a = ctx.chart.chartArea;
+        						return (a.right - a.left) / 30;
+        					},
+        					height: function(ctx) {
+        						var a = ctx.chart.chartArea;
+        						return (a.bottom - a.top) / 4 - 2;
+        					}
+    					}
+                ]
+		    },
+            options: {
 				legend: {
 					display: false
 				},
@@ -195,10 +271,24 @@
 							tickMarkLength: 0
 						}
 					}]
-				}
+				},
+                layout: {
+                    padding: {
+                        left: 0,
+                        right: 20,
+                        top: 50,
+                        bottom: 50
+                    }
+                }
 			}
 		})
 	});
+	
+	
+	$(document).ready(function() {
+		
+	})
+	
     </script>
 </head>
 
