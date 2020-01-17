@@ -291,7 +291,7 @@ public class DeviestatsRestController {
 //        log.info("히트맵그래프 데이터 투입횟수 : "+heatMaphourEmitCnt);
 //        log.info("히트맵그래프 데이터 모터작동횟수 : "+heatMaphourActuaterCnt);
 //        log.info("히트맵그래프 데이터 투입구걸림횟수 : "+heatMaphourInputdoorjammingCnt);
-//        log.info("히트맵그래프 데이터 문열림횟수 : "+hourFrontdoorsolopenCnt);
+//        log.info("히트맵그래프 데이터 문열림횟수 : "+heatMaphourFrontdoorsolopenCnt);
 
         data.clear();
         data.put("xhour",xhour);

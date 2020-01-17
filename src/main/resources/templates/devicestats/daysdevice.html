@@ -196,8 +196,13 @@
         }
 
         function hourCountChart(heatMaphourEmitCnt,heatMaphourActuaterCnt,heatMaphourInputdoorjammingCnt,heatMaphourFrontdoorsolopenCnt){
+            // console.log(heatMaphourEmitCnt);
+            // console.log(heatMaphourActuaterCnt);
+            // console.log(heatMaphourInputdoorjammingCnt);
+            // console.log(heatMaphourFrontdoorsolopenCnt);
+
             Utils.load(function() {
-                var ctx = document.getElementById("hour_heatmapchart").getContext('2d');
+                var ctx = document.getElementById("hour_heatmapchart").getContext("2d");;
                 new Chart(ctx, {
                     type: 'matrix',
                     data: {
@@ -313,12 +318,22 @@
                                 },
                                 label: function(item, data) {
                                     var v = data.datasets[item.datasetIndex].data[item.index];
-                                    return ["날짜: "+v.d,v.y + ": " + v.v];
+                                    return [v.d,v.y + ": " + v.v];
                                 }
                             }
                         },
                         scales: {
                             xAxes: [{
+                                type: 'time',
+                                time: {
+                                    unit: 'hour',
+                                    parser: 'HH',
+                                    min: '00:00',
+                                    max: '24:00',
+                                    displayFormats: {
+                                        hour: 'HH'
+                                    }
+                                },
                                 display: false,
                                 ticks: {
                                     maxRotation: 0,
@@ -332,7 +347,7 @@
                             }],
                             yAxes: [{
                                 type: 'category',
-                                labels: ['투입횟수', '모터작동횟수', '투입구걸림횟수', '문열림횟수'],
+                                labels: ['투입횟수','모터작동횟수','투입구걸림횟수','문열림횟수'],
                                 ticks: {
                                     fontSize: 15,
                                     maxRotation: 90
@@ -664,9 +679,8 @@
                             </div>
                         </div>
                         <div class="panel__body">
-                            <div id="d" class="c-loader__active c-loader__active--ring" style="display: none"></div>
                             <div class="heatmap-area">
-                                <canvas id="hour_heatmapchart" style="width: 100%;height: 293px;"></canvas>
+                                <canvas id="hour_heatmapchart" style="width:100%; height:293px;"></canvas>
                             </div>
                         </div>
                     </div>
