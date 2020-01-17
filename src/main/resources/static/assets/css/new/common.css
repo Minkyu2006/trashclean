@@ -964,9 +964,9 @@ table {
 
 /* join */
 .join {
-	position: absolute;
+	/*position: absolute;
 	top: 50px;
-	left: 50%;
+	left: 50%;*/
 	width: 800%;
 	max-width: 580px;
 	margin: 0 auto;
@@ -976,11 +976,11 @@ table {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	-webkit-transform: translateX(-50%);
+	/*-webkit-transform: translateX(-50%);
 	-moz-transform: translateX(-50%);
 	-ms-transform: translateX(-50%);
 	-o-transform: translateX(-50%);
-	transform: translateX(-50%);
+	transform: translateX(-50%);*/
 }
 .join__logo {
 	margin-bottom: 20px;

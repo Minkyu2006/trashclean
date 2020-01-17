@@ -47,8 +47,8 @@
                         },
                         borderColor: function(ctx) {
                             var value = ctx.dataset.data[ctx.dataIndex].v;
-                            var alpha = (value - 5) / 100;
-                            return Color('#007e37').alpha(alpha).darken(0.3).rgbString();
+                            //var alpha = (value - 5) / 100;
+                            return Color('#007e37').alpha(0.5).darken(0.3).rgbString();
                         },
                         borderWidth: 1,
                         borderSkipped: false,
@@ -64,7 +64,7 @@
 					}, 
                     {
 						data: [
-    						{x: '01:00', y: '투입구 걸림', v: 10},
+    						{x: '01:00', y: '투입구 걸림', v: 0},
     						{x: '02:00', y: '투입구 걸림', v: 50},
     						{x: '03:00', y: '투입구 걸림', v: 90},
     						{x: '04:00', y: '투입구 걸림', v: 20},
@@ -96,8 +96,8 @@
                         },
                         borderColor: function(ctx) {
     						var value = ctx.dataset.data[ctx.dataIndex].v;
-    						var alpha = (value - 5) / 100;
-    						return Color('#ff1744').alpha(alpha).darken(0.3).rgbString();
+    						//var alpha = (value - 5) / 100;
+    						return Color('#ff1744').alpha(0.5).darken(0.3).rgbString();
     					},
                         borderWidth: 1,
     					borderSkipped: false,
@@ -146,7 +146,7 @@
                         borderColor: function(ctx) {
     						var value = ctx.dataset.data[ctx.dataIndex].v;
     						var alpha = (value - 5) / 100;
-    						return Color('#fbc02d').alpha(alpha).darken(0.3).rgbString();
+    						return Color('#fbc02d').alpha(0.5).darken(0.3).rgbString();
     					},
                         borderWidth: 1,
     					borderSkipped: false,
@@ -195,7 +195,7 @@
                             borderColor: function(ctx) {
         						var value = ctx.dataset.data[ctx.dataIndex].v;
         						var alpha = (value - 5) / 100;
-        						return Color('#2979ff').alpha(alpha).darken(0.3).rgbString();
+        						return Color('#2979ff').alpha(0.5).darken(0.3).rgbString();
         					},
                             borderWidth: 1,
         					borderSkipped: false,
@@ -674,8 +674,11 @@
 							</div>
 						</div>
 						<div class="panel__body">
-							<!-- <div id="heatmap"></div> -->
+							<div class="c-loader">
+								<div id="pieChartLoading" class="c-loader__active c-loader__active--ring"></div>
+							</div>
 							<div class="heatmap-area">
+								
 								<canvas id="heatmap" style="width: 100%;height: 293px;"></canvas>
 							</div>
 						</div>

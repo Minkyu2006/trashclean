@@ -565,9 +565,20 @@ a.c-button {
     border: 1px solid #7e7e7e;
 }
 /* 세로 스크롤 */
-.c-scroll-table .c-scroll-table__header table,
+.c-scroll-table .c-scroll-table__header table {
+	border: 0 none;
+}
+.c-scroll-table .c-scroll-table__header table tr th {
+	border: 1px solid #7e7e7e;
+}
 .c-scroll-table .c-scroll-table__header table tr:last-child th {
-	border-bottom: 0 none;
+	border-bottom: 0;
+}
+.c-scroll-table .c-scroll-table__header table tr th:last-child {
+	border-top: 0 none;
+	border-right: 0 none;
+	border-bottom: 0;
+	background-color: #fff;
 }
 .c-scroll-table .c-scroll-table__body table,
 .c-scroll-table .c-scroll-table__footer table {
