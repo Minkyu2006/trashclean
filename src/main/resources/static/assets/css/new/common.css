@@ -699,6 +699,7 @@ table {
 }
 .profile-pop__picture-img img {
 	width: 80px;
+	height: 80px;
 	-webkit-border-radius: 40px;
 	-moz-border-radius: 40px;
 	border-radius: 40px;
