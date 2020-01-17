@@ -136,6 +136,7 @@ table {
 }
 .profile__picture img {
 	width: 60px;
+	height: 60px;
 	-webkit-border-radius: 30px;
 	-moz-border-radius: 30px;
 	border-radius: 30px;
@@ -540,6 +541,7 @@ table {
 }
 .contents-profile__pic img {
 	width: 30px;
+	height: 30px;
 	background-color: #007e37;
 	-webkit-border-radius: 15px;
 	-moz-border-radius: 15px;
