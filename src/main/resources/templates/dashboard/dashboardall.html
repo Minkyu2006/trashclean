@@ -974,11 +974,11 @@
 			// console.log("어제날짜 타임스탬프 : "+nowtimestamp);
 			// console.log("30일전 타임스탬프 : "+beforetimestamp);
 			// console.log("timestamps : "+timestamps);
+			if(window.chart && window.chart !== null){
+				window.chart.destroy();
+			}
 
 			var ctx = document.getElementById('bar_chart');
-			var context = ctx.getContext('2d');
-			context.clearRect(0, 0, ctx.width, ctx.height);
-
 			var barChartData = {
 				labels: timestamps,
 				datasets: [{
@@ -993,7 +993,7 @@
 					}]
 				};
 
-			new Chart(ctx, {
+			window.chart = new Chart(ctx, {
 				data: barChartData,
 				options: {
 					// legend: {
@@ -1267,8 +1267,10 @@
 							marker.setAnimation(null);
 						} else {
 							marker.setAnimation(google.maps.Animation.BOUNCE);
+							setTimeout(function(){
+								marker.setAnimation(null);
+							},1500);
 						}
-
 					}
 				})(marker, i));
 			}

@@ -143,6 +143,16 @@
 							infowindow.open(map, marker);
 							$("#deviceDetail").show();
 							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_level[i],solar_current[i],solar_voltage[i]);
+
+							if (marker.getAnimation() != null) {
+								marker.setAnimation(null);
+							} else {
+								marker.setAnimation(google.maps.Animation.BOUNCE);
+								setTimeout(function(){
+									marker.setAnimation(null);
+								},1500);
+							}
+
 						}
 					})(marker, i));
 				}
