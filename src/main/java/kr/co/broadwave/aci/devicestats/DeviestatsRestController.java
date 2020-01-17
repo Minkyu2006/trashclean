@@ -205,7 +205,7 @@ public class DeviestatsRestController {
         String dd = sendDate.substring(6, 8);
 
         int d=0;
-        for(int i=1; i<25; i++) {
+        for(int i=0; i<24; i++) {
 
             if (i < 10) {
                 xhour.add(yyyy + '년' + mm + '월' + dd + '일' + '0' + i + '시');

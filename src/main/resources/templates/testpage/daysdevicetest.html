@@ -7,7 +7,7 @@
     <script>
   
     Utils.load(function() {
-		Chart.defaults.global.defaultFontSize = 12;
+		Chart.defaults.global.defaultFontSize = 11;
 		var ctx = document.getElementById("heatmap").getContext("2d");
 		window.myMatrix = new Chart(ctx, {
 			type: 'matrix',
@@ -55,11 +55,11 @@
                         hoverBorderColor: 'yellow',
                         width: function(ctx) {
                             var a = ctx.chart.chartArea;
-                            return (a.right - a.left) / 25;
+                            return (a.right - a.left) / 30;
                         },
                         height: function(ctx) {
                             var a = ctx.chart.chartArea;
-                            return (a.bottom - a.top) / 3 - 2;
+                            return (a.bottom - a.top) / 4 - 2;
                         }
 					}, 
                     {
@@ -104,11 +104,11 @@
     					hoverBorderColor: 'yellow',
     					width: function(ctx) {
     						var a = ctx.chart.chartArea;
-    						return (a.right - a.left) / 25;
+    						return (a.right - a.left) / 30;
     					},
     					height: function(ctx) {
     						var a = ctx.chart.chartArea;
-    						return (a.bottom - a.top) / 3 - 2;
+    						return (a.bottom - a.top) / 4 - 2;
     					}
 					}, 
                     {
@@ -153,11 +153,11 @@
     					hoverBorderColor: 'yellow',
     					width: function(ctx) {
     						var a = ctx.chart.chartArea;
-    						return (a.right - a.left) / 25;
+    						return (a.right - a.left) / 30;
     					},
     					height: function(ctx) {
     						var a = ctx.chart.chartArea;
-    						return (a.bottom - a.top) / 3 - 2;
+    						return (a.bottom - a.top) / 4 - 2;
     					}
 					}, 
                     {
@@ -202,11 +202,11 @@
         					hoverBorderColor: 'yellow',
         					width: function(ctx) {
         						var a = ctx.chart.chartArea;
-        						return (a.right - a.left) / 25;
+        						return (a.right - a.left) / 30;
         					},
         					height: function(ctx) {
         						var a = ctx.chart.chartArea;
-        						return (a.bottom - a.top) / 3-2;
+        						return (a.bottom - a.top) / 4 - 2;
         					}
     					}
                 ]
@@ -229,26 +229,26 @@
 				scales: {
 					xAxes: [{
 						type: 'time',
-						//labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'],
-						//labels: ['00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00', '21:00', '24:00'],
+						labels: ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00', '24:00'],
 						time: {
 							unit: 'hour',
 							parser: 'HH',
-							min: '01:00',
+							min: '00:00',
 							max: '24:00',
 							displayFormats: {
 								hour: 'HH'
 							}
 						},
-						ticks: {
-							//source: 'labels',
-							//reverse: false,
-							maxRotation: 0,
-							autoSkip: true,
-							padding: 30
+						/*ticks: {
+							source: 'labels',
+							reverse: false
 						},
 						gridLines: {
-							display: true
+							display: false
+						}*/
+						ticks: {
+							maxRotation: 0,
+							autoSkip: true
 						},
 						gridLines: {
 							display: false,
@@ -259,12 +259,11 @@
 					yAxes: [{
 						type: 'category',
 						labels: ['액츄에이터', '투입구 걸림', '솔레노이드센서', '배출횟수'],
-						gridLines: {
+						/*gridLines: {
 							display: false
-						},
+						}*/
 						ticks: {
-							maxRotation: 0,
-							padding: 20
+							maxRotation: 90
 						},
 						gridLines: {
 							display: false,

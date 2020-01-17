@@ -6,7 +6,6 @@
     <script>
         var map;
         var levelChart = null;
-        var levelChart = null;
 
         $(function() {
             LocationSetting("");
@@ -116,8 +115,8 @@
                     if (!Ajax.checkResult(res)) {
                         return;
                     }
-                    console.log("levelChart : "+levelChart);
-                    if(levelChart && levelChart!=null){
+                    //console.log("levelChart : "+levelChart);
+                    if(levelChart!=null){
                         window.chart.destroy();
                         levelChart.destroy();
                     }
@@ -142,7 +141,6 @@
                 labels: xhour,
                 datasets: [{
                     type: 'line',
-                    label: '배출량',
                     yAxisID: 'x',
                     backgroundColor: "#48ae63",
                     borderWidth: 4,
@@ -165,22 +163,39 @@
                     },
                     maintainAspectRatio: false,
                     stacked : true,
-                    tooltips: { //팁(모드설정)
-                        titleFontSize: 15,
-                        bodyFontSize: 15,
-                        mode: 'index',
-                        intersect: false
+                    tooltips: {
+                        titleFontSize: 17,
+                        bodyFontSize: 17,
+                        callbacks: {
+                            title: function (item, data) {
+                                return data.labels[item[0].index];
+                            },
+                            label: function(item, data) {
+                                var v = data.datasets[item.datasetIndex].data[item.index];
+                                return "배출량: "+v+"%";
+                            }
+                        },
+                        intersect: false,
+                        mode: 'index'
                     },
-                    hover: { //점 나오기
-                        mode: 'index',
-                        intersect: false
+                    hover:{
+                        intersect: false,
+                        mode: 'index'
                     },
                     scales: {
                         xAxes: [{
-                            gridLines: {
-                                drawOnChartArea: false
+                            labels: ['  ', '  ', '  ', '  ', '  ', '  ', '06', '  ', '  ', '  ', '  ', '  ', '12', '  ', '  ', '  ', '  ', '  ', '18', '  ', '  ', '  ', '  ', ' '],
+                            ticks: {
+                                maxRotation: 0,
+                                autoSkip: true,
+                                padding: 20,
+                                fontSize: 12,
                             },
-                            display: false,
+                            gridLines: {
+                                display: false,
+                                drawBorder: false,
+                                tickMarkLength: 0,
+                            }
                         }],
                         yAxes: [{
                             ticks: {
@@ -190,7 +205,7 @@
                                 max: 100,
                                 min: 0,
                                 stepSize: 20,
-                                fontSize: 15,
+                                fontSize: 14,
                             },
                             id: 'x',
                             type: 'linear',
@@ -235,11 +250,11 @@
                             hoverBorderColor: 'yellow',
                             width: function(ctx) {
                                 var a = ctx.chart.chartArea;
-                                return (a.right - a.left) / 30;
+                                return (a.right - a.left) / 25;
                             },
                             height: function(ctx) {
                                 var a = ctx.chart.chartArea;
-                                return (a.bottom - a.top) / 4 - 2;
+                                return (a.bottom - a.top) / 3 - 2;
                             }
                         },
                             {
@@ -259,11 +274,11 @@
                                 hoverBorderColor: 'yellow',
                                 width: function(ctx) {
                                     var a = ctx.chart.chartArea;
-                                    return (a.right - a.left) / 30;
+                                    return (a.right - a.left) / 25;
                                 },
                                 height: function(ctx) {
                                     var a = ctx.chart.chartArea;
-                                    return (a.bottom - a.top) / 4 - 2;
+                                    return (a.bottom - a.top) / 3 - 2;
                                 }
                             },
                             {
@@ -283,11 +298,11 @@
                                 hoverBorderColor: 'yellow',
                                 width: function(ctx) {
                                     var a = ctx.chart.chartArea;
-                                    return (a.right - a.left) / 30;
+                                    return (a.right - a.left) / 25;
                                 },
                                 height: function(ctx) {
                                     var a = ctx.chart.chartArea;
-                                    return (a.bottom - a.top) / 4 - 2;
+                                    return (a.bottom - a.top) / 3 - 2;
                                 }
                             },
                             {
@@ -307,11 +322,11 @@
                                 hoverBorderColor: 'yellow',
                                 width: function(ctx) {
                                     var a = ctx.chart.chartArea;
-                                    return (a.right - a.left) / 30;
+                                    return (a.right - a.left) / 25;
                                 },
                                 height: function(ctx) {
                                     var a = ctx.chart.chartArea;
-                                    return (a.bottom - a.top) / 4 - 2;
+                                    return (a.bottom - a.top) / 3 - 2;
                                 }
                             }
                         ]
@@ -341,15 +356,17 @@
                                     unit: 'hour',
                                     parser: 'HH',
                                     min: '00:00',
-                                    max: '24:00',
+                                    max: '23:00',
                                     displayFormats: {
                                         hour: 'HH'
                                     }
                                 },
-                                display: false,
+                                // display: false,
                                 ticks: {
                                     maxRotation: 0,
-                                    autoSkip: true
+                                    autoSkip: true,
+                                    padding: 30,
+                                    fontSize: 12,
                                 },
                                 gridLines: {
                                     display: false,
@@ -361,8 +378,9 @@
                                 type: 'category',
                                 labels: ['투입횟수','모터작동횟수','투입구걸림횟수','문열림횟수'],
                                 ticks: {
-                                    fontSize: 15,
-                                    maxRotation: 90
+                                    fontSize: 14,
+                                    maxRotation: 0,
+                                    padding: 20
                                 },
                                 gridLines: {
                                     display: false,
@@ -375,7 +393,7 @@
                             padding: {
                                 left: 0,
                                 right: 20,
-                                top: 50,
+                                top: 70,
                                 bottom: 50
                             }
                         }
