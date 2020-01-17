@@ -70,11 +70,11 @@ public class DeviestatsRestController {
 //        log.info("emType : "+emType);
 //        log.info("emCountry : "+emCountry);
 //        log.info("emLocation : "+emLocation);
-        log.info("받은날짜 monthDate : "+monthDate);
+        //log.info("받은날짜 monthDate : "+monthDate);
         int sYear = Integer.parseInt(monthDate.substring(0,4));
         int sDay = Integer.parseInt(monthDate.substring(5,7));
         String sMonth = monthDate.substring(0,7).replace("-","");
-        log.info("검색한 sMonth : "+sMonth);
+        //log.info("검색한 sMonth : "+sMonth);
 
         Long emTypeId = null;
         Long emCountryId = null;
@@ -186,9 +186,9 @@ public class DeviestatsRestController {
 
         List<DevicestatsDailyHourLevelDto> devicestatsDailyHourLevelDtos =
                 devicestatusService.queryDslDeviceDailyHourLevel(deviceid,sendDate);
-        log.info("받은 날짜 : "+sendDate);
-        log.info("받은 장치아이디 : "+deviceid);
-        log.info("devicestatsDailyHourLevelDtos : "+devicestatsDailyHourLevelDtos);
+//        log.info("받은 날짜 : "+sendDate);
+//        log.info("받은 장치아이디 : "+deviceid);
+//        log.info("devicestatsDailyHourLevelDtos : "+devicestatsDailyHourLevelDtos);
 
         List<String> xhour = new ArrayList<>(); // 24시간 넣는 리스트
 

@@ -11,7 +11,7 @@ import java.util.Optional;
  * @author Minkyu
  * Date : 2020-01-10
  * Time :
- * Remark : DevicestatusdailyService
+ * Remark : Devicestatusdaily Service
  */
 @Slf4j
 @Service

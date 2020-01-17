@@ -1,7 +1,5 @@
 package kr.co.broadwave.aci.dashboard;
 
-import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountMapperDto;
 import kr.co.broadwave.aci.accounts.AccountService;
@@ -9,7 +7,8 @@ import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
-import kr.co.broadwave.aci.devicestats.*;
+import kr.co.broadwave.aci.devicestats.DevicestatsDto;
+import kr.co.broadwave.aci.devicestats.DevicestatusService;
 import kr.co.broadwave.aci.equipment.EquipmentDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
@@ -21,14 +20,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.inject.Provider;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

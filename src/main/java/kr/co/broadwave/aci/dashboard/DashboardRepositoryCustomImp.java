@@ -3,7 +3,6 @@ package kr.co.broadwave.aci.dashboard;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.company.QCompany;
 import kr.co.broadwave.aci.equipment.QEquipment;
 import kr.co.broadwave.aci.imodel.QIModel;
 import org.springframework.data.domain.Page;

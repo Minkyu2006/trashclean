@@ -11,7 +11,7 @@ import java.util.List;
  * @author Minkyu
  * Date : 2020-01-10
  * Time :
- * Remark : DevicestatusService
+ * Remark : Devicestatus Service
  */
 @Slf4j
 @Service

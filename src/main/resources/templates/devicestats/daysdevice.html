@@ -25,6 +25,11 @@
                 return false;
             }
 
+            if(levelChart!==null){
+                window.chart.destroy();
+                levelChart.destroy();
+            }
+
             var $countInfo = $('#countInfo');
 
             var params = {

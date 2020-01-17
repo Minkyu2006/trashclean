@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 /**
  * @author Minkyu
  * Date : 2020-01-10
- * Time : 장비(iSolarbin,iTainer 등  통계데이터)
- * Remark : 장비등록 클래스
+ * Time :
+ * Remark :
  */
 @Entity
 @Getter
