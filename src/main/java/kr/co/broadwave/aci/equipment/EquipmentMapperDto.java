@@ -39,7 +39,8 @@ public class EquipmentMapperDto {
     private Double vPresstime; // 압축 정지시간
     private Double vInputtime; // 투입구 열림 시간
     private Double vSolenoidtime; // 솔레노이드 열림 시간
-    private Double vGreenledlimit; // 쓰레기량에 따른 녹색등의 경계값
+    private Double vYellowstart; // 쓰레기량에 따른 노랑색등의 경계값
+    private Double vRedstart; // 쓰레기량에 따른 적색등의 경계값
 
     public Double getvInterval() {
         return vInterval;
@@ -57,8 +58,12 @@ public class EquipmentMapperDto {
         return vSolenoidtime;
     }
 
-    public Double getvGreenledlimit() {
-        return vGreenledlimit;
+    public Double getvYellowstart() {
+        return vYellowstart;
+    }
+
+    public Double getvRedstart() {
+        return vRedstart;
     }
 
     public Double getEmLatitude() {

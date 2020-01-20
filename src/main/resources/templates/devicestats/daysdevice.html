@@ -125,12 +125,55 @@
                         window.chart.destroy();
                         levelChart.destroy();
                     }
-
                     hourLevelChart(res.data.xhour,res.data.hourFullLevel)
                     hourCountChart(res.data.heatMaphourEmitCnt,res.data.heatMaphourActuaterCnt,res.data.heatMaphourInputdoorjammingCnt,res.data.heatMaphourFrontdoorsolopenCnt);
                 }
             });
         }
+
+        function monthInfoGraph(deviceMonth,pushValue) {
+            $("#hour_levelchart").hide();
+            $("#hourLevelChartLoading").show();
+            $("#hourheatmapChartLoading").show();
+
+            if (deviceMonth==null) {
+                alertCaution("조회할 월수가 없습니다.");
+                return false;
+            }
+
+            var params = {
+                deviceMonth:deviceMonth,
+                deviceid:pushValue
+            };
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url: '/api/deviestats/monthInfoGraph',
+                type: 'post',
+                data: params,
+                cache: false,
+                error: function (request) {
+                    ajaxErrorMsg(request);
+                },
+                success: function (res) {
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+
+                    if(levelChart!==null){
+                        window.chart.destroy();
+                        levelChart.destroy();
+                    }
+                    // console.log("장비선택시나오는 그래프");
+                    hourLevelChart(res.data.xhour,res.data.monthFullLevel);
+                    hourCountChart(res.data.heatMaphourEmitCnt,res.data.heatMaphourActuaterCnt,res.data.heatMaphourInputdoorjammingCnt,res.data.heatMaphourFrontdoorsolopenCnt);
+                }
+            });
+        }
+
 
         //꺾은선그래프(배출량그래프)
         function hourLevelChart(xhour,hourFullLevel) {
@@ -490,7 +533,7 @@
                     return function() {
                         infowindow.setContent(content);
                         infowindow.open(map, marker);
-                        hourInfoGraph('20200101',deviceId[i]);
+                        monthInfoGraph($("#s_monthDate").val(),deviceId[i]);
                         if (marker.getAnimation() != null) {
                             marker.setAnimation(null);
                         } else {

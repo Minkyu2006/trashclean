@@ -71,7 +71,8 @@
 			$("#vPresstime").val('');
 			$("#vInputtime").val('');
 			$("#vSolenoidtime").val('');
-			$("#vGreenledlimit").val('');
+			$("#vYellowstart").val('');
+			$("#vRedstart").val('');
 
 			$("#emCountryView").hide();
 			$("#emLocationView").hide();
@@ -286,7 +287,8 @@
 					$("#vPresstime").val(res.data.equipment.vPresstime);
 					$("#vInputtime").val(res.data.equipment.vInputtime);
 					$("#vSolenoidtime").val(res.data.equipment.vSolenoidtime);
-					$("#vGreenledlimit").val(res.data.equipment.vGreenledlimit);
+					$("#vYellowstart").val(res.data.equipment.vYellowstart);
+					$("#vRedstart").val(res.data.equipment.vRedstart);
 
 					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
 					var install = res.data.equipment.emInstallDate;
@@ -735,7 +737,7 @@
 						<th>센서 데이터 주기적 송신시간(단위:분)</th>
 						<td>
 							<div class="c-text">
-								<input type="text" name="vInterval" id="vInterval" placeholder="기본값 미정 일단 60" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+								<input type="text" name="vInterval" id="vInterval" placeholder="60" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
 						<th>압축 정지시간</th>
@@ -760,14 +762,18 @@
 						</td>
 					</tr>
 					<tr>
-						<th>쓰레기량에 따른 경계값</th>
+						<th>쓰레기량에 따른 경계값(노랑색)</th>
 						<td>
 							<div class="c-text">
-								<input type="text" name="vGreenledlimit" id="vGreenledlimit" placeholder="기본값 60" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+								<input type="text" name="vYellowstart" id="vYellowstart" placeholder="기본값 61%" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
-						<th></th>
-						<td></td>
+						<th>쓰레기량에 따른 경계값(적색)</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vRedstart" id="vRedstart" placeholder="기본값 81%" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+							</div>
+						</td>
 					</tr>
 				</tbody>
 			</table>

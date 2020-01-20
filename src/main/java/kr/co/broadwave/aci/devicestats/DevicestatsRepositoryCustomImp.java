@@ -93,4 +93,30 @@ public class DevicestatsRepositoryCustomImp extends QuerydslRepositorySupport im
         return query.fetch();
     }
 
+    // 일자별장비현황 횟수평균,배출량평균 Querydsl
+    @Override
+    public List<DevicestatsDailyMonthDto> queryDslDeviceDailyMonth(String deviceid,String deviceMonth) {
+
+        QDevicestatusdaily devicestatusdaily = QDevicestatusdaily.devicestatusdaily;
+
+        JPQLQuery<DevicestatsDailyMonthDto> query = from(devicestatusdaily)
+                .select(Projections.constructor(DevicestatsDailyMonthDto.class,
+                        devicestatusdaily.hh,
+                        devicestatusdaily.actuaterCnt.avg(),
+                        devicestatusdaily.inputdoorjammingCnt.avg(),
+                        devicestatusdaily.frontdoorsolopenCnt.avg(),
+                        devicestatusdaily.emitCnt.avg(),
+                        devicestatusdaily.fullLevel.avg()))
+                .groupBy(devicestatusdaily.hh);
+
+        if (deviceid != null){
+            query.where(devicestatusdaily.deviceid.eq(deviceid));
+        }
+        if (deviceMonth != null){
+            query.where(devicestatusdaily.yyyymmdd.likeIgnoreCase(deviceMonth.concat("%")));
+        }
+
+        return query.fetch();
+    }
+
 }

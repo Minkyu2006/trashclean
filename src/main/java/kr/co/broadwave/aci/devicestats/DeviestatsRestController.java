@@ -186,9 +186,10 @@ public class DeviestatsRestController {
 
         List<DevicestatsDailyHourLevelDto> devicestatsDailyHourLevelDtos =
                 devicestatusService.queryDslDeviceDailyHourLevel(deviceid,sendDate);
-//        log.info("받은 날짜 : "+sendDate);
-//        log.info("받은 장치아이디 : "+deviceid);
-//        log.info("devicestatsDailyHourLevelDtos : "+devicestatsDailyHourLevelDtos);
+
+        log.info("받은 날짜 : "+sendDate);
+        log.info("받은 장치아이디 : "+deviceid);
+        log.info("devicestatsDailyHourLevelDtos : "+devicestatsDailyHourLevelDtos);
 
         List<String> xhour = new ArrayList<>(); // 24시간 넣는 리스트
 
@@ -304,5 +305,137 @@ public class DeviestatsRestController {
         res.addResponse("data", data);
         return ResponseEntity.ok(res.success());
     }
+
+
+    // 조회할 시간그래프 그리기(장비클릭시 만들어지는 그래프) -> 한달치 시간의평균
+    @PostMapping ("monthInfoGraph")
+    public ResponseEntity monthInfoGraph(@RequestParam(value="deviceMonth", defaultValue="") String deviceMonth,
+                                        @RequestParam(value="deviceid", defaultValue="") String deviceid) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        String sMonth = deviceMonth.substring(0,7).replace("-","");
+        String yyyy = sMonth.substring(0,4);
+        String mm = sMonth.substring(4,6);
+
+        List<DevicestatsDailyMonthDto> devicestatsDailyMonthDtos =
+                devicestatusService.queryDslDeviceDailyMonth(deviceid,sMonth);
+
+//        log.info("받은 장치아이디 : "+deviceid);
+//        log.info("받은 월 : "+deviceMonth);
+//        log.info("가공 년 : "+yyyy);
+//        log.info("가공 월 : "+mm);
+//        log.info("보낼 년월데이터 : "+sMonth);
+//        log.info("devicestatsDailyMonthDtos : "+devicestatsDailyMonthDtos);
+
+        List<String> xhour = new ArrayList<>(); // 24시간 넣는 리스트
+
+        List<Double> monthFullLevel = new ArrayList<>(); // 평균배출량(시간) -> (평균)
+        List<Double> monthEmitCnt = new ArrayList<>(); // 일일장비 투입횟수(시간) -> (평균)
+        List<Double> monthActuaterCnt = new ArrayList<>(); // 엑추에이터 작동횟수(시간) -> (평균)
+        List<Double> monthInputdoorjammingCnt = new ArrayList<>(); //투일구걸림횟수(시간) -> (평균)
+        List<Double> monthFrontdoorsolopenCnt = new ArrayList<>(); // 솔레노이드센서 열림 횟수(시간) -> (평균)
+
+        int d=0;
+        for(int i=0; i<24; i++) {
+
+            if (i < 10) {
+                xhour.add(yyyy + '년' + mm + '월' + '0' + i + '시');
+            } else {
+                xhour.add(yyyy + '년' + mm + '월' + i + '시');
+            }
+
+            if (d < devicestatsDailyMonthDtos.size()) {
+                if (i == (Integer.parseInt(devicestatsDailyMonthDtos.get(d).getHh()))) {
+                    monthEmitCnt.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getEmitCnt() * 10 / 10.0));
+                    monthActuaterCnt.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getActuaterCnt() * 10 / 10.0));
+                    monthInputdoorjammingCnt.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getInputdoorjammingCnt() * 10 / 10.0));
+                    monthFrontdoorsolopenCnt.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getFrontdoorsolopenCnt() * 10 / 10.0));
+                    monthFullLevel.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getFullLevel() * 10 / 10.0));
+                    d++;
+                } else {
+                    monthEmitCnt.add(0.0);
+                    monthActuaterCnt.add(0.0);
+                    monthInputdoorjammingCnt.add(0.0);
+                    monthFrontdoorsolopenCnt.add(0.0);
+                    monthFullLevel.add(0.0);
+                }
+            } else {
+                monthEmitCnt.add(0.0);
+                monthActuaterCnt.add(0.0);
+                monthInputdoorjammingCnt.add(0.0);
+                monthFrontdoorsolopenCnt.add(0.0);
+                monthFullLevel.add(0.0);
+            }
+        }
+
+        List<HashMap<String,Object>> heatMaphourEmitCnt = new ArrayList<>(); // 히트맵에 들어갈 데이터 투입횟수(시간)
+        List<HashMap<String,Object>> heatMaphourActuaterCnt = new ArrayList<>(); // 히트맵에 들어갈 데이터 엑추에이터 작동횟수(시간)
+        List<HashMap<String,Object>> heatMaphourInputdoorjammingCnt = new ArrayList<>(); // 히트맵에 들어갈 데이터 투일구걸림횟수(시간)
+        List<HashMap<String,Object>> heatMaphourFrontdoorsolopenCnt = new ArrayList<>(); // 히트맵에 들어갈 데이터 솔레노이드센서 열림 횟수(시간)
+        HashMap<String,Object> emitmapData;
+        HashMap<String,Object> actuaterData;
+        HashMap<String,Object> inputdoorjammingData;
+        HashMap<String,Object> frontdoorsolopenData;
+
+        for(int i=0; i<24; i++){
+            emitmapData = new HashMap<>();
+            actuaterData = new HashMap<>();
+            inputdoorjammingData = new HashMap<>();
+            frontdoorsolopenData = new HashMap<>();
+
+            String strxhour = xhour.get(i);
+            String strxhour2 = xhour.get(i).substring(8,10)+":00";
+            Double emitCnt = monthEmitCnt.get(i);
+            Double actuaterCnt = monthActuaterCnt.get(i);
+            Double inputdoorjammingCnt = monthInputdoorjammingCnt.get(i);
+            Double frontdoorsolopenCnt = monthFrontdoorsolopenCnt.get(i);
+
+            emitmapData.put("d",strxhour);
+            emitmapData.put("x",strxhour2);
+            emitmapData.put("y","투입횟수");
+            emitmapData.put("v",emitCnt);
+
+            actuaterData.put("d",strxhour);
+            actuaterData.put("x",strxhour2);
+            actuaterData.put("y","모터작동횟수");
+            actuaterData.put("v",actuaterCnt);
+
+            inputdoorjammingData.put("d",strxhour);
+            inputdoorjammingData.put("x",strxhour2);
+            inputdoorjammingData.put("y","투입구걸림횟수");
+            inputdoorjammingData.put("v",inputdoorjammingCnt);
+
+            frontdoorsolopenData.put("d",strxhour);
+            frontdoorsolopenData.put("x",strxhour2);
+            frontdoorsolopenData.put("y","문열림횟수");
+            frontdoorsolopenData.put("v",frontdoorsolopenCnt);
+
+            heatMaphourEmitCnt.add(emitmapData);
+            heatMaphourActuaterCnt.add(actuaterData);
+            heatMaphourInputdoorjammingCnt.add(inputdoorjammingData);
+            heatMaphourFrontdoorsolopenCnt.add(frontdoorsolopenData);
+
+        }
+
+//        log.info("총 시간(x축) : "+xhour);
+//        log.info("꺾은선그래프 데이터 : "+monthFullLevel);
+//        log.info("히트맵그래프 데이터 투입횟수 : "+heatMaphourEmitCnt);
+//        log.info("히트맵그래프 데이터 모터작동횟수 : "+heatMaphourActuaterCnt);
+//        log.info("히트맵그래프 데이터 투입구걸림횟수 : "+heatMaphourInputdoorjammingCnt);
+//        log.info("히트맵그래프 데이터 문열림횟수 : "+heatMaphourFrontdoorsolopenCnt);
+
+        data.clear();
+        data.put("xhour",xhour);
+        data.put("monthFullLevel",monthFullLevel);
+        data.put("heatMaphourEmitCnt",heatMaphourEmitCnt);
+        data.put("heatMaphourActuaterCnt",heatMaphourActuaterCnt);
+        data.put("heatMaphourInputdoorjammingCnt",heatMaphourInputdoorjammingCnt);
+        data.put("heatMaphourFrontdoorsolopenCnt",heatMaphourFrontdoorsolopenCnt);
+
+        res.addResponse("data", data);
+        return ResponseEntity.ok(res.success());
+    }
+
 
 }

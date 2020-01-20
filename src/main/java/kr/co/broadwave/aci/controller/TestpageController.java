@@ -86,5 +86,9 @@ public class TestpageController {
         return bytes;
     }
 
+    @RequestMapping("mobileindex")
+    public String mobileindex(){
+        return "testpage/mobileindex";
+    }
 
 }

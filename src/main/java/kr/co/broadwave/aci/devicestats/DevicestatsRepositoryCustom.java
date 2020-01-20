@@ -13,4 +13,6 @@ public interface DevicestatsRepositoryCustom {
     List<DevicestatsDailyDto> queryDslDeviceDaily(List<String> deviceid,String sMonth);
 
     List<DevicestatsDailyHourLevelDto> queryDslDeviceDailyHourLevel(List<String> deviceid,String sendDate);
+
+    List<DevicestatsDailyMonthDto> queryDslDeviceDailyMonth(String deviceid,String deviceMonth);
 }

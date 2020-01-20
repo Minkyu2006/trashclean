@@ -40,4 +40,8 @@ public class DevicestatusService {
     public List<DevicestatsDailyHourLevelDto> queryDslDeviceDailyHourLevel(List<String> deviceid, String sendDate) {
         return devicestatsRepositoryCustom.queryDslDeviceDailyHourLevel(deviceid,sendDate);
     }
+
+    public List<DevicestatsDailyMonthDto> queryDslDeviceDailyMonth(String deviceid,String deviceMonth){
+        return devicestatsRepositoryCustom.queryDslDeviceDailyMonth(deviceid,deviceMonth);
+    }
 }

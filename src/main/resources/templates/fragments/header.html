@@ -124,6 +124,22 @@
 					<li><a href="/devicestats/daysdevice">일자별장비현황</a></li>
 				</ul>
 			</li>
+
+
+
+			<!--모바일전용-->
+			<li>
+				<a href="#" class="nav__link nav__link--platform toggle">수거관리</a>
+				<ul class="nav-child">
+					<li><a href="/dashboard/devicecontrol">장비제어</a></li>
+					<li><a href="/testpage/mobileindex">모바일인덱스</a></li>
+					<li><a href="/collections/collectionprocess">수거처리</a></li>
+				</ul>
+			</li>
+
+
+
+
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--dash toggle">테스트페이지</a>
 				<ul class="nav-child">

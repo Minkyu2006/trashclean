@@ -74,8 +74,12 @@ public class EquipmentRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         Equipment equipment = modelMapper.map(equipmentMapperDto, Equipment.class);
-        if(equipment.getVGreenledlimit()==null){
-            equipment.setVGreenledlimit(60.0);
+
+        if(equipment.getVYellowstart()==null){
+            equipment.setVYellowstart(61.0);
+        }
+        if(equipment.getVRedstart()==null){
+            equipment.setVRedstart(81.0);
         }
         if(equipment.getVInputtime()==null){
             equipment.setVInputtime(3.0);
@@ -157,7 +161,7 @@ public class EquipmentRestController {
 
         Equipment save = equipmentService.save(equipment);
 
-        log.info("장비등록 데이터 : "+save.toString());
+        //log.info("장비등록 데이터 : "+save.toString());
         return ResponseEntity.ok(res.success());
     }
 

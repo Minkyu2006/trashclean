@@ -89,8 +89,11 @@ public class Equipment {
     @Column(name="v_solenoidtime")
     private Double vSolenoidtime; // 솔레노이드 열림 시간
 
-    @Column(name="v_greenledlimit")
-    private Double vGreenledlimit; // 쓰레기량에 따른 녹색등의 경계값
+    @Column(name="v_yellowstart")
+    private Double vYellowstart; // 쓰레기량에 따른 노랑색등의 경계값
+
+    @Column(name="v_redstart")
+    private Double vRedstart; // 쓰레기량에 따른 적색등의 경계값
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
