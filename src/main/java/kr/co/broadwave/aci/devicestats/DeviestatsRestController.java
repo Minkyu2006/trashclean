@@ -347,10 +347,10 @@ public class DeviestatsRestController {
 
             if (d < devicestatsDailyMonthDtos.size()) {
                 if (i == (Integer.parseInt(devicestatsDailyMonthDtos.get(d).getHh()))) {
-                    monthEmitCnt.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getEmitCnt() * 10 / 10.0));
-                    monthActuaterCnt.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getActuaterCnt() * 10 / 10.0));
-                    monthInputdoorjammingCnt.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getInputdoorjammingCnt() * 10 / 10.0));
-                    monthFrontdoorsolopenCnt.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getFrontdoorsolopenCnt() * 10 / 10.0));
+                    monthEmitCnt.add(devicestatsDailyMonthDtos.get(d).getEmitCnt());
+                    monthActuaterCnt.add(devicestatsDailyMonthDtos.get(d).getActuaterCnt());
+                    monthInputdoorjammingCnt.add(devicestatsDailyMonthDtos.get(d).getInputdoorjammingCnt());
+                    monthFrontdoorsolopenCnt.add(devicestatsDailyMonthDtos.get(d).getFrontdoorsolopenCnt());
                     monthFullLevel.add((double) Math.round(devicestatsDailyMonthDtos.get(d).getFullLevel() * 10 / 10.0));
                     d++;
                 } else {

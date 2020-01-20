@@ -102,10 +102,10 @@ public class DevicestatsRepositoryCustomImp extends QuerydslRepositorySupport im
         JPQLQuery<DevicestatsDailyMonthDto> query = from(devicestatusdaily)
                 .select(Projections.constructor(DevicestatsDailyMonthDto.class,
                         devicestatusdaily.hh,
-                        devicestatusdaily.actuaterCnt.avg(),
-                        devicestatusdaily.inputdoorjammingCnt.avg(),
-                        devicestatusdaily.frontdoorsolopenCnt.avg(),
-                        devicestatusdaily.emitCnt.avg(),
+                        devicestatusdaily.actuaterCnt.sum(),
+                        devicestatusdaily.inputdoorjammingCnt.sum(),
+                        devicestatusdaily.frontdoorsolopenCnt.sum(),
+                        devicestatusdaily.emitCnt.sum(),
                         devicestatusdaily.fullLevel.avg()))
                 .groupBy(devicestatusdaily.hh);
 
