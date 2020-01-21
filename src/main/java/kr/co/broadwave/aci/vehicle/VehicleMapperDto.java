@@ -19,12 +19,25 @@ public class VehicleMapperDto {
     private String Id;
     private String vcNumber; // 차량번호
     private String vcName; // 차량명
-    private String vcShape; // 차량소유구분
-    private String vcUsage; // 차량용도
+    private Long vcShape; // 차량소유구분
+    private Long vcUsage; // 차량용도
+    private Long vcState; // 차량상태
     private String vcStartDate; // 운행시작일
     private String vcEndDate; // 운행종료일
     private String vcManagement; // 차량관리
     private String operator; // 소속사이름받기
+
+    public Long getVcShape() {
+        return vcShape;
+    }
+
+    public Long getVcUsage() {
+        return vcUsage;
+    }
+
+    public Long getVcState() {
+        return vcState;
+    }
 
     public String getId() {
         return Id;
@@ -40,14 +53,6 @@ public class VehicleMapperDto {
 
     public String getVcName() {
         return vcName;
-    }
-
-    public String getVcShape() {
-        return vcShape;
-    }
-
-    public String getVcUsage() {
-        return vcUsage;
     }
 
     public String getVcStartDate() {

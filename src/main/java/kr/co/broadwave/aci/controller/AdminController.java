@@ -105,7 +105,15 @@ public class AdminController {
 
     //차량등록
     @RequestMapping("vehiclereg")
-    public String vehiclereg(){
+    public String vehiclereg(Model model){
+        List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
+        List<MasterCodeDto> vcUsages = masterCodeService.findCodeList(CodeType.C0011);
+        List<MasterCodeDto> vcStates = masterCodeService.findCodeList(CodeType.C0012);
+
+        model.addAttribute("vcShapes", vcShapes);
+        model.addAttribute("vcUsages", vcUsages);
+        model.addAttribute("vcStates", vcStates);
+
         return "admin/vehiclereg";
     }
 

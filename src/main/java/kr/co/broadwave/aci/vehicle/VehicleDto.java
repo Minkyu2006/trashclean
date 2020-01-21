@@ -7,9 +7,9 @@ import lombok.*;
 
 /**
  * @author Minkyu
- * Date : 2019-10-31
- * Time : 16:45
- * Remark : 장비등록 클래스 Dto
+ * Date : 2020-01-20
+ * Time :
+ * Remark : 차량등록 클래스 Dto
  */
 @Builder
 @NoArgsConstructor
@@ -20,8 +20,9 @@ public class VehicleDto {
     private Long Id;
     private String vcNumber; // 차량번호
     private String vcName; // 차량명
-    private String vcShape; // 차량소유구분
-    private String vcUsage; // 차량용도
+    private MasterCode vcShape; // 차량소유구분
+    private MasterCode vcUsage; // 차량용도
+    private MasterCode vcState; // 차량상
     private String vcStartDate; // 운행시작일
     private String vcEndDate; // 운행종료일
     private String vcManagement; // 차량관리
@@ -39,12 +40,16 @@ public class VehicleDto {
         return vcName;
     }
 
-    public String getVcShape() {
-        return vcShape;
+    public Long getVcShape() {
+        return vcShape.getId();
     }
 
-    public String getVcUsage() {
-        return vcUsage;
+    public Long getVcUsage() {
+        return vcUsage.getId();
+    }
+
+    public Long getVcState() {
+        return vcState.getId();
     }
 
     public String getVcStartDate() {

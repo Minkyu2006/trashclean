@@ -11,5 +11,5 @@ import org.springframework.data.domain.Pageable;
  */
 public interface VehicleRepositoryCustom {
 
-    Page<VehicleListDto> findByVehicleSearch(String vcNumber, String vcName, String vcShape, String vcUsage,Pageable pageable);
+    Page<VehicleListDto> findByVehicleSearch(String vcNumber, String vcName, Long vcShapeId, Long vcUsageId,Long vcStateId, Pageable pageable);
 }

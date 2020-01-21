@@ -1,15 +1,12 @@
 package kr.co.broadwave.aci.vehicle;
 
-import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.imodel.IModel;
-import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
 /**
  * @author Minkyu
- * Date : 2019-11-01
- * Time : 14:18
- * Remark : 장비등록 클래스 ListDto
+ * Date : 2020-01-21
+ * Time :
+ * Remark : 차량등록 클래스 ListDto
  */
 @Builder
 @NoArgsConstructor
@@ -22,6 +19,7 @@ public class VehicleListDto {
     private String vcName; // 차량명
     private String vcShape; // 차량소유구분
     private String vcUsage; // 차량용도
+    private String vcState; // 차량상태
     private String vcStartDate; // 운행시작일
     private String vcEndDate; // 운행종료일
     private String vcManagement; // 차량관리
@@ -45,6 +43,10 @@ public class VehicleListDto {
 
     public String getVcUsage() {
         return vcUsage;
+    }
+
+    public String getVcState() {
+        return vcState;
     }
 
     public String getVcStartDate() {

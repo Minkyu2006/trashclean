@@ -1,8 +1,6 @@
 package kr.co.broadwave.aci.vehicle;
 
-import kr.co.broadwave.aci.company.CompanyListDto;
-import kr.co.broadwave.aci.company.CompanyRepositoryCustom;
-import kr.co.broadwave.aci.equipment.*;
+import kr.co.broadwave.aci.equipment.EquipmentRepositoryCustom;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -11,9 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,19 +22,15 @@ import java.util.Optional;
 public class VehicleService {
     private final ModelMapper modelMapper;
     private final VehicleRepository vehicleRepository;
-    private final KeyGenerateService keyGenerateService;
     private final VehicleRepositoryCustom vehicleRepositoryCustom;
 
     @Autowired
     public VehicleService(VehicleRepository vehicleRepository,
-                          KeyGenerateService keyGenerateService,
                           VehicleRepositoryCustom vehicleRepositoryCustom,
-                          EquipmentRepositoryCustom equipmentRepositoryCustom,
                           ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
         this.vehicleRepositoryCustom = vehicleRepositoryCustom;
         this.vehicleRepository = vehicleRepository;
-        this.keyGenerateService = keyGenerateService;
     }
 
     public Vehicle save(Vehicle vehicle) {
@@ -50,9 +41,6 @@ public class VehicleService {
         return vehicleRepository.findById(Id);
     }
 
-    public Page<VehicleListDto> findByVehicleSearch(String vcNumber, String vcName, String vcShape, String vcUsage, Pageable pageable) {
-        return vehicleRepositoryCustom.findByVehicleSearch(vcNumber,vcName,vcShape,vcUsage,pageable);
-    }
 
     public VehicleDto findById(Long id) {
         Optional<Vehicle> vehicleOptional = vehicleRepository.findById(id);
@@ -67,4 +55,11 @@ public class VehicleService {
         vehicleRepository.delete(vehicle);
     }
 
+    public Page<VehicleListDto> findByVehicleSearch(String vcNumber, String vcName, Long vcShapeId, Long vcUsageId, Long vcStateId, Pageable pageable) {
+        return vehicleRepositoryCustom.findByVehicleSearch(vcNumber,vcName,vcShapeId,vcUsageId,vcStateId,pageable);
+    }
+
+    public Optional<Vehicle> findByVcNumber(String vcNumber) {
+        return vehicleRepository.findByVcNumber(vcNumber);
+    }
 }

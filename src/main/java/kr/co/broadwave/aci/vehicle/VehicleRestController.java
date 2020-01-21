@@ -2,22 +2,12 @@ package kr.co.broadwave.aci.vehicle;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
-import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
-import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.company.CompanyDto;
-import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.company.CompanyService;
-import kr.co.broadwave.aci.dashboard.DashboardService;
-import kr.co.broadwave.aci.equipment.*;
-import kr.co.broadwave.aci.imodel.IModel;
-import kr.co.broadwave.aci.imodel.IModelChangeDto;
-import kr.co.broadwave.aci.imodel.IModelService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -31,13 +21,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 /**
  * @author Minkyu
- * Date : 2019-11-01
- * Time : 14:22
+ * Date : 2020-01-21
+ * Time :
  * Remark : Ajax 용 Rest Controller
  */
 @Slf4j
@@ -49,23 +38,24 @@ public class VehicleRestController {
     private final VehicleService vehicleService;
     private final AccountService accountService;
     private final CompanyService companyService;
-
+    private final MasterCodeService masterCodeService;
     @Autowired
     public VehicleRestController(ModelMapper modelMapper,
                                  AccountService accountService,
+                                 MasterCodeService masterCodeService,
                                  CompanyService companyService,
                                  VehicleService vehicleService) {
         this.accountService = accountService;
         this.vehicleService = vehicleService;
         this.companyService = companyService;
         this.modelMapper = modelMapper;
+        this.masterCodeService = masterCodeService;
     }
 
     // 차량 저장
     @PostMapping ("reg")
     public ResponseEntity vehicleReg(@ModelAttribute VehicleMapperDto vehicleMapperDto,HttpServletRequest request){
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
         Vehicle vehicle = modelMapper.map(vehicleMapperDto, Vehicle.class);
 
@@ -78,13 +68,32 @@ public class VehicleRestController {
                     ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }
 
+        // 차량소유구분/차량용도/차량상태 가져오기
+        Optional<MasterCode> optionalVcShape = masterCodeService.findById(vehicleMapperDto.getVcShape());
+        Optional<MasterCode> optionalVcUsage = masterCodeService.findById(vehicleMapperDto.getVcUsage());
+        Optional<MasterCode> optionalVcStat = masterCodeService.findById(vehicleMapperDto.getVcState());
+
+        // 차량소유구분/차량용도/차량상태 존재하지않으면
+        if (!optionalVcShape.isPresent() || !optionalVcUsage.isPresent() || !optionalVcStat.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E023.getCode(), ResponseErrorCode.E023.getDesc()));
+        }else{
+            vehicle.setVcShape(optionalVcShape.get());
+            vehicle.setVcUsage(optionalVcUsage.get());
+            vehicle.setVcState(optionalVcStat.get());
+        }
+
+        Optional<Vehicle> optionalVehicle;
         // 차량아이디 가져오기(고유값)
-        Optional<Vehicle> optionalVehicle = vehicleService.findById2(vehicle.getId());
+        if(vehicle.getId()!=null){
+            optionalVehicle = vehicleService.findById2(vehicle.getId());
+        }else{
+            optionalVehicle = vehicleService.findByVcNumber(vehicle.getVcNumber());
+        }
 
         //신규 및 수정여부
         if (optionalVehicle.isPresent()) {
             if (optionalVehicle.get().getVcNumber().equals(vehicleMapperDto.getVcNumber())) {
-                return ResponseEntity.ok(res.fail(ResponseErrorCode.E008.getCode(), ResponseErrorCode.E008.getDesc()));
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E022.getCode(), ResponseErrorCode.E022.getDesc()));
             }
             //수정
             vehicle.setId(optionalVehicle.get().getId());
@@ -110,9 +119,8 @@ public class VehicleRestController {
             vehicle.setCompany(company);
         }
 
-        Vehicle save = vehicleService.save(vehicle);
+        vehicleService.save(vehicle);
 
-        //log.info("장비등록 데이터 : "+save.toString());
         return ResponseEntity.ok(res.success());
     }
 
@@ -124,10 +132,28 @@ public class VehicleRestController {
                                                         @RequestParam (value="vcName", defaultValue="") String  vcName,
                                                         @RequestParam (value="vcShape", defaultValue="")String vcShape,
                                                         @RequestParam (value="vcUsage", defaultValue="")String vcUsage,
+                                                        @RequestParam (value="vcState", defaultValue="")String vcState,
                                                         @PageableDefault Pageable pageable){
 
+        Long vcShapeId = null;
+        Long vcUsageId = null;
+        Long vcStateId = null;
+
+        if(!vcShape.equals("")){
+            Optional<MasterCode> vcShapes = masterCodeService.findByCode(vcShape);
+            vcShapeId = vcShapes.get().getId();
+        }
+        if(!vcUsage.equals("")){
+            Optional<MasterCode> vcUsages = masterCodeService.findByCode(vcUsage);
+            vcUsageId = vcUsages.get().getId();
+        }
+        if(!vcState.equals("")){
+            Optional<MasterCode> vcStates = masterCodeService.findByCode(vcState);
+            vcStateId = vcStates.get().getId();
+        }
+
         Page<VehicleListDto> vehicleListDtos =
-                vehicleService.findByVehicleSearch(vcNumber,vcName,vcShape,vcUsage,pageable);
+                vehicleService.findByVehicleSearch(vcNumber,vcName,vcShapeId,vcUsageId,vcStateId,pageable);
 
         return CommonUtils.ResponseEntityPage(vehicleListDtos);
     }
@@ -139,8 +165,6 @@ public class VehicleRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         VehicleDto vehicleDto = vehicleService.findById(id);
-        log.info("vehicleDto : "+vehicleDto);
-        log.info("받아온 아이디값 : "+id);
 
         data.clear();
         data.put("vehicle",vehicleDto);
@@ -153,7 +177,6 @@ public class VehicleRestController {
     @PostMapping("del")
     public ResponseEntity vehicleDel(@RequestParam(value="id", defaultValue="") Long id){
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
         Optional<Vehicle> optionalVehicle = vehicleService.findById2(id);
 

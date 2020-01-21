@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.vehicle;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import kr.co.broadwave.aci.company.QCompany;
+import kr.co.broadwave.aci.mastercode.QMasterCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -25,19 +26,24 @@ public class VehicleRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
     @Override
     public Page<VehicleListDto> findByVehicleSearch
-            (String vcNumber, String vcName, String vcShape,String vcUsage, Pageable pageable){
+            (String vcNumber, String vcName, Long vcShapeId, Long vcUsageId,Long vcStateId, Pageable pageable){
 
         QVehicle vehicle = QVehicle.vehicle;
         QCompany company = QCompany.company;
+        QMasterCode masterCode = QMasterCode.masterCode;
 
         JPQLQuery<VehicleListDto> query = from(vehicle)
+                .innerJoin(vehicle.vcShape,masterCode)
+                .innerJoin(vehicle.vcUsage,masterCode)
+                .innerJoin(vehicle.vcState,masterCode)
                 .innerJoin(vehicle.company,company)
                 .select(Projections.constructor(VehicleListDto.class,
                         vehicle.id,
                         vehicle.vcNumber,
                         vehicle.vcName,
-                        vehicle.vcShape,
-                        vehicle.vcUsage,
+                        vehicle.vcShape.name,
+                        vehicle.vcUsage.name,
+                        vehicle.vcState.name,
                         vehicle.vcStartDate,
                         vehicle.vcEndDate,
                         vehicle.vcManagement,
@@ -52,11 +58,14 @@ public class VehicleRepositoryCustomImpl extends QuerydslRepositorySupport imple
         if (vcName != null && !vcName.isEmpty()){
             query.where(vehicle.vcName.containsIgnoreCase(vcName));
         }
-        if (vcShape != null && !vcShape.isEmpty()){
-            query.where(vehicle.vcShape.likeIgnoreCase(vcShape.concat("%")));
+        if (vcShapeId != null ){
+            query.where(vehicle.vcShape.id.eq(vcShapeId));
         }
-        if (vcUsage != null && !vcUsage.isEmpty()){
-            query.where(vehicle.vcUsage.containsIgnoreCase(vcUsage));
+        if (vcUsageId != null ){
+            query.where(vehicle.vcUsage.id.eq(vcUsageId));
+        }
+        if (vcStateId != null ){
+            query.where(vehicle.vcState.id.eq(vcStateId));
         }
 
         query.orderBy(vehicle.id.desc());

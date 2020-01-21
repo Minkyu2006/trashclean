@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.vehicle;
 
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
 import javax.persistence.*;
@@ -34,11 +35,17 @@ public class Vehicle {
     @Column(name="vc_name")
     private String vcName; // 차량명
 
-    @Column(name="vc_shape")
-    private String vcShape; // 차량소유구분
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="vc_shape")
+    private MasterCode vcShape; // 차량소유구분
 
-    @Column(name="vc_usage")
-    private String vcUsage; // 차량용도
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="vc_usage")
+    private MasterCode vcUsage; // 차량용도
+
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="vc_state")
+    private MasterCode vcState; // 차량상태
 
     @Column(name="vc_start_date")
     private String vcStartDate; // 운행시작일

@@ -44,15 +44,11 @@
 		function reset() {
 			$("#s_vcNumber").val('');
 			$("#s_vcName").val('');
-			$("#s_vcShape").val('');
-			$("#s_vcUsage").val('');
 		}
 		// 신규작성
 		function init(){
 			$("#vcNumber").val('');
 			$("#vcName").val('');
-			$("#vcShape").val('');
-			$("#vcUsage").val('');
 			$("#vcStartDate").val('');
 			$("#vcEndDate").val('');
 			$("#vcManagement").val('');
@@ -129,9 +125,10 @@
 				vcName:$('#s_vcName').val(),
 				vcShape:$('#s_vcShape').val(),
 				vcUsage:$('#s_vcUsage').val(),
+				vcState:$('#s_vcState').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="10" align = "center">조회 중</td></tr>');
 			$totalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -155,7 +152,7 @@
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
 					if (totCnt == 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
+						$schList.empty().append('<tr class="t-c"><td colspan="10" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 					$totalCnt.text(totCnt);
@@ -169,6 +166,7 @@
 						html += '<td >'+ nvl(value.vcStartDate,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.vcEndDate,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.company,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(value.vcState,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.vcManagement,"확 인 불 가") +'</td>';
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+nvl(value.id,"확 인 불 가")+'\');">보기</button></td>';
 						html += '</tr>';
@@ -203,6 +201,7 @@
 					$("#vcName").val(res.data.vehicle.vcName);
 					$("#vcShape").val(res.data.vehicle.vcShape);
 					$("#vcUsage").val(res.data.vehicle.vcUsage);
+					$("#vcState").val(res.data.vehicle.vcState);
 					$("#vcManagement").val(res.data.vehicle.vcManagement);
 
 					$("#csNum").val(res.data.vehicle.company.csNumber);
@@ -211,7 +210,6 @@
 					var statrDate = res.data.vehicle.vcStartDate;
 					var statrDate2 = [statrDate[0],statrDate[1],statrDate[2],statrDate[3],"-",statrDate[4],statrDate[5],"-",statrDate[6],statrDate[7]];
 					var statrDateView = statrDate2.join('');
-
 					$("#vcStartDate").val(statrDateView);
 
 					var endDate = res.data.vehicle.vcEndDate;
@@ -219,19 +217,13 @@
 					var endDateView = endDate2.join('');
 					$("#vcEndDate").val(endDateView);
 
-					console.log("statrDate : "+statrDate);
-					console.log("statrDate2 : "+statrDate2);
-					console.log("statrDateView : "+statrDateView);
-					console.log("endDate : "+endDate);
-					console.log("endDate2 : "+endDate2);
-					console.log("endDateView : "+endDateView);
 				}
 			});
 		}
 
 		//삭제버튼 실행
 		function del() {
-			if ($("#vcNumber").val().trim() == '') {
+			if ($("#vcId").val().trim() === '') {
 				alertCaution("삭제하고자하는 장비를 선택하세요.");
 				return false;
 			}
@@ -280,7 +272,7 @@
 				csOperator:$('#s_csoperator').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="5">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="5" align="center">조회 중</td></tr>');
 			$totalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -304,7 +296,7 @@
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
 					if (totCnt === 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="5">조회된 데이터가 없습니다.</td></tr>');
+						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 					$totalCnt.text(totCnt);
@@ -336,7 +328,7 @@
 				data: params,
 				cache: false,
 				error: function (request, status, error) {
-					alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+					ajaxErrorMsg(request);
 				},
 				success: function (res) {
 					$("#csNum").val(res.data.company.csNumber);
@@ -366,9 +358,47 @@
 					<col/>
 					<col/>
 					<col/>
+					<col/>
+					<col/>
 				</colgroup>
 				<tr>
-					<th>차량 번호</th>
+					<th>차량소유구분</th>
+					<td>
+						<div class="c-text">
+							<select id="s_vcShape" class="c-select__input">
+								<option value="">전체</option>
+								<option th:each ="vcShape : ${vcShapes}"
+										th:value="${vcShape.code}"
+										th:text="${vcShape.name}">
+								</option>
+							</select>
+						</div>
+					</td>
+					<th>차량 용도</th>
+					<td>
+						<div class="c-text">
+							<select id="s_vcUsage" class="c-select__input">
+								<option value="">전체</option>
+								<option th:each ="vcUsage : ${vcUsages}"
+										th:value="${vcUsage.code}"
+										th:text="${vcUsage.name}">
+								</option>
+							</select>
+						</div>
+					</td>
+					<th>차량 상태</th>
+					<td>
+						<div class="c-text">
+							<select id="s_vcState" class="c-select__input">
+								<option value="">전체</option>
+								<option th:each ="vcState : ${vcStates}"
+										th:value="${vcState.code}"
+										th:text="${vcState.name}">
+								</option>
+							</select>
+						</div>
+					</td>
+					<th>차량관리번호</th>
 					<td>
 						<div class="c-text">
 							<input type="text" id="s_vcNumber" class="c-text__input" />
@@ -378,18 +408,6 @@
 					<td>
 						<div class="c-text">
 							<input type="text" id="s_vcName" class="c-text__input" />
-						</div>
-					</td>
-					<th>차량소유구분</th>
-					<td>
-						<div class="c-text">
-							<input type="text" id="s_vcShape" class="c-text__input" />
-						</div>
-					</td>
-					<th>차량 용도</th>
-					<td>
-						<div class="c-text">
-							<input type="text" id="s_vcUsage" class="c-text__input" />
 						</div>
 					</td>
 					<td>
@@ -409,17 +427,19 @@
 					<col />
 					<col />
 					<col />
+					<col />
 					<col style="width: 50px;" />
 				</colgroup>
 				<thead>
 					<tr>
-						<th>차량번호</th>
+						<th>차량관리번호</th>
 						<th>차량명</th>
 						<th>차량소유구분</th>
 						<th>차량용도</th>
 						<th>운행시작일</th>
 						<th>운행종료일</th>
 						<th>소속사</th>
+						<th>차량상태</th>
 						<th>차량관리</th>
 						<th></th>
 					</tr>
@@ -450,7 +470,7 @@
 				<tbody>
 					<tr>
 						<input type="text" id="vcId" name="id" class="c-text__input" style="display: none" />
-						<th>차량 번호</th>
+						<th>차량관리번호</th>
 						<td>
 							<div class="c-text">
 								<input type="text" id="vcNumber" name="vcNumber" class="c-text__input" />
@@ -467,13 +487,23 @@
 						<th>차량소유구분</th>
 						<td>
 							<div class="c-text">
-								<input type="text" name="vcShape" id="vcShape" class="c-text__input" />
+								<select name="vcShape" id="vcShape" class="c-select__input">
+									<option th:each ="vcShape : ${vcShapes}"
+											th:value="${vcShape.id}"
+											th:text="${vcShape.name}">
+									</option>
+								</select>
 							</div>
 						</td>
 						<th>차량 용도</th>
 						<td>
 							<div class="c-text">
-								<input type="text" name="vcUsage" id="vcUsage" class="c-text__input" />
+								<select name="vcUsage" id="vcUsage" class="c-select__input">
+									<option th:each ="vcUsage : ${vcUsages}"
+											th:value="${vcUsage.id}"
+											th:text="${vcUsage.name}">
+									</option>
+								</select>
 							</div>
 						</td>
 					</tr>
@@ -504,12 +534,27 @@
 								<button class="c-search-form__button pop__list">검색</button>
 							</div>
 						</td>
+						<th>차량상태</th>
+						<td>
+							<div class="c-text">
+								<select name="vcState" id="vcState" class="c-select__input">
+									<option th:each ="vcState : ${vcStates}"
+											th:value="${vcState.id}"
+											th:text="${vcState.name}">
+									</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
 						<th>차량관리</th>
 						<td>
 							<div class="c-text">
 								<input type="text" name="vcManagement" id="vcManagement" class="c-text__input" />
 							</div>
 						</td>
+						<th></th>
+						<td></td>
 					</tr>
 				</tbody>
 			</table>
