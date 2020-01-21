@@ -59,7 +59,7 @@ public class Equipment {
 
     @ManyToOne(targetEntity = IModel.class,fetch = FetchType.EAGER)
     @JoinColumn(name="md_id")
-    private IModel mdId; // 소속운영사
+    private IModel mdId; // 등록모델
 
     @ManyToOne(targetEntity = Company.class,fetch = FetchType.EAGER)
     @JoinColumn(name="cs_id")

@@ -307,7 +307,7 @@ $(document).ready(function() {
 			var def_res_key = ['status', 'message', 'timestamp'];
 			for (var k in def_res_key) {
 				if (typeof(data[def_res_key[k]]) == 'undefined') {
-					alert('Check Ajax Response!!');
+					alertCaution('Check Ajax Response!!');
 					return false;
 				}
 			}
@@ -316,7 +316,7 @@ $(document).ready(function() {
 		checkLogin : function(data) {
 			if (!data.result && data.rescode == 'login') {
 				if (globalAjaxLoginStatus) {
-					alert('로그인을 하지 않았거나 세션이 종료되었습니다.');
+					alertCaution('로그인을 하지 않았거나 세션이 종료되었습니다.');
 					var redirect = globalConfig['login_url'];
 					if (data['is_admin']) redirect = globalConfig['admin_login_url'];
 					top.document.location.href = redirect;
@@ -330,7 +330,7 @@ $(document).ready(function() {
 			if (!data.result && data.rescode == 'permission') {
 				var msg = '권한이 없습니다.';
 				if (typeof(data.err_msg) != 'undefined' && data.err_msg) msg = data.err_msg;
-				alert(msg);
+				alertCaution(msg);
 				return false;
 			}
 			return true;
@@ -340,9 +340,9 @@ $(document).ready(function() {
 			var status_code = jqXHR.status.toString();
 			//var status_msg = jqXHR.message.toString();
 			var msg = jqXHR.responseText;
-			alert('Ajax Call error! code : ' + status_code )
+			alertCancel('Ajax Call error! code : ' + status_code )
 		}
-	}
+	};
 	
 	// refresh context
 	//$(document).mouseup(e => {

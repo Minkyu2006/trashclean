@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/default}">
+<head>
+    <script type="text/javascript">
+
+		$(function() {
+			$('.pop__list').on('click', function(e) {
+				$('#pop__list').addClass('open');
+
+				e.preventDefault();
+			});
+			$('.l-popup__close').on('click', function(e) {
+				$('.l-popup').removeClass('open');
+
+				e.preventDefault();
+			});
+			$("#agencyBtnSearch").on('click',function(){
+				agencyCallList(1);
+			});
+
+			$("#btnReset").on('click',function(){
+				reset();
+			});
+			$("#btnNew").on('click',function(){
+				init();
+			});
+
+			$("#vihSaveBtn").on('click',function(){
+				save();
+			});
+
+			$("#btnSearch").on('click',function(){
+				callList(1);
+			});
+
+			$("#btnDel").on('click',function(){
+				del();
+			});
+		});
+
+		// 조건초기화
+		function reset() {
+			$("#s_vcNumber").val('');
+			$("#s_vcName").val('');
+			$("#s_vcShape").val('');
+			$("#s_vcUsage").val('');
+		}
+		// 신규작성
+		function init(){
+			$("#vcNumber").val('');
+			$("#vcName").val('');
+			$("#vcShape").val('');
+			$("#vcUsage").val('');
+			$("#vcStartDate").val('');
+			$("#vcEndDate").val('');
+			$("#vcManagement").val('');
+			$("#operator").val('');
+			$("#csNum").val('');
+		}
+
+		// 차량저장
+		function save() {
+
+			if ($("#vcNumber").val().trim() === '') {
+				alertCaution("차량번호를 입력해주세요.");
+				return false;
+			}
+			if ($("#vcName").val().trim() === '') {
+				alertCaution("차량명을 입력해주세요.");
+				return false;
+			}
+			if ($("#vcStartDate").val().trim() === '') {
+				alertCaution("운행시작일을 선택해주세요.");
+				return false;
+			}
+			if ($("#vcEndDate").val().trim() === '') {
+				alertCaution("운행종료일을 선택해주세요.");
+				return false;
+			}
+			if ($("#operator").val().trim() === '') {
+				alertCaution("소속 운영사를 선택해주세요.");
+				return false;
+			}
+
+			var $form = $('form[name="vehiclereg"]');
+
+			var params = $form.serialize();
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/vehicle/reg',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alertSuccess('저장되었습니다.');
+					init();
+					callList(1);
+				}
+			});
+		}
+
+		// 차량 리스트보기
+		function callList(page) {
+
+			page = page - 1;
+			if (page < 0) page = 0;
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+			var $schList = $('#schList');
+			var $totalCnt = $('#totalCnt');
+
+			var params = {
+				vcNumber:$('#s_vcNumber').val(),
+				vcName:$('#s_vcName').val(),
+				vcShape:$('#s_vcShape').val(),
+				vcUsage:$('#s_vcUsage').val(),
+			};
+
+			$schList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/vehicle/list?size='+ perPage + '&page=' + page,
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+					if (totCnt == 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+					$totalCnt.text(totCnt);
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+						html += '<td >'+ nvl(value.vcNumber,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(value.vcName,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(value.vcShape,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(value.vcUsage,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(value.vcStartDate,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(value.vcEndDate,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(value.company,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(value.vcManagement,"확 인 불 가") +'</td>';
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+nvl(value.id,"확 인 불 가")+'\');">보기</button></td>';
+						html += '</tr>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+
+		// 차량 정보보기
+		function callInfo(id) {
+
+			var params = {
+				id:id
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/vehicle/info',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					$("#vcId").val(res.data.vehicle.id);
+					$("#vcNumber").val(res.data.vehicle.vcNumber);
+					$("#vcName").val(res.data.vehicle.vcName);
+					$("#vcShape").val(res.data.vehicle.vcShape);
+					$("#vcUsage").val(res.data.vehicle.vcUsage);
+					$("#vcManagement").val(res.data.vehicle.vcManagement);
+
+					$("#csNum").val(res.data.vehicle.company.csNumber);
+					$("#operator").val(res.data.vehicle.company.csOperator);
+
+					var statrDate = res.data.vehicle.vcStartDate;
+					var statrDate2 = [statrDate[0],statrDate[1],statrDate[2],statrDate[3],"-",statrDate[4],statrDate[5],"-",statrDate[6],statrDate[7]];
+					var statrDateView = statrDate2.join('');
+
+					$("#vcStartDate").val(statrDateView);
+
+					var endDate = res.data.vehicle.vcEndDate;
+					var endDate2 = [endDate[0],endDate[1],endDate[2],endDate[3],"-",endDate[4],endDate[5],"-",endDate[6],endDate[7]];
+					var endDateView = endDate2.join('');
+					$("#vcEndDate").val(endDateView);
+
+					console.log("statrDate : "+statrDate);
+					console.log("statrDate2 : "+statrDate2);
+					console.log("statrDateView : "+statrDateView);
+					console.log("endDate : "+endDate);
+					console.log("endDate2 : "+endDate2);
+					console.log("endDateView : "+endDateView);
+				}
+			});
+		}
+
+		//삭제버튼 실행
+		function del() {
+			if ($("#vcNumber").val().trim() == '') {
+				alertCaution("삭제하고자하는 장비를 선택하세요.");
+				return false;
+			}
+
+			var params = {
+				id: $("#vcId").val()
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) {xhr.setRequestHeader(header, token);});
+
+			$.ajax({
+				url: '/api/vehicle/del',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alertSuccess('차량이 삭제 되었습니다.');
+					init();
+					callList(1);
+				}
+			})
+		}
+
+		// 운영사 리스트보기
+		function agencyCallList(page) {
+			page = page - 1;
+			if (page < 0) page = 0;
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+			var $schList = $('#agencySchList');
+			var $totalCnt = $('#agencyTotalCnt');
+
+			var params = {
+				csNumber:$('#s_csnumber').val(),
+				csOperator:$('#s_csoperator').val(),
+			};
+
+			$schList.empty().append('<tr ><td colspan="5">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/equipment/agencyList?size='+ perPage + '&page=' + page,
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request,status,error){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#paging1").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'callList'});
+					if (totCnt === 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="5">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+					$totalCnt.text(totCnt);
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+						html += '<td >'+ echoNull2Blank(value.csNumber) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csOperator) +'</td>';
+
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callName(\''+ echoNull2Blank(value.id) +'\');">선택</button></td>';
+						html += '</tr>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+		// 운영사 넣기
+		function callName(id) {
+			var params = {
+				id:id
+			};
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/equipment/agencyInfo',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request, status, error) {
+					alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				},
+				success: function (res) {
+					$("#csNum").val(res.data.company.csNumber);
+					$("#operator").val(res.data.company.csOperator);
+					$('.l-popup__close').click();
+				}
+			});
+		}
+
+	</script>
+
+</head>
+
+<div layout:fragment="content" class="contents-body">
+	<section class="section">
+		<article class="article">
+			<h2 class="article__heading">차량 조회</h2>
+			<div class="l-float-heading">
+				<div class="l-float-heading--left">
+					<h4 class="article__head">검색조건<span class="article__head-caption">(수정하려면 조회 후 초기화 버튼을 클릭하세요.)</span></h4>
+				</div>
+				<div class="l-float-heading--right"><button class="c-button c-button--small" id="btnReset">조건 초기화</button></div>
+			</div>
+			<table class="c-table">
+				<colgroup>
+					<col/>
+					<col/>
+					<col/>
+					<col/>
+				</colgroup>
+				<tr>
+					<th>차량 번호</th>
+					<td>
+						<div class="c-text">
+							<input type="text" id="s_vcNumber" class="c-text__input" />
+						</div>
+					</td>
+					<th>차량 명</th>
+					<td>
+						<div class="c-text">
+							<input type="text" id="s_vcName" class="c-text__input" />
+						</div>
+					</td>
+					<th>차량소유구분</th>
+					<td>
+						<div class="c-text">
+							<input type="text" id="s_vcShape" class="c-text__input" />
+						</div>
+					</td>
+					<th>차량 용도</th>
+					<td>
+						<div class="c-text">
+							<input type="text" id="s_vcUsage" class="c-text__input" />
+						</div>
+					</td>
+					<td>
+						<button class="c-button c-button--point" id="btnSearch">조회</button>
+					</td>
+				</tr>
+			</table>
+		</article>
+		<article class="article">
+			<table class="c-table">
+				<colgroup>
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col />
+					<col style="width: 50px;" />
+				</colgroup>
+				<thead>
+					<tr>
+						<th>차량번호</th>
+						<th>차량명</th>
+						<th>차량소유구분</th>
+						<th>차량용도</th>
+						<th>운행시작일</th>
+						<th>운행종료일</th>
+						<th>소속사</th>
+						<th>차량관리</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody id="schList">
+
+				</tbody>
+			</table>
+
+			<div class="c-pager">
+				<div class="c-paging" id="paging1">
+				</div>
+				<div class="c-paging__total">
+					<div class="c-paging__total-group">
+						Total
+					</div>
+					<div class="c-paging__total-group" id="totalCnt">0</div>
+				</div>
+			</div>
+		</article>
+	</section>
+	
+	<section class="section">
+		<article class="article">
+			<h2 class="article__heading">차량 등록</h2>
+			<form name="vehiclereg">
+			<table class="c-table">
+				<tbody>
+					<tr>
+						<input type="text" id="vcId" name="id" class="c-text__input" style="display: none" />
+						<th>차량 번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" id="vcNumber" name="vcNumber" class="c-text__input" />
+							</div>
+						</td>
+						<th>차량 명</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vcName" id="vcName" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>차량소유구분</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vcShape" id="vcShape" class="c-text__input" />
+							</div>
+						</td>
+						<th>차량 용도</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vcUsage" id="vcUsage" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>운행시작일</th>
+						<td>
+							<div class="c-calendar-layout">
+								<div class="c-date" style="width: 100%;">
+									<input type="date" class="c-date__input" name="vcStartDate" id="vcStartDate" />
+								</div>
+							</div>
+						</td>
+						<th>운행종료일</th>
+						<td>
+							<div class="c-calendar-layout">
+								<div class="c-date" style="width: 100%;">
+									<input type="date" class="c-date__input" name="vcEndDate" id="vcEndDate" />
+								</div>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>소속운영사</th>
+						<td>
+							<div class="c-search-form">
+								<input type="text" class="c-text__input" name="operator" id="operator" readonly="readonly" />
+								<input type="text" id="csNum" class="c-text__input" readonly="readonly" />
+								<button class="c-search-form__button pop__list">검색</button>
+							</div>
+						</td>
+						<th>차량관리</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="vcManagement" id="vcManagement" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			</form>
+			<div class="c-function">
+				<div class="c-function__group c-function__group--right">
+					<div class="c-function__item">
+						<button class="c-button c-button--point" id="btnNew">신규</button>
+					</div>
+					<div class="c-function__item">
+						<button class="c-button c-button--point" id ="vihSaveBtn">저장</button>
+					</div>
+					<div class="c-function__item">
+						<button class="c-button" id="btnDel">삭제</button>
+					</div>
+				</div>
+			</div>
+		</article>
+	</section>
+
+	<div class="l-popup" id="pop__list">
+		<div class="l-popup__container">
+			<div class="l-popup__head">
+				<h3 class="l-popup__heading">운영사 조회</h3>
+			</div>
+			<div class="l-popup__content">
+				<div class="l-popup__section">
+					<table class="c-table c-table--non-border">
+						<colgroup>
+							<col style="width: 100px;" />
+							<col />
+							<col style="width: 100px;" />
+							<col />
+							<col style="width: 60px;" />
+						</colgroup>
+						<tbody>
+						<tr>
+							<th>관리코드</th>
+							<td>
+								<div class="c-text">
+									<input type="text" class="c-text__input" id="s_csnumber" name="s_csnumber"/>
+								</div>
+							</td>
+							<th>운영사명</th>
+							<td>
+								<div class="c-text">
+									<input type="text" class="c-text__input" id="s_csoperator" name="s_csoperator"/>
+								</div>
+							</td>
+							<td>
+								<button class="c-button c-button--point" id="agencyBtnSearch">조회</button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="l-popup__section">
+					<table class="c-table">
+						<colgroup>
+							<col />
+							<col />
+							<col style="width: 60px;" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th>관리코드</th>
+							<th>운영사명</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody id ="agencySchList">
+
+						</tbody>
+					</table>
+
+					<div class="c-pager">
+						<div class="c-paging" id ="agencyPaging">
+							<!-- 페이징 처리되는곳   -->
+						</div>
+						<div class="c-paging__total">
+							<div class="c-paging__total-group">
+								Total
+							</div>
+							<div class="c-paging__total-group" id ="agencyTotalCnt">0</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="l-popup__close">팝업닫기</a>
+		</div>
+	</div>
+</div>
+</html>

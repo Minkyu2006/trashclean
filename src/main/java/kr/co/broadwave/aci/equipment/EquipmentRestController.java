@@ -202,7 +202,7 @@ public class EquipmentRestController {
         return CommonUtils.ResponseEntityPage(companyListDtos);
     }
 
-    // 업체 정보 보기
+    // 장비 정보 보기
     @PostMapping ("info")
     public ResponseEntity equipmentInfo(@RequestParam (value="id", defaultValue="") Long id){
         AjaxResponse res = new AjaxResponse();

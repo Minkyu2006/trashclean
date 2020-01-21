@@ -106,15 +106,11 @@ var Ajax = {
 		return false;
 	},
 	checkResult : function(res) {
-		// if (!res.result) {
-		// 	alert(res.message);
-		// 	return false;
-		// }
 		if( res.status != "200"){
 			if(res.status =="403"){
 				alert('ErrorCode:' + res.err_code + '\nErrorMsg : 권한이 없거나 로그인 정보가 더이상 존재하지 않아 사용할 수 없습니다. 유효한 계정으로 재 로그인하세요' );
 			}else {
-				alert('ErrorCode:' + res.err_code + '\nErrorMsg : ' + res.err_msg);
+				alertCaution(res.err_msg);
 			}
 
 			return false;
@@ -123,14 +119,14 @@ var Ajax = {
 	},
 	checkResponse : function(data) {
 		if (data == '' || data == null) {
-			alert('Response is Nothing!');
+			alertCaution('Response is Nothing!');
 			return false;
 		}
 		//var def_res_key = ['result', 'rescode', 'res_msg', 'err_msg', 'err_dtl'];
 		var def_res_key = ['status', 'message', 'timestamp'];
 		for (var k in def_res_key) {
 			if (typeof(data[def_res_key[k]]) == 'undefined') {
-				alert('Check Ajax Response!!');
+				alertCaution('Check Ajax Response!!');
 				return false;
 			}
 		}
@@ -139,7 +135,7 @@ var Ajax = {
 	checkLogin : function(data) {
 		if (!data.result && data.rescode == 'login') {
 			if (globalAjaxLoginStatus) {
-				alert('로그인을 하지 않았거나 세션이 종료되었습니다.');
+				alertCaution('로그인을 하지 않았거나 세션이 종료되었습니다.');
 				var redirect = globalConfig['login_url'];
 				if (data['is_admin']) redirect = globalConfig['admin_login_url'];
 				top.document.location.href = redirect;
@@ -153,7 +149,7 @@ var Ajax = {
 		if (!data.result && data.rescode == 'permission') {
 			var msg = '권한이 없습니다.';
 			if (typeof(data.err_msg) != 'undefined' && data.err_msg) msg = data.err_msg;
-			alert(msg);
+			alertCaution(msg);
 			return false;
 		}
 		return true;
@@ -163,58 +159,6 @@ var Ajax = {
 		var status_code = jqXHR.status.toString();
 		//var status_msg = jqXHR.message.toString();
 		var msg = jqXHR.responseText;
-        alert('Ajax Call error! code : ' + status_code )
+		alertCaution('Ajax Call error! code : ' + status_code )
 	}
-}
-		//alert('Ajax Call error! msg : ' + msg )
-
-		/*
-		switch (status_code) {
-			case '200' :
-				switch (textStatus) {
-					case 'error' :
-						break;
-					case 'parsererror' :
-						if (typeof(msg) == 'undefined') {
-							msg = '<br /><br />'+ errorThrown;
-						} else {
-							if (msg.indexOf('Warning') > -1 && msg.indexOf('mssql_execute') > -1 && msg.substr(msg.length-1,1) == '}') {
-								var res_str = msg.substring(msg.indexOf('{'), msg.length);
-								try {
-									var res_json = JSON.parse(res_str);
-									if (typeof(res_json['err_msg']) != 'undefined') {
-										msg += '<br/><br/>Error Message : '+ res_json.err_msg;
-									}
-								} catch (e) {
-								}
-							}
-						}
-						break;
-				}
-				break;
-		}
-
-		$('.ajax-error').show();
-		$('.ajax-error-status_text').text(textStatus);
-		$('.ajax-error-status_code').text(status_code);
-		$('.ajax-error-message').html(msg);
-
-		*/
-
-		/*
-			switch (status_code) {
-				case '500' :
-					$('.ajax-error').show();
-					$('.', $area).html(html);
-					break;
-				case '200' :
-					$('.res-result-area', $area).show();
-					$('.res-result-data', $area).html(jqXHR.responseText);
-					break;
-				default :
-					$('.res-result-area', $area).show();
-					$('.res-result-data', $area).html(jqXHR.status);
-					break;
-			}
-			alert(jqXHR.responseText);
-		*/
+};

@@ -103,4 +103,10 @@ public class AdminController {
         return "admin/modelreg";
     }
 
+    //차량등록
+    @RequestMapping("vehiclereg")
+    public String vehiclereg(){
+        return "admin/vehiclereg";
+    }
+
 }
