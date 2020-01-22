@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.equipment;
 
-import kr.co.broadwave.aci.company.*;
+import kr.co.broadwave.aci.company.CompanyListDto;
+import kr.co.broadwave.aci.company.CompanyRepositoryCustom;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -9,8 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,8 +49,6 @@ public class EquipmentService {
             String emCountryCode = equipment.getEmCountry().getCode();
             String emLocationCode = equipment.getEmLocation().getCode();
 
-            Date now = new Date();
-            SimpleDateFormat yyMM = new SimpleDateFormat("yyMM");
             String emNumber = keyGenerateService.keyGenerate("bs_equipment",emTypeCode+'-'+emCountryCode+'-'+emLocationCode+'-',equipment.getModify_id());
 
              //고유 장비번호 저장이름 바꾸기 : 장비타입-국가-지역-순번
@@ -72,11 +69,12 @@ public class EquipmentService {
 
     public EquipmentDto findById(Long id) {
         Optional<Equipment> optionalEquipment = equipmentRepository.findById(id);
-        if (optionalEquipment.isPresent()) {
-            return modelMapper.map(optionalEquipment.get(), EquipmentDto.class);
-        } else {
-            return null;
-        }
+        return optionalEquipment.map(equipment -> modelMapper.map(equipment, EquipmentDto.class)).orElse(null);
+//        if (optionalEquipment.isPresent()) { // 윗줄과같은거(73Line)
+//            return modelMapper.map(optionalEquipment.get(), EquipmentDto.class);
+//        } else {
+//            return null;
+//        }
     }
 
     public void delete(Equipment equipment) {
@@ -85,11 +83,6 @@ public class EquipmentService {
 
     public Page<CompanyListDto> findByAgencySearch(String csNumber, String csOperator, Pageable pageable) {
         return companyRepositoryCustom.findByAgencySearch(csNumber,csOperator,pageable);
-    }
-
-
-    public List<Equipment> findAll() {
-        return equipmentRepository.findAll();
     }
 
     public List<EquipmentEmnumberDto> queryDslDeviceEmNumber(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId) {

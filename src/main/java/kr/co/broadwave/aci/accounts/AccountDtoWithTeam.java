@@ -1,7 +1,9 @@
 package kr.co.broadwave.aci.accounts;
 
 import kr.co.broadwave.aci.bscodes.ApprovalType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 /**
  * @author InSeok

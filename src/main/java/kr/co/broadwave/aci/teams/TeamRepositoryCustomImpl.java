@@ -23,8 +23,6 @@ public class TeamRepositoryCustomImpl extends QuerydslRepositorySupport implemen
         super(Team.class);
     }
 
-
-
     @Override
     public Page<TeamDto> findAllBySearchStrings(String teamcode,String teamname, Pageable pageable) {
 

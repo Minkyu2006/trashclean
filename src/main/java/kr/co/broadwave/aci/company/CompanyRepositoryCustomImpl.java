@@ -2,8 +2,6 @@ package kr.co.broadwave.aci.company;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import kr.co.broadwave.aci.bscodes.DivisionType;
-import kr.co.broadwave.aci.bscodes.RegionalType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +9,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Minkyu
@@ -61,7 +60,7 @@ public class CompanyRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
         query.orderBy(company.id.desc());
 
-        final List<CompanyListDto> companys = getQuerydsl().applyPagination(pageable, query).fetch();
+        final List<CompanyListDto> companys = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(companys, pageable, query.fetchCount());
     }
 
@@ -98,7 +97,7 @@ public class CompanyRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
         query.orderBy(company.id.desc());
 
-        final List<CompanyListDto> companys = getQuerydsl().applyPagination(pageable, query).fetch();
+        final List<CompanyListDto> companys = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(companys, pageable, query.fetchCount());
     }
 

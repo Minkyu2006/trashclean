@@ -2,17 +2,11 @@ package kr.co.broadwave.aci.company;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
-import kr.co.broadwave.aci.bscodes.DivisionType;
-import kr.co.broadwave.aci.bscodes.RegionalType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
-import kr.co.broadwave.aci.teams.Team;
-import kr.co.broadwave.aci.teams.TeamDto;
-import kr.co.broadwave.aci.teams.TeamMapperDto;
-import kr.co.broadwave.aci.teams.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -60,7 +54,7 @@ public class CompanyRestController {
 
     // 업체 저장
     @PostMapping ("reg")
-    public ResponseEntity companyReg(@ModelAttribute CompanyMapperDto companyMapperDto,HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> companyReg(@ModelAttribute CompanyMapperDto companyMapperDto, HttpServletRequest request){
 
         Company company = modelMapper.map(companyMapperDto, Company.class);
 
@@ -120,7 +114,7 @@ public class CompanyRestController {
 
     // 업체 리스트
     @PostMapping("list")
-    public ResponseEntity companyList(@RequestParam (value="csNumber", defaultValue="") String csNumber,
+    public ResponseEntity<Map<String,Object>> companyList(@RequestParam (value="csNumber", defaultValue="") String csNumber,
                                                         @RequestParam (value="csOperator", defaultValue="") String  csOperator,
                                                         @RequestParam (value="csDivision", defaultValue="") String  csDivision,
                                                         @RequestParam (value="csRegional", defaultValue="") String  csRegional,
@@ -131,11 +125,11 @@ public class CompanyRestController {
 
         if(!csDivision.equals("")){
             Optional<MasterCode> csDivisions = masterCodeService.findByCode(csDivision);
-            csDivisionType = csDivisions.get().getId();
+            csDivisionType = csDivisions.map(MasterCode::getId).orElse(null);
         }
         if(!csRegional.equals("")){
             Optional<MasterCode> csRegionals = masterCodeService.findByCode(csRegional);
-            csRegionalType = csRegionals.get().getId();
+            csRegionalType = csRegionals.map(MasterCode::getId).orElse(null);
         }
 
         Page<CompanyListDto> companyDtos = companyService.findByCompanySearch(csNumber,csOperator,csDivisionType,csRegionalType,pageable);
@@ -145,7 +139,7 @@ public class CompanyRestController {
 
     // 업체 정보 보기
     @PostMapping ("info")
-    public ResponseEntity companyInfo(@RequestParam (value="id", defaultValue="") Long id){
+    public ResponseEntity<Map<String,Object>> companyInfo(@RequestParam (value="id", defaultValue="") Long id){
 
         CompanyDto company = companyService.findById(id);
 
@@ -158,7 +152,7 @@ public class CompanyRestController {
 
     // 업체 삭제
     @PostMapping("del")
-    public ResponseEntity companyDel(@RequestParam(value="csNumber", defaultValue="") String csNumber){
+    public ResponseEntity<Map<String,Object>> companyDel(@RequestParam(value="csNumber", defaultValue="") String csNumber){
 
         Optional<Company> optionalCompany = companyService.findByCsNumber(csNumber);
 

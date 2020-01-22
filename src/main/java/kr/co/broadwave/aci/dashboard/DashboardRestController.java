@@ -10,7 +10,6 @@ import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.devicestats.DevicestatsDto;
 import kr.co.broadwave.aci.devicestats.DevicestatusService;
 import kr.co.broadwave.aci.equipment.EquipmentDto;
-import kr.co.broadwave.aci.equipment.EquipmentService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
@@ -43,7 +42,6 @@ public class DashboardRestController {
     private String AWSS3URL;
 
     private final DashboardService dashboardService;
-    private final EquipmentService equipmentService;
     private final MasterCodeService masterCodeService;
     private final AccountService accountService;
     private final ModelMapper modelMapper;
@@ -54,19 +52,17 @@ public class DashboardRestController {
                                    ModelMapper modelMapper,
                                    AccountService accountService,
                                    MasterCodeService masterCodeService,
-                                   EquipmentService equipmentService,
                                    DevicestatusService devicestatusService) {
         this.modelMapper = modelMapper;
         this.dashboardService = dashboardService;
         this.accountService = accountService;
-        this.equipmentService = equipmentService;
         this.masterCodeService = masterCodeService;
         this.devicestatusService = devicestatusService;
     }
 
 
     @PostMapping("monitering")
-    public ResponseEntity monitering(@RequestParam(value="deviceids", defaultValue="") String deviceids){
+    public ResponseEntity<Map<String,Object>> monitering(@RequestParam(value="deviceids", defaultValue="") String deviceids){
         log.info("모니터링 조회 시작");
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -74,25 +70,25 @@ public class DashboardRestController {
         //Sample of deviceids variable : {"deviceids":["ISOL-KR-SEOUL-0001","ISOL-KR-SEOUL-0002"]}
 
         HashMap<String, Object> resData = dashboardService.getDeviceLastestState(deviceids);
-        log.info("resData : "+resData);
-        data.clear();
+        //log.info("resData : "+resData);
+
         data.put("statusCode",resData.get("statusCode"));
         data.put("datarow1",resData.get("data"));
         res.addResponse("data",data);
 
-        log.info("모니터링 조회 성공 ");
+        //log.info("모니터링 조회 성공 ");
         return ResponseEntity.ok(res.success());
 
     }
 
     @PostMapping("devicelist")
-    public ResponseEntity devicelist(){
+    public ResponseEntity<Map<String,Object>> devicelist(){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
-        log.info("Device목록가져오기 시작");
+        //log.info("Device목록가져오기 시작");
 
         HashMap<String, Object> resData = dashboardService.getDeviceList("ISOL");
-        data.clear();
+
         data.put("statusCode",resData.get("statusCode"));
         data.put("datarow1",resData.get("data"));
         res.addResponse("data",data);
@@ -103,7 +99,7 @@ public class DashboardRestController {
     }
 
     @PostMapping("devicehitory")
-    public ResponseEntity devicehistory(@RequestParam(value="deviceid", defaultValue="") String deviceid
+    public ResponseEntity<Map<String,Object>> devicehistory(@RequestParam(value="deviceid", defaultValue="") String deviceid
                                         ,@RequestParam(value="intervaltime", defaultValue="") String intervaltime){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -122,7 +118,7 @@ public class DashboardRestController {
 
     //장비 리스트 뿌리기
     @PostMapping ("deviceInfoList")
-    public ResponseEntity deviceInfoList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
+    public ResponseEntity<Map<String,Object>> deviceInfoList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
 //                                                            @RequestParam (value="emAgency", defaultValue="") String  emAgency,
                                                             @RequestParam (value="emType", defaultValue="")String emType,
                                                             @RequestParam (value="emCountry", defaultValue="")String emCountry,
@@ -214,7 +210,6 @@ public class DashboardRestController {
                 }
             }
         }
-
 
         //log.info("위도 : " + gps_laDatas);
         //log.info("경도 : " + gps_loDatas);

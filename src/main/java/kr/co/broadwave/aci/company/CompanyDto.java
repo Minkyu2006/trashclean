@@ -49,46 +49,6 @@ public class CompanyDto {
         return csOperator;
     }
 
-    public String getCsOperatorSub() {
-        return csOperatorSub;
-    }
-
-    public Long getCsDivisionId() {
-        return csDivisionId.getId();
-    }
-
-    public String getCsDivisionName() {
-        return csDivisionName.getName();
-    }
-
-    public Long getCsRegionalId() {
-        return csRegionalId.getId();
-    }
-
-    public String getCsRegionalName() {
-        return csRegionalName.getName();
-    }
-
-    public String getCsRepresentative() {
-        return csRepresentative;
-    }
-
-    public String getCsBuisnessNumber() {
-        return csBuisnessNumber;
-    }
-
-    public String getCsManager() {
-        return csManager;
-    }
-
-    public String getCsTelephone() {
-        return csTelephone;
-    }
-
-    public String getCsFax() {
-        return csFax;
-    }
-
     public LocalDateTime getInsertDateTime() {
         return insertDateTime;
     }

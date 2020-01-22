@@ -1,7 +1,6 @@
 package kr.co.broadwave.aci.devicestats;
 
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,17 +15,11 @@ import java.util.List;
 @Slf4j
 @Service
 public class DevicestatusService {
-    private final ModelMapper modelMapper;
-    private final DevicestatusRepository devicestatusRepository;
     private final DevicestatsRepositoryCustom devicestatsRepositoryCustom;
 
     @Autowired
-    public DevicestatusService(ModelMapper modelMapper,
-                               DevicestatsRepositoryCustom devicestatsRepositoryCustom,
-                               DevicestatusRepository devicestatusRepository) {
-        this.modelMapper = modelMapper;
+    public DevicestatusService(DevicestatsRepositoryCustom devicestatsRepositoryCustom) {
         this.devicestatsRepositoryCustom = devicestatsRepositoryCustom;
-        this.devicestatusRepository = devicestatusRepository;
     }
 
     public List<DevicestatsDto> queryDslDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2) {

@@ -8,9 +8,27 @@
         var levelChart=null;
 
         $(function() {
+            //몬쓰픽커
+            $('#s_monthDate').MonthPicker({
+                IsRTL: true,
+                i18n: {
+                    year: '',
+                    buttonText: '',
+                    prevYear: '다음 년도',
+                    nextYear: '이전 년도',
+                    next12Years: '12년 후',
+                    prev12Years: '12년 전',
+                    backTo: '',
+                    months: ['1월','2월','3월','4월','5월','6월', '7월','8월','9월','10월','11월','12월']
+                },
+                Button: false,
+                MonthFormat: 'yy-mm'
+            });
+
             LocationSetting("");
 
-            document.getElementById('s_monthDate').valueAsDate = new Date();
+            nowMonth();
+
             countInfoView();
 
             $("#btnSearch").on('click',function(){
@@ -18,6 +36,20 @@
             });
 
         });
+
+        // 자동조회시 이번달넣기
+        function nowMonth() {
+            var today = new Date();
+            var month;
+            if(today.getMonth()<10){
+                month='0'+(today.getMonth()+1);
+            }else{
+                month=today.getMonth()+1;
+            }
+            var nowMonth = today.getFullYear()+"-"+month;
+            //console.log('이번달 : '+nowMonth);
+            $("#s_monthDate").val(nowMonth);
+        }
 
         function countInfoView() {
             if ($("#s_monthDate").val().trim() == '') {
@@ -173,7 +205,6 @@
                 }
             });
         }
-
 
         //꺾은선그래프(배출량그래프)
         function hourLevelChart(xhour,hourFullLevel) {
@@ -447,7 +478,6 @@
             });
         }
 
-
         function LocationDeviceId(pushValue) {
 
             var token = $("meta[name='_csrf']").attr("content");
@@ -603,11 +633,9 @@
                         <div class="panel__body panel__body--height-auto">
                             <div class="c-float c-float--flex">
                                 <div class="c-float__item">
-                                    <div class="c-date-group c-date-group—flex">
-                                        <div class="c-date">
-                                            <label for="s_monthDate" class="c-date__label">월 선택</label>
-                                            <input type="date" class="c-date__input" id="s_monthDate" />
-                                        </div>
+                                    <div class="c-text">
+                                        <label for="s_monthDate" class="c-date__label">월 선택</label>
+                                        <input type="text" class="c-date__input" id="s_monthDate" />
                                     </div>
                                 </div>
                                 <div class="c-float__item">
@@ -647,7 +675,7 @@
                                         <input id="s_emNumber" type="text" class="c-text__input" />
                                     </div>
                                 </div>
-                                <div class="c-float__item" style="padding-top: 15px;">
+                                <div class="c-float__item c-float__item--flex--auto" style="padding-top:15px;padding-right:11px;">
                                     <button id="btnSearch" class="c-button c-button--point">조회</button>
                                 </div>
                             </div>

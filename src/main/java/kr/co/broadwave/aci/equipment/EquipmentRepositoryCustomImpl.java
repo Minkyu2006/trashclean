@@ -2,12 +2,7 @@ package kr.co.broadwave.aci.equipment;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.devicestats.DevicestatsDto;
-import kr.co.broadwave.aci.devicestats.QDevicestatus;
-import kr.co.broadwave.aci.imodel.QIModel;
-import kr.co.broadwave.aci.teams.QTeam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +10,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * @author Minkyu
@@ -67,7 +62,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
         query.orderBy(equipment.id.desc());
 
-        final List<EquipmentListDto> equipments = getQuerydsl().applyPagination(pageable, query).fetch();
+        final List<EquipmentListDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(equipments, pageable, query.fetchCount());
     }
 

@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="/assets/js/alert/min_alert.css"/>
         <link rel="stylesheet" href="/assets/js/charts/Chart.min.css"/>
         <link rel="stylesheet" href="/assets/js/c3/c3.css"/>
-		<link rel="stylesheet" href="/assets/js/cropper/croppie.css"/>
+<!--		<link rel="stylesheet" href="/static/assets/js/croppie/croppie.css"/>-->
 
         <!-- 공통으로 쓰이는 js파일을넣는다.-->
         <script src="/assets/js/jquery.min.js"></script>
@@ -37,12 +37,13 @@
         <script src="/assets/js/c3/c3.js"></script>
         <script src="/assets/js/new/common.js"></script>
         <script src="/assets/js/alert/min_alert.js"></script>
-		<script src="/assets/js/cropper/croppie.min.js"></script>
-		<script src="/assets/js/cropper/exif.js"></script>
+<!--		<script src="/static/assets/js/croppie/croppie.min.js"></script>-->
+<!--		<script src="/static/assets/js/croppie/exif.js"></script>-->
         <!--		구글지도-->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
 
 		<script>
+
 			$(function(){
 
 				teamAndposition();
@@ -65,7 +66,7 @@
 			function teamAndposition() {
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 				var $teamList = $("#profileteamcode");
 				var $positionList = $("#profilepositionid");
@@ -85,7 +86,7 @@
 						var html = '';
 						var html2 = '';
 
-						if(res.data.profilepositions=="" || res.data.profilepositions==null){
+						if(res.data.profilepositions==="" || res.data.profilepositions==null){
 							html += '<option value ="">' +"등록된 직급없음"+ '</option>';
 						}else{
 							$.each(res.data.profilepositions, function (key, value) {
@@ -94,7 +95,7 @@
 						}
 						$positionList.html(html);
 
-						if(res.data.profileteams=="" || res.data.profileteams==null){
+						if(res.data.profileteams==="" || res.data.profileteams==null){
 							html2 += '<option value ="">' +"등록된 부서없음"+ '</option>';
 						}else{
 							$.each(res.data.profileteams, function (key, value) {
@@ -110,19 +111,19 @@
 
 			//프로필 변경
 			function profileSave() {
-				if ($("#prousername").val().trim() == '') {
+				if ($("#prousername").val().trim() === '') {
 					alertCaution("이름을 입력하세요.");
 					$("#prousername").trigger('focus');
 					return false;
 				}
 
-				if ($("#procellphone").val().trim() == '') {
+				if ($("#procellphone").val().trim() === '') {
 					alertCaution("전화번호를 입력하세요.");
 					$("#procellphone").trigger('focus');
 					return false;
 				}
 
-				if ($("#proemail").val().trim() == '') {
+				if ($("#proemail").val().trim() === '') {
 					alertCaution("이메일을 입력하세요.");
 					$("#proemail").trigger('focus');
 					return false;
@@ -132,7 +133,7 @@
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 				$.ajax({
 					url:'/api/account/profilereg',
@@ -166,7 +167,7 @@
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 				var params = {
 					prouserid:$("#prouserid").val()
@@ -177,7 +178,7 @@
 					type: 'post',
 					data: params,
 					cache: false,
-					error: function (request, status, error) {
+					error: function (request) {
 						ajaxErrorMsg(request);
 					},
 					success: function(res){
@@ -202,19 +203,19 @@
 
 			//비밀번호 변경
 			function passSave() {
-				if ($("#oldpassword").val().trim() == '') {
+				if ($("#oldpassword").val().trim() === '') {
 					alertCaution("현재비밀번호를 입력하세요..");
 					$("#oldpassword").trigger('focus');
 					return false;
 				}
 
-				if ($("#newpassword").val().trim() == '') {
+				if ($("#newpassword").val().trim() === '') {
 					alertCaution("신규비밀번호를 입력하세요.");
 					$("#newpassword").trigger('focus');
 					return false;
 				}
 
-				if ($("#passwordconfirm").val().trim() == '') {
+				if ($("#passwordconfirm").val().trim() === '') {
 					alertCaution("비밀번호 확인을 주세요.");
 					$("#passwordconfirm").trigger('focus');
 					return false;
@@ -268,7 +269,7 @@
 			// 파일초기화
 			function profileReset() {
 				var agent = navigator.userAgent.toLowerCase();
-				if ( (navigator.appName == 'Netscape' && navigator.userAgent.search('Trident') != -1) || (agent.indexOf("msie") != -1) ){
+				if ( (navigator.appName === 'Netscape' && navigator.userAgent.search('Trident') !== -1) || (agent.indexOf("msie") !== -1) ){
 					$("#profile").replaceWith( $("#profile").clone(true) );
 				} else {
 					$("#profile").val("");
@@ -316,6 +317,7 @@
 							<div class="profile-pop__picture-img">
 								<img id="profilePhoto" src="" />
 							</div>
+
 							<div class="profile-pop__picture-upload">
 								<label for="profile"></label>
 								<input type="file" id="profile" name="profile" />
@@ -323,7 +325,7 @@
 						</div>
 						<div class="profile-pop__list">
 							<div class="profile-pop__item">
-								<div class="c-text">
+									<div class="c-text">
 									<label for="prousername" class="c-text__label">이름</label>
 									<input id="prousername" name="username" type="text" class="c-text__input" />
 								</div>

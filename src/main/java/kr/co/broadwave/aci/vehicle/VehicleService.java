@@ -1,7 +1,5 @@
 package kr.co.broadwave.aci.vehicle;
 
-import kr.co.broadwave.aci.equipment.EquipmentRepositoryCustom;
-import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

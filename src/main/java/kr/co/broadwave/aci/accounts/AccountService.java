@@ -1,13 +1,7 @@
 package kr.co.broadwave.aci.accounts;
 
 import kr.co.broadwave.aci.bscodes.ApprovalType;
-import kr.co.broadwave.aci.equipment.Equipment;
-import kr.co.broadwave.aci.equipment.EquipmentDto;
-import kr.co.broadwave.aci.imodel.IModel;
-import kr.co.broadwave.aci.imodel.IModelDto;
 import kr.co.broadwave.aci.teams.Team;
-import kr.co.broadwave.aci.teams.TeamService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,7 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * @author InSeok
@@ -33,20 +30,19 @@ import java.util.*;
  */
 @Service
 public class AccountService implements UserDetailsService {
-    @Autowired
-    ModelMapper modelMapper;
+
+    private final AccountRepository accountRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AccountRepositoryCustom accountRepositoryCustom;
 
     @Autowired
-    AccountRepository accountRepository;
-
-    @Autowired
-    AccountRepositoryCustom accountRepositoryCustom;
-
-    @Autowired
-    TeamService teamService;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    public AccountService(AccountRepository accountRepository,
+                          AccountRepositoryCustom accountRepositoryCustom,
+                          PasswordEncoder passwordEncoder) {
+        this.accountRepository = accountRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.accountRepositoryCustom = accountRepositoryCustom;
+    }
 
     public Account saveAccount(Account account){
         //password encoding
@@ -59,8 +55,6 @@ public class AccountService implements UserDetailsService {
 
     @Transactional
     public Account modifyAccount(Account account){
-        //password notencoding
-
         return this.accountRepository.save(account);
     }
     public Optional<Account> findByUserid(String userid ){
@@ -86,18 +80,8 @@ public class AccountService implements UserDetailsService {
         return accountRepository.countByTeam(team);
     }
 
-    public AccountDtoProfile findByUseridProfile(String userid) {
-        Optional<Account> optionalAccount = this.accountRepository.findByUserid(userid);
-        if (optionalAccount.isPresent()) {
-            return modelMapper.map(optionalAccount.get(), AccountDtoProfile.class);
-        } else {
-            return null;
-        }
-    }
 
     ////////아래는 테스트코드
-
-
 
 
 

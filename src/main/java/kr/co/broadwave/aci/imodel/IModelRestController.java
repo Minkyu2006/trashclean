@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -62,12 +63,11 @@ public class IModelRestController {
 
     // 모델등록
     @PostMapping ("reg")
-    public ResponseEntity modelReg(@ModelAttribute IModelMapperDto imodelMapperDto,
-                                   MultipartHttpServletRequest multi,
-                                   HttpServletRequest request) throws Exception {
+    public ResponseEntity<Map<String,Object>> modelReg(@ModelAttribute IModelMapperDto imodelMapperDto,
+                                                       MultipartHttpServletRequest multi,
+                                                       HttpServletRequest request){
 
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
         IModel iModel = modelMapper.map(imodelMapperDto, IModel.class);
         String currentuserid = CommonUtils.getCurrentuser(request);
@@ -84,7 +84,7 @@ public class IModelRestController {
         Optional<MasterCode> optionalEmType = masterCodeService.findById(imodelMapperDto.getEmType());
         Optional<MasterCode> optionalMdUnit = masterCodeService.findById(imodelMapperDto.getMdUnit());
 
-        if (!optionalMdType.isPresent()) {
+        if (!optionalMdType.isPresent() || !optionalEmType.isPresent() || !optionalMdUnit.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(),
                     ResponseErrorCode.E021.getDesc()));
         } else {
@@ -117,6 +117,7 @@ public class IModelRestController {
         MultipartFile mFile = multi.getFile(uploadFile);
 
         // 저장할 파일이 존재할때만 실행
+        assert mFile != null;
         if(!mFile.isEmpty()) {
             FileUpload fileUpload = fileUploadService.save(mFile);
             iModel.setMdFileid(fileUpload);
@@ -146,7 +147,7 @@ public class IModelRestController {
 
     // 모델 리스트
     @PostMapping("list")
-    public ResponseEntity modelList(@RequestParam (value="mdName", defaultValue="") String mdName,
+    public ResponseEntity<Map<String,Object>> modelList(@RequestParam (value="mdName", defaultValue="") String mdName,
                                                         @RequestParam (value="emType", defaultValue="") String  emType,
                                                         @RequestParam (value="mdType", defaultValue="") String  mdType,
                                                         @RequestParam (value="mdRemark", defaultValue="")String mdRemark,
@@ -159,19 +160,18 @@ public class IModelRestController {
 
         if(!emType.equals("")){
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
-            emTypeId = emTypes.get().getId();
+            emTypeId = emTypes.map(MasterCode::getId).orElse(null);
         }
 
         if(!mdType.equals("")){
             Optional<MasterCode> mdTypes = masterCodeService.findByCode(mdType);
-            mdTypeId = mdTypes.get().getId();
+            mdTypeId = mdTypes.map(MasterCode::getId).orElse(null);
         }
 
         Page<IModelListDto> iModelListDtos =
                 iModelService.findByIModelSearch(mdName,emTypeId,mdTypeId,mdRemark,pageable);
 
         if(iModelListDtos.getTotalElements()> 0 ){
-            data.clear();
             data.put("datalist",iModelListDtos.getContent());
             data.put("awss3url",AWSS3URL);
             data.put("total_page",iModelListDtos.getTotalPages());
@@ -181,7 +181,6 @@ public class IModelRestController {
 
             res.addResponse("data",data);
         }else{
-            data.clear();
             data.put("total_page",iModelListDtos.getTotalPages());
             data.put("current_page",iModelListDtos.getNumber() + 1);
             data.put("total_rows",iModelListDtos.getTotalElements());
@@ -194,14 +193,13 @@ public class IModelRestController {
 
     // 모델 정보보기
     @PostMapping ("info")
-    public ResponseEntity modelInfo(@RequestParam (value="id", defaultValue="") Long id){
+    public ResponseEntity<Map<String,Object>> modelInfo(@RequestParam (value="id", defaultValue="") Long id){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         IModelDto iModel = iModelService.findById(id);
-        log.info("받아온 모아이디값 : "+id);
+        //log.info("받아온 모아이디값 : "+id);
 
-        data.clear();
         if(iModel.getMdFileid()==null){
             data.put("filepath","/defaultimage");
             data.put("filename","/model.jpg");
@@ -221,7 +219,7 @@ public class IModelRestController {
 
     // 모델 삭제
     @PostMapping("del")
-    public ResponseEntity modeltDel(@RequestParam(value="mdNumber", defaultValue="") String mdNumber){
+    public ResponseEntity<Map<String,Object>> modeltDel(@RequestParam(value="mdNumber", defaultValue="") String mdNumber){
         AjaxResponse res = new AjaxResponse();
 
         Optional<IModel> iModel = iModelService.findByMdNumber(mdNumber);

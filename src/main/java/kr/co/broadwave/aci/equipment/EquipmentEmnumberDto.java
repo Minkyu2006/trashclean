@@ -1,8 +1,5 @@
 package kr.co.broadwave.aci.equipment;
 
-import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.imodel.IModel;
-import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
 /**

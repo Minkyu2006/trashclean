@@ -9,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -43,9 +41,6 @@ public class IModelService {
     public IModel save(IModel imodel) {
         if (imodel.getMdNumber() == null || imodel.getMdNumber().isEmpty()){
             String mdTypeCode = imodel.getMdType().getCode();
-
-            Date now = new Date();
-            SimpleDateFormat yyMM = new SimpleDateFormat("yyMM");
             String mdNumber = keyGenerateService.keyGenerate("bs_model",mdTypeCode+'-',imodel.getModify_id());
             imodel.setMdNumber(mdNumber);
         }
@@ -62,11 +57,12 @@ public class IModelService {
 
     public IModelDto findById(Long id) {
         Optional<IModel> optionalIModel = iModelRepository.findById(id);
-        if (optionalIModel.isPresent()) {
-            return modelMapper.map(optionalIModel.get(), IModelDto.class);
-        } else {
-            return null;
-        }
+        return optionalIModel.map(iModel -> modelMapper.map(iModel, IModelDto.class)).orElse(null);
+//        if (optionalIModel.isPresent()) { //위와 같은거(65Line)
+//            return modelMapper.map(optionalIModel.get(), IModelDto.class);
+//        } else {
+//            return null;
+//        }
     }
 
     public void delete(IModel iModel) {

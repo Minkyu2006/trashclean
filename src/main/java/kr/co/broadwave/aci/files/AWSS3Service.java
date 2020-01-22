@@ -7,17 +7,12 @@ import com.amazonaws.util.IOUtils;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * @author InSeok
@@ -48,8 +43,7 @@ public class AWSS3Service {
         String awsFilePath =AWSBUCKET+ uploadPath;
 
         // Copy file to the target location (Replacing existing file with the same name)
-        PutObjectResult putObjectResult = s3Client.putObject(new PutObjectRequest(awsFilePath, storedFileName,
-                multipartFile.getInputStream(), omd));
+        //PutObjectResult putObjectResult = s3Client.putObject(new PutObjectRequest(awsFilePath, storedFileName, multipartFile.getInputStream(), omd));
 
         //이미지 화일이면 섬네일변환후 울리기 파일명앞에 "s_" 를 붙임
         if(multipartFile.getContentType().substring(0,5).toUpperCase().equals("IMAGE")){

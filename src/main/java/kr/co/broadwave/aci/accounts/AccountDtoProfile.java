@@ -1,6 +1,5 @@
 package kr.co.broadwave.aci.accounts;
 
-import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.teams.Team;
@@ -8,9 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * @author Minkyu

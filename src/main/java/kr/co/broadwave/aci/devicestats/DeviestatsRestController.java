@@ -1,28 +1,18 @@
 package kr.co.broadwave.aci.devicestats;
 
 import kr.co.broadwave.aci.common.AjaxResponse;
-import kr.co.broadwave.aci.common.CommonUtils;
-import kr.co.broadwave.aci.dashboard.DashboardDeviceListViewDto;
-import kr.co.broadwave.aci.dashboard.DashboardService;
-import kr.co.broadwave.aci.equipment.Equipment;
 import kr.co.broadwave.aci.equipment.EquipmentEmnumberDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -37,19 +27,14 @@ import java.util.*;
 @RequestMapping("/api/deviestats")
 public class DeviestatsRestController {
 
-    private final ModelMapper modelMapper;
     private final MasterCodeService masterCodeService;
     private final EquipmentService equipmentService;
     private final DevicestatusService devicestatusService;
-    private final DashboardService dashboardService;
+
     @Autowired
-    public DeviestatsRestController(ModelMapper modelMapper,
-                                    DashboardService dashboardService,
-                                    EquipmentService equipmentService,
+    public DeviestatsRestController(EquipmentService equipmentService,
                                     MasterCodeService masterCodeService,
                                     DevicestatusService devicestatusService) {
-        this.modelMapper = modelMapper;
-        this.dashboardService = dashboardService;
         this.equipmentService = equipmentService;
         this.masterCodeService = masterCodeService;
         this.devicestatusService = devicestatusService;
@@ -57,7 +42,7 @@ public class DeviestatsRestController {
 
     // 카운트리스트 조회
     @PostMapping ("countListView")
-    public ResponseEntity countInfoView(@RequestParam(value="emNumber", defaultValue="") String emNumber,
+    public ResponseEntity<Map<String,Object>> countInfoView(@RequestParam(value="emNumber", defaultValue="") String emNumber,
                                         @RequestParam (value="monthDate", defaultValue="") String monthDate,
                                         @RequestParam (value="emType", defaultValue="")String emType,
                                         @RequestParam (value="emCountry", defaultValue="")String emCountry,
@@ -70,11 +55,10 @@ public class DeviestatsRestController {
 //        log.info("emType : "+emType);
 //        log.info("emCountry : "+emCountry);
 //        log.info("emLocation : "+emLocation);
-        //log.info("받은날짜 monthDate : "+monthDate);
+//        log.info("받은날짜 monthDate : "+monthDate);
         int sYear = Integer.parseInt(monthDate.substring(0,4));
         int sDay = Integer.parseInt(monthDate.substring(5,7));
         String sMonth = monthDate.substring(0,7).replace("-","");
-        //log.info("검색한 sMonth : "+sMonth);
 
         Long emTypeId = null;
         Long emCountryId = null;
@@ -82,15 +66,15 @@ public class DeviestatsRestController {
 
         if(!emType.equals("")){
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
-            emTypeId = emTypes.get().getId();
+            emTypeId = emTypes.map(MasterCode::getId).orElse(null);
         }
         if(!emCountry.equals("")){
             Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
-            emCountryId = emCountrys.get().getId();
+            emCountryId = emCountrys.map(MasterCode::getId).orElse(null);
         }
         if(!emLocation.equals("")){
             Optional<MasterCode> emLocations = masterCodeService.findByCode(emLocation);
-            emLocationId = emLocations.get().getId();
+            emLocationId = emLocations.map(MasterCode::getId).orElse(null);
         }
 
         List<EquipmentEmnumberDto> equipmentemNumber =
@@ -98,8 +82,8 @@ public class DeviestatsRestController {
         //log.info("equipmentemNumber : "+equipmentemNumber);
 
         List<String> deviceid = new ArrayList<>(); // 장비아이디 리스트
-        for(int i=0; i<equipmentemNumber.size(); i++){
-            deviceid.add(equipmentemNumber.get(i).getEmNumber());
+        for (EquipmentEmnumberDto equipmentEmnumberDto : equipmentemNumber) {
+            deviceid.add(equipmentEmnumberDto.getEmNumber());
         }
         //log.info("조회할 장비아이디 : "+deviceid);
 
@@ -107,10 +91,9 @@ public class DeviestatsRestController {
         //log.info("devicestatsDailyDtos : "+devicestatsDailyDtos);
 
         // 조회한 월의 일수구하기
-        int year = sYear;
         int month = sDay-1;
         int day = 1;
-        Calendar days = new GregorianCalendar(year, month, day);
+        Calendar days = new GregorianCalendar(sYear, month, day);
         int daysOfMonth = days.getActualMaximum(Calendar.DAY_OF_MONTH);
         //log.info(year+"년 " + (month+1)+"월의 일수: " +daysOfMonth);
 
@@ -118,7 +101,7 @@ public class DeviestatsRestController {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat ( "yyyyMMdd");
         //Date time = new Date();
-        String yyyymmdd = null;
+        String yyyymmdd;
 
         List<Double> actuaterCnt = new ArrayList<>(); // 엑추에이터 작동횟수 -> (합계)
         List<Double> inputdoorjammingCnt = new ArrayList<>(); //투일구걸림횟수 -> (합계)
@@ -128,7 +111,7 @@ public class DeviestatsRestController {
 
         int d=0;
         for(int j=0; j<daysOfMonth; j++) {
-            cal.set(sYear,sDay-1,day);
+            cal.set(sYear,month,day);
             cal.add(Calendar.DATE,j);
             yyyymmdd = format.format(cal.getTime());
             //log.info("검색할 날짜 : "+yyyymmdd);
@@ -163,7 +146,6 @@ public class DeviestatsRestController {
 //        log.info("emitCnt : "+emitCnt);
 //        log.info("fullLevel : "+fullLevel);
 
-        data.clear();
         data.put("sYear",sYear);
         data.put("sDay",sDay);
         data.put("actuaterCnt",actuaterCnt);
@@ -179,7 +161,7 @@ public class DeviestatsRestController {
 
     // 조회할 시간그래프 그리기
     @PostMapping ("hourInfoGraph")
-    public ResponseEntity hourInfoGraph(@RequestParam(value="sendDate", defaultValue="") String sendDate,
+    public ResponseEntity<Map<String,Object>> hourInfoGraph(@RequestParam(value="sendDate", defaultValue="") String sendDate,
                                         @RequestParam(value="deviceid", defaultValue="") List<String> deviceid) {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -294,7 +276,6 @@ public class DeviestatsRestController {
 //        log.info("히트맵그래프 데이터 투입구걸림횟수 : "+heatMaphourInputdoorjammingCnt);
 //        log.info("히트맵그래프 데이터 문열림횟수 : "+heatMaphourFrontdoorsolopenCnt);
 
-        data.clear();
         data.put("xhour",xhour);
         data.put("hourFullLevel",hourFullLevel);
         data.put("heatMaphourEmitCnt",heatMaphourEmitCnt);
@@ -309,7 +290,7 @@ public class DeviestatsRestController {
 
     // 조회할 시간그래프 그리기(장비클릭시 만들어지는 그래프) -> 한달치 시간의평균
     @PostMapping ("monthInfoGraph")
-    public ResponseEntity monthInfoGraph(@RequestParam(value="deviceMonth", defaultValue="") String deviceMonth,
+    public ResponseEntity<Map<String,Object>> monthInfoGraph(@RequestParam(value="deviceMonth", defaultValue="") String deviceMonth,
                                         @RequestParam(value="deviceid", defaultValue="") String deviceid) {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -425,7 +406,6 @@ public class DeviestatsRestController {
 //        log.info("히트맵그래프 데이터 투입구걸림횟수 : "+heatMaphourInputdoorjammingCnt);
 //        log.info("히트맵그래프 데이터 문열림횟수 : "+heatMaphourFrontdoorsolopenCnt);
 
-        data.clear();
         data.put("xhour",xhour);
         data.put("monthFullLevel",monthFullLevel);
         data.put("heatMaphourEmitCnt",heatMaphourEmitCnt);

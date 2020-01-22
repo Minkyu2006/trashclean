@@ -7,11 +7,13 @@ import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
-import kr.co.broadwave.aci.company.*;
+import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.company.CompanyDto;
+import kr.co.broadwave.aci.company.CompanyListDto;
+import kr.co.broadwave.aci.company.CompanyService;
 import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.imodel.IModelChangeDto;
-import kr.co.broadwave.aci.imodel.IModelDto;
 import kr.co.broadwave.aci.imodel.IModelService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
@@ -26,9 +28,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Minkyu
@@ -69,9 +73,8 @@ public class EquipmentRestController {
 
     // 업체 저장
     @PostMapping ("reg")
-    public ResponseEntity equipmentReg(@ModelAttribute EquipmentMapperDto equipmentMapperDto,HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> equipmentReg(@ModelAttribute EquipmentMapperDto equipmentMapperDto, HttpServletRequest request){
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
         Equipment equipment = modelMapper.map(equipmentMapperDto, Equipment.class);
 
@@ -152,22 +155,21 @@ public class EquipmentRestController {
         //log.info("iModelDto : "+iModelDto);
 
         //모델이 존재하지않으면
-        if (iModels.equals(null)) {
+        if (!iModels.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(), ResponseErrorCode.E021.getDesc()));
         }else{
             IModel iModel = iModels.get();
             equipment.setMdId(iModel);
         }
 
-        Equipment save = equipmentService.save(equipment);
+        equipmentService.save(equipment);
 
-        //log.info("장비등록 데이터 : "+save.toString());
         return ResponseEntity.ok(res.success());
     }
 
     // 장비 리스트
     @PostMapping("list")
-    public ResponseEntity equipmentList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
+    public ResponseEntity<Map<String,Object>> equipmentList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
                                                         @RequestParam (value="emDesignation", defaultValue="") String  emDesignation,
                                                         @RequestParam (value="emType", defaultValue="")String emType,
                                                         @RequestParam (value="emCountry", defaultValue="")String emCountry,
@@ -178,11 +180,11 @@ public class EquipmentRestController {
 
         if(!emType.equals("")){
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
-            emTypeId = emTypes.get().getId();
+            emTypeId = emTypes.map(MasterCode::getId).orElse(null);
         }
         if(!emCountry.equals("")){
             Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
-            emCountryId = emCountrys.get().getId();
+            emCountryId = emCountrys.map(MasterCode::getId).orElse(null);
         }
 
         Page<EquipmentListDto> equipmentListDtos =
@@ -193,7 +195,7 @@ public class EquipmentRestController {
 
     // 운영사 리스트
     @PostMapping("agencyList")
-    public ResponseEntity agencyList(@RequestParam (value="csNumber", defaultValue="") String csNumber,
+    public ResponseEntity<Map<String,Object>> agencyList(@RequestParam (value="csNumber", defaultValue="") String csNumber,
                                         @RequestParam (value="csOperator", defaultValue="") String  csOperator,
                                         @PageableDefault Pageable pageable){
 
@@ -204,15 +206,14 @@ public class EquipmentRestController {
 
     // 장비 정보 보기
     @PostMapping ("info")
-    public ResponseEntity equipmentInfo(@RequestParam (value="id", defaultValue="") Long id){
+    public ResponseEntity<Map<String,Object>> equipmentInfo(@RequestParam (value="id", defaultValue="") Long id){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         EquipmentDto equipment = equipmentService.findById(id);
-        log.info("equipment : "+equipment);
-        log.info("받아온 아이디값 : "+id);
+//        log.info("equipment : "+equipment);
+//        log.info("받아온 아이디값 : "+id);
 
-        data.clear();
         data.put("equipment",equipment);
         res.addResponse("data",data);
 
@@ -221,13 +222,12 @@ public class EquipmentRestController {
 
     // 소속운영사 관리코드-운영사명 따오기
     @PostMapping ("agencyInfo")
-    public ResponseEntity agencyInfo(@RequestParam (value="id", defaultValue="") Long id){
+    public ResponseEntity<Map<String,Object>> agencyInfo(@RequestParam (value="id", defaultValue="") Long id){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         CompanyDto companyDto = companyService.findById(id);
 
-        data.clear();
         data.put("company",companyDto);
         res.addResponse("data",data);
 
@@ -236,9 +236,8 @@ public class EquipmentRestController {
 
     // 장비 삭제
     @PostMapping("del")
-    public ResponseEntity equipmentDel(@RequestParam(value="emNumber", defaultValue="") String emNumber){
+    public ResponseEntity<Map<String,Object>> equipmentDel(@RequestParam(value="emNumber", defaultValue="") String emNumber){
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
         Optional<Equipment> optionalEquipment = equipmentService.findByEmNumber(emNumber);
 
@@ -251,16 +250,15 @@ public class EquipmentRestController {
 
     // 국가 셀렉트 선택시 지역변경
     @PostMapping("location")
-    public ResponseEntity location(@RequestParam(value="emCountry", defaultValue="") Long emCountry){
+    public ResponseEntity<Map<String,Object>> location(@RequestParam(value="emCountry", defaultValue="") Long emCountry){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         Optional<MasterCode> optionalCountry= masterCodeService.findById(emCountry);
         CodeType codeType = CodeType.valueOf("C0005");
+        String conuntyCode = optionalCountry.map(MasterCode::getCode).orElse(null);
+        List<MasterCodeDto> ref = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,conuntyCode);
 
-        List<MasterCodeDto> ref = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,optionalCountry.get().getCode());
-
-        data.clear();
         data.put("dataselect",ref);
 
         res.addResponse("data",data);
@@ -269,16 +267,18 @@ public class EquipmentRestController {
 
     // 타입 셀렉트 선택시 모델변경
     @PostMapping("modelchange")
-    public ResponseEntity modelchange(@RequestParam(value="emType", defaultValue="") Long emType){
+    public ResponseEntity<Map<String,Object>> modelchange(@RequestParam(value="emType", defaultValue="") Long emType){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         Optional<MasterCode> optionalEmType= masterCodeService.findById(emType);
 
-        List<IModelChangeDto> ref = iModelService.findByEmType(optionalEmType.get());
-
-        data.clear();
-        data.put("dataselect",ref);
+        if(optionalEmType.isPresent()){
+            List<IModelChangeDto> ref = iModelService.findByEmType(optionalEmType.get());
+            data.put("dataselect",ref);
+        }else{
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(), ResponseErrorCode.E021.getDesc()));
+        }
 
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());
@@ -286,13 +286,12 @@ public class EquipmentRestController {
 
     //장비 고유아이디값 리스트부르기
     @PostMapping("devicelist")
-    public ResponseEntity devicelist() {
+    public ResponseEntity<Map<String,Object>> devicelist() {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         List<Equipment> equipment = dashboardService.findAll();
 
-        data.clear();
         data.put("equipment",equipment);
 
         res.addResponse("data",data);
@@ -301,13 +300,12 @@ public class EquipmentRestController {
 
     //aws deivce Shadow 상태
     @PostMapping("awsdevicestatus")
-    public ResponseEntity awsDeviceStatus(@RequestParam(value="deviceid", defaultValue="") String deviceid) {
+    public ResponseEntity<Map<String,Object>> awsDeviceStatus(@RequestParam(value="deviceid", defaultValue="") String deviceid) {
         AjaxResponse resLocal = new AjaxResponse();
         HashMap<String, Object> dataLocal = new HashMap<>();
 
         try{
             HashMap deviceList = aciawsIoTDeviceService.getDeviceStatus(deviceid);
-            dataLocal.clear();
             dataLocal.put("datastate",deviceList.get("state"));
 
             resLocal.addResponse("data",dataLocal);
@@ -319,14 +317,13 @@ public class EquipmentRestController {
 
     //Shadow 문열기 단기 요청
     @PostMapping("shdoor")
-    public ResponseEntity awsSetDoorOpen(@RequestParam(value="deviceid", defaultValue="") String deviceid
+    public ResponseEntity<Map<String,Object>> awsSetDoorOpen(@RequestParam(value="deviceid", defaultValue="") String deviceid
                                         ,@RequestParam(value="door", defaultValue="") String door) {
         AjaxResponse resLocal = new AjaxResponse();
         HashMap<String, Object> dataLocal = new HashMap<>();
 
         try{
             aciawsIoTDeviceService.setDeviceDoor(deviceid,door);
-            dataLocal.clear();
             resLocal.addResponse("data",dataLocal);
             return ResponseEntity.ok(resLocal.success());
         }catch(Exception e){
@@ -337,14 +334,13 @@ public class EquipmentRestController {
 
     //Shadow 데이터 요청
     @PostMapping("shdatareq")
-    public ResponseEntity awsSetDataReq(@RequestParam(value="deviceid", defaultValue="") String deviceid
+    public ResponseEntity<Map<String,Object>> awsSetDataReq(@RequestParam(value="deviceid", defaultValue="") String deviceid
             ,@RequestParam(value="ts", defaultValue="") String ts) {
         AjaxResponse resLocal = new AjaxResponse();
         HashMap<String, Object> dataLocal = new HashMap<>();
 
         try{
             aciawsIoTDeviceService.setDataRequest(deviceid,ts);
-            dataLocal.clear();
             resLocal.addResponse("data",dataLocal);
             return ResponseEntity.ok(resLocal.success());
         }catch(Exception e){

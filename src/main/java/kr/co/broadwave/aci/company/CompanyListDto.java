@@ -40,31 +40,4 @@ public class CompanyListDto {
         return csOperator;
     }
 
-    public String getCsDivision() {
-        return csDivision.getName();
-    }
-
-    public String getCsRegional() {
-        return csRegional.getName();
-    }
-
-    public String getCsRepresentative() {
-        return csRepresentative;
-    }
-
-    public String getCsBuisnessNumber() {
-        return csBuisnessNumber;
-    }
-
-    public String getCsManager() {
-        return csManager;
-    }
-
-    public String getCsTelephone() {
-        return csTelephone;
-    }
-
-    public String getCsFax() {
-        return csFax;
-    }
 }

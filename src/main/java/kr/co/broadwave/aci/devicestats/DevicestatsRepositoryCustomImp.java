@@ -3,8 +3,6 @@ package kr.co.broadwave.aci.devicestats;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import kr.co.broadwave.aci.equipment.EquipmentEmnumberDto;
-import kr.co.broadwave.aci.equipment.QEquipment;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 

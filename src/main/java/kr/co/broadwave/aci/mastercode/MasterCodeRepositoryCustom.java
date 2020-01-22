@@ -11,5 +11,4 @@ import org.springframework.data.domain.Pageable;
  */
 public interface MasterCodeRepositoryCustom {
     Page<MasterCodeDto> findAllBySearchStrings(CodeType codeType, String code,String name, Pageable pageable);
-
 }

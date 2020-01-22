@@ -24,8 +24,8 @@ public class UploadFileUtils {
     private static final Logger logger = LoggerFactory.getLogger(UploadFileUtils.class);
 
     /**
-     * @param filePath
-     * @param multipartFile
+     * @param file
+     * @param uploadPath
      * @return 생성된 파일 명(유일한 값)
      * @throws IllegalStateException
      * @throws IOException

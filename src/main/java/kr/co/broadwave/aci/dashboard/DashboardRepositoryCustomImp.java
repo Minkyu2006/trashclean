@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Minkyu
@@ -66,7 +67,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
 
         query.orderBy(equipment.emNumber.asc());
 
-        final List<DashboardDeviceListViewDto> equipments = getQuerydsl().applyPagination(pageable, query).fetch();
+        final List<DashboardDeviceListViewDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(equipments, pageable, query.fetchCount());
     }
 }

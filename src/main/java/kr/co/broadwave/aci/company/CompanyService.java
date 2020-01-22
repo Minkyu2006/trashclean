@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -38,9 +36,6 @@ public class CompanyService {
     public Company save(Company company) {
         if ( company.getCsNumber() == null || company.getCsNumber().isEmpty()){
             String csDivision = company.getCsDivision().getCode();
-
-            Date now = new Date();
-            SimpleDateFormat yyMM = new SimpleDateFormat("yyMM");
             String csNumber = keyGenerateService.keyGenerate("bs_company", csDivision, company.getModify_id());
             company.setCsNumber(csNumber);
         }
@@ -58,11 +53,12 @@ public class CompanyService {
 
     public CompanyDto findById(Long id) {
         Optional<Company> optionalCompany = companyRepository.findById(id);
-        if (optionalCompany.isPresent()) {
-            return modelMapper.map(optionalCompany.get(), CompanyDto.class);
-        } else {
-            return null;
-        }
+        return optionalCompany.map(company -> modelMapper.map(company, CompanyDto.class)).orElse(null);
+//        if (optionalCompany.isPresent()) {
+//            return modelMapper.map(optionalCompany.get(), CompanyDto.class);
+//        } else {
+//            return null;
+//        }
     }
 
     public void delete(Company company) {

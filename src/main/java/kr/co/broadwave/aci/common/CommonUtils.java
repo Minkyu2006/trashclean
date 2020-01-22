@@ -12,6 +12,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author InSeok
@@ -56,7 +57,7 @@ public abstract class CommonUtils {
 
     }
     //Pages 형태의 조회 API 반환 함수
-    public static ResponseEntity ResponseEntityPage(Page pages ){
+    public static ResponseEntity<Map<String,Object>> ResponseEntityPage(Page pages ){
         log.info("Pages 형태의 조회 API 반환 함수 공통 함수 호출");
 
         AjaxResponse res = new AjaxResponse();
@@ -110,7 +111,7 @@ public abstract class CommonUtils {
         log.info("엑셀다운버튼 클릭시 최종 다운로드 처리하는 공통 함수 호출");
 
         List<List<String>> excelData  = new ArrayList<>();
-        excelDtos.stream().forEach(e-> excelData.add(e.toArray()));
+        excelDtos.forEach(e-> excelData.add(e.toArray()));
 
         model.addAttribute(ExcelConstant.FILE_NAME, filename);
         model.addAttribute(ExcelConstant.HEAD, header);

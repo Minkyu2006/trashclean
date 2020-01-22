@@ -3,8 +3,6 @@ package kr.co.broadwave.aci.equipment;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Column;
-
 /**
  * @author Minkyu
  * Date : 2019-11-01
