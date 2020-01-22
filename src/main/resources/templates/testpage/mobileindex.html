@@ -1,15 +1,100 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate ="~{layout/default}">
-<head>
-
-	<script>
-	</script>
-
-</head>
-
-<div layout:fragment="content" class="contents-body">
-
-</div>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+        
+        <title>NatureStore</title>
+        
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/js/jquery-ui.min.js"></script>
+        
+        <link rel="stylesheet" href="/assets/css/new/common.css"/>
+        
+        <style>
+        	.m-wrap {
+        		position: relative;
+        		padding-top: 50px;
+        	}
+        	.m-header {
+        		position: fixed;
+        		top: 0;
+        		left: 0;
+        		width: 100vw;
+        		height: 50px;
+     			padding: 0 20px;
+     			background-color: #b9dcd2;
+     			-webkit-box-sizing: border-box;
+     			-moz-box-sizing: border-box;
+     			box-sizing: border-box;
+        	}
+        	.m-logo {
+        		display: block;
+        		float: left;
+        		width: 140px;
+        		height: 50px;
+        		background: url(/assets/images/logo.png) no-repeat;
+        		-webkit-background-size: 120px;
+        		background-size: 120px;
+        		background-position: left center;
+        		text-indent: -9999px;
+        	}
+        	.m-contents {
+        		position: relative;
+        		width: 100%;
+        		min-height: calc(100vh - 80px);
+        		padding: 40px 20px;
+        		background-color: #f7f7f7;
+        		-webkit-box-sizing: border-box;
+        		-moz-box-sizing: border-box;
+        		box-sizing: border-box;
+        	}
+        	.m-main-menu {
+        		
+        	}
+        	.m-main-menu li + li {
+        		margin-top: 10px;
+        	}
+        	.m-banner {
+        		display: block;
+        		position: relative;
+        		width: 100%;
+        		height: 60px;
+        		background-color: #007e37;
+        		color: #fff;
+        		font-size: 24px;
+        		text-align: center;
+        		line-height: 60px;
+        	}
+        	
+        	.m-footer {
+        		position: relative;
+        		height: 30px;
+        		padding: 0 10px;
+        		background-color: #fff;
+        		color: #ddd;
+        		font-size: 10px;
+        		text-align: right;
+        		line-height: 30px;
+        		-webkit-box-sizing: border-box;
+        		-moz-box-sizing: border-box;
+        		box-sizing: border-box;
+        	}
+        </style>
+	</head>
+	<body>
+		<div class="m-wrap">
+			<div class="m-header">
+				<h1 class="m-logo"><a href="/">NatureStore</a></h1>
+			</div>
+			<div class="m-contents">
+				<ul class="m-main-menu">
+					<li><a href="" class="m-banner">장비제어</a></li>
+					<li><a href="" class="m-banner">수거처리</a></li>
+				</ul>
+			</div>
+			<div class="m-footer">© 2019 Broadwave Corporation. All rights Reserved.</div>
+		</div>
+	</body>
 </html>

@@ -285,9 +285,7 @@
 	});
 	
 	
-	$(document).ready(function() {
-		
-	})
+	
 	
     </script>
 </head>
@@ -307,13 +305,13 @@
 							<div class="c-float c-float--flex">
 								<div class="c-float__item">
 									<div class="c-text">
-										<label for="num" class="c-text__label"></label>
-										<input type="text" class="c-text__input" id="num" />
+										<label for="monthpicker" class="c-text__label">monthpicker</label>
+										<input type="text" class="c-text__input" id="monthpicker" placeholder="연 - 월" />
 									</div>
 								</div>
 								<div class="c-float__item">
 									<div class="c-select">
-										<label for="" class="c-select__label"></label>
+										<label for="" class="c-select__label">권역</label>
 										<select name="" id="" class="c-select__input">
 											<option>전체</option>
 											<option>권역</option>
@@ -323,9 +321,14 @@
 									</div>
 								</div>
 								<div class="c-float__item">
-									<div class="c-date">
+									<!-- <div class="c-date">
 										<label for="month" class="c-date__label"></label>
 										<input type="date" class="c-date__input" id="month" />
+									</div> -->
+									
+									<div class="c-text">
+										<label for="datepicker" class="c-text__label">datepicker</label>
+										<input type="text" class="c-text__input" id="datepicker" placeholder="연 - 월 - 일" />
 									</div>
 								</div>
 								<div class="c-float__item c-float__item--flex--auto">
@@ -688,5 +691,44 @@
 
 	<div id='alertpop'>
 	</div>
+	
+	<script>
+		$(document).ready(function() {
+			$('#monthpicker').MonthPicker({ 
+				// Use the IsRTL option if you are translating the menu to a 
+			    // language that is written from right to left like Hebrew or Arabic.
+			    IsRTL: true,
+			    i18n: {
+			       year: '',
+			       buttonText: '',
+			       prevYear: '다음 년도',
+			       nextYear: '이전 년도',
+			       next12Years: '12년 후',
+			       prev12Years: '12년 전',
+			       //nextLabel: "הבא",  
+			       //prevLabel: "הקודם",
+			       //jumpYears: "בכר שנה",
+			       backTo: '',
+			       months: ['1월','2월','3월','4월','5월','6월', '7월','8월','9월','10월','11월','12월']
+			    },
+				Button: false,
+				MonthFormat: 'yy-mm'
+			});
+			
+			$.datepicker.setDefaults({
+				dateFormat: 'yy-mm-dd',
+				prevText: '이전 달',
+		        nextText: '다음 달',
+		        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+		        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+		        showMonthAfterYear: true,
+		        yearSuffix: '년'
+			})
+			
+			$( "#datepicker" ).datepicker({
+				
+			});
+		})
+	</script>
 </div>
 </html>
