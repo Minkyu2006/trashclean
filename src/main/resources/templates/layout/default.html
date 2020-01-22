@@ -21,7 +21,6 @@
         <link rel="stylesheet" href="/assets/js/alert/min_alert.css"/>
         <link rel="stylesheet" href="/assets/js/charts/Chart.min.css"/>
         <link rel="stylesheet" href="/assets/js/c3/c3.css"/>
-<!--		<link rel="stylesheet" href="/static/assets/js/croppie/croppie.css"/>-->
 
         <!-- 공통으로 쓰이는 js파일을넣는다.-->
         <script src="/assets/js/jquery.min.js"></script>
@@ -37,8 +36,11 @@
         <script src="/assets/js/c3/c3.js"></script>
         <script src="/assets/js/new/common.js"></script>
         <script src="/assets/js/alert/min_alert.js"></script>
-<!--		<script src="/static/assets/js/croppie/croppie.min.js"></script>-->
-<!--		<script src="/static/assets/js/croppie/exif.js"></script>-->
+
+		<link rel="stylesheet" href="/assets/js/croppies/croppie.css"/>
+		<script src="/assets/js/croppies/croppie.min.js"></script>
+		<script src="/assets/js/croppies/exif.js"></script>
+
         <!--		구글지도-->
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAPWQiEPh0gq9T4qk1LdJBLqnR43JfcUy0&callback" async defer></script>
 
@@ -322,6 +324,7 @@
 								<label for="profile"></label>
 								<input type="file" id="profile" name="profile" />
 							</div>
+
 						</div>
 						<div class="profile-pop__list">
 							<div class="profile-pop__item">
@@ -399,9 +402,9 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<div layout:fragment="content"></div>
-				
+
 				<footer th:replace="fragments/footer:: footerFragment"></footer>
 			</div>
 
