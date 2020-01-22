@@ -49,12 +49,18 @@ public class VehicleListDto {
         return vcState;
     }
 
-    public String getVcStartDate() {
-        return vcStartDate;
+    public StringBuffer getVcStartDate() {
+        StringBuffer startDate = new StringBuffer(vcStartDate); // ex)2020-11-04
+        startDate.insert(4,'-');
+        startDate.insert(7,'-');
+        return startDate;
     }
 
-    public String getVcEndDate() {
-        return vcEndDate;
+    public StringBuffer getVcEndDate() {
+        StringBuffer endDate = new StringBuffer(vcEndDate);
+        endDate.insert(4,'-');
+        endDate.insert(7,'-');
+        return endDate;
     }
 
     public String getVcManagement() {

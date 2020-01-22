@@ -47,7 +47,9 @@
 		}
 		// 신규작성
 		function init(){
+			$("#vcId").val('');
 			$("#vcNumber").val('');
+			$("#vcNumber").attr("readonly",false);
 			$("#vcName").val('');
 			$("#vcStartDate").val('');
 			$("#vcEndDate").val('');
@@ -198,6 +200,7 @@
 				success: function (res) {
 					$("#vcId").val(res.data.vehicle.id);
 					$("#vcNumber").val(res.data.vehicle.vcNumber);
+					$("#vcNumber").attr("readonly",true);
 					$("#vcName").val(res.data.vehicle.vcName);
 					$("#vcShape").val(res.data.vehicle.vcShape);
 					$("#vcUsage").val(res.data.vehicle.vcUsage);
@@ -360,6 +363,11 @@
 					<col/>
 					<col/>
 					<col/>
+					<col/>
+					<col/>
+					<col/>
+					<col/>
+					<col style="width: 58px"/>
 				</colgroup>
 				<tr>
 					<th>차량소유구분</th>
@@ -398,7 +406,7 @@
 							</select>
 						</div>
 					</td>
-					<th>차량관리번호</th>
+					<th>차량 번호</th>
 					<td>
 						<div class="c-text">
 							<input type="text" id="s_vcNumber" class="c-text__input" />
@@ -432,7 +440,7 @@
 				</colgroup>
 				<thead>
 					<tr>
-						<th>차량관리번호</th>
+						<th>차량번호</th>
 						<th>차량명</th>
 						<th>차량소유구분</th>
 						<th>차량용도</th>
@@ -440,7 +448,7 @@
 						<th>운행종료일</th>
 						<th>소속사</th>
 						<th>차량상태</th>
-						<th>차량관리</th>
+						<th>차량관리번호</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -469,8 +477,8 @@
 			<table class="c-table">
 				<tbody>
 					<tr>
-						<input type="text" id="vcId" name="id" class="c-text__input" style="display: none" />
-						<th>차량관리번호</th>
+						<input type="text" id="vcId" name="id" class="c-text__input" readonly="readonly" style="display: none" />
+						<th>차량번호</th>
 						<td>
 							<div class="c-text">
 								<input type="text" id="vcNumber" name="vcNumber" class="c-text__input" />
@@ -526,14 +534,6 @@
 						</td>
 					</tr>
 					<tr>
-						<th>소속운영사</th>
-						<td>
-							<div class="c-search-form">
-								<input type="text" class="c-text__input" name="operator" id="operator" readonly="readonly" />
-								<input type="text" id="csNum" class="c-text__input" readonly="readonly" />
-								<button class="c-search-form__button pop__list">검색</button>
-							</div>
-						</td>
 						<th>차량상태</th>
 						<td>
 							<div class="c-text">
@@ -545,9 +545,17 @@
 								</select>
 							</div>
 						</td>
+						<th>소속운영사</th>
+						<td>
+							<div class="c-search-form">
+								<input type="text" class="c-text__input" name="operator" id="operator" readonly="readonly" />
+								<input type="text" id="csNum" class="c-text__input" readonly="readonly" />
+								<button class="c-search-form__button pop__list">검색</button>
+							</div>
+						</td>
 					</tr>
 					<tr>
-						<th>차량관리</th>
+						<th>차량관리번호</th>
 						<td>
 							<div class="c-text">
 								<input type="text" name="vcManagement" id="vcManagement" class="c-text__input" />

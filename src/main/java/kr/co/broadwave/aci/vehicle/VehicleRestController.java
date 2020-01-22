@@ -53,7 +53,7 @@ public class VehicleRestController {
     }
 
     // 차량 저장
-    @PostMapping ("reg")
+    @PostMapping("reg")
     public ResponseEntity vehicleReg(@ModelAttribute VehicleMapperDto vehicleMapperDto,HttpServletRequest request){
         AjaxResponse res = new AjaxResponse();
 
@@ -84,30 +84,41 @@ public class VehicleRestController {
 
         Optional<Vehicle> optionalVehicle;
         // 차량아이디 가져오기(고유값)
-        if(vehicle.getId()!=null){
-            optionalVehicle = vehicleService.findById2(vehicle.getId());
-        }else{
+//        if(vehicle.getId()!=null){
+//            optionalVehicle = vehicleService.findById2(vehicle.getId());
+//        }else{
             optionalVehicle = vehicleService.findByVcNumber(vehicle.getVcNumber());
-        }
+      //  }
 
         //신규 및 수정여부
-        if (optionalVehicle.isPresent()) {
-            if (optionalVehicle.get().getVcNumber().equals(vehicleMapperDto.getVcNumber())) {
-                return ResponseEntity.ok(res.fail(ResponseErrorCode.E022.getCode(), ResponseErrorCode.E022.getDesc()));
+            if (optionalVehicle.isPresent()) {
+                if(vehicle.getId()!=optionalVehicle.get().getId()){
+                    if (optionalVehicle.get().getVcNumber().equals(vehicleMapperDto.getVcNumber())) {
+                        return ResponseEntity.ok(res.fail(ResponseErrorCode.E022.getCode(), ResponseErrorCode.E022.getDesc()));
+                    }
+                }else{
+                    //수정
+                    vehicle.setId(optionalVehicle.get().getId());
+                    vehicle.setInsert_id(optionalVehicle.get().getInsert_id());
+                    vehicle.setInsertDateTime(optionalVehicle.get().getInsertDateTime());
+                    vehicle.setModify_id(currentuserid);
+                    vehicle.setModifyDateTime(LocalDateTime.now());
+                }
+                //수정
+                vehicle.setId(optionalVehicle.get().getId());
+                vehicle.setInsert_id(optionalVehicle.get().getInsert_id());
+                vehicle.setInsertDateTime(optionalVehicle.get().getInsertDateTime());
+                vehicle.setModify_id(currentuserid);
+                vehicle.setModifyDateTime(LocalDateTime.now());
+            } else {
+                //신규
+                vehicle.setInsert_id(currentuserid);
+                vehicle.setInsertDateTime(LocalDateTime.now());
+                vehicle.setModify_id(currentuserid);
+                vehicle.setModifyDateTime(LocalDateTime.now());
             }
-            //수정
-            vehicle.setId(optionalVehicle.get().getId());
-            vehicle.setInsert_id(optionalVehicle.get().getInsert_id());
-            vehicle.setInsertDateTime(optionalVehicle.get().getInsertDateTime());
-            vehicle.setModify_id(currentuserid);
-            vehicle.setModifyDateTime(LocalDateTime.now());
-        }else{
-            //신규
-            vehicle.setInsert_id(currentuserid);
-            vehicle.setInsertDateTime(LocalDateTime.now());
-            vehicle.setModify_id(currentuserid);
-            vehicle.setModifyDateTime(LocalDateTime.now());
-        }
+
+
 
         // 소속운영사 아이디저장하기
         Optional<Company> optionalCompany = companyService.findByCsOperator(vehicleMapperDto.getOperator());
@@ -158,7 +169,7 @@ public class VehicleRestController {
         return CommonUtils.ResponseEntityPage(vehicleListDtos);
     }
 
-    // 장비 정보 보기
+    // 차량 정보 보기
     @PostMapping ("info")
     public ResponseEntity vehicleInfo(@RequestParam (value="id", defaultValue="") Long id){
         AjaxResponse res = new AjaxResponse();

@@ -56,7 +56,7 @@ public class VehicleMapperDto {
     }
 
     public String getVcStartDate() {
-        String startDate = vcStartDate.replaceAll("-", "");
+        String startDate = vcStartDate.replaceAll("-", ""); // ex)20201104
         return startDate;
     }
 

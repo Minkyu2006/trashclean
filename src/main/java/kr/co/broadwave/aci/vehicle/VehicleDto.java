@@ -25,7 +25,7 @@ public class VehicleDto {
     private MasterCode vcState; // 차량상
     private String vcStartDate; // 운행시작일
     private String vcEndDate; // 운행종료일
-    private String vcManagement; // 차량관리
+    private String vcManagement; // 차량관리번호
     private Company company; // 소속운영사
 
     public Long getId() {

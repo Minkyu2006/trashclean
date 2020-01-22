@@ -58,7 +58,7 @@ public class Vehicle {
     private Company company; // 소속운영사
 
     @Column(name="vc_management")
-    private String vcManagement; // 차량관리
+    private String vcManagement; // 차량관리번호
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
