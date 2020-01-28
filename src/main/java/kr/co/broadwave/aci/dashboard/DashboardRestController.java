@@ -60,10 +60,9 @@ public class DashboardRestController {
         this.devicestatusService = devicestatusService;
     }
 
-
     @PostMapping("monitering")
     public ResponseEntity<Map<String,Object>> monitering(@RequestParam(value="deviceids", defaultValue="") String deviceids){
-        log.info("모니터링 조회 시작");
+        //log.info("모니터링 조회 시작");
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -106,7 +105,7 @@ public class DashboardRestController {
         //log.info("Device History 가져오기 시작");
 
         HashMap<String, Object> resData = dashboardService.getDeviceHistory(deviceid,intervaltime);
-        data.clear();
+
         data.put("statusCode",resData.get("statusCode"));
         data.put("datarow1",resData.get("data"));
         res.addResponse("data",data);
@@ -119,7 +118,6 @@ public class DashboardRestController {
     //장비 리스트 뿌리기
     @PostMapping ("deviceInfoList")
     public ResponseEntity<Map<String,Object>> deviceInfoList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
-//                                                            @RequestParam (value="emAgency", defaultValue="") String  emAgency,
                                                             @RequestParam (value="emType", defaultValue="")String emType,
                                                             @RequestParam (value="emCountry", defaultValue="")String emCountry,
                                                             @RequestParam (value="emLocation", defaultValue="")String emLocation,
@@ -129,11 +127,10 @@ public class DashboardRestController {
         Long emCountryId = null;
         Long emLocationId = null;
 
-        log.info("emNumber : "+emNumber);
-//        log.info("emAgency : "+emAgency);
-        log.info("emType : "+emType);
-        log.info("emCountry : "+emCountry);
-       log.info("emLocation : "+emLocation);
+//        log.info("emNumber : "+emNumber);
+//        log.info("emType : "+emType);
+//        log.info("emCountry : "+emCountry);
+//        log.info("emLocation : "+emLocation);
 
         if(!emType.equals("")){
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
@@ -258,7 +255,7 @@ public class DashboardRestController {
         return ResponseEntity.ok(res.success());
     }
 
-    // 상태값, 쓰레기양, 지 차트
+    // 상태값, 쓰레기양, 지도 차트
 //    @Transactional
     @PostMapping("dataGraph")
     public ResponseEntity dataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author InSeok
@@ -125,6 +126,31 @@ public class AccountRepositoryCustomImpl extends QuerydslRepositorySupport imple
                 .set(qAccount.approval_id,loginId)
                 .set(qAccount.approvalDateTime,LocalDateTime.now())
                 .execute();
+    }
+
+    // 수거원 리스트가져오는쿼리
+    @Override
+    public  Page<AccountDtoCollectionList> findByCollection(String collectionId, String collectionName,AccountRole role, Pageable pageable){
+        QAccount qAccount  = QAccount.account;
+
+        JPQLQuery<AccountDtoCollectionList> query = from(qAccount)
+                .select(Projections.constructor(AccountDtoCollectionList.class,
+                        qAccount.userid,
+                        qAccount.username,
+                        qAccount.role
+                ));
+
+        if (collectionId != null && !collectionId.isEmpty()){
+            query.where(qAccount.userid.containsIgnoreCase(collectionId));
+        }
+        if (collectionName != null && !collectionName.isEmpty()){
+            query.where(qAccount.username.containsIgnoreCase(collectionName));
+        }
+
+        query.where(qAccount.role.eq(role));
+
+        final List<AccountDtoCollectionList> accounts = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
+        return new PageImpl<>(accounts, pageable, query.fetchCount());
     }
 
 }

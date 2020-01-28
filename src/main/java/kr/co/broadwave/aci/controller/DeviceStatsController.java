@@ -22,12 +22,9 @@ import java.util.List;
 public class DeviceStatsController {
 
     private final MasterCodeService masterCodeService;
-    private final AccountService accountService;
 
     @Autowired
-    public DeviceStatsController(MasterCodeService masterCodeService,
-                               AccountService accountService) {
-        this.accountService = accountService;
+    public DeviceStatsController(MasterCodeService masterCodeService) {
         this.masterCodeService = masterCodeService;
     }
 

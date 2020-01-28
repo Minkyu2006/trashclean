@@ -61,6 +61,12 @@ public class AccountService implements UserDetailsService {
         return this.accountRepository.findByUserid(userid);
     }
 
+
+    public Optional<Account> findByUserid3(String userid ){
+        return accountRepository.findByUserid(userid);
+    }
+
+
     public Page<AccountDtoWithTeam> findAllBySearchStrings(String userid,String username,String email,Pageable pageable){
         return accountRepositoryCustom.findAllBySearchStrings(userid,username,email,pageable);
     }
@@ -79,7 +85,6 @@ public class AccountService implements UserDetailsService {
     public Long countByTeam(Team team){
         return accountRepository.countByTeam(team);
     }
-
 
     ////////아래는 테스트코드
 
@@ -117,13 +122,12 @@ public class AccountService implements UserDetailsService {
         Page<AccountDtoWithTeam> allUserWithTeam = this.accountRepositoryCustom.findAllBySearchStrings(userid,username,teamname,pageable);
         return allUserWithTeam;
     }
-    public void findbyUserid2(String userid){
-        Optional<Account> optionalAccount = this.accountRepository.findByUserid(userid);
-
-        Account ac = optionalAccount.get();
-        System.out.println(ac.getUsername());
-
-    }
+//    public Account findbyUserid2(String userid){
+//        Optional<Account> optionalAccount = this.accountRepository.findByUserid(userid);
+//        if(optionalAccount.isPresent()){
+//            Account ac = optionalAccount.get();
+//        }
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String userid) throws UsernameNotFoundException {
@@ -135,6 +139,10 @@ public class AccountService implements UserDetailsService {
     }
     private Collection<? extends GrantedAuthority> getAuthorities(Account account) {
         return Arrays.asList(new SimpleGrantedAuthority(account.getRole().getCode()));
+    }
+
+    public Page<AccountDtoCollectionList> findByCollection(String collectionId, String collectionName,AccountRole role, Pageable pageable) {
+        return accountRepositoryCustom.findByCollection(collectionId,collectionName,role,pageable);
     }
 
 }
