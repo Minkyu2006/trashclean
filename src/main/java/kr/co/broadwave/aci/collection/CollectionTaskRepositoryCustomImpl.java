@@ -69,12 +69,12 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
             query.where(collectionTask.devicetype.id.eq(emTypeId));
         }
 
-        if (vehicleNumber != null && !vehicleNumber.isEmpty()){
-            query.where(collectionTask.vehicleId.vcNumber.likeIgnoreCase(vehicleNumber.concat("%")));
+        if (userName != null && !userName.isEmpty()){
+            query.where(collectionTask.accountId.username.likeIgnoreCase(userName.concat("%")));
         }
 
-        if (userName != null && !userName.isEmpty()){
-            query.where(collectionTask.accountId.username.eq(userName));
+        if (vehicleNumber != null && !vehicleNumber.isEmpty()){
+            query.where(collectionTask.vehicleId.vcNumber.likeIgnoreCase(vehicleNumber.concat("%")));
         }
 
         query.orderBy(collectionTask.id.desc());
