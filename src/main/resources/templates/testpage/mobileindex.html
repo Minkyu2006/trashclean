@@ -40,6 +40,23 @@
         		background-position: left center;
         		text-indent: -9999px;
         	}
+        	.m-head-console {
+        		overflow: hidden;
+        		float: right;
+        		margin-top: 13px;
+        	}
+        	.m-head-console li {
+        		float: left;
+        	}
+        	.m-head-console li + li {
+        		margin-left: 10px;
+        	}
+        	.m-head-console li a {
+        		color: #007e37;
+        		font-size: 20px;
+        		font-weight: 700;
+        		line-height: 1.2;
+        	}
         	.m-contents {
         		position: relative;
         		width: 100%;
@@ -87,6 +104,10 @@
 		<div class="m-wrap">
 			<div class="m-header">
 				<h1 class="m-logo"><a href="/">NatureStore</a></h1>
+				<ul class="m-head-console">
+					<li><a href="#">login</a></li>
+					<li><a href="#">logout</a></li>
+				</ul>
 			</div>
 			<div class="m-contents">
 				<ul class="m-main-menu">

@@ -570,16 +570,11 @@
 			<table class="c-table">
 				<colgroup>
 					<col style="width: 90px;" />
-					<col style="width: 120px;" />
-					<col style="width: 80px;" />
-					<col style="width: 240px;" />
-					<col style="width: 70px;" />
-					<col style="width: 110px;" />
-					<col style="width: 80px;" />
-					<col style="width: 120px;" />
-					<col style="width: 80px;" />
-					<col style="width: 120px;" />
-					<col style="width: 62px;" />
+					<col />
+					<col style="width: 90px;" />
+					<col />
+					<col style="width: 90px;" />
+					<col />
 				</colgroup>
 				<tr>
 					<th>수거관리코드</th>
@@ -592,11 +587,9 @@
 					<td>
 						<div class="c-date-group" >
 							<div class="c-date">
-								<label for="s_dateFrom" class="c-date__label">from</label>
 								<input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일" />
 							</div>
 							<div class="c-date">
-								<label for="s_dateTo" class="c-date__label">today</label>
 								<input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일" />
 							</div>
 						</div>
@@ -613,6 +606,8 @@
 							</select>
 						</div>
 					</td>
+				</tr>
+				<tr>
 					<th>수거원이름</th>
 					<td>
 						<div class="c-text">
@@ -625,8 +620,9 @@
 							<input type="text" id="s_vehicleNumber" class="c-text__input" />
 						</div>
 					</td>
+					<td></td>
 					<td>
-						<button class="c-button c-button--point" id="btnSearch">조회</button>
+						<button class="c-button c-button--point" id="btnSearch" style="float: right;">조회</button>
 					</td>
 				</tr>
 			</table>
