@@ -51,4 +51,9 @@ public class CollectionController {
     public String collectionprocess(){
         return "collection/collectionprocess";
     }
+
+    @RequestMapping("collectionlist")
+    public String collectionlist(){
+        return "collection/collectionlist";
+    }
 }

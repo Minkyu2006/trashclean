@@ -91,4 +91,13 @@ public class TestpageController {
         return "testpage/mobileindex";
     }
 
+    @RequestMapping("collectionprocesstest")
+    public String collectionprocesstest(){
+        return "testpage/collectionprocesstest";
+    }
+
+    @RequestMapping("collectionlisttest")
+    public String collectionlisttest(){
+        return "testpage/collectionlisttest";
+    }
 }
