@@ -47,6 +47,11 @@ public class CollectionController {
         return "collection/collectiontask";
     }
 
+    @RequestMapping("mobileindex")
+    public String mobileindex(){
+        return "collection/mobileindex";
+    }
+
     @RequestMapping("collectionprocess")
     public String collectionprocess(){
         return "collection/collectionprocess";
