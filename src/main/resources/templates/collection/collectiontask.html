@@ -6,6 +6,10 @@
     <script type="text/javascript">
 		$(function() {
 
+			$("#s_dateFrom").datepicker({});
+			$("#s_dateTo").datepicker({});
+			$("#yyyymmdd").datepicker({});
+
 			//팝업관련 제이쿼리
 			$('#equipment').on('click', function(e) {
 				$('#equipment_popup').addClass('open');
@@ -394,7 +398,7 @@
 				collectionName:$('#collectionName').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="3" align="center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="4" align="center">조회 중</td></tr>');
 			$totalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -418,7 +422,7 @@
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
 					if (totCnt === 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="3" align="center">조회된 데이터가 없습니다.</td></tr>');
+						$schList.empty().append('<tr class="t-c"><td colspan="4" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 					$totalCnt.text(totCnt);
@@ -589,11 +593,11 @@
 						<div class="c-date-group" >
 							<div class="c-date">
 								<label for="s_dateFrom" class="c-date__label">from</label>
-								<input type="date" class="c-date__input" id="s_dateFrom" />
+								<input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일" />
 							</div>
 							<div class="c-date">
-								<label for="s_dateTo" class="c-date__label">to here</label>
-								<input type="date" class="c-date__input" id="s_dateTo" />
+								<label for="s_dateTo" class="c-date__label">today</label>
+								<input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일" />
 							</div>
 						</div>
 					</td>
@@ -688,7 +692,7 @@
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">
-									<input type="date" class="c-date__input" name="yyyymmdd" id="yyyymmdd" />
+									<input type="text" class="c-text__input" name="yyyymmdd" id="yyyymmdd" placeholder="연 - 월 - 일" />
 								</div>
 							</div>
 						</td>

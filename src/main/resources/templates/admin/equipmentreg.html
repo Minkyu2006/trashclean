@@ -6,6 +6,8 @@
     <script type="text/javascript">
 		$(function() {
 
+			$("#emInstallDate").datepicker({});
+
 			//자동실행
 			LocationSetting();
 			ModelChange();
@@ -660,7 +662,7 @@
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">
-									<input type="date" class="c-date__input" name="emInstallDate" id="emInstallDate" />
+									<input type="text" class="c-text__input" name="emInstallDate" id="emInstallDate" placeholder="연 - 월 - 일" />
 								</div>
 							</div>
 						</td>

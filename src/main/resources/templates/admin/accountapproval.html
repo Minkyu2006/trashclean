@@ -8,6 +8,9 @@
 
 		$(function(){
 
+			$("#dateFrom").datepicker({});
+			$("#dateTo").datepicker({});
+
 			$("#btnSearch").on('click',function(){
 				callList(1);
 			});
@@ -159,10 +162,10 @@
 						<td>
 							<div class="c-date-group">
 								<div class="c-date">
-									<input type="date" class="c-date__input" id="dateFrom">
+									<input type="text" class="c-text__input" id="dateFrom" placeholder="연 - 월 - 일" />
 								</div>
 								<div class="c-date">
-									<input type="date" class="c-date__input" id="dateTo">
+									<input type="text" class="c-text__input" id="dateTo" placeholder="연 - 월 - 일" />
 								</div>
 							</div>
 						</td>

@@ -6,6 +6,10 @@
     <script type="text/javascript">
 
 		$(function() {
+
+			$("#vcStartDate").datepicker({});
+			$("#vcEndDate").datepicker({});
+
 			$('.pop__list').on('click', function(e) {
 				$('#pop__list').addClass('open');
 
@@ -520,7 +524,7 @@
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">
-									<input type="date" class="c-date__input" name="vcStartDate" id="vcStartDate" />
+									<input type="text" class="c-text__input" name="vcStartDate" id="vcStartDate" placeholder="연 - 월 - 일" />
 								</div>
 							</div>
 						</td>
@@ -528,7 +532,7 @@
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">
-									<input type="date" class="c-date__input" name="vcEndDate" id="vcEndDate" />
+									<input type="text" class="c-text__input" name="vcEndDate" id="vcEndDate" placeholder="연 - 월 - 일" />
 								</div>
 							</div>
 						</td>

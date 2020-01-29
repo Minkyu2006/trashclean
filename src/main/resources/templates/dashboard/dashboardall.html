@@ -9,6 +9,9 @@
 		var marker;
 		$(function() {
 
+			$("#dateFrom").datepicker({});
+			$("#dateTo").datepicker({});
+
 			$("#removehour").removeClass(" active");
 			$("#starthour").addClass(" active");
 			$("#intervaltime").val("3");
@@ -1578,11 +1581,11 @@
 											<div class="c-date-group" >
 												<div class="c-date">
 													<label for="dateFrom" class="c-date__label">from</label>
-													<input type="date"  onchange="intervaltimeDate(this.value)" class="c-date__input" id="dateFrom" />
+													<input type="text" class="c-text__input" id="dateFrom" placeholder="연 - 월 - 일" onchange="intervaltimeDate(this.value)" />
 												</div>
 												<div class="c-date">
 													<label for="dateTo" class="c-date__label">today</label>
-													<input type="date" class="c-date__input" id="dateTo" readonly />
+													<input type="text" class="c-text__input" id="dateTo" placeholder="연 - 월 - 일" readonly="readonly" />
 												</div>
 											</div>
 										</div>
