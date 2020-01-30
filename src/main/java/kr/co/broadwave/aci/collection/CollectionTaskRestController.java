@@ -21,6 +21,7 @@ import kr.co.broadwave.aci.vehicle.VehicleService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -43,6 +44,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/collection")
 public class CollectionTaskRestController {
+
+    @Value("${aci.aws.s3.bucket.url}")
+    private String AWSS3URL;
 
     private final ModelMapper modelMapper;
     private final EquipmentService equipmentService;
@@ -303,5 +307,151 @@ public class CollectionTaskRestController {
 
         return ResponseEntity.ok(res.success());
     }
+
+
+    // 수거업무 리스트
+    @PostMapping("collectionTaskList")
+    public ResponseEntity<Map<String,Object>> collectionTaskList(@PageableDefault Pageable pageable,
+                                                                 HttpServletRequest request){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        AccountRole role = AccountRole.valueOf("ROLE_COLLECTOR");
+        ProcStatsType procStatsType = ProcStatsType.valueOf("CL02");
+        String currentuserid = CommonUtils.getCurrentuser(request);
+
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+        //로그인한 사람 아이디가존재하지않으면 에러처리
+        if (!optionalAccount.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(), ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
+        }
+
+        Page<CollectionTaskListDto> collection = collectionTaskService.findByCollectionsTaskList(currentuserid,role,procStatsType,pageable);
+
+        if(collection.getTotalElements()> 0 ){
+            data.put("datalist",collection.getContent());
+            data.put("awss3url",AWSS3URL);
+            res.addResponse("data",data);
+        }else{
+            res.addResponse("data",data);
+        }
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 장비확인(라이트점멸)버튼
+    @PostMapping("collectionCheck")
+    public ResponseEntity<Map<String,Object>> collectionCheck(@RequestParam(value="deviceid", defaultValue="") String deviceid) {
+        AjaxResponse res = new AjaxResponse();
+
+        log.info("장비코드 : "+deviceid);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 수거시작버튼
+    @PostMapping("collectionStart")
+    public ResponseEntity<Map<String,Object>> collectionStart(@RequestParam(value="receiveId", defaultValue="") Long receiveId,
+                                                              @RequestParam(value="ctCode", defaultValue="") String ctCode,
+                                                              @RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                           HttpServletRequest request) {
+        AjaxResponse res = new AjaxResponse();
+
+        log.info("수거업무 : "+ctCode);
+        log.info("장비코드 : "+deviceid);
+
+        CollectionTask collectionTask = new CollectionTask();
+
+        String currentuserid = CommonUtils.getCurrentuser(request);
+
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+
+        //로그인한 사람 아이디가존재하지않으면 에러처리
+        if (!optionalAccount.isPresent()) {
+            //log.info("수거완료한 사람 아이디 미존재 : '" + currentuserid + "'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(),
+                    ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
+        }
+
+        Optional<CollectionTask> optionalCollectionTask = collectionTaskService.findById2(receiveId);
+        ProcStatsType procStatsType = ProcStatsType.valueOf("CL03");
+
+        if(!optionalCollectionTask.isPresent()){
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E025.getCode(), ResponseErrorCode.E025.getDesc()));
+        }else{
+            collectionTask.setProcStats(procStatsType);
+            collectionTask.setId(optionalCollectionTask.get().getId());
+            collectionTask.setCtCode(optionalCollectionTask.get().getCtCode());
+            collectionTask.setCtSeq(optionalCollectionTask.get().getCtSeq());
+            collectionTask.setYyyymmdd(optionalCollectionTask.get().getYyyymmdd());
+            collectionTask.setEmId(optionalCollectionTask.get().getEmId());
+            collectionTask.setDeviceid(optionalCollectionTask.get().getDeviceid());
+            collectionTask.setDevicetype(optionalCollectionTask.get().getDevicetype());
+            collectionTask.setAccountId(optionalCollectionTask.get().getAccountId());
+            collectionTask.setVehicleId(optionalCollectionTask.get().getVehicleId());
+            collectionTask.setInsert_id(optionalCollectionTask.get().getInsert_id());
+            collectionTask.setInsertDateTime(optionalCollectionTask.get().getInsertDateTime());
+            collectionTask.setModify_id(currentuserid);
+            collectionTask.setModifyDateTime(LocalDateTime.now());
+            collectionTask.setCompleteDateTime(null);
+        }
+
+        collectionTaskService.save(collectionTask);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 수거완료버튼
+    @PostMapping("collectionEnd")
+    public ResponseEntity<Map<String,Object>> collectionEnd(@RequestParam(value="receiveId", defaultValue="") Long receiveId,
+                                                            @RequestParam(value="ctCode", defaultValue="") String ctCode,
+                                                            @RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                           HttpServletRequest request) {
+        AjaxResponse res = new AjaxResponse();
+
+        log.info("수거업무 : "+ctCode);
+        log.info("장비코드 : "+deviceid);
+
+        CollectionTask collectionTask = new CollectionTask();
+
+        String currentuserid = CommonUtils.getCurrentuser(request);
+
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+
+        //로그인한 사람 아이디가존재하지않으면 에러처리
+        if (!optionalAccount.isPresent()) {
+            //log.info("수거완료한 사람 아이디 미존재 : '" + currentuserid + "'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(),
+                    ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
+        }
+
+        Optional<CollectionTask> optionalCollectionTask = collectionTaskService.findById2(receiveId);
+        ProcStatsType procStatsType = ProcStatsType.valueOf("CL04");
+
+        if(!optionalCollectionTask.isPresent()){
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E025.getCode(), ResponseErrorCode.E025.getDesc()));
+        }else{
+            collectionTask.setProcStats(procStatsType);
+            collectionTask.setId(optionalCollectionTask.get().getId());
+            collectionTask.setCtCode(optionalCollectionTask.get().getCtCode());
+            collectionTask.setCtSeq(optionalCollectionTask.get().getCtSeq());
+            collectionTask.setYyyymmdd(optionalCollectionTask.get().getYyyymmdd());
+            collectionTask.setEmId(optionalCollectionTask.get().getEmId());
+            collectionTask.setDeviceid(optionalCollectionTask.get().getDeviceid());
+            collectionTask.setDevicetype(optionalCollectionTask.get().getDevicetype());
+            collectionTask.setAccountId(optionalCollectionTask.get().getAccountId());
+            collectionTask.setVehicleId(optionalCollectionTask.get().getVehicleId());
+            collectionTask.setInsert_id(optionalCollectionTask.get().getInsert_id());
+            collectionTask.setInsertDateTime(optionalCollectionTask.get().getInsertDateTime());
+            collectionTask.setModify_id(currentuserid);
+            collectionTask.setModifyDateTime(LocalDateTime.now());
+            collectionTask.setCompleteDateTime(LocalDateTime.now());
+        }
+
+        collectionTaskService.save(collectionTask);
+
+        return ResponseEntity.ok(res.success());
+    }
+
 
 }

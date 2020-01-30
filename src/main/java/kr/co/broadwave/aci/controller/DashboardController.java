@@ -12,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,9 +38,16 @@ public class DashboardController {
 
         String currentuserid = CommonUtils.getCurrentuser(request);
         Optional<Account> account = accountService.findByUserid(currentuserid);
-        String userId = account.get().getUserid();
-        Integer refleshCheck = account.get().getUserRefleshCheck();
-        Integer refleshCount = account.get().getUserRefleshCount();
+
+        String userId = null;
+        Integer refleshCheck = null;
+        Integer refleshCount = null;
+
+        if(account.isPresent()){
+            userId = account.get().getUserid();
+            refleshCheck = account.get().getUserRefleshCheck();
+            refleshCount = account.get().getUserRefleshCount();
+        }
 
         model.addAttribute("userId", userId);
         model.addAttribute("refleshCheck", refleshCheck);

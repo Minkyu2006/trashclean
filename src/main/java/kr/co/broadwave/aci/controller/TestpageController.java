@@ -2,7 +2,6 @@ package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.files.FileUploadService;
-import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,12 +20,10 @@ import java.net.URLEncoder;
 @Controller
 @RequestMapping("/testpage")
 public class TestpageController {
-    private final MasterCodeService masterCodeService;
     private final FileUploadService fileUploadService;
 
     @Autowired
-    public TestpageController(MasterCodeService masterCodeService, FileUploadService fileUploadService) {
-        this.masterCodeService = masterCodeService;
+    public TestpageController(FileUploadService fileUploadService) {
         this.fileUploadService = fileUploadService;
     }
 

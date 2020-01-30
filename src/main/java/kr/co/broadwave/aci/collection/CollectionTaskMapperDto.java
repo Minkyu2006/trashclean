@@ -33,8 +33,7 @@ public class CollectionTaskMapperDto {
     }
 
     public String getYyyymmdd() {
-        String yyyymmdd2 = yyyymmdd.replaceAll("-", ""); // ex)20201104
-        return yyyymmdd2;
+        return yyyymmdd.replaceAll("-", "");
     }
 
     public String getDeviceid() {

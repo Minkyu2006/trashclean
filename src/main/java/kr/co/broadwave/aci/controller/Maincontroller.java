@@ -107,7 +107,7 @@ public class Maincontroller {
     }
 
     @RequestMapping("/signup")
-    public String siguup(HttpServletRequest request,Model model){
+    public String siguup(Model model){
         List<MasterCodeDto> positions = masterCodeService.findCodeList(CodeType.C0001); // 직급코드가져오기
         List<TeamDto> teams = teamService.findTeamList();
 

@@ -1,15 +1,150 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	  layout:decorate ="~{layout/default}">
-	<head>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+	<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+	<title>NatureStore</title>
 
-		<script>
-		</script>
-	
-	</head>
+	<script src="/assets/js/jquery.min.js"></script>
+	<script src="/assets/js/jquery-ui.min.js"></script>
 
-	<div layout:fragment="content" class="contents-body">
+	<link rel="stylesheet" href="/assets/css/mobile.css"/>
+	<script src="/assets/js/mobile/mobile.js"></script>
+	<link rel="stylesheet" href="/assets/js/alert/min_alert.css"/>
+	<script src="/assets/js/alert/min_alert.js"></script>
 
+	<script type="text/javascript">
+
+		$(function() {
+			$("#collectioncheck").on('click',function(){
+				check();
+			});
+			$("#collectionstart").on('click',function(){
+				start();
+			});
+			$("#collectionend").on('click',function(){
+				end();
+			});
+		});
+
+		function check() {
+
+			var params = {
+				deviceid:$("#deviceid").text()
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/collection/collectionCheck',
+				data : params,
+				type : 'post',
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+
+				}
+			});
+		}
+
+
+		function start() {
+
+			var params = {
+				receiveId:$("#receiveId").val(),
+				deviceid:$("#deviceid").text(),
+				ctCode:$("#ctCode").text(),
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/collection/collectionStart',
+				data : params,
+				type : 'post',
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(){
+					alertSuccess("수거를 시작하겠습니다.")
+				}
+			});
+		}
+
+		function end() {
+
+			var params = {
+				receiveId:$("#receiveId").val(),
+				deviceid:$("#deviceid").text(),
+				ctCode:$("#ctCode").text(),
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/collection/collectionEnd',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(){
+					alertSuccess("수거가 완료되었습니다.");
+				}
+			});
+		}
+
+	</script>
+
+
+</head>
+<body>
+<div class="m-wrap">
+	<div class="m-header">
+		<h1 class="m-logo"><a href="/">NatureStore</a></h1>
+		<ul class="m-head-console">
+			<li><a href="/login">login</a></li>
+			<li><a href="#">logout</a></li>
+		</ul>
 	</div>
+
+	<div class="m-contents">
+		<input type="hidden" id="receiveId" th:value="${collectionTasks} ? ${collectionTasks.id} : ''" readonly>
+		<div class="m-collection__detail-box">
+			<h3>수거예정일 : <span id="yyyymmdd" th:text="${collectionTasks} ? ${collectionTasks.yyyymmdd} : ''"></span></h3>
+			<ul>
+				<li>장비코드 : <span id="deviceid" th:text="${collectionTasks} ? ${collectionTasks.deviceid} : ''"></span></li>
+				<li>수거번호 : <span id="ctCode" th:text="${collectionTasks} ? ${collectionTasks.ctCode} : ''"></span></li>
+				<li>모델타입 : <span id="devicetype" th:text="${collectionTasks} ? ${collectionTasks.devicetype} : ''"></span> - <span id="devicemodeltype" th:text="${collectionTasks} ? ${collectionTasks.devicemodeltype} : ''"></span></li>
+				<li>최대적재량 : <span id="mdmaximum" th:text="${mdmaximum} ? ${mdmaximum} : ''"></span>
+				<li>국가/지역 : <span id="emcountrylocation" th:text="${emcountrylocation} ? ${emcountrylocation} : ''">
+				<li>운영사 : <span id="company" th:text="${collectionTasks} ? ${collectionTasks.company} : ''"></span></li>
+				<li><img th:src="${fileurl} ? ${fileurl} : ''" alt="장비이미지" /></li>
+			</ul>
+		</div>
+		<ul class="m-collection__buttons">
+			<li><button id="collectioncheck" class="m-banner">장비확인(라이트점멸)</button></li>
+			<li><button id="collectionstart" class="m-banner">수거시작</button></li>
+			<li><button id="collectionend" class="m-banner">수거완료</button></li>
+		</ul>
+	</div>
+	<div class="m-footer">© 2019 Broadwave Corporation. All rights Reserved.</div>
+</div>
+</body>
+<div id='alertpop'>
+</div>
 </html>

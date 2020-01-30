@@ -1,5 +1,7 @@
 package kr.co.broadwave.aci.collection;
 
+import kr.co.broadwave.aci.accounts.AccountRole;
+import kr.co.broadwave.aci.bscodes.ProcStatsType;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,4 +73,16 @@ public class CollectionTaskService {
         collectionTaskRepository.delete(collectionTask);
     }
 
+
+    public Page<CollectionTaskListDto> findByCollectionsTaskList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable) {
+        return collectionTaskRepositoryCustom.findByCollectionsTaskList(currentuserid,role,procStatsType,pageable);
+    }
+
+    public CollectionTaskListInfoDto findByCollectionListInfoQueryDsl(Long id) {
+        return collectionTaskRepositoryCustom.findByCollectionListInfoQueryDsl(id);
+    }
+
+    public Optional<CollectionTask> findById2(Long receiveId) {
+        return collectionTaskRepository.findById(receiveId);
+    }
 }

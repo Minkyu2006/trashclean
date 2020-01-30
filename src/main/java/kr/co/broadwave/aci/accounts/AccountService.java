@@ -144,5 +144,4 @@ public class AccountService implements UserDetailsService {
     public Page<AccountDtoCollectionList> findByCollection(String collectionId, String collectionName,AccountRole role, Pageable pageable) {
         return accountRepositoryCustom.findByCollection(collectionId,collectionName,role,pageable);
     }
-
 }

@@ -2,12 +2,16 @@ package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
+import kr.co.broadwave.aci.collection.CollectionTaskListInfoDto;
+import kr.co.broadwave.aci.collection.CollectionTaskService;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -23,11 +27,17 @@ import java.util.List;
 @RequestMapping("/collection")
 public class CollectionController {
 
+    @Value("${aci.aws.s3.bucket.url}")
+    private String AWSS3URL;
+
     private final MasterCodeService masterCodeService;
+    private final CollectionTaskService collectionTaskService;
 
     @Autowired
-    public CollectionController(MasterCodeService masterCodeService){
+    public CollectionController(MasterCodeService masterCodeService,
+                                CollectionTaskService collectionTaskService){
         this.masterCodeService=masterCodeService;
+        this.collectionTaskService=collectionTaskService;
     }
 
     @RequestMapping("collectiontask")
@@ -52,8 +62,21 @@ public class CollectionController {
         return "collection/mobileindex";
     }
 
-    @RequestMapping("collectionprocess")
-    public String collectionprocess(){
+    @RequestMapping("collectionprocess/{id}")
+    public String collectionprocess(Model model, @PathVariable Long id){
+
+        CollectionTaskListInfoDto collectionTasks = collectionTaskService.findByCollectionListInfoQueryDsl(id);
+        //log.info("collectionTasks : "+collectionTasks);
+        ProcStatsType procStatsType = ProcStatsType.valueOf("CL02");
+        if(!collectionTasks.getProcStatsType().equals(procStatsType)){
+            return "collection/collectionlist";
+        }
+
+        model.addAttribute("collectionTasks", collectionTasks);
+        model.addAttribute("mdmaximum", Math.round(collectionTasks.getMdmaximum())+collectionTasks.getMdunit());
+        model.addAttribute("emcountrylocation", collectionTasks.getEmCountry()+"/"+collectionTasks.getEmLoation());
+        model.addAttribute("fileurl", AWSS3URL+collectionTasks.getFilePath()+collectionTasks.getSaveFileName());
+
         return "collection/collectionprocess";
     }
 

@@ -64,6 +64,9 @@ public class CollectionTask {
     @JoinColumn(name="vehicle_id")
     private Vehicle vehicleId; // 차량 조회하고 -> 선택한 차량 고유아이디값 등록
 
+    @Column(name="complete_date")
+    private LocalDateTime completeDateTime;
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 

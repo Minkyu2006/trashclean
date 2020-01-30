@@ -118,8 +118,3 @@ function alertCheck(text) { //정말삭제할껀지확인하는창
 
     $('#alertpop').html(html);
 }
-
-function a(value) {
-    console.log("value : "+value);
-    return value;
-}
