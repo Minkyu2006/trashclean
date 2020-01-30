@@ -129,7 +129,7 @@ body {
 }
 
 .m-collectionlist {
-	positoin: relative;
+	position: relative;
 	border: 1px solid #89aaa1;
 }
 .m-collectionlist > ul > li + li {
@@ -183,6 +183,57 @@ body {
 	font-size: 12px;
 }
 
+.m-collection {
+	position: relative;
+	width: 100%;
+}
+.m-collection__detail-box {
+	position: relative;
+	background-color: #b9dcd2;
+	border: 1px solid #89aaa1;
+}
+.m-collection__detail-box h3 {
+	width: 100%;
+	padding: 10px;
+	background-color: #007e37;
+	color: #fff;
+	font-size: 16px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.m-collection__detail-box ul li {
+	padding: 5px;
+	color: #007e37;
+	font-size: 14px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.m-collection__detail-box ul li + li {
+	border-top: 1px solid #89aaa1;
+}
+.m-collection__buttons {
+	margin-top: 20px;
+}
+.m-collection__buttons li + li {
+	margin-top: 10px;
+}
+.m-collection__buttons button {
+	display: block;
+	width: 100%;
+	height: 40px;
+	background-color: #007e37;
+	border: 1px solid #007e37;
+	color: #fff;
+	font-size: 16px;
+	line-height: 40px;
+}
+.m-collection__buttons li:last-child button {
+	background-color: #fff;
+	color: #007e37;
+	font-weight: 700;
+}
 
 .m-footer {
 	position: relative;
