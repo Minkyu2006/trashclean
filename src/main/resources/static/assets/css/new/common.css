@@ -916,11 +916,19 @@ table {
 	-moz-box-shadow: 0 10px 30px rgba(185, 220, 210, 1);
 	box-shadow: 0 10px 30px rgba(185, 220, 210, 1);
 }
+
+.login.mobile {
+	width: calc(100% - 40px);
+}
 .login__logo {
 	text-align: center;
 }
 .login__logo a{
 	display: block;
+}
+.login.mobile .login__logo a img {
+	width: 100%;
+	max-width: 198px; 
 }
 .login__form-box {
 	margin-top: 40px;
