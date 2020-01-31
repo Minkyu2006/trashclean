@@ -74,13 +74,18 @@ body {
 .m-logo {
 	display: block;
 	float: left;
-	width: 140px;
+	width: 120px;
 	height: 50px;
 	background: url(/assets/images/logo.png) no-repeat;
 	-webkit-background-size: 120px;
 	background-size: 120px;
 	background-position: left center;
 	text-indent: -9999px;
+}
+.m-logo a {
+	display: block;
+	width: 100%;
+	height: 100%;
 }
 .m-head-console {
 	overflow: hidden;
@@ -166,6 +171,9 @@ body {
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+.m-collectionlist__detail li:nth-last-child(2) {
+	text-align: center;
+}
 .m-collectionlist__detail li + li {
 	border-top: 1px solid #89aaa1;
 }
@@ -189,13 +197,13 @@ body {
 }
 .m-collection__detail-box {
 	position: relative;
-	background-color: #b9dcd2;
+	background-color: #ecffff;
 	border: 1px solid #89aaa1;
 }
 .m-collection__detail-box h3 {
 	width: 100%;
 	padding: 10px;
-	background-color: #007e37;
+	background-color: #89aaa1;
 	color: #fff;
 	font-size: 16px;
 	-webkit-box-sizing: border-box;
@@ -212,6 +220,9 @@ body {
 }
 .m-collection__detail-box ul li + li {
 	border-top: 1px solid #89aaa1;
+}
+.m-collection__detail-box ul li:last-child {
+	text-align: center;
 }
 .m-collection__buttons {
 	margin-top: 20px;
