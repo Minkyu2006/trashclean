@@ -59,6 +59,7 @@ public class CollectionController {
 
     @RequestMapping("mobileindex")
     public String mobileindex(){
+
         return "collection/mobileindex";
     }
 
@@ -70,14 +71,14 @@ public class CollectionController {
         ProcStatsType procStatsType = ProcStatsType.valueOf("CL02");
         if(!collectionTasks.getProcStatsType().equals(procStatsType)){
             return "collection/collectionlist";
+        }else{
+            model.addAttribute("collectionTasks", collectionTasks);
+            model.addAttribute("mdmaximum", Math.round(collectionTasks.getMdmaximum())+collectionTasks.getMdunit());
+            model.addAttribute("emcountrylocation", collectionTasks.getEmCountry()+"/"+collectionTasks.getEmLoation());
+            model.addAttribute("fileurl", AWSS3URL+collectionTasks.getFilePath()+collectionTasks.getSaveFileName());
+
+            return "collection/collectionprocess";
         }
-
-        model.addAttribute("collectionTasks", collectionTasks);
-        model.addAttribute("mdmaximum", Math.round(collectionTasks.getMdmaximum())+collectionTasks.getMdunit());
-        model.addAttribute("emcountrylocation", collectionTasks.getEmCountry()+"/"+collectionTasks.getEmLoation());
-        model.addAttribute("fileurl", AWSS3URL+collectionTasks.getFilePath()+collectionTasks.getSaveFileName());
-
-        return "collection/collectionprocess";
     }
 
     @RequestMapping("collectionlist")

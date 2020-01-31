@@ -115,11 +115,15 @@
 <body>
 <div class="m-wrap">
 	<div class="m-header">
-		<h1 class="m-logo"><a href="/">NatureStore</a></h1>
-		<ul class="m-head-console">
-			<li><a href="/login">login</a></li>
-			<li><a href="#">logout</a></li>
-		</ul>
+		<h1 class="m-logo">
+			<a href="/collection/mobileindex">NatureStore</a>
+		</h1>
+		<form th:action="@{/logout}" method="post" id="logout">
+			<ul class="m-head-console">
+				<li><a href="/login">Login</a></li>
+				<li><a href="#" onclick="document.getElementById('logout').submit();">Logout</a></li>
+			</ul>
+		</form>
 	</div>
 
 	<div class="m-contents">

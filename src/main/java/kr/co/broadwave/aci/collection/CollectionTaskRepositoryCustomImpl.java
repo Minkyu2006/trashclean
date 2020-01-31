@@ -145,7 +145,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
         if (currentuserid != null ){
             query.where(collectionTask.accountId.userid.eq(currentuserid));
         }
-        query.orderBy(collectionTask.id.desc());
+        query.orderBy(collectionTask.yyyymmdd.desc());
 
         final List<CollectionTaskListDto> collections = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(collections, pageable, query.fetchCount());

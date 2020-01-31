@@ -4,6 +4,7 @@ import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountDtoCollectionList;
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
@@ -54,15 +55,18 @@ public class CollectionTaskRestController {
     private final MasterCodeService masterCodeService;
     private final VehicleService vehicleService;
     private final CollectionTaskService collectionTaskService;
+    private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
 
     @Autowired
     public CollectionTaskRestController(ModelMapper modelMapper,
+                                        ACIAWSIoTDeviceService aciawsIoTDeviceService,
                                         CollectionTaskService collectionTaskService,
                                         VehicleService vehicleService,
                                         AccountService accountService,
                                         MasterCodeService masterCodeService,
                                         EquipmentService equipmentService) {
         this.accountService = accountService;
+        this.aciawsIoTDeviceService = aciawsIoTDeviceService;
         this.collectionTaskService = collectionTaskService;
         this.masterCodeService = masterCodeService;
         this.vehicleService = vehicleService;
@@ -343,7 +347,7 @@ public class CollectionTaskRestController {
     @PostMapping("collectionCheck")
     public ResponseEntity<Map<String,Object>> collectionCheck(@RequestParam(value="deviceid", defaultValue="") String deviceid) {
         AjaxResponse res = new AjaxResponse();
-
+        HashMap<String, Object> data = new HashMap<>();
         log.info("장비코드 : "+deviceid);
 
         return ResponseEntity.ok(res.success());
@@ -356,6 +360,7 @@ public class CollectionTaskRestController {
                                                               @RequestParam(value="deviceid", defaultValue="") String deviceid,
                                                            HttpServletRequest request) {
         AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         log.info("수거업무 : "+ctCode);
         log.info("장비코드 : "+deviceid);
@@ -408,6 +413,7 @@ public class CollectionTaskRestController {
                                                             @RequestParam(value="deviceid", defaultValue="") String deviceid,
                                                            HttpServletRequest request) {
         AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         log.info("수거업무 : "+ctCode);
         log.info("장비코드 : "+deviceid);

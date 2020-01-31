@@ -42,8 +42,6 @@
 
 			var $schList = $('#schList');
 
-			$schList.empty().append('<tr ><td colspan="7" align = "center">조회 중</td></tr>');
-
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
@@ -81,11 +79,15 @@
 	<body>
 		<div class="m-wrap">
 			<div class="m-header">
-				<h1 class="m-logo"><a href="/">NatureStore</a></h1>
-				<ul class="m-head-console">
-					<li><a href="/login">login</a></li>
-					<li><a href="#">logout</a></li>
-				</ul>
+				<h1 class="m-logo">
+					<a href="/collection/mobileindex">NatureStore</a>
+				</h1>
+				<form th:action="@{/logout}" method="post" id="logout">
+					<ul class="m-head-console">
+						<li><a href="/login">Login</a></li>
+						<li><a href="#" onclick="document.getElementById('logout').submit();">Logout</a></li>
+					</ul>
+				</form>
 			</div>
 			<div class="m-contents">
 				<div class="m-collectionlist">
