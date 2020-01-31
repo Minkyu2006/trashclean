@@ -39,7 +39,7 @@ public class CollectionTask {
     private Integer ctSeq; // 수거처리순번(무조건1)
 
     @Column(name="yyyymmdd")
-    private String yyyymmdd; // 수거 처리일
+    private String yyyymmdd; // 수거 예정일
 
     @ManyToOne(targetEntity = Equipment.class,fetch = FetchType.LAZY)
     @JoinColumn(name="em_id")

@@ -8,7 +8,6 @@
 
 			$(function() {
 				$("#dateFrom").datepicker({});
-				// $("#dateTo").datepicker({});
 
 				$("#removehour").removeClass(" active");
 				$("#starthour").addClass(" active");
@@ -27,7 +26,7 @@
 
 			// 맵에 장비코드 보내기
 			function deviceMap() {
-				if ($("#intervaltime").val().trim() == '') {
+				if ($("#intervaltime").val().trim() === '') {
 					alertCaution("조회할 날짜를 선택해주세요");
 					return false;
 				}
@@ -41,18 +40,18 @@
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 				$.ajax({
 					url:'/api/dashboard/deviceInfoList',
 					type : 'post',
 					data : params,
 					cache:false,
-					error:function(request,status,error){
+					error:function(request){
 						ajaxErrorMsg(request);
 					},
 					success: function(res){
-						var pushValue = new Array();
+						var pushValue = [];
 						$.each(res.data.datalist, function(key, value){
 							pushValue.push(nvl(value.emNumber,"확 인 불 가"));
 						});
@@ -66,12 +65,12 @@
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
-				var deviceIds = new Array();
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+				var deviceIds = [];
 				for (var i=0; i<pushValue.length; i++){
 					deviceIds.push(pushValue[i]);
 				}
-				var itemJson = new Object();
+				var itemJson = {};
 				itemJson.deviceids = deviceIds;
 				var devicestr = JSON.stringify(itemJson);
 				var params = {
@@ -99,7 +98,7 @@
 			// 장비상세정보 리스트 보내기
 			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_level,solar_current,solar_voltage) {
 
-				var locations = mapGps
+				var locations = mapGps;
 
 				var map;
 				map = new google.maps.Map(document.getElementById('map'), {
@@ -115,14 +114,14 @@
 
 				iconSrc['정상'] = "/assets/images/marker.png";
 				iconSrc['주의'] = "/assets/images/marker--caution.png";
-				iconSrc['심각'] = "/assets/images/marker--severe.png"
+				iconSrc['심각'] = "/assets/images/marker--severe.png";
 
 				var infowindow = new google.maps.InfoWindow();
 
-				var bounds = new google.maps.LatLngBounds()
+				var bounds = new google.maps.LatLngBounds();
 
 				for (i = 0; i < mapGps.length; i++) {
-					if(mapGps[i][1]==0 || mapGps[i][2]==0){
+					if(mapGps[i][1]===0 || mapGps[i][2]===0){
 						continue;
 					}
 					marker = new google.maps.Marker({
@@ -140,7 +139,7 @@
 								'<dt>' +'상태 : '+status[i]+'</dt>' +
 								'<dd>' +'배출량 : '+level[i+1]+'%'+'</dd>' +
 								'</dl>' +
-								'</div>'
+								'</div>';
 						return function() {
 							infowindow.setContent(content);
 							infowindow.open(map, marker);
@@ -173,14 +172,14 @@
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 				$.ajax({
 					url:'/api/dashboard/deviceDetail',
 					type : 'post',
 					data : params,
 					cache:false,
-					error:function(request,status,error){
+					error:function(request){
 						ajaxErrorMsg(request);
 					},
 					success: function(res){
@@ -188,9 +187,9 @@
 						var html = '';
 
 						var baseurl = res.data.awss3url; //aws경로 URL
-						var emInstallDate = res.data.deviceDetailList.emInstallDate
+						var emInstallDate = res.data.deviceDetailList.emInstallDate;
 
-						var installdate = emInstallDate.substring(0,4)+"년 "+emInstallDate.substring(4,6)+"월 "+emInstallDate.substring(6,8)+"일" // 설치일자 가공
+						var installdate = emInstallDate.substring(0,4)+"년 "+emInstallDate.substring(4,6)+"월 "+emInstallDate.substring(6,8)+"일"; // 설치일자 가공
 
 						var today = new Date();
 						var dateObj = new Date(emInstallDate.substring(0,4),Number(emInstallDate.substring(4,6))-1,emInstallDate.substring(6,8));
@@ -201,113 +200,113 @@
 						var operationDay = timeDifferenceInHours  / 24; // 운영일 가공
 
 						html += '<div class="equipment__section">';
-						html += '<div id="stateLoading" class="c-loader">'
-						html += '<div class="c-loader__active c-loader__active--ring"></div>'
-						html += '</div>'
-						if(state=="정상"){
+						html += '<div id="stateLoading" class="c-loader">';
+						html += '<div class="c-loader__active c-loader__active--ring"></div>';
+						html += '</div>';
+						if(state==="정상"){
 							html += '<span class="equipment__stat normal">'+'정상'+'</span>';
 							html += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html += '<div class="equipment__img">';
-							html += '<img src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
+							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
 							html += '</div>';
-						}else if(state=="주의"){
+						}else if(state==="주의"){
 							html += '<span class="equipment__stat caution">'+'주의'+'</span>';
 							html += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html += '<div class="equipment__img">';
-							html += '<img src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
+							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
 							html += '</div>';
-						}else if(state=="심각"){
+						}else if(state==="심각"){
 							html += '<span class="equipment__stat severe">'+'심각'+'</span>';
 							html += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							html += '<div class="equipment__img">';
-							html += '<img src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
+							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
 							html += '</div>';
 						}else{
 							html += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
 							html += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html += '<div class="equipment__img">';
-							html += '<img src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
+							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
 							html += '</div>';
 						}
 						html += '</div>';
 
-						html += '<div class="equipment__section">'
-						html += '<div id="deviceLoading" class="c-loader">'
-						html += '<div class="c-loader__active c-loader__active--ring"></div>'
-						html += '</div>'
-						html += '<h4 class="equipment__section-title">장치 상세 정보</h4>'
-						html += '<ul class="equipment__info">'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>'
-						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.emNumber+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'모델타입 : '+'</span>'
-						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.emType+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'모델명 : '+'</span>'
-						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.mdId.mdName+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'최대적재량 : '+'</span>'
-						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.mdId.mdMaximumPayload+res.data.deviceDetailList.mdId.mdUnit.name+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'운영사 : '+'</span>'
-						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.company.csOperator+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'국가/지역 : '+'</span>'
-						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.emLocationName+'/'+res.data.deviceDetailList.emCountryName+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>'
-						html += '<span class="equipment__info-value">'+installdate+'</span>'
-						html += '</li>'
-						html += '</ul>'
-						html += '</div>'
+						html += '<div class="equipment__section">';
+						html += '<div id="deviceLoading" class="c-loader">';
+						html += '<div class="c-loader__active c-loader__active--ring"></div>';
+						html += '</div>';
+						html += '<h4 class="equipment__section-title">장치 상세 정보</h4>';
+						html += '<ul class="equipment__info">';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>';
+						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.emNumber+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'모델타입 : '+'</span>';
+						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.emType+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'모델명 : '+'</span>';
+						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.mdId.mdName+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'최대적재량 : '+'</span>';
+						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.mdId.mdMaximumPayload+res.data.deviceDetailList.mdId.mdUnit.name+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'운영사 : '+'</span>';
+						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.company.csOperator+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'국가/지역 : '+'</span>';
+						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.emLocationName+'/'+res.data.deviceDetailList.emCountryName+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>';
+						html += '<span class="equipment__info-value">'+installdate+'</span>';
+						html += '</li>';
+						html += '</ul>';
+						html += '</div>';
 
-						html += '<div class="equipment__section">'
-						html += '<div id="detailLoading" class="c-loader">'
-						html += '<div class="c-loader__active c-loader__active--ring"></div>'
-						html += '</div>'
-						html += '<h4 class="equipment__section-title">상태 상세 정보</h4>'
-						html += '<ul class="equipment__info">'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'운영일 : '+'</span>'
-						html += '<span class="equipment__info-value">'+parseInt(operationDay)+'일'+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'온도 : '+'</span>'
-						html += '<span class="equipment__info-value">'+temp_brd+'℃'+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>'
-						html += '<span class="equipment__info-value">'+level+'%'+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>'
-						html += '<span class="equipment__info-value">'+batt_level+'%'+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>'
-						html += '<span class="equipment__info-value">'+solar_current+'A'+'</span>'
-						html += '</li>'
-						html += '<li class="equipment__info-item">'
-						html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>'
-						html += '<span class="equipment__info-value">'+solar_voltage+'V'+'</span>'
-						html += '</li>'
-						html += '</ul>'
-						html += '</div>'
+						html += '<div class="equipment__section">';
+						html += '<div id="detailLoading" class="c-loader">';
+						html += '<div class="c-loader__active c-loader__active--ring"></div>';
+						html += '</div>';
+						html += '<h4 class="equipment__section-title">상태 상세 정보</h4>';
+						html += '<ul class="equipment__info">';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
+						html += '<span class="equipment__info-value">'+parseInt(operationDay)+'일'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
+						html += '<span class="equipment__info-value">'+temp_brd+'℃'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
+						html += '<span class="equipment__info-value">'+level+'%'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>';
+						html += '<span class="equipment__info-value">'+batt_level+'%'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>';
+						html += '<span class="equipment__info-value">'+solar_current+'A'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>';
+						html += '<span class="equipment__info-value">'+solar_voltage+'V'+'</span>';
+						html += '</li>';
+						html += '</ul>';
+						html += '</div>';
 
-						html += '<div class="equipment__section">'
-						html += '<div id="timechartLoading" class="c-loader">'
-						html += '<div class="c-loader__active c-loader__active--ring"></div>'
-						html += '</div>'
-						html += '<input type="hidden" id="intervaltime" value ="24" readonly="readonly" />'
-						html += '<canvas id="timeStampChart" style="width: 100%;height: 220px;"></canvas>'
-						html += '</div>'
+						html += '<div class="equipment__section">';
+						html += '<div id="timechartLoading" class="c-loader">';
+						html += '<div class="c-loader__active c-loader__active--ring"></div>';
+						html += '</div>';
+						html += '<input type="hidden" id="intervaltime" value ="24" readonly="readonly" />';
+						html += '<canvas id="timeStampChart" style="width: 100%;height: 220px;"></canvas>';
+						html += '</div>';
 
 						$deviceDetail.html(html);
 						timeStamp(pushValue);
@@ -325,24 +324,24 @@
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 				$.ajax({
 					url:'/api/dashboard/devicehitory',
 					type : 'post',
 					data : params,
 					cache:false,
-					error:function(request,status,error){
+					error:function(request){
 						ajaxErrorMsg(request);
 					},
 					success: function(res) {
 						statuscode= res.data.statusCode;
 						if (statuscode ===200) {
-							var timeStamp = new Array(); //타임스탬프
-							var temp_brd = new Array(); //온도
-							var level = new Array(); //배출량
-							var batt_level = new Array(); //배터리잔량
-							var testTimeStamp = new Array();
+							var timeStamp = []; //타임스탬프
+							var temp_brd = []; //온도
+							var level = []; //배출량
+							var batt_level = []; //배터리잔량
+							var testTimeStamp = [];
 							$.each(res.data.datarow1, function (key, value) {
 								var timestamp = parseInt(value.timestamp); // value.timestamp(밀리세컨드)는 문자열로 받아오기때문에 정수형으로 변환해준다.
 								var date = new Date(timestamp);
@@ -359,14 +358,14 @@
 								if(seconds < 10){
 									seconds = "0"+seconds;
 								}
-								var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds
+								var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds;
 
 								// console.log("날짜 : "+time)
 								// console.log("")
 								testTimeStamp.push(parseInt(value.timestamp));
-								timeStamp.push(time)
-								temp_brd.push(value.temp_brd)
-								level.push(value.level)
+								timeStamp.push(time);
+								temp_brd.push(value.temp_brd);
+								level.push(value.level);
 								batt_level.push(value.batt_level);
 							});
 							var days = $("#intervaltime").val(); // 기간선택 시간
@@ -376,17 +375,17 @@
 							temp_brd_Min = Math.min.apply(0, temp_brd); // 온도최소값
 							tempMap = (temp_brd_Max+15).toFixed(0);
 							tempMin = (temp_brd_Min-15).toFixed(0);
-							if(tempMap/5!=0){
-								var tempMaxsub = tempMap.substring(1,2);
-								var tempBrdMax = parseInt(tempMap)-parseInt(tempMaxsub);
+							if(tempMap/5!==0){
+								tempMaxsub = tempMap.substring(1,2);
+								tempBrdMax = parseInt(tempMap)-parseInt(tempMaxsub);
 							}else{
-								var tempBrdMax = tempMap;
+								tempBrdMax = tempMap;
 							}
-							if(tempMin/5!=0){
-								var tempMinsub = tempMin.substring(1,2);
-								var tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
+							if(tempMin/5!==0){
+								tempMinsub = tempMin.substring(1,2);
+								tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
 							}else{
-								var tempBrdMin = tempMin;
+								tempBrdMin = tempMin;
 							}
 
 							//var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
@@ -465,7 +464,7 @@
 										}],
 										yAxes: [{
 											ticks: {
-												callback: function(value, index, values) {
+												callback: function(value) {
 													return value+'%';
 												},
 												max: 100,
@@ -478,7 +477,7 @@
 											position: 'left'
 										},{
 											ticks: {
-												callback: function(value, index, values) {
+												callback: function(value) {
 													return value+'℃';
 												},
 												max: tempBrdMax,
@@ -508,37 +507,37 @@
 
 			// 기간선택에 따라 보내는시간 변경하는 함수
 			function intervaltimeChange(text) {
-				if (text == "1Hours") {
+				if (text === "1Hours") {
 					$("#intervaltime").val("1");
 					$("#fromTo").hide();
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
-				}else if (text == "3Hours") {
+				}else if (text === "3Hours") {
 					$("#intervaltime").val("3");
 					$("#fromTo").hide();
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
-				}else if (text == "24Hours") {
+				}else if (text === "24Hours") {
 					$("#intervaltime").val("24");
 					$("#fromTo").hide();
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
-				} else if (text == "7Days") {
+				} else if (text === "7Days") {
 					$("#intervaltime").val("168");
 					$("#fromTo").hide();
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
-				} else if (text == "1Month") {
+				} else if (text === "1Month") {
 					$("#intervaltime").val("720");
 					$("#fromTo").hide();
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
-				} else if (text == "1Year") {
+				} else if (text === "1Year") {
 					$("#intervaltime").val("8760");
 					$("#fromTo").hide();
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
-				} else if (text == "FromTo") {
+				} else if (text === "FromTo") {
 					$("#intervaltime").val("");
 					$("#fromTo").show();
 				}
@@ -549,7 +548,7 @@
 				// console.log("date : " + date); 받아온날짜
 				var today = new Date();
 				var year = today.getFullYear();
-				var month = today.getMonth()+1
+				var month = today.getMonth()+1;
 				var day = today.getDate();
 				if(month < 10){
 					month = "0"+month;

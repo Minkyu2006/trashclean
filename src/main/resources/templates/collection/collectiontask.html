@@ -110,7 +110,7 @@
 		// 수거업무저장
 		function save() {
 			if ($("#yyyymmdd").val().trim() === '') {
-				alertCaution("처리일자를 선택해주세요.");
+				alertCaution("수거예정일자를 선택해주세요.");
 				return false;
 			}
 			if ($("#deviceid").val().trim() === '') {
@@ -583,7 +583,7 @@
 							<input type="text" id="s_ctCode" class="c-text__input" />
 						</div>
 					</td>
-					<th>수거처리일</th>
+					<th>수거예정일</th>
 					<td>
 						<div class="c-date-group" >
 							<div class="c-date">
@@ -684,7 +684,7 @@
 						<td></td>
 					</tr>
 					<tr>
-						<th>수거 처리일</th>
+						<th>수거 예정일</th>
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">

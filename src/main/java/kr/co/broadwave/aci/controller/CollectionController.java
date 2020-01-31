@@ -96,7 +96,7 @@ public class CollectionController {
         if(currentuserid.equals("system")){
             return "login";
         }else{
-            return "redirect:/error/404";
+            return "error/404";
         }
     }
 
