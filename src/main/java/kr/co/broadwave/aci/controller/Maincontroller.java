@@ -43,8 +43,12 @@ public class Maincontroller {
 
     //메인화면
     @RequestMapping("/")
-    public String main(Model model){
-
+    public String main(HttpServletRequest request){
+        String userAgent = request.getHeader("User-Agent").toUpperCase();
+        String IS_MOBILE = "MOBILE";
+        if(userAgent.contains(IS_MOBILE)) {
+            return "redirect:/collection/mobileindex";
+        }
         return "index";
     }
 
@@ -99,9 +103,6 @@ public class Maincontroller {
         return "redirect:/dashboard/dashboardall";
 
     }
-
-
-
 
     @RequestMapping("/login")
     public String login(HttpServletRequest request){

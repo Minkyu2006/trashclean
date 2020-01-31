@@ -4,6 +4,7 @@ import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
 import kr.co.broadwave.aci.collection.CollectionTaskListInfoDto;
 import kr.co.broadwave.aci.collection.CollectionTaskService;
+import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -58,18 +60,25 @@ public class CollectionController {
     }
 
     @RequestMapping("mobileindex")
-    public String mobileindex(){
-
-        return "collection/mobileindex";
+    public String mobileindex(HttpServletRequest request){
+        String currentuserid = CommonUtils.getCurrentuser(request);
+        if(currentuserid.equals("system")){
+            return "login";
+        }else{
+            return "collection/mobileindex";
+        }
     }
 
     @RequestMapping("collectionprocess/{id}")
-    public String collectionprocess(Model model, @PathVariable Long id){
-
+    public String collectionprocessid(HttpServletRequest request,Model model, @PathVariable Long id){
+        String currentuserid = CommonUtils.getCurrentuser(request);
         CollectionTaskListInfoDto collectionTasks = collectionTaskService.findByCollectionListInfoQueryDsl(id);
         //log.info("collectionTasks : "+collectionTasks);
         ProcStatsType procStatsType = ProcStatsType.valueOf("CL02");
-        if(!collectionTasks.getProcStatsType().equals(procStatsType)){
+        //AccountRole accountRole = AccountRole.valueOf("ROLE_COLLECTOR");
+        if(currentuserid.equals("system")) {
+            return "login";
+        }else if(!collectionTasks.getProcStatsType().equals(procStatsType)){
             return "collection/collectionlist";
         }else{
             model.addAttribute("collectionTasks", collectionTasks);
@@ -81,8 +90,23 @@ public class CollectionController {
         }
     }
 
+    @RequestMapping("collectionprocess")
+    public String collectionprocess(HttpServletRequest request){
+        String currentuserid = CommonUtils.getCurrentuser(request);
+        if(currentuserid.equals("system")){
+            return "login";
+        }else{
+            return "redirect:/error/404";
+        }
+    }
+
     @RequestMapping("collectionlist")
-    public String collectionlist(){
-        return "collection/collectionlist";
+    public String collectionlist(HttpServletRequest request){
+        String currentuserid = CommonUtils.getCurrentuser(request);
+        if(currentuserid.equals("system")){
+            return "login";
+        }else{
+            return "collection/collectionlist";
+        }
     }
 }
