@@ -1203,18 +1203,21 @@ table {
 .panel.panel--w500 {
 	width: 500px;
 }
+.panel.panel--w-500,
 .panel.panel--w500 + .panel {
 	width: calc(100% - 500px);
 }
 .panel.panel--w600 {
 	width: 600px;
 }
+.panel.panel--w-600,
 .panel.panel--w600 + .panel {
 	width: calc(100% - 600px);
 }
 .panel.panel--w700 {
 	width: 700px;
 }
+.panel.panel--w-700,
 .panel.panel--w700 + .panel {
 	width: calc(100% - 700px);
 }
@@ -1499,7 +1502,12 @@ table {
 	width: 100%;
 	height: 220px;
 }*/
-
+.equip-setting {
+	height: 525px;
+}
+.equip-setting ul li + li {
+	margin-top: 10px;
+}
 
 /* section */
 .section {

@@ -3,10 +3,204 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate ="~{layout/default}">
 
-	<script>
-
-	</script>
+	<head>
+		
+	</head>
 
 	<div layout:fragment="content" class="contents-body">
+		<div class="page">
+			<div class="page-title">
+				<div class="page-title__left">
+					<h2>장비 기본값 세팅</h2>
+				</div>
+			</div>
+			
+			<div class="dashboard">
+				<div class="dashboard__row">
+					<div class="panel">
+						<div class="panel__inner">
+							<div class="panel__body panel__body--height-auto">
+								<h2 class="article__heading">장비조회</h2>
+								<div class="l-float-heading">
+									<div class="l-float-heading--left">
+										<h4 class="article__head">검색조건<span class="article__head-caption">(수정하려면 조회 후 초기화 버튼을 클릭하세요.)</span></h4>
+									</div>
+									<div class="l-float-heading--right"><button class="c-button c-button--small">조건 초기화</button></div>
+								</div>
+								<table class="c-table">
+									<colgroup>
+										<col style="width: 80px;" />
+										<col />
+										<col style="width: 80px;" />
+										<col />
+										<col style="width: 80px;" />
+										<col />
+										<col style="width: 80px;" />
+										<col />
+										<col style="width: 62px;" />
+									</colgroup>
+									<tr>
+										<th>장비 번호</th>
+										<td>
+											<div class="c-text"><input type="text" class="c-text__input" /></div>
+										</td>
+										<th>장비 명칭</th>
+										<td>
+											<div class="c-text"><input type="text" class="c-text__input" /></div>
+										</td>
+										<th>모델 타입</th>
+										<td>
+											<div class="c-select">
+												<select name="" id="" class="c-select__input">
+													<option value="">전체</option>
+													<option value="">iSolabin</option>
+													<option value="">iTainer</option>
+													<option value="">iNetbin</option>
+												</select>
+											</div>
+										</td>
+										<th>국가</th>
+										<td>
+											<div class="c-select">
+												<select name="" id="" class="c-select__input">
+													<option value="">전체</option>
+													<option value="">대한민국</option>
+													<option value="">미국</option>
+													<option value="">영국</option>
+												</select>
+											</div>
+										</td>
+										<td>
+											<button class="c-button c-button--point">조회</button>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="dashboard__row">
+					<div class="panel panel--w-500">
+						<div class="panel__inner">
+							<div class="panel__header">장비 리스트</div>
+							<div class="panel__body panel__body--height-auto">
+								<div class="panel__table">
+									<div class="c-scroll-table">
+										<div class="c-scroll-table__header">
+											<table>
+												<colgroup>
+													<col style="width: 40px;" />
+													<col style="width: 240px;" />
+													<col style="width: 240px;" />
+													<col style="width: 210px;" />
+													<col style="width: 200px;" />
+													<col style="width: 200px;" />
+													<col style="width: 19px;" />
+												</colgroup>
+												<thead>
+													<tr>
+														<th>
+															<input type="checkbox" />
+														</th>
+														<th>장비번호</th>
+														<th>모델명</th>
+														<th>종류</th>
+														<th>국가</th>
+														<th>지역</th>
+														<th></th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+										<div class="c-scroll-table__body">
+											<table>
+												<colgroup>
+													<col style="width: 40px;" />
+													<col style="width: 240px;" />
+													<col style="width: 240px;" />
+													<col style="width: 210px;" />
+													<col style="width: 200px;" />
+													<col style="width: 200px;" />
+												</colgroup>
+												<tbody>
+													<tr>
+														<td>
+															<input type="checkbox" />
+														</td>
+														<td>Isol-kr-sel-0005</td>
+														<td>iSolarbin</td>
+														<td>일반쓰레기</td>
+														<td>대한민국</td>
+														<td>제주</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel--w500">
+						<div class="panel__inner">
+							<div class="panel__header">장비 기본정보</div>
+							<div class="panel__body panel__body--height-auto">
+								<div class="equip-setting">
+									<ul>
+										<li>
+											<div class="c-text">
+												<label for="" class="c-text__label">센서데이터 주기적 송신시간(단위: 분)</label>
+												<input type="text" class="c-text__input" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="" class="c-text__label">압축 정리 시간</label>
+												<input type="text" class="c-text__input" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="" class="c-text__label">투입구 열림 시간</label>
+												<input type="text" class="c-text__input" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="" class="c-text__label">솔레노이드 열림 시간</label>
+												<input type="text" class="c-text__input" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="" class="c-text__label">쓰레기량에 따른 경계값 (노랑색)</label>
+												<input type="text" class="c-text__input" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="" class="c-text__label">쓰레기량에 따른 경계값 (적색)</label>
+												<input type="text" class="c-text__input" />
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="dashboard__row">
+					<div class="c-function">
+						<div class="c-function__group c-function__group--right">
+							<div class="c-function__item"><button class="c-button">초기화</button></div>
+							<div class="c-function__item"><button class="c-button c-button--point">적용</button></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 	</div>
 </html>
