@@ -4,11 +4,10 @@
 >
 
 <header th:fragment="headerFragment" class="header">
-	
-	
+
 	<!-- logo -->
 	<h1 class="logo">
-		<a href="/dashboard/dashboardall">자연상점</a>
+		<a onclick="mobileCheckIndex()">자연상점</a>
 	</h1>
 	<!-- profile -->
 	<div class="profile">
@@ -52,6 +51,7 @@
 				<a href="#" class="nav__link nav__link--platform toggle">장비관리</a>
 				<ul class="nav-child">
 					<li><a href="/devicestats/daysdevice">일자별장비현황</a></li>
+					<li><a href="/devicestats/devicebasevalue">장비기본값셋팅</a></li>
 				</ul>
 			</li>
 
@@ -74,6 +74,7 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--dash toggle">테스트페이지</a>
 				<ul class="nav-child">
+					<li><a href="/testpage/devicebasevaluetest">장비기본값셋팅</a></li>
 					<li><a href="/testpage/mobileindex">모바일인덱스테스트</a></li>
 					<li><a href="/testpage/collectionlisttest">수거업무리스트테스트</a></li>
 					<li><a href="/testpage/collectionprocesstest">수거처리테스트</a></li>

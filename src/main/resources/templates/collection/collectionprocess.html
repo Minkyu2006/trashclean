@@ -49,8 +49,8 @@
 				error:function(request){
 					ajaxErrorMsg(request);
 				},
-				success: function(res){
-
+				success: function(){
+					alertSuccess("장비확인 : "+$("#deviceid").text());
 				}
 			});
 		}

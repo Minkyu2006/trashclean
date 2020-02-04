@@ -483,8 +483,8 @@ function ajaxErrorMsg(request) {
 //인덱스페이지 -> 모바일인지 체크
 function mobileCheckIndex() {
 	if (navigator.userAgent.match(/iPad/) == null && navigator.userAgent.match(/iPhone|Mobile|UP.Browser|Android|BlackBerry|Windows CE|Nokia|webOS|Opera Mini|SonyEricsson|opera mobi|Windows Phone|IEMobile|POLARIS/) != null) {
-		return location.href = "/login";
+		return location.href = "/collection/mobileindex";
 	}else{
-		return location.href = "/login";
+		return location.href = "/dashboard/dashboardall";
 	}
 }

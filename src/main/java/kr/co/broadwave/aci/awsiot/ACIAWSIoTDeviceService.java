@@ -84,7 +84,7 @@ public class ACIAWSIoTDeviceService {
         aciIoTService.shadowNonblockingSend(deviceid,"collect_end",ctCode);
 
     }
-    //Shadow Isolarbin 수거관리종료 (IoT) -> param :  디바이스 아이디, 타임스탬프
+    //Shadow Isolarbin LED 점멸 (IoT) -> param :  디바이스 아이디, 타임스탬프
     public void setLightFlicker(String deviceid,String ts) throws Exception {
         log.info("장비 Shadow LED점멸 요청 :'" + deviceid +"'");
         //device 상태가져오기

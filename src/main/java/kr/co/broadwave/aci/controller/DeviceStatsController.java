@@ -38,4 +38,8 @@ public class DeviceStatsController {
         return "devicestats/daysdevice";
     }
 
+    @RequestMapping("devicebasevalue")
+    public String devicebasevalue(){
+        return "devicestats/devicebasevalue";
+    }
 }

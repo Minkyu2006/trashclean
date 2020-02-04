@@ -97,4 +97,9 @@ public class TestpageController {
     public String collectionlisttest(){
         return "testpage/collectionlisttest";
     }
+
+    @RequestMapping("devicebasevaluetest")
+    public String devicebasevaluetest(){
+        return "testpage/devicebasevaluetest";
+    }
 }
