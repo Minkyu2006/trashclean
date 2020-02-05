@@ -357,6 +357,20 @@ public class CollectionTaskRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 액츄에이터리셋버튼
+    @PostMapping("actuatorReset")
+    public ResponseEntity<Map<String,Object>> actuatorReset(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                              @RequestParam(value="timestamp", defaultValue="") String timestamp) throws Exception {
+        AjaxResponse res = new AjaxResponse();
+
+        //log.info("장비코드 : "+deviceid);
+
+        //Shadow Isolarbin 액츄에이터리셋(IoT) -> param : 디바이스 아이디, 타임스탬프
+        aciawsIoTDeviceService.setActuatorReset(deviceid,timestamp);
+
+        return ResponseEntity.ok(res.success());
+    }
+
     // 수거시작버튼
     @PostMapping("collectionStart")
     public ResponseEntity<Map<String,Object>> collectionStart(@RequestParam(value="receiveId", defaultValue="") Long receiveId,

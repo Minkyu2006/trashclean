@@ -68,7 +68,6 @@ public class ACIAWSIoTDeviceService {
         log.info("장비 Shadow 액추에이터리셋 요청 :'" + deviceid +"'");
         //device 상태가져오기
         aciIoTService.shadowNonblockingSend(deviceid,"v_actuatorreset",ts);
-
     }
 
     //Shadow Isolarbin LED 점멸 (IoT) -> param :  디바이스 아이디, 타임스탬프
