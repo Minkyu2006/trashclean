@@ -88,4 +88,12 @@ public class EquipmentService {
     public List<EquipmentEmnumberDto> queryDslDeviceEmNumber(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId) {
         return equipmentRepositoryCustom.queryDslDeviceEmNumber(emNumber,emTypeId,emCountryId,emLocationId);
     }
+
+    public Page<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable) {
+        return equipmentRepositoryCustom.findByBaseEquipmentSearch(emNumber,emLocationId,emTypeId,emCountryId,pageable);
+    }
+
+    public List<EquipmentBaseDto> EquipmentBaseSettingQuerydsl(List<String> emNumbers) {
+        return equipmentRepositoryCustom.EquipmentBaseSettingQuerydsl(emNumbers);
+    }
 }

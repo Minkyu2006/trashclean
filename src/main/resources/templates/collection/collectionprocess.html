@@ -32,9 +32,11 @@
 		});
 
 		function check() {
-
+			timestamp = + new Date();
+			var deviceid = $("#deviceid").text();
 			var params = {
-				deviceid:$("#deviceid").text()
+				deviceid:deviceid,
+				timestamp:timestamp
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -50,18 +52,21 @@
 					ajaxErrorMsg(request);
 				},
 				success: function(){
-					alertSuccess("장비확인 : "+$("#deviceid").text());
+					var count=0;
+					var pat=1;
+					lightLoading(deviceid,count,null,pat);
 				}
 			});
 		}
 
-
 		function start() {
+			var deviceid = $("#deviceid").text();
 
 			var params = {
 				receiveId:$("#receiveId").val(),
-				deviceid:$("#deviceid").text(),
+				deviceid:deviceid,
 				ctCode:$("#ctCode").text(),
+				ctSeq:$("#ctSeq").val(),
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -77,17 +82,21 @@
 					ajaxErrorMsg(request);
 				},
 				success: function(){
-					alertSuccess("수거를 시작하겠습니다.")
+					var count=0;
+					var pat=2;
+					lightLoading(deviceid,count,null,pat);
 				}
 			});
 		}
 
 		function end() {
+			var deviceid = $("#deviceid").text();
 
 			var params = {
 				receiveId:$("#receiveId").val(),
-				deviceid:$("#deviceid").text(),
+				deviceid:deviceid,
 				ctCode:$("#ctCode").text(),
+				ctSeq:$("#ctSeq").val(),
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -103,7 +112,98 @@
 					ajaxErrorMsg(request);
 				},
 				success: function(){
-					alertSuccess("수거가 완료되었습니다.");
+					var count=0;
+					var pat=3;
+					lightLoading(deviceid,count,null,pat);
+				}
+			});
+		}
+
+		function lightLoading(deviceid,count,setIn,pat) {
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			var params = {
+				deviceid : deviceid
+			};
+
+			$.ajax({
+				url: '/api/equipment/awsdevicestatus',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					statuscode= res.status;
+					if (statuscode ===200) {
+						devicestate = res.data.datastate;
+						if (devicestate.reported) {
+							if (pat === 1) {
+								if (count !== 5) {
+									if (devicestate.desired.light_flicker === devicestate.reported.light_flicker) {
+										console.log("처리완료!");
+										clearInterval(setIn);
+										//alertSuccess("장비확인 완료 장비값("+$("#deviceid").text()+")");
+										$("#stateLoading").hide();
+										alertSuccess("장비확인 완료");
+									} else {
+										$("#stateLoading").show();
+										console.log("처리중...");
+										count++;
+										setIn = setTimeout(function () {
+											lightLoading(deviceid, count, setIn, 1);
+										}, 2000);
+									}
+								} else {
+									alertCaution("처리하지 못했습니다. 다시시도해주세요.");
+									$("#stateLoading").hide();
+								}
+							} else if (pat === 2) {
+								if (count !== 5) {
+									if (devicestate.desired.collect_start === devicestate.reported.collect_start) {
+										clearInterval(setIn);
+										$("#stateLoading").hide();
+										alertSuccess("수거시작");
+									} else {
+										$("#stateLoading").show();
+										console.log("처리중...");
+										count++;
+										setIn = setTimeout(function () {
+											lightLoading(deviceid, count, setIn, 2);
+										}, 2000);
+									}
+								} else {
+									alertCaution("처리하지 못했습니다. 다시시도해주세요.");
+									$("#stateLoading").hide();
+								}
+							} else {
+								if (count !== 5) {
+									if (devicestate.desired.collect_end === devicestate.reported.collect_end) {
+										clearInterval(setIn);
+										$("#stateLoading").hide();
+										alertSuccess("수거완료");
+									} else {
+										$("#stateLoading").show();
+										console.log("처리중...");
+										count++;
+										setIn = setTimeout(function () {
+											lightLoading(deviceid, count, setIn, 3);
+										}, 2000);
+									}
+								} else {
+									alertCaution("처리하지 못했습니다. 다시시도해주세요.");
+									$("#stateLoading").hide();
+								}
+							}
+						}else{
+							alertCaution("처리할 데이터가 존재하지 않습니다.");
+							$("#stateLoading").hide();
+						}
+					}
 				}
 			});
 		}
@@ -113,7 +213,7 @@
 
 </head>
 <body>
-<div class="m-wrap">
+<div class="m-wrap loading">
 	<div class="m-header">
 		<h1 class="m-logo">
 			<a href="/collection/mobileindex">NatureStore</a>
@@ -125,8 +225,14 @@
 		</form>
 	</div>
 
+	<a href="/collection/collectionlist" class="m-collectionlist__button">뒤로</a>
+	<div id="stateLoading" class="c-loader" style="display: none">
+		<div class="c-loader__active c-loader__active--ring">
+		</div>
+	</div>
 	<div class="m-contents">
 		<input type="hidden" id="receiveId" th:value="${collectionTasks} ? ${collectionTasks.id} : ''" readonly>
+		<input type="hidden" id="ctSeq" th:value="${collectionTasks} ? ${collectionTasks.ctSeq} : ''" readonly>
 		<div class="m-collection__detail-box">
 			<h3>수거예정일 : <span id="yyyymmdd" th:text="${collectionTasks} ? ${collectionTasks.yyyymmdd} : ''"></span></h3>
 			<ul>

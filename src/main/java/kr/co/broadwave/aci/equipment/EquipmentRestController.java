@@ -29,10 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Minkyu
@@ -71,30 +68,30 @@ public class EquipmentRestController {
         this.aciawsIoTDeviceService = aciawsIoTDeviceService;
     }
 
-    // 업체 저장
+    // 장비 저장
     @PostMapping ("reg")
     public ResponseEntity<Map<String,Object>> equipmentReg(@ModelAttribute EquipmentMapperDto equipmentMapperDto, HttpServletRequest request){
         AjaxResponse res = new AjaxResponse();
 
         Equipment equipment = modelMapper.map(equipmentMapperDto, Equipment.class);
 
+        if(equipment.getVInterval()==null){
+            equipment.setVInterval(60.0);
+        }
+        if(equipment.getVPresstime()==null){
+            equipment.setVPresstime(3.0);
+        }
+        if(equipment.getVInputtime()==null){
+            equipment.setVInputtime(10.0);
+        }
+        if(equipment.getVSolenoidtime()==null){
+            equipment.setVSolenoidtime(5.0);
+        }
         if(equipment.getVYellowstart()==null){
             equipment.setVYellowstart(61.0);
         }
         if(equipment.getVRedstart()==null){
             equipment.setVRedstart(81.0);
-        }
-        if(equipment.getVInputtime()==null){
-            equipment.setVInputtime(3.0);
-        }
-        if(equipment.getVInterval()==null){
-            equipment.setVInterval(10.0);
-        }
-        if(equipment.getVPresstime()==null){
-            equipment.setVPresstime(5.0);
-        }
-        if(equipment.getVSolenoidtime()==null){
-            equipment.setVSolenoidtime(60.0);
         }
 
         String currentuserid = CommonUtils.getCurrentuser(request);
@@ -165,6 +162,102 @@ public class EquipmentRestController {
         equipmentService.save(equipment);
 
         return ResponseEntity.ok(res.success());
+    }
+
+    // 장비기본값 저장
+    @PostMapping ("basereg")
+    public ResponseEntity<Map<String,Object>> baseReg(@ModelAttribute EquipmentBaseMapperDto equipmentBaseMapperDto,
+                                                      HttpServletRequest request){
+        AjaxResponse res = new AjaxResponse();
+
+        String currentuserid = CommonUtils.getCurrentuser(request);
+
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+        //로그인한 사람 아이디가존재하지않으면 에러처리
+        if (!optionalAccount.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(),
+                    ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
+        }
+
+        Equipment equipment = modelMapper.map(equipmentBaseMapperDto, Equipment.class);
+
+        List<EquipmentBaseDto> equipmentBaseDto = equipmentService.EquipmentBaseSettingQuerydsl(equipmentBaseMapperDto.getEmNumbers());
+        log.info("equipmentBaseDto : "+equipmentBaseDto);
+
+        for(int i=0; i<equipmentBaseDto.size(); i++){
+            equipment.setId(equipmentBaseDto.get(i).getId());
+            equipment.setEmNumber(equipmentBaseDto.get(i).getEmNumber());
+            equipment.setEmCerealNumber(equipmentBaseDto.get(i).getEmCerealNumber());
+            equipment.setEmDesignation(equipmentBaseDto.get(i).getEmDesignation());
+            equipment.setEmType(equipmentBaseDto.get(i).getEmTypeId());
+            equipment.setEmAwsNumber(equipmentBaseDto.get(i).getEmAwsNumber());
+            equipment.setEmCountry(equipmentBaseDto.get(i).getEmCountryId());
+            equipment.setEmLocation(equipmentBaseDto.get(i).getEmLocationId());
+            equipment.setEmEmbeddedNumber(equipmentBaseDto.get(i).getEmEmbeddedNumber());
+            equipment.setCompany(equipmentBaseDto.get(i).getCompany());
+            equipment.setEmSubName(equipmentBaseDto.get(i).getEmSubName());
+            equipment.setMdId(equipmentBaseDto.get(i).getMdId());
+            equipment.setEmLatitude(equipmentBaseDto.get(i).getEmLatitude());
+            equipment.setEmHardness(equipmentBaseDto.get(i).getEmHardness());
+
+            if(equipment.getVInterval()==null){
+                equipment.setVInterval(60.0);
+            }
+            if(equipment.getVPresstime()==null){
+                equipment.setVPresstime(3.0);
+            }
+            if(equipment.getVInputtime()==null){
+                equipment.setVInputtime(10.0);
+            }
+            if(equipment.getVSolenoidtime()==null){
+                equipment.setVSolenoidtime(5.0);
+            }
+            if(equipment.getVYellowstart()==null){
+                equipment.setVYellowstart(61.0);
+            }
+            if(equipment.getVRedstart()==null){
+                equipment.setVRedstart(81.0);
+            }
+
+            equipment.setInsert_id(equipmentBaseDto.get(i).getInsert_id());
+            equipment.setInsertDateTime(equipmentBaseDto.get(i).getInsertDateTime());
+            equipment.setModify_id(currentuserid);
+            equipment.setModifyDateTime(LocalDateTime.now());
+
+            equipmentService.save(equipment);
+        }
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 기본값셋팅페이지의 장비리스트
+    @PostMapping("baselist")
+    public ResponseEntity<Map<String,Object>> baselist(@RequestParam (value="emNumber", defaultValue="") String emNumber,
+                                                            @RequestParam (value="emType", defaultValue="")String emType,
+                                                            @RequestParam (value="emCountry", defaultValue="")String emCountry,
+                                                            @RequestParam (value="emLocation", defaultValue="")String emLocation,
+                                                            @PageableDefault Pageable pageable){
+
+        Long emTypeId = null;
+        Long emCountryId = null;
+        Long emLocationId = null;
+
+        if(!emType.equals("")){
+            Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
+            emTypeId = emTypes.map(MasterCode::getId).orElse(null);
+        }
+        if(!emCountry.equals("")){
+            Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
+            emCountryId = emCountrys.map(MasterCode::getId).orElse(null);
+        }
+        if(!emLocation.equals("")){
+            Optional<MasterCode> emLocations = masterCodeService.findByCode(emLocation);
+            emLocationId = emLocations.map(MasterCode::getId).orElse(null);
+        }
+
+        Page<EquipmentBaseListDto> equipmentListDtos =
+                equipmentService.findByBaseEquipmentSearch(emNumber,emLocationId,emTypeId,emCountryId,pageable);
+
+        return CommonUtils.ResponseEntityPage(equipmentListDtos);
     }
 
     // 장비 리스트

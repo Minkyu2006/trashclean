@@ -345,10 +345,14 @@ public class CollectionTaskRestController {
 
     // 장비확인(라이트점멸)버튼
     @PostMapping("collectionCheck")
-    public ResponseEntity<Map<String,Object>> collectionCheck(@RequestParam(value="deviceid", defaultValue="") String deviceid) {
+    public ResponseEntity<Map<String,Object>> collectionCheck(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                              @RequestParam(value="timestamp", defaultValue="") String timestamp) throws Exception {
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
-        log.info("장비코드 : "+deviceid);
+
+        //log.info("장비코드 : "+deviceid);
+
+        //Shadow Isolarbin LED 점멸 (IoT) -> param :  디바이스 아이디, 타임스탬프
+        aciawsIoTDeviceService.setLightFlicker(deviceid,timestamp);
 
         return ResponseEntity.ok(res.success());
     }
@@ -358,12 +362,16 @@ public class CollectionTaskRestController {
     public ResponseEntity<Map<String,Object>> collectionStart(@RequestParam(value="receiveId", defaultValue="") Long receiveId,
                                                               @RequestParam(value="ctCode", defaultValue="") String ctCode,
                                                               @RequestParam(value="deviceid", defaultValue="") String deviceid,
-                                                           HttpServletRequest request) {
+                                                              @RequestParam(value="ctSeq", defaultValue="") Integer ctSeq,
+                                                           HttpServletRequest request) throws Exception {
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
-        log.info("수거업무 : "+ctCode);
-        log.info("장비코드 : "+deviceid);
+//        log.info("수거업무 : "+ctCode);
+//        log.info("장비코드 : "+deviceid);
+//        log.info("수거처리순번 : "+ctSeq);
+
+        //Shadow Isolarbin 수거관리시작 (IoT) -> param :  디바이스 아이디, 수거관리번호
+        aciawsIoTDeviceService.setCollectStart(deviceid,ctCode+ctSeq);
 
         CollectionTask collectionTask = new CollectionTask();
 
@@ -411,13 +419,15 @@ public class CollectionTaskRestController {
     public ResponseEntity<Map<String,Object>> collectionEnd(@RequestParam(value="receiveId", defaultValue="") Long receiveId,
                                                             @RequestParam(value="ctCode", defaultValue="") String ctCode,
                                                             @RequestParam(value="deviceid", defaultValue="") String deviceid,
-                                                           HttpServletRequest request) {
+                                                            @RequestParam(value="ctSeq", defaultValue="") Integer ctSeq,
+                                                           HttpServletRequest request) throws Exception {
         AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
 
-        log.info("수거업무 : "+ctCode);
-        log.info("장비코드 : "+deviceid);
-
+//        log.info("수거업무 : "+ctCode);
+//        log.info("장비코드 : "+deviceid);
+//        log.info("수거처리순번 : "+ctSeq);
+        //Shadow Isolarbin 수거관리종료 (IoT) -> param :  디바이스 아이디, 수거관리번호
+        aciawsIoTDeviceService.setCollectEnd(deviceid,ctCode+ctSeq);
         CollectionTask collectionTask = new CollectionTask();
 
         String currentuserid = CommonUtils.getCurrentuser(request);

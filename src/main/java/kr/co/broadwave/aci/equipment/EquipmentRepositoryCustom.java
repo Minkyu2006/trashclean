@@ -17,4 +17,7 @@ public interface EquipmentRepositoryCustom {
 
     List<EquipmentEmnumberDto> queryDslDeviceEmNumber(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId);
 
+    Page<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable);
+
+    List<EquipmentBaseDto> EquipmentBaseSettingQuerydsl(List<String> emNumbers);
 }

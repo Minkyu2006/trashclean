@@ -164,7 +164,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
         QIModel model = QIModel.iModel;
 
         return queryFactory.select(Projections.constructor(CollectionTaskListInfoDto.class,
-                collectionTask.id,collectionTask.ctCode,collectionTask.yyyymmdd,
+                collectionTask.id,collectionTask.ctCode,collectionTask.ctSeq,collectionTask.yyyymmdd,
                 collectionTask.deviceid,equipment.mdId.mdName,equipment.mdId.mdType.name,
                 company.csOperator,fileUpload.filePath,fileUpload.saveFileName,
                 equipment.emCountry.name,equipment.emLocation.name,model.mdMaximumPayload,model.mdUnit.name,

@@ -3,10 +3,394 @@
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate ="~{layout/default}">
 
-	<script>
+<head>
+	<script type="text/javascript">
+		$(function() {
+			LocationSetting("");
+			callList(1);
+
+			$("#saveBtn").on('click',function(){
+				save();
+			});
+			$("#saveresetBtn").on('click',function(){
+				savereset();
+			});
+
+			$("#btnReset").on('click',function(){
+				reset();
+			});
+
+			$("#btnSearch").on('click',function(){
+				callList(1);
+			});
+
+		});
+
+		// 조건초기화
+		function reset() {
+			$("#s_emNumber").val('');
+			$("#s_emDesignation").val('');
+			$("#s_emType").val('');
+			$("#s_emCountry").val('');
+		}
+
+		// 초기화버튼
+		function savereset() {
+			$("#vInterval").val('');
+			$("#vPresstime").val('');
+			$("#vInputtime").val('');
+			$("#vSolenoidtime").val('');
+			$("#vYellowstart").val('');
+			$("#vRedstart").val('');
+		}
+
+		// 적용버튼
+		function save() {
+
+			var emNumbers = [];
+			var $emNumbers = $("#emNumbers");
+			$('input[name="checkemNumber"]:checked').each(function() {
+				emNumbers.push($(this).val());
+			});
+			$emNumbers.val(emNumbers);
+
+			if ($emNumbers.val().trim() === '') {
+				alertCaution("적용할 장비를 체크해주세요");
+				return false;
+			}
+
+			var $form = $('form[name="basereg"]');
+			var params = $form.serialize();
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/equipment/basereg',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alertSuccess('적용되었습니다.');
+					checkfalse();
+					savereset();
+				}
+			});
+		}
+
+		// 조회버튼
+		function callList(page) {
+
+			page = page - 1;
+			if (page < 0) page = 0;
+
+			var $schList = $('#schList');
+
+			var params = {
+				emType:$('#s_emType').val(),
+				emCountry:$('#s_emCountry').val(),
+				emLocation:$('#s_emLocation').val(),
+				emNumber:$('#s_emNumber').val(),
+			};
+
+			$schList.empty().append('<tr ><td colspan="6" align = "center">조회 중</td></tr>');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/equipment/baselist?size=' + '&page=' + page,
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					totCnt = res.data.total_rows;
+
+					if (totCnt === 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="6" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+
+					//화면 출력
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+						html += '<td >'+ '<input name="checkemNumber" type="checkbox" value='+echoNull2Blank(value.emNumber)+' />' +'</td>';
+						html += '<td >'+ echoNull2Blank(value.emNumber) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.iModel) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.emCountry)+'-'+echoNull2Blank(value.emLocation)+'</td>';
+						html += '<td >'+ echoNull2Blank(value.company) +'</td>';
+						html += '</tr>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+
+		// 국가,지역검색
+		function LocationSetting(value) {
+
+			var params = {
+				s_emCountry:value
+			};
+
+			var $s_emLocation = $("#s_emLocation");
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/dashboard/location',
+				type: 'post',
+				data: params,
+				cache: false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var html = '';
+					html += '<option value ="">'+'전체'+'</option>';
+					$.each(res.data.locationData, function (key, value) {
+						html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name)+ '</option>';
+					});
+					$s_emLocation.html(html);
+				}
+			});
+		}
+
+		// 체크박스 일괄선택함수
+		function checkAll(){
+			if( $("#th_checkAll").is(':checked') ){
+				$("input[name=checkemNumber]").prop("checked", true);
+			}else{
+				$("input[name=checkemNumber]").prop("checked", false);
+			}
+		}
+		function checkfalse(){
+			$("input[name=checkemNumber]").prop("checked", false);
+			$("#th_checkAll").prop("checked", false);
+		}
+
+		//숫자만입력가능
+		function delstr(evt){
+			var objTarget = evt.srcElement || evt.target;
+			var _value = event.srcElement.value;
+			if(!/^[0-9]+$/g.test(_value)) {
+				alertCaution("숫자만 입력하세요");
+				objTarget.value = null;
+			}
+		}
 
 	</script>
+</head>
 
-	<div layout:fragment="content" class="contents-body">
+<div layout:fragment="content" class="contents-body">
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>장비 기본값 세팅</h2>
+			</div>
+		</div>
+
+		<div class="dashboard">
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__body panel__body--height-auto">
+							<h2 class="article__heading">장비조회</h2>
+							<div class="l-float-heading">
+								<div class="l-float-heading--left">
+									<h4 class="article__head">검색조건<span class="article__head-caption">(수정하려면 조회 후 초기화 버튼을 클릭하세요.)</span></h4>
+								</div>
+								<div class="l-float-heading--right"><button id="btnReset" class="c-button c-button--small">조건 초기화</button></div>
+							</div>
+							<table class="c-table">
+								<colgroup>
+									<col style="width: 80px;" />
+									<col />
+									<col style="width: 80px;" />
+									<col />
+									<col style="width: 80px;" />
+									<col />
+									<col style="width: 80px;" />
+									<col />
+									<col style="width: 62px;" />
+								</colgroup>
+								<tr>
+									<th>모델 타입</th>
+									<td>
+										<div class="c-select">
+											<select id="s_emType" class="c-select__input">
+												<option value="">전체</option>
+												<option th:each ="equipdType : ${equipdTypes}"
+													th:value="${equipdType.code}"
+														th:text="${equipdType.name}"
+												></option>
+											</select>
+										</div>
+									</td>
+									<th>국가</th>
+									<td>
+										<div class="c-select">
+											<select id="s_emCountry" class="c-select__input" onchange="LocationSetting(this.value)">
+												<option value="">전체</option>
+												<option th:each ="equipdCountry : ${equipdCountrys}"
+														th:value="${equipdCountry.code}"
+														th:text="${equipdCountry.name}">
+												</option>
+											</select>
+										</div>
+									</td>
+									<th>지역</th>
+									<td>
+										<div class="c-select">
+											<select id="s_emLocation" class="c-select__input">
+											</select>
+										</div>
+									</td>
+									<th>장비 번호</th>
+									<td>
+										<div class="c-text"><input id="s_emNumber" type="text" class="c-text__input" /></div>
+									</td>
+									<td>
+										<button id="btnSearch" class="c-button c-button--point">조회</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dashboard__row">
+				<div class="panel panel--w-500">
+					<div class="panel__inner">
+						<div class="panel__header">장비 리스트</div>
+						<div class="panel__body panel__body--height-auto">
+							<div class="panel__table">
+								<div class="c-scroll-table">
+									<div class="c-scroll-table__header">
+										<table>
+											<colgroup>
+												<col style="width: 40px;" />
+												<col style="width: 240px;" />
+												<col style="width: 240px;" />
+												<col style="width: 210px;" />
+												<col style="width: 200px;" />
+												<col style="width: 200px;" />
+												<col style="width: 19px;" />
+											</colgroup>
+											<thead>
+											<tr>
+												<th><input type="checkbox" id="th_checkAll" onclick="checkAll();" /></th>
+												<th>장비번호</th>
+												<th>모델타입</th>
+												<th>모델명/종류</th>
+												<th>국가/지역</th>
+												<th>소속사</th>
+												<th></th>
+											</tr>
+											</thead>
+										</table>
+									</div>
+									<div class="c-scroll-table__body">
+										<table>
+											<colgroup>
+												<col style="width: 40px;" />
+												<col style="width: 240px;" />
+												<col style="width: 240px;" />
+												<col style="width: 210px;" />
+												<col style="width: 200px;" />
+												<col style="width: 200px;" />
+											</colgroup>
+											<tbody id="schList">
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel--w500">
+					<div class="panel__inner">
+						<div class="panel__header">장비 기본정보</div>
+						<form name="basereg">
+							<input type="hidden" name="emNumbers" id="emNumbers" />
+							<div class="panel__body panel__body--height-auto">
+								<div class="equip-setting">
+									<ul>
+										<li>
+											<div class="c-text">
+												<label for="vInterval" class="c-text__label">센서데이터 주기적 송신시간(단위: 분)</label>
+												<input type="text" name="vInterval" id="vInterval" placeholder="60" class="c-text__input" onkeyup="return delstr(event)" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="vPresstime" class="c-text__label">압축 정리 시간</label>
+												<input type="text" name="vPresstime" id="vPresstime" placeholder="기본값 3" class="c-text__input" onkeyup="return delstr(event)" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="vInputtime" class="c-text__label">투입구 열림 시간</label>
+												<input type="text" name="vInputtime" id="vInputtime" placeholder="기본값 10" class="c-text__input" onkeyup="return delstr(event)" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="vSolenoidtime" class="c-text__label">솔레노이드 열림 시간</label>
+												<input type="text" name="vSolenoidtime" id="vSolenoidtime" placeholder="기본값 5" class="c-text__input" onkeyup="return delstr(event)" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="vYellowstart" class="c-text__label">쓰레기량에 따른 경계값 (노랑색)</label>
+												<input type="text" name="vYellowstart" id="vYellowstart" placeholder="기본값 61%" class="c-text__input" onkeyup="return delstr(event)" />
+											</div>
+										</li>
+										<li>
+											<div class="c-text">
+												<label for="vRedstart" class="c-text__label">쓰레기량에 따른 경계값 (적색)</label>
+												<input type="text" name="vRedstart" id="vRedstart" placeholder="기본값 81%" class="c-text__input" onkeyup="return delstr(event)" />
+											</div>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<div class="dashboard__row">
+				<div class="c-function">
+					<div class="c-function__group c-function__group--right">
+						<div class="c-function__item"><button id="saveresetBtn" class="c-button">초기화</button></div>
+						<div class="c-function__item"><button id="saveBtn" class="c-button c-button--point">적용</button></div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
+
+</div>
 </html>

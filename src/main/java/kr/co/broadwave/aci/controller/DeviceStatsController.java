@@ -27,6 +27,11 @@ public class DeviceStatsController {
         this.masterCodeService = masterCodeService;
     }
 
+    @RequestMapping("devicecontrol")
+    public String devicecontrol(){
+        return "devicestats/devicecontrol";
+    }
+
     @RequestMapping("daysdevice")
     public String daysdevice(Model model){
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
@@ -39,7 +44,14 @@ public class DeviceStatsController {
     }
 
     @RequestMapping("devicebasevalue")
-    public String devicebasevalue(){
+    public String devicebasevalue(Model model){
+
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+
         return "devicestats/devicebasevalue";
     }
 }

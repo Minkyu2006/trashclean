@@ -2,7 +2,6 @@ package kr.co.broadwave.aci.collection;
 
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Minkyu
@@ -15,10 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @ToString
 @Setter
-@Slf4j
 public class CollectionTaskListInfoDto {
     private Long id;
     private String ctCode; // 수거관리코드
+    private Integer ctSeq; // 수거처리순번
     private String yyyymmdd; // 수거처리일
     private String deviceid; // 장비코드
     private String devicetype; // 장비타입
@@ -31,6 +30,10 @@ public class CollectionTaskListInfoDto {
     private Double mdmaximum;
     private String mdunit;
     private ProcStatsType procStatsType;
+
+    public Integer getCtSeq() {
+        return ctSeq;
+    }
 
     public ProcStatsType getProcStatsType() {
         return procStatsType;

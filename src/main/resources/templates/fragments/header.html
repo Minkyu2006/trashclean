@@ -24,7 +24,6 @@
 				<a href="#" class="nav__link nav__link--dash toggle">대시보드</a>
 				<ul class="nav-child">
 					<li><a href="/dashboard/dashboardall">대시보드종합</a></li>
-					<li><a href="/dashboard/devicecontrol">장치제어</a></li>
 					<li><a href="/dashboard/locationbase">위치기반</a></li>
 				</ul>
 			</li>
@@ -47,9 +46,10 @@
 					<li><a href="/admin/vehiclereg">차량등록</a></li>
 				</ul>
 			</li>
-			<li>
+			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">장비관리</a>
 				<ul class="nav-child">
+					<li><a href="/devicestats/devicecontrol">장비제어</a></li>
 					<li><a href="/devicestats/daysdevice">일자별장비현황</a></li>
 					<li><a href="/devicestats/devicebasevalue">장비기본값셋팅</a></li>
 				</ul>
@@ -63,8 +63,6 @@
 				<ul class="nav-child">
 					<li><a href="/collection/collectiontask">수거업무등록</a></li>
 					<li><a href="/collection/mobileindex">모바일인덱스</a></li>
-					<li><a href="/collection/collectionlist">수거업무리스트</a></li>
-					<li><a href="/collection/collectionprocess">수거처리</a></li>
 				</ul>
 			</li>
 

@@ -107,14 +107,14 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/equipment/reg',
 				type : 'post',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
@@ -132,7 +132,7 @@
 		// 운영사 리스트보기
 		function agencyCallList(page) {
 			page = page - 1;
-			if (page < 0) page = 0
+			if (page < 0) page = 0;
 
 			var perPage = 10;
 			var perArea = 5;
@@ -157,7 +157,7 @@
 				type : 'post',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
@@ -168,7 +168,7 @@
 						currentPage: page + 1,
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
-					if (totCnt == 0) {
+					if (totCnt === 0) {
 						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
@@ -191,7 +191,7 @@
 		function callList(page) {
 
 			page = page - 1;
-			if (page < 0) page = 0
+			if (page < 0) page = 0;
 
 			var perPage = 10;
 			var perArea = 5;
@@ -212,14 +212,14 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/equipment/list?size='+ perPage + '&page=' + page,
 				type : 'post',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
@@ -230,7 +230,7 @@
 						currentPage: page + 1,
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
-					if (totCnt == 0) {
+					if (totCnt === 0) {
 						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
@@ -260,18 +260,18 @@
 
 			var params = {
 				id:id
-			}
+			};
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url: '/api/equipment/info',
 				type: 'post',
 				data: params,
 				cache: false,
-				error: function (request, status, error) {
+				error: function (request) {
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
@@ -319,7 +319,7 @@
 		}
 
 		function selectBoxLocation(){
-			if($("#addSell").val() != '') {
+			if($("#addSell").val() !== '') {
 				var addLocationSelect = $("#addSell").val();
 				$("#emLocation").val(addLocationSelect);
 			}
@@ -332,14 +332,14 @@
 			};
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url: '/api/equipment/agencyInfo',
 				type: 'post',
 				data: params,
 				cache: false,
-				error: function (request, status, error) {
+				error: function (request) {
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
@@ -352,7 +352,7 @@
 
 		//삭제버튼 실행
 		function del() {
-			if ($("#emNumber").val().trim() == '') {
+			if ($("#emNumber").val().trim() === '') {
 				alertCaution("삭제하고자하는 장비를 선택하세요.");
 				return false;
 			}
@@ -447,7 +447,7 @@
 
 					var html = '';
 
-					if(res.data.dataselect==""){
+					if(res.data.dataselect===""){
 						html += '<option value ="">' +"등록된 모델없음"+ '</option>';
 					}else{
 						$.each(res.data.dataselect, function (key, value) {
@@ -476,14 +476,14 @@
 			var _value = event.srcElement.value;
 
 			if (event.keyCode < 48 || event.keyCode > 57) {
-				if (event.keyCode != 46) {
+				if (event.keyCode !== 46) {
 					return false;
 				}
 			}
 			// 소수점(.)이 두번 이상 나오지 못하게
 			var _pattern0 = /^\d*[.]\d*$/;
 			if (_pattern0.test(_value)) {
-				if (charCode == 46) {
+				if (charCode === 46) {
 					return false;
 				}
 			}

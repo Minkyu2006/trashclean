@@ -2,7 +2,11 @@ package kr.co.broadwave.aci.equipment;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.company.QCompany;
+import kr.co.broadwave.aci.imodel.QIModel;
+import kr.co.broadwave.aci.mastercode.QMasterCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -93,6 +97,61 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         return query.fetch();
     }
 
+    @Override
+    public Page<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable){
 
+        QEquipment equipment = QEquipment.equipment;
+
+        JPQLQuery<EquipmentBaseListDto> query = from(equipment)
+                .select(Projections.constructor(EquipmentBaseListDto.class,
+                        equipment.emNumber,
+                        equipment.emType,
+                        equipment.emCountry,
+                        equipment.emLocation,
+                        equipment.company,
+                        equipment.mdId
+                ));
+
+        // 검색조건필터
+        if (emNumber != null && !emNumber.isEmpty()){
+            query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
+        }
+        if (emTypeId != null ){
+            query.where(equipment.emType.id.eq(emTypeId));
+        }
+        if (emCountryId != null ){
+            query.where(equipment.emCountry.id.eq(emCountryId));
+        }
+        if (emLocationId != null ){
+            query.where(equipment.emLocation.id.eq(emLocationId));
+        }
+
+        query.orderBy(equipment.emNumber.asc());
+
+        final List<EquipmentBaseListDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
+        return new PageImpl<>(equipments, pageable, query.fetchCount());
+    }
+
+    // 장비기본값셋팅 리스트쿼리
+    @Override
+    public List<EquipmentBaseDto> EquipmentBaseSettingQuerydsl(List<String> emNumbers) {
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
+
+        QEquipment equipment = QEquipment.equipment;
+
+        return queryFactory.select(Projections.constructor(EquipmentBaseDto.class,
+                equipment.id,equipment.emNumber,
+                equipment.emCerealNumber,equipment.emDesignation,
+                equipment.emType,equipment.emCountry,equipment.emLocation,
+                equipment.emAwsNumber, equipment.emEmbeddedNumber,
+                equipment.company,equipment.mdId,
+                equipment.emInstallDate,equipment.emSubName,
+                equipment.emLatitude,equipment.emHardness,
+                equipment.insertDateTime,equipment.insert_id))
+                .from(equipment)
+                .where(equipment.emNumber.in(emNumbers))
+                .fetch();
+    }
 
 }
