@@ -226,10 +226,12 @@
 	</div>
 
 	<a href="/collection/collectionlist" class="m-collectionlist__button">뒤로</a>
-	<div id="stateLoading" class="c-loader" style="display: none">
-		<div class="c-loader__active c-loader__active--ring">
-		</div>
-	</div>
+
+<!--	<div id="stateLoading" class="c-loader">-->
+<!--		<div class="c-loader__active c-loader__active&#45;&#45;ring">-->
+<!--		</div>-->
+<!--	</div>-->
+
 	<div class="m-contents">
 		<input type="hidden" id="receiveId" th:value="${collectionTasks} ? ${collectionTasks.id} : ''" readonly>
 		<input type="hidden" id="ctSeq" th:value="${collectionTasks} ? ${collectionTasks.ctSeq} : ''" readonly>

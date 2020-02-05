@@ -1194,7 +1194,19 @@
 				success: function (res) {
 					if (!Ajax.checkResult(res)) {
 						return;
-					}
+					};
+
+					// var street = res.data.streetMeter;
+					// console.log(street);
+					//
+					// var keys = Object.keys(street);
+					//
+					// console.log(keys);
+					//
+					// for ( var i in keys) {
+					// 	console.log("key="+keys[i]+ ",  data="+ street[keys[i]]);
+					// }
+
 					//상태값 차트
 					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
 					//쓰레기양 차트

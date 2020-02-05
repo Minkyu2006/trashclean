@@ -282,8 +282,8 @@ public class DashboardRestController {
         //log.info("deviceids : " +deviceids);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
-        //log.info("AWS 장치 list : "+resData);
-        //log.info("AWS 장치 data : "+resData.get("data"));
+      //  log.info("AWS 장치 list : "+resData);
+      //  log.info("AWS 장치 data : "+resData.get("data"));
 //        log.info("AWS 장치 size : "+resData.get("datacounts"));
 
         Object datacounts = resData.get("datacounts");
@@ -440,7 +440,18 @@ public class DashboardRestController {
 
 //        log.info("위도 : " + gps_laDatas);
 //        log.info("경도 : " + gps_loDatas);
+        List<Double> street = new ArrayList<>();
+        List<HashMap<String,Object>> streetMeter = new ArrayList<>();
+        List<String> gps_laStreet = new ArrayList<>();
+        List<String> gps_loStreet = new ArrayList<>();
+
+        HashMap<String,Object> devicestreet;
+
+        int a = 0;
+
         for (int i = 0; i < deviceIdNames.size(); i++) {
+            devicestreet = new HashMap<>();
+
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
             if(gps_loData.equals("na") || gps_loData.equals(null) || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals(null) || gps_laData.equals("")) {
@@ -449,30 +460,56 @@ public class DashboardRestController {
 
                 gps_laDatas2.add(gps_laSubStirng);
                 gps_loDatas2.add(gps_loSubStirng);
-                mapDataColumns.add(Arrays.asList((String) deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)), (String) statusDatas.get(i)));
+                mapDataColumns.add(Arrays.asList(deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)),statusDatas.get(i)));
             }else{
                 if(gps_laData.substring(0,1).equals("N")){
                     String gps_laSubStirng = gps_laData.replace("N","+");
                     gps_laDatas2.add(gps_laSubStirng);
+                    gps_laStreet.add(gps_laSubStirng);
                 }else if(gps_laData.substring(0,1).equals("S")){
                     String gps_laSubStirng = gps_laData.replace("S","-");
                     gps_laDatas2.add(gps_laSubStirng);
+                    gps_laStreet.add(gps_laSubStirng);
                 }
                 if(gps_loData.substring(0,1).equals("E")){
                     String gps_loSubStirng = gps_loData.replace("E","+");
                     gps_loDatas2.add(gps_loSubStirng);
+                    gps_loStreet.add(gps_loSubStirng);
                 }else if(gps_loData.substring(0,1).equals("W")){
                     String gps_loSubStirng = gps_loData.replace("W","-");
                     gps_loDatas2.add(gps_loSubStirng);
+                    gps_loStreet.add(gps_loSubStirng);
                 }
-                mapDataColumns.add(Arrays.asList((String) deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)), (String) statusDatas.get(i)));
+                mapDataColumns.add(Arrays.asList(deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)),statusDatas.get(i)));
+
+//                double distanceMeter = haversine(37.547244,127.047283, Double.parseDouble(gps_laDatas2.get(i)),Double.parseDouble(gps_loDatas2.get(i)));
+//                devicestreet.put("devicename",Collections.singletonList(deviceIdNames.get(i)));
+//                devicestreet.put("streetage", distanceMeter);
+//                streetMeter.add(devicestreet);
             }
         }
 
 //        log.info("deviceIdNames : "+deviceIdNames);
 //        log.info("gps_laDatas2 : "+gps_laDatas2);
 //        log.info("gps_loDatas2 : "+gps_loDatas2);
-//        log.info("mapDataColumns : "+mapDataColumns);
+        //log.info("mapDataColumns : "+mapDataColumns);
+
+
+
+//        log.info("오름차순 안된 streetMeter : "+streetMeter);
+//        // 거리(Double) 오름차순
+//        streetMeter.sort(new Comparator<HashMap<String, Object>>() {
+//            @Override
+//            public int compare(HashMap<String, Object> o1, HashMap<String, Object> o2) {
+//                Double streetage1 = (Double) o1.get("streetage");
+//                Double streetage2 = (Double) o2.get("streetage");
+//                return streetage1.compareTo(streetage2);
+//            }
+//        });
+//        log.info("오름차순 된 streetMeter : "+streetMeter);
+//        data.put("streetMeter", streetMeter);
+
+
 
         data.put("deviceIdNames", deviceIdNames);
         data.put("statusDatas", statusDatas);
@@ -488,6 +525,20 @@ public class DashboardRestController {
         res.addResponse("data", data);
         return ResponseEntity.ok(res.success());
     }
+
+    // 본부와 솔라빈 간의 거리
+    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
+        double R = 6372.8; // In kilometers
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        lat1 = Math.toRadians(lat1);
+        lat2 = Math.toRadians(lat2);
+
+        double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(lat1) * Math.cos(lat2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        return R * c;
+    }
+
 
     // 원차트 새로고침
     @PostMapping("dataCircleGraph")
