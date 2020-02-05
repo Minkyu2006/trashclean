@@ -191,6 +191,7 @@ public class EquipmentRestController {
             equipment.setEmDesignation(equipmentBaseDto.get(i).getEmDesignation());
             equipment.setEmType(equipmentBaseDto.get(i).getEmTypeId());
             equipment.setEmAwsNumber(equipmentBaseDto.get(i).getEmAwsNumber());
+            equipment.setEmInstallDate(equipmentBaseDto.get(i).getEmInstallDate());
             equipment.setEmCountry(equipmentBaseDto.get(i).getEmCountryId());
             equipment.setEmLocation(equipmentBaseDto.get(i).getEmLocationId());
             equipment.setEmEmbeddedNumber(equipmentBaseDto.get(i).getEmEmbeddedNumber());
