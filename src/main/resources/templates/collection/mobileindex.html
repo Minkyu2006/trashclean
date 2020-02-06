@@ -31,7 +31,7 @@
 			</div>
 			<div class="m-contents">
 				<ul class="m-main-menu" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_COLLECTOR')">
-					<li><a href="/dashboard/devicecontrol" sec:authorize = "hasRole('ROLE_ADMIN')" class="m-banner">장치제어</a></li>
+					<li><a href="/devicestats/devicecontrol" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_SUBADMIN')" class="m-banner">장치제어</a></li>
 					<li><a href="/collection/collectionlist" class="m-banner">수거업무리스트</a></li>
 				</ul>
 			</div>
