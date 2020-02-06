@@ -11,9 +11,9 @@
 				save();
 			});
 
-			$(document).on("click","#successBtn",function(){
-				init();
-			});
+			// $(document).on("click","#successBtn",function(){
+			// 	init();
+			// });
 
 		});
 
@@ -27,56 +27,43 @@
 		}
 
 		function save(){
-			if ($("#userid").val().trim() == '') {
+			if ($("#userid").val().trim() === '') {
 				alertCaution("아이디를 입력하세요.<BR> 아이디는 중복되지 않도록 <BR> 확인 후 입력하세요");
 				$("#userid").trigger('focus');
 				return false;
 			}
 
-			if ($("#username").val().trim() == '') {
-				alertCaution("이름을 입력하세요.");
-				$("#username").trigger('focus');
-				return false;
-			}
-
-			if ($("#password").val().trim() == '') {
+			if ($("#password").val().trim() === '') {
 				alertCaution("비밀번호를 입력하세요.");
 				$("#password").trigger('focus');
 				return false;
 			}
 
-			if ($("#password").val().trim() != $("#password2").val().trim()) {
+			if ($("#password").val().trim() !== $("#password2").val().trim()) {
 				alertCaution("입력한 비밀번호가 다릅니다.");
 				$("#password").trigger('focus');
 				return false;
 			}
 
-			if ($("#cellphone").val().trim() == '') {
-				alertCaution("전화번호를 입력하세요.<BR>메세지 알림을 받기 위해서는 <BR> 필수입니다.");
-				return false;
-			}
-
-			if ($("#email").val().trim() == '') {
-				alertCaution("이메일 입력하세요.<BR>알림메일을 받기위해서는 <BR> 필수입니다.");
+			if ($("#username").val().trim() === '') {
+				alertCaution("이름을 입력하세요.");
+				$("#username").trigger('focus');
 				return false;
 			}
 
 			var $form = $('form[name="frmreg"]');
-
 			var params = $form.serialize();
-
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/account/signup',
 				type : 'post',
-				//dataType: 'html',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
@@ -84,6 +71,7 @@
 						return;
 					}
 					alertSuccess('사용자등록이 완료 되었습니다.');
+					init();
 				}
 			});
 		}

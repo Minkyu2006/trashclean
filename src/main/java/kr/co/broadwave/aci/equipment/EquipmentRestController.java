@@ -182,7 +182,16 @@ public class EquipmentRestController {
         Equipment equipment = modelMapper.map(equipmentBaseMapperDto, Equipment.class);
 
         List<EquipmentBaseDto> equipmentBaseDto = equipmentService.EquipmentBaseSettingQuerydsl(equipmentBaseMapperDto.getEmNumbers());
-        log.info("equipmentBaseDto : "+equipmentBaseDto);
+        //log.info("equipmentBaseDto : "+equipmentBaseDto);
+
+        CodeType codeType = CodeType.valueOf("C0013");
+        List<MasterCodeDto> masterCodes= masterCodeService.findCodeList(codeType);
+        Double vInterval = Double.parseDouble(masterCodes.get(0).getName());
+        Double vPresstime = Double.parseDouble(masterCodes.get(1).getName());
+        Double vInputtime = Double.parseDouble(masterCodes.get(2).getName());
+        Double vSolenoidtime = Double.parseDouble(masterCodes.get(3).getName());
+        Double vYellowstart = Double.parseDouble(masterCodes.get(4).getName());
+        Double vRedstart = Double.parseDouble(masterCodes.get(5).getName());
 
         for(int i=0; i<equipmentBaseDto.size(); i++){
             equipment.setId(equipmentBaseDto.get(i).getId());
@@ -202,22 +211,22 @@ public class EquipmentRestController {
             equipment.setEmHardness(equipmentBaseDto.get(i).getEmHardness());
 
             if(equipment.getVInterval()==null){
-                equipment.setVInterval(60.0);
+                equipment.setVInterval(vInterval);
             }
             if(equipment.getVPresstime()==null){
-                equipment.setVPresstime(3.0);
+                equipment.setVPresstime(vPresstime);
             }
             if(equipment.getVInputtime()==null){
-                equipment.setVInputtime(10.0);
+                equipment.setVInputtime(vInputtime);
             }
             if(equipment.getVSolenoidtime()==null){
-                equipment.setVSolenoidtime(5.0);
+                equipment.setVSolenoidtime(vSolenoidtime);
             }
             if(equipment.getVYellowstart()==null){
-                equipment.setVYellowstart(61.0);
+                equipment.setVYellowstart(vYellowstart);
             }
             if(equipment.getVRedstart()==null){
-                equipment.setVRedstart(81.0);
+                equipment.setVRedstart(vRedstart);
             }
 
             equipment.setInsert_id(equipmentBaseDto.get(i).getInsert_id());
@@ -443,5 +452,19 @@ public class EquipmentRestController {
 
     }
 
+    // 액츄에이터리셋버튼
+    @PostMapping("actuatorReset")
+    public ResponseEntity<Map<String,Object>> actuatorReset(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                            @RequestParam(value="timestamp", defaultValue="") String timestamp) throws Exception {
+        AjaxResponse res = new AjaxResponse();
+
+//        log.info("deviceid : "+deviceid);
+//        log.info("timestamp : "+timestamp);
+
+        //Shadow Isolarbin 액츄에이터리셋(IoT) -> param : 디바이스 아이디, 타임스탬프
+        aciawsIoTDeviceService.setActuatorReset(deviceid,timestamp);
+
+        return ResponseEntity.ok(res.success());
+    }
 
 }

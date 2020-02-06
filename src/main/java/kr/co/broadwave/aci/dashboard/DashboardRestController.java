@@ -492,7 +492,7 @@ public class DashboardRestController {
 //        log.info("deviceIdNames : "+deviceIdNames);
 //        log.info("gps_laDatas2 : "+gps_laDatas2);
 //        log.info("gps_loDatas2 : "+gps_loDatas2);
-        //log.info("mapDataColumns : "+mapDataColumns);
+//        log.info("mapDataColumns : "+mapDataColumns);
 
 
 
@@ -506,6 +506,7 @@ public class DashboardRestController {
 //                return streetage1.compareTo(streetage2);
 //            }
 //        });
+//
 //        log.info("오름차순 된 streetMeter : "+streetMeter);
 //        data.put("streetMeter", streetMeter);
 

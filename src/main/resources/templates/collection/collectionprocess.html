@@ -20,9 +20,6 @@
 	<script type="text/javascript">
 
 		$(function() {
-			$("#actuatorreset").on('click',function(){
-				reset();
-			});
 
 			$("#collectioncheck").on('click',function(){
 				check();
@@ -34,35 +31,8 @@
 			$("#collectionend").on('click',function(){
 				end();
 			});
+
 		});
-
-		function reset() {
-			timestamp = + new Date();
-			var deviceid = $("#deviceid").text();
-			var params = {
-				deviceid:deviceid,
-				timestamp:timestamp
-			};
-
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
-
-			$.ajax({
-				url:'/api/collection/actuatorReset',
-				data : params,
-				type : 'post',
-				cache:false,
-				error:function(request){
-					ajaxErrorMsg(request);
-				},
-				success: function(){
-					var count=0;
-					var pat=4;
-					lightLoading(deviceid,count,null,pat);
-				}
-			});
-		}
 
 		function check() {
 			timestamp = + new Date();
@@ -85,9 +55,8 @@
 					ajaxErrorMsg(request);
 				},
 				success: function(){
-					var count=0;
 					var pat=1;
-					lightLoading(deviceid,count,null,pat);
+					lightLoading(deviceid,0,null,pat);
 				}
 			});
 		}
@@ -115,9 +84,8 @@
 					ajaxErrorMsg(request);
 				},
 				success: function(){
-					var count=0;
 					var pat=2;
-					lightLoading(deviceid,count,null,pat);
+					lightLoading(deviceid,0,null,pat);
 				}
 			});
 		}
@@ -145,9 +113,8 @@
 					ajaxErrorMsg(request);
 				},
 				success: function(){
-					var count=0;
 					var pat=3;
-					lightLoading(deviceid,count,null,pat);
+					lightLoading(deviceid,0,null,pat);
 				}
 			});
 		}
@@ -298,7 +265,6 @@
 			</ul>
 		</div>
 		<ul class="m-collection__buttons">
-			<li><button id="actuatorreset" class="m-banner">액츄에이터리셋</button></li>
 			<li><button id="collectioncheck" class="m-banner">장비확인(라이트점멸)</button></li>
 			<li><button id="collectionstart" class="m-banner">수거시작</button></li>
 			<li><button id="collectionend" class="m-banner">수거완료</button></li>

@@ -17,7 +17,8 @@ public enum CodeType {
     C0009("C0009", "모델타입"),
     C0010("C0010", "차량소유구분"),
     C0011("C0011", "차량용도"),
-    C0012("C0012", "차량상태");
+    C0012("C0012", "차량상태"),
+    C0013("C0013", "장비기본값");
     private String code;
     private String desc;
 

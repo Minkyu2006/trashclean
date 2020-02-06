@@ -24,7 +24,82 @@
                 callDataRequest();
             });
 
+			$("#actuatorreset").on('click',function(){
+				reset();
+			});
+
         });
+
+		function reset() {
+			timestamp = + new Date();
+			var deviceid = $("#deviceid").val();
+			var params = {
+				deviceid:deviceid,
+				timestamp:timestamp
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/equipment/actuatorReset',
+				data : params,
+				type : 'post',
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(){
+					lightLoading(deviceid,0,null);
+				}
+			});
+		}
+
+		function lightLoading(deviceid,count,setIn) {
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			var params = {
+				deviceid : deviceid
+			};
+
+			$.ajax({
+				url: '/api/equipment/awsdevicestatus',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					statuscode = res.status;
+					if (statuscode === 200) {
+						devicestate = res.data.datastate;
+						if (devicestate.reported) {
+							if (count !== 5) {
+								if (devicestate.desired.v_actuatorreset === devicestate.reported.v_actuatorreset) {
+									clearInterval(setIn);
+									alertSuccess("리셋완료");
+								} else {
+									//console.log("처리중...");
+									count++;
+									setIn = setTimeout(function () {
+										lightLoading(deviceid, count, setIn);
+									}, 2000);
+								}
+							} else {
+								alertCaution("처리하지 못했습니다. 다시시도해주세요.");
+							}
+						} else {
+							alertCaution("처리할 데이터가 존재하지 않습니다.");
+						}
+					}
+				}
+			});
+		}
 
 		function deviceList() {
 			var token = $("meta[name='_csrf']").attr("content");
@@ -293,6 +368,9 @@
 							</div>
 							<div class="c-function__item">
 								<button class="c-button" id="btnData">데이터요청</button>
+							</div>
+							<div class="c-function__item">
+								<button class="c-button" id="actuatorreset">액츄에이터리셋</button>
 							</div>
 						</div>
 					</div>
