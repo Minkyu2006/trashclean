@@ -41,7 +41,6 @@
 					<li><a href="/admin/mastercodereg">마스터코드등록</a></li>
 					<li><a href="/admin/teamreg">부서등록</a></li>
 					<li><a href="/admin/compreg">업체등록</a></li>
-					<li><a href="/admin/equipreg">장비등록</a></li>
 					<li><a href="/admin/modelreg">모델등록</a></li>
 					<li><a href="/admin/vehiclereg">차량등록</a></li>
 				</ul>
@@ -49,6 +48,7 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">장비관리</a>
 				<ul class="nav-child">
+					<li><a href="/devicestats/equipreg">장비등록</a></li>
 					<li><a href="/devicestats/devicecontrol">장비제어</a></li>
 					<li><a href="/devicestats/daysdevice">일자별장비현황</a></li>
 					<li><a href="/devicestats/devicebasevalue">장비기본값일괄셋팅</a></li>

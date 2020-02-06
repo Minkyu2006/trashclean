@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.equipment;
 
+import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
 import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.company.CompanyRepositoryCustom;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,21 +29,44 @@ public class EquipmentService {
     private final KeyGenerateService keyGenerateService;
     private final EquipmentRepositoryCustom equipmentRepositoryCustom;
     private final CompanyRepositoryCustom companyRepositoryCustom;
+    private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
 
     @Autowired
     public EquipmentService(EquipmentRepository equipmentRepository,
                             KeyGenerateService keyGenerateService,
                             CompanyRepositoryCustom companyRepositoryCustom,
                             EquipmentRepositoryCustom equipmentRepositoryCustom,
+                            ACIAWSIoTDeviceService aciawsIoTDeviceService,
                             ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
+        this.aciawsIoTDeviceService = aciawsIoTDeviceService;
         this.companyRepositoryCustom = companyRepositoryCustom;
         this.equipmentRepositoryCustom = equipmentRepositoryCustom;
         this.equipmentRepository = equipmentRepository;
         this.keyGenerateService = keyGenerateService;
     }
 
-    public Equipment save(Equipment equipment) {
+    public Equipment save(Equipment equipment) throws Exception {
+        List<String> keyStrings = new ArrayList<>();
+        List<String> baseValues = new ArrayList<>();
+        keyStrings.add("v_interval");
+        keyStrings.add("v_presstime");
+        keyStrings.add("v_inputtime");
+        keyStrings.add("v_solenoidtime");
+        keyStrings.add("v_yellowstart");
+        keyStrings.add("v_redstart");
+        baseValues.add(Double.toString(equipment.getVInterval()));
+        baseValues.add(Double.toString(equipment.getVPresstime()));
+        baseValues.add(Double.toString(equipment.getVInputtime()));
+        baseValues.add(Double.toString(equipment.getVSolenoidtime()));
+        baseValues.add(Double.toString(equipment.getVYellowstart()));
+        baseValues.add(Double.toString(equipment.getVRedstart()));
+
+        log.info("keyStrings : "+keyStrings);
+        log.info("baseValues : "+baseValues);
+
+        aciawsIoTDeviceService.setDeviceBaseSetting(equipment.getEmNumber(),keyStrings,baseValues);
+
         //장비코드 가공하기
         if ( equipment.getEmNumber() == null || equipment.getEmNumber().isEmpty()){
 

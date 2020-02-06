@@ -70,7 +70,7 @@ public class EquipmentRestController {
 
     // 장비 저장
     @PostMapping ("reg")
-    public ResponseEntity<Map<String,Object>> equipmentReg(@ModelAttribute EquipmentMapperDto equipmentMapperDto, HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> equipmentReg(@ModelAttribute EquipmentMapperDto equipmentMapperDto, HttpServletRequest request) throws Exception {
         AjaxResponse res = new AjaxResponse();
 
         Equipment equipment = modelMapper.map(equipmentMapperDto, Equipment.class);
@@ -167,7 +167,7 @@ public class EquipmentRestController {
     // 장비기본값 저장
     @PostMapping ("basereg")
     public ResponseEntity<Map<String,Object>> baseReg(@ModelAttribute EquipmentBaseMapperDto equipmentBaseMapperDto,
-                                                      HttpServletRequest request){
+                                                      HttpServletRequest request) throws Exception {
         AjaxResponse res = new AjaxResponse();
 
         String currentuserid = CommonUtils.getCurrentuser(request);

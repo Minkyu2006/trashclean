@@ -27,6 +27,20 @@ public class DeviceStatsController {
         this.masterCodeService = masterCodeService;
     }
 
+    //장비등록
+    @RequestMapping("equipreg")
+    public String equipreg(Model model){
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+        List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+        model.addAttribute("modelTypes", modelTypes);
+
+        return "devicestats/equipmentreg";
+    }
+
     @RequestMapping("devicecontrol")
     public String devicecontrol(){
         return "devicestats/devicecontrol";

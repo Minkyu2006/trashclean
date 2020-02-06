@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author InSeok
@@ -91,7 +92,14 @@ public class ACIAWSIoTDeviceService {
         aciIoTService.shadowNonblockingSend(deviceid,"collect_end",ctCode);
 
     }
-
+    //Shadow Isolarbin 기본값셋팅 (IoT) -> param :  디바이스 아이디, 기본값(value)
+    public void setDeviceBaseSetting(String deviceid, List<String> keyStrings, List<String> baseValues) throws Exception {
+        log.info("장비 Shadow 기본값셋팅 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        for(int i=0; i<keyStrings.size(); i++){
+            aciIoTService.shadowNonblockingSend(deviceid,keyStrings.get(i),baseValues.get(i));
+        }
+    }
 
 
 }

@@ -50,52 +50,13 @@
 				error:function(request){
 					ajaxErrorMsg(request);
 				},
-				success: function(){
-					lightLoading(deviceid,0,null);
-				}
-			});
-		}
-
-		function lightLoading(deviceid,count,setIn) {
-
-			var token = $("meta[name='_csrf']").attr("content");
-			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
-
-			var params = {
-				deviceid : deviceid
-			};
-
-			$.ajax({
-				url: '/api/equipment/awsdevicestatus',
-				type: 'post',
-				data: params,
-				cache: false,
-				error: function (request) {
-					ajaxErrorMsg(request);
-				},
-				success: function (res) {
-					statuscode = res.status;
-					if (statuscode === 200) {
-						devicestate = res.data.datastate;
-						if (devicestate.reported) {
-							if (count !== 5) {
-								if (devicestate.desired.v_actuatorreset === devicestate.reported.v_actuatorreset) {
-									clearInterval(setIn);
-									alertSuccess("리셋완료");
-								} else {
-									//console.log("처리중...");
-									count++;
-									setIn = setTimeout(function () {
-										lightLoading(deviceid, count, setIn);
-									}, 2000);
-								}
-							} else {
-								alertCaution("처리하지 못했습니다. 다시시도해주세요.");
-							}
-						} else {
-							alertCaution("처리할 데이터가 존재하지 않습니다.");
-						}
+				success: function(res){
+					//화면 출력
+					statuscode= res.status;
+					if (statuscode ===200) {
+						alertSuccess("리셋처리되었습니다.");
+					}else{
+						alertCancel("처리오류");
 					}
 				}
 			});
@@ -196,6 +157,8 @@
             $("#resmsg").addClass(" active");
             $("#reqdata").addClass(" active");
             $("#resdata").addClass(" active");
+			$("#reqreset").addClass(" active");
+			$("#resreset").addClass(" active");
 
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
@@ -223,23 +186,29 @@
                         if (devicestate.desired) {
                             reqdoor = nvl(devicestate.desired.doorsol, "확인불가");
                             reqdatareq = nvl(devicestate.desired.datareq, "미요청");
+							reqresetreq = nvl(devicestate.desired.v_actuatorreset, "미요청");
                         }else{
                             reqdoor="확인불가";
                             reqdatareq="미요청";
+							reqresetreq="미요청";
                         }
                         //처리결과
                         if (devicestate.reported) {
                             resdoor = nvl(devicestate.reported.doorsol, "확인불가");
                             resdatareq = nvl(devicestate.reported.datareq, "미처리");
+							resresetreq = nvl(devicestate.reported.v_actuatorreset, "미처리");
                         }else {
                             resdoor = "확인불가";
                             resdatareq = "미처리";
+							resresetreq = "미처리";
                         }
 
 						$("#reqmsg").removeClass(" loading");
 						$("#resmsg").removeClass(" loading");
 						$("#reqdata").removeClass(" loading");
 						$("#resdata").removeClass(" loading");
+						$("#reqreset").removeClass(" loading");
+						$("#resreset").removeClass(" loading");
 
 						if(reqdoor=="open"){
 							$("#reqmsg").removeClass(" close");
@@ -269,11 +238,15 @@
                         $("#reqdata").html(reqdatareq);
                         $("#resdata").html(resdatareq);
 
+						$("#reqreset").html(reqresetreq);
+						$("#resreset").html(resresetreq);
                     }else{
 						$("#reqmsg").removeClass(" loading");
 						$("#resmsg").removeClass(" loading");
 						$("#reqdata").removeClass(" loading");
 						$("#resdata").removeClass(" loading");
+						$("#reqreset").removeClass(" loading");
+						$("#resreset").removeClass(" loading");
 						$("#reqmsg").removeClass(" open");
 						$("#resmsg").removeClass(" open");
 						$("#reqmsg").removeClass(" close");
@@ -282,6 +255,8 @@
                         $("#resmsg").html("조회실패");
                         $("#reqdata").html("조회실패");
                         $("#resdata").html("조회실패");
+						$("#reqreset").html("조회실패");
+						$("#resreset").html("조회실패");
                     }
                 }
             });
@@ -356,6 +331,29 @@
 		        				</div>
         					</div>
         				</div>
+
+						<div class="control__box">
+							<div class="control__results">
+								<div class="control__result-item">
+									<div class="control__result-title">액츄에이터 - 요청상태</div>
+									<div class="control__result loading" id="reqreset">
+										<span></span>
+										<span></span>
+										<span></span>
+										<span></span>
+									</div>
+								</div>
+								<div class="control__result-item">
+									<div class="control__result-title">액츄에이터 - 처리상태</div>
+									<div class="control__result loading" id="resreset">
+										<span></span>
+										<span></span>
+										<span></span>
+										<span></span>
+									</div>
+								</div>
+							</div>
+						</div>
         			</div>
         			
         			<div class="c-function">

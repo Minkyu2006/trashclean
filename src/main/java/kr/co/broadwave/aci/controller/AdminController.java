@@ -73,20 +73,6 @@ public class AdminController {
         return "admin/compreg";
     }
 
-    //장비등록
-    @RequestMapping("equipreg")
-    public String equipreg(Model model){
-        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
-        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
-        List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
-
-        model.addAttribute("equipdTypes", equipdTypes);
-        model.addAttribute("equipdCountrys", equipdCountrys);
-        model.addAttribute("modelTypes", modelTypes);
-
-        return "admin/equipmentreg";
-    }
-
     //모델등록
     @RequestMapping("modelreg")
     public String modelreg(Model model){
