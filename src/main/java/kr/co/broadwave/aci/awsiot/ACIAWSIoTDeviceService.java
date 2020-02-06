@@ -93,12 +93,20 @@ public class ACIAWSIoTDeviceService {
 
     }
     //Shadow Isolarbin 기본값셋팅 (IoT) -> param :  디바이스 아이디, 기본값(value)
-    public void setDeviceBaseSetting(String deviceid, List<String> keyStrings, List<String> baseValues) throws Exception {
+    public void setDeviceBaseSetting(String deviceid,String v_interval,String v_presstime, String v_inputtime
+            ,String v_solenoidtime,String v_yellowstart, String v_redstart ) throws Exception {
         log.info("장비 Shadow 기본값셋팅 요청 :'" + deviceid +"'");
-        //device 상태가져오기
-        for(int i=0; i<keyStrings.size(); i++){
-            aciIoTService.shadowNonblockingSend(deviceid,keyStrings.get(i),baseValues.get(i));
-        }
+
+        String message = "{\"state\":{\"desired\":";
+        message = message + " {\"v_interval\":\"" + v_interval.toLowerCase() + "\"";
+        message = message + ",\"v_presstime\":\"" + v_presstime.toLowerCase() + "\"";
+        message = message + ",\"v_inputtime\":\"" + v_inputtime.toLowerCase() + "\"";
+        message = message + ",\"v_solenoidtime\":\"" + v_solenoidtime.toLowerCase() + "\"";
+        message = message + ",\"v_yellowstart\":\"" + v_yellowstart.toLowerCase() + "\"";
+        message = message + ",\"v_redstart\":\"" + v_redstart.toLowerCase() + "\"";
+        message = message +"}}}";
+        aciIoTService.shadowNonblockingMessageParamSend(deviceid,message);
+
     }
 
 

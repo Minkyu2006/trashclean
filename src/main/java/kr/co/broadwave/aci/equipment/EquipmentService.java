@@ -47,25 +47,16 @@ public class EquipmentService {
     }
 
     public Equipment save(Equipment equipment) throws Exception {
-        List<String> keyStrings = new ArrayList<>();
-        List<String> baseValues = new ArrayList<>();
-        keyStrings.add("v_interval");
-        keyStrings.add("v_presstime");
-        keyStrings.add("v_inputtime");
-        keyStrings.add("v_solenoidtime");
-        keyStrings.add("v_yellowstart");
-        keyStrings.add("v_redstart");
-        baseValues.add(Double.toString(equipment.getVInterval()));
-        baseValues.add(Double.toString(equipment.getVPresstime()));
-        baseValues.add(Double.toString(equipment.getVInputtime()));
-        baseValues.add(Double.toString(equipment.getVSolenoidtime()));
-        baseValues.add(Double.toString(equipment.getVYellowstart()));
-        baseValues.add(Double.toString(equipment.getVRedstart()));
 
-        log.info("keyStrings : "+keyStrings);
-        log.info("baseValues : "+baseValues);
+        String p1 = Double.toString(equipment.getVInterval());
+        String p2 = Double.toString(equipment.getVPresstime());
+        String p3 = Double.toString(equipment.getVInputtime());
+        String p4 = Double.toString(equipment.getVSolenoidtime());
+        String p5 = Double.toString(equipment.getVYellowstart());
+        String p6 = Double.toString(equipment.getVRedstart());
 
-        aciawsIoTDeviceService.setDeviceBaseSetting(equipment.getEmNumber(),keyStrings,baseValues);
+
+        aciawsIoTDeviceService.setDeviceBaseSetting(equipment.getEmNumber(),p1,p2,p3,p4,p5,p6);
 
         //장비코드 가공하기
         if ( equipment.getEmNumber() == null || equipment.getEmNumber().isEmpty()){

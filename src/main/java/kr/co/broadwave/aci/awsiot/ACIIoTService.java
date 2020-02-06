@@ -63,6 +63,46 @@ public class ACIIoTService {
         }
 
     }
+
+
+    //shadow  메세지 보내기
+    public void shadowNonblockingMessageParamSend(String thingName,String message) {
+
+        AWSIotMqttClient clientMulti = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
+        ACIIoTDevice deviceMulti = new ACIIoTDevice(thingName);;
+
+        try {
+
+
+            //shadow
+            clientMulti.attach(deviceMulti);
+            long reportInterval = 0;            // milliseconds. Default interval is 3000.
+            deviceMulti.setReportInterval(reportInterval);
+            clientMulti.connect();
+
+            //System.out.println("Shadow Nonblocking connect");
+
+            // Update shadow document
+            deviceMulti.update(message,3000);
+
+            //System.out.println("shadow nonBlocking update");
+
+            clientMulti.disconnect();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            try{
+                clientMulti.disconnect();
+            }catch (Exception e1){
+                e1.printStackTrace();
+
+            }
+
+        }
+
+
+    }
+
     //shadow 정보 가져오기
     public String shadowDeviceGet(String thingName) {
         AWSIotMqttClient client = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
