@@ -8,8 +8,8 @@ package kr.co.broadwave.aci.accounts;
  */
 public enum AccountRole {
     ROLE_USER("ROLE_USER", "운영사"),
-    ROLE_ADMIN("ROLE_ADMIN", "관리자"),
-    ROLE_SUBADMIN("ROLE_SUBADMIN", "서브관리자"),
+    ROLE_ADMIN("ROLE_ADMIN", "시스템관리자"),
+    ROLE_SUBADMIN("ROLE_SUBADMIN", "관리자"),
     ROLE_COLLECTOR("ROLE_COLLECTOR", "수거원")
     ;
 
