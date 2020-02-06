@@ -526,7 +526,7 @@ public class DashboardRestController {
         return ResponseEntity.ok(res.success());
     }
 
-    // 본부와 솔라빈 간의 거리
+//    //본부와 솔라빈 간의 거리
 //    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
 //        double R = 6372.8; // In kilometers
 //        double dLat = Math.toRadians(lat2 - lat1);

@@ -112,6 +112,9 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
     @Override
     public Page<CollectionTaskListDto> findByCollectionsTaskList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable){
 
+        //AccountRole admin = AccountRole.valueOf("ROLE_ADMIN");
+        AccountRole subadmin = AccountRole.valueOf("ROLE_SUBADMIN");
+
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
         QEquipment equipment = QEquipment.equipment;
         QCompany company = QCompany.company;
@@ -136,15 +139,17 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                 ));
 
         // 검색조건필터
-        if (role != null ){
-            query.where(collectionTask.accountId.role.eq(role));
+        if(role != subadmin){
+            if (role != null && currentuserid != null ){
+                query.where(collectionTask.accountId.role.eq(role));
+                query.where(collectionTask.accountId.userid.eq(currentuserid));
+            }
         }
+
         if (procStatsType != null ){
             query.where(collectionTask.procStats.eq(procStatsType));
         }
-        if (currentuserid != null ){
-            query.where(collectionTask.accountId.userid.eq(currentuserid));
-        }
+
         query.orderBy(collectionTask.yyyymmdd.desc());
 
         final List<CollectionTaskListDto> collections = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();

@@ -320,17 +320,17 @@ public class CollectionTaskRestController {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
-        AccountRole role = AccountRole.valueOf("ROLE_COLLECTOR");
         ProcStatsType procStatsType = ProcStatsType.valueOf("CL02");
         String currentuserid = CommonUtils.getCurrentuser(request);
 
         Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+        Page<CollectionTaskListDto> collection;
         //로그인한 사람 아이디가존재하지않으면 에러처리
         if (!optionalAccount.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(), ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
+        }else{
+            collection = collectionTaskService.findByCollectionsTaskList(currentuserid,optionalAccount.get().getRole(),procStatsType,pageable);
         }
-
-        Page<CollectionTaskListDto> collection = collectionTaskService.findByCollectionsTaskList(currentuserid,role,procStatsType,pageable);
 
         if(collection.getTotalElements()> 0 ){
             data.put("datalist",collection.getContent());
