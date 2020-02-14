@@ -132,6 +132,7 @@ body {
 	height: 80px;
 	margin-top: -40px;
 	margin-left: -40px;
+	z-index: 10;
 }
 /* ring */
 .c-loader__active.c-loader__active--ring:after {

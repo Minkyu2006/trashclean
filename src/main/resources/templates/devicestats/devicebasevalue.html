@@ -127,11 +127,11 @@
 					$.each(res.data.datalist, function(key, value){
 						html += '<tr >';
 						html += '<td >'+ '<input name="checkemNumber" type="checkbox" value='+echoNull2Blank(value.emNumber)+' />' +'</td>';
-						html += '<td >'+ echoNull2Blank(value.emNumber) +'</td>';
-						html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
-						html += '<td >'+ echoNull2Blank(value.iModel) +'</td>';
-						html += '<td >'+ echoNull2Blank(value.emCountry)+'-'+echoNull2Blank(value.emLocation)+'</td>';
-						html += '<td >'+ echoNull2Blank(value.company) +'</td>';
+						html += '<td class="align-left">'+ echoNull2Blank(value.emNumber) +'</td>';
+						html += '<td class="align-left" >'+ echoNull2Blank(value.emType) +'</td>';
+						html += '<td class="align-left" >'+ echoNull2Blank(value.iModel) +'</td>';
+						html += '<td class="align-left" >'+ echoNull2Blank(value.emCountry)+'-'+echoNull2Blank(value.emLocation)+'</td>';
+						html += '<td class="align-left" >'+ echoNull2Blank(value.company) +'</td>';
 						html += '</tr>';
 					});
 					$schList.html(html);
@@ -287,14 +287,14 @@
 							<div class="panel__table">
 								<div class="c-scroll-table">
 									<div class="c-scroll-table__header">
-										<table>
+										<table style="width: 749px;">
 											<colgroup>
 												<col style="width: 40px;" />
-												<col style="width: 240px;" />
-												<col style="width: 240px;" />
+												<col style="width: 140px;" />
+												<col style="width: 100px;" />
 												<col style="width: 210px;" />
-												<col style="width: 200px;" />
-												<col style="width: 200px;" />
+												<col style="width: 140px;" />
+												<col style="width: 100px;" />
 												<col style="width: 19px;" />
 											</colgroup>
 											<thead>
@@ -311,14 +311,14 @@
 										</table>
 									</div>
 									<div class="c-scroll-table__body">
-										<table>
+										<table style="width: 730px;">
 											<colgroup>
 												<col style="width: 40px;" />
-												<col style="width: 240px;" />
-												<col style="width: 240px;" />
+												<col style="width: 140px;" />
+												<col style="width: 100px;" />
 												<col style="width: 210px;" />
-												<col style="width: 200px;" />
-												<col style="width: 200px;" />
+												<col style="width: 140px;" />
+												<col style="width: 100px;" />
 											</colgroup>
 											<tbody id="schList">
 											</tbody>
