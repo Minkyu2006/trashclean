@@ -108,8 +108,13 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                         equipment.emType,
                         equipment.emCountry,
                         equipment.emLocation,
-                        equipment.company,
-                        equipment.mdId
+                        equipment.mdId,
+                        equipment.vInterval,
+                        equipment.vPresstime,
+                        equipment.vInputtime,
+                        equipment.vSolenoidtime,
+                        equipment.vYellowstart,
+                        equipment.vRedstart
                 ));
 
         // 검색조건필터

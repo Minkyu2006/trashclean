@@ -5,6 +5,8 @@ import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
+import javax.persistence.Column;
+
 /**
  * @author Minkyu
  * Date : 2020-02-04
@@ -22,8 +24,14 @@ public class EquipmentBaseListDto {
     private MasterCode emType; // 장비타입
     private MasterCode emCountry; // 국가
     private MasterCode emLocation; // 지역
-    private Company company; // 소속사
     private IModel iModel; // 모델명,종류
+
+    private Double vInterval; // 센서 데이터 주기적 송신시간
+    private Double vPresstime; // 압축 정지시간
+    private Double vInputtime; // 투입구 열림 시간
+    private Double vSolenoidtime; // 솔레노이드 열림 시간
+    private Double vYellowstart; // 쓰레기량에 따른 노랑색등의 경계값
+    private Double vRedstart; // 쓰레기량에 따른 적색등의 경계값
 
     public String getEmNumber() {
         return emNumber;
@@ -41,11 +49,31 @@ public class EquipmentBaseListDto {
         return emLocation.getName();
     }
 
-    public String getCompany() {
-        return company.getCsOperator();
-    }
-
     public String getiModel() {
         return iModel.getMdName()+"-"+iModel.getMdType().getName();
+    }
+
+    public Double getvInterval() {
+        return vInterval;
+    }
+
+    public Double getvPresstime() {
+        return vPresstime;
+    }
+
+    public Double getvInputtime() {
+        return vInputtime;
+    }
+
+    public Double getvSolenoidtime() {
+        return vSolenoidtime;
+    }
+
+    public Double getvYellowstart() {
+        return vYellowstart;
+    }
+
+    public Double getvRedstart() {
+        return vRedstart;
     }
 }

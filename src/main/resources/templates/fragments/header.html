@@ -48,9 +48,9 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_SUBADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">장비관리</a>
 				<ul class="nav-child">
+					<li><a href="/devicestats/daysdevice">일자별장비현황</a></li>
 					<li><a href="/devicestats/equipreg">장비등록</a></li>
 					<li><a href="/devicestats/devicecontrol">장비제어</a></li>
-					<li><a href="/devicestats/daysdevice">일자별장비현황</a></li>
 					<li><a href="/devicestats/devicebasevalue">장비기본값일괄셋팅</a></li>
 				</ul>
 			</li>
