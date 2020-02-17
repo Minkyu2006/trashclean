@@ -75,6 +75,7 @@
 			$("#vSolenoidtime").val('');
 			$("#vYellowstart").val('');
 			$("#vRedstart").val('');
+			$("#emCertificationNumber").val('');
 
 			$("#emCountryView").hide();
 			$("#emLocationView").hide();
@@ -291,6 +292,7 @@
 					$("#vSolenoidtime").val(res.data.equipment.vSolenoidtime);
 					$("#vYellowstart").val(res.data.equipment.vYellowstart);
 					$("#vRedstart").val(res.data.equipment.vRedstart);
+					$("#emCertificationNumber").val(res.data.equipment.emCertificationNumber);
 
 					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
 					var install = res.data.equipment.emInstallDate;
@@ -776,6 +778,16 @@
 								<input type="text" name="vRedstart" id="vRedstart" placeholder="기본값 81%" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
+					</tr>
+					<tr>
+						<th>인증번호</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="emCertificationNumber" id="emCertificationNumber" class="c-text__input" />
+							</div>
+						</td>
+						<th></th>
+						<td></td>
 					</tr>
 				</tbody>
 			</table>

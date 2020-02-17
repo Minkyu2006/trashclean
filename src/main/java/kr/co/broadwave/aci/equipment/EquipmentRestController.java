@@ -209,6 +209,7 @@ public class EquipmentRestController {
             equipment.setMdId(equipmentBaseDto.get(i).getMdId());
             equipment.setEmLatitude(equipmentBaseDto.get(i).getEmLatitude());
             equipment.setEmHardness(equipmentBaseDto.get(i).getEmHardness());
+            equipment.setEmCertificationNumber(equipmentBaseDto.get(i).getEmCertificationNumber());
 
             if(equipment.getVInterval()==null){
                 equipment.setVInterval(vInterval);

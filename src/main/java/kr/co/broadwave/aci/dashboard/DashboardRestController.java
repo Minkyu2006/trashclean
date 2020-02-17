@@ -20,10 +20,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -288,10 +291,11 @@ public class DashboardRestController {
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
-        log.info("number : "+number);
+        //log.info("number : "+number);
 
         List<String> sortDevice = new ArrayList<>();
 
+        //log.info("number : "+number);
         for (int i = 0; i < number; i++) {
             HashMap map = (HashMap) resData.get("data").get(i);
             sortDevice.add((String) map.get("deviceid"));
@@ -405,7 +409,7 @@ public class DashboardRestController {
             stateNames.clear();
             for (int j = 0; j < statusMaster.size(); j++) {
                 if (!stateNames.contains(statusMaster.get(i))) {
-                    stateNames.add((String) statusMaster.get(i));
+                    stateNames.add(statusMaster.get(i));
                 }
             }
             for (int j = 0; j < statusDatas.size(); j++) {
@@ -440,21 +444,23 @@ public class DashboardRestController {
 
 //        log.info("위도 : " + gps_laDatas);
 //        log.info("경도 : " + gps_loDatas);
-        List<Double> street = new ArrayList<>();
-        List<HashMap<String,Object>> streetMeter = new ArrayList<>();
+        List<HashMap<String,String>> gps_lanlon = new ArrayList<>();
         List<String> gps_laStreet = new ArrayList<>();
         List<String> gps_loStreet = new ArrayList<>();
+        HashMap<String,String> lanlondeviceid;
 
-        HashMap<String,Object> devicestreet;
-
-        int a = 0;
+        lanlondeviceid = new HashMap<>();
+        lanlondeviceid.put("devicename","BonBu");
+        lanlondeviceid.put("lan","37.547611");
+        lanlondeviceid.put("lon","127.048871");
+        gps_lanlon.add(lanlondeviceid);
 
         for (int i = 0; i < deviceIdNames.size(); i++) {
-            devicestreet = new HashMap<>();
+            lanlondeviceid = new HashMap<>();
 
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
-            if(gps_loData.equals("na") || gps_loData.equals(null) || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals(null) || gps_laData.equals("")) {
+            if(gps_loData.equals("na") || gps_loData == null || gps_loData.equals("") || gps_laData.equals("na") || gps_laData == null || gps_laData.equals("")) {
                 String gps_laSubStirng = "0.0";
                 String gps_loSubStirng = "0.0";
 
@@ -482,34 +488,12 @@ public class DashboardRestController {
                 }
                 mapDataColumns.add(Arrays.asList(deviceIdNames.get(i), Double.parseDouble(gps_laDatas2.get(i)), Double.parseDouble(gps_loDatas2.get(i)),statusDatas.get(i)));
 
-//                double distanceMeter = haversine(37.547244,127.047283, Double.parseDouble(gps_laDatas2.get(i)),Double.parseDouble(gps_loDatas2.get(i)));
-//                devicestreet.put("devicename",Collections.singletonList(deviceIdNames.get(i)));
-//                devicestreet.put("streetage", distanceMeter);
-//                streetMeter.add(devicestreet);
+                lanlondeviceid.put("devicename",deviceIdNames.get(i));
+                lanlondeviceid.put("lan",gps_laDatas2.get(i));
+                lanlondeviceid.put("lon",gps_loDatas2.get(i));
+                gps_lanlon.add(lanlondeviceid);
             }
         }
-
-//        log.info("deviceIdNames : "+deviceIdNames);
-//        log.info("gps_laDatas2 : "+gps_laDatas2);
-//        log.info("gps_loDatas2 : "+gps_loDatas2);
-        //log.info("mapDataColumns : "+mapDataColumns);
-
-
-
-//        System.out.println("오름차순 안된 streetMeter : "+streetMeter);
-//        // 거리(Double) 오름차순
-//        streetMeter.sort(new Comparator<HashMap<String, Object>>() {
-//            @Override
-//            public int compare(HashMap<String, Object> o1, HashMap<String, Object> o2) {
-//                Double streetage1 = (Double) o1.get("streetage");
-//                Double streetage2 = (Double) o2.get("streetage");
-//                return streetage1.compareTo(streetage2);
-//            }
-//        });
-//        System.out.println("오름차순 된 streetMeter : "+streetMeter);
-//        data.put("streetMeter", streetMeter);
-
-
 
         data.put("deviceIdNames", deviceIdNames);
         data.put("statusDatas", statusDatas);
@@ -523,22 +507,10 @@ public class DashboardRestController {
         data.put("timestamps", timestamps);
 
         res.addResponse("data", data);
+
         return ResponseEntity.ok(res.success());
+
     }
-
-//    //본부와 솔라빈 간의 거리
-//    public static double haversine(double lat1, double lon1, double lat2, double lon2) {
-//        double R = 6372.8; // In kilometers
-//        double dLat = Math.toRadians(lat2 - lat1);
-//        double dLon = Math.toRadians(lon2 - lon1);
-//        lat1 = Math.toRadians(lat1);
-//        lat2 = Math.toRadians(lat2);
-//
-//        double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(lat1) * Math.cos(lat2);
-//        double c = 2 * Math.asin(Math.sqrt(a));
-//        return R * c;
-//    }
-
 
     // 원차트 새로고침
     @PostMapping("dataCircleGraph")

@@ -4,10 +4,14 @@
 	  layout:decorate ="~{layout/default}">
 
 <head>
+
 	<script type="text/javascript">
-		var map;
-		var marker;
+		var map; // 멥
+		var marker; // 마커
+		var polyline; // 맵에 길찾기그려주는 라인
+
 		$(function() {
+
 			$("#dateFrom").datepicker({});
 
 			$("#removehour").removeClass(" active");
@@ -85,6 +89,7 @@
 			$("#layout1").on('click',function() {
 				$("#pieChartLoading").show();
 				$("#barChartLoading").show();
+				refleshMapChart();
 				refleshBarChart();
 				refleshCircleChart();
 			});
@@ -92,6 +97,7 @@
 			$("#layout2").on('click',function() {
 				$("#pieChartLoading").show();
 				$("#barChartLoading").show();
+				refleshMapChart();
 				refleshBarChart();
 				refleshCircleChart();
 			});
@@ -99,6 +105,7 @@
 			$("#layout3").on('click',function() {
 				$("#pieChartLoading").show();
 				$("#barChartLoading").show();
+				refleshMapChart();
 				refleshBarChart();
 				refleshCircleChart();
 			});
@@ -1196,23 +1203,6 @@
 						return;
 					}
 
-					// var street = res.data.streetMeter;
-					// //console.log(street);
-					//
-					// // Object.keys(street);
-					// // Object.values(street);
-					// // console.log("keys="+ Object.keys(street));
-					// // console.log("values="+ Object.values(street));
-					//
-					// var keys = Object.keys(street);
-					// var values = Object.values(street);
-					// //console.log(keys);
-					//
-					// for ( var i in keys) {
-					// 	console.log("keys="+ street[keys[i]]);
-					// 	console.log("values="+ street[values[i]]);
-					// }
-
 					//상태값 차트
 					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
 					//쓰레기양 차트
@@ -1229,8 +1219,8 @@
 		}
 
 		// 맵 차트
-		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
-			//console.log("map_data_columns : "+ map_data_columns)
+		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas,pathobj) {
+			console.log("map_data_columns : "+ map_data_columns)
 
 			var locations = map_data_columns;
 
@@ -1254,7 +1244,7 @@
 			var bounds = new google.maps.LatLngBounds();
 
 			for (i = 0; i < map_data_columns.length; i++) {
-				if(map_data_columns[i][1]===0 || map_data_columns[i][2]===0){
+				if (map_data_columns[i][1] === 0 || map_data_columns[i][2] === 0) {
 					continue;
 				}
 
@@ -1267,16 +1257,16 @@
 
 				bounds.extend(marker.position);
 
-				google.maps.event.addListener(marker, 'click', (function(marker, i) {
+				google.maps.event.addListener(marker, 'click', (function (marker, i) {
 					var content =
 							'<div class="iw-container" id="iw-container">' +
 							'<h2>' + (map_data_columns[i][0]) + '</h2>' +
 							'<dl>' +
-							'<dt>' +'상태 : '+statusDatas[i]+'</dt>' +
-							'<dd>' +'배출량 : '+bar_data_columns[i+1]+'%'+'</dd>' +
+							'<dt>' + '상태 : ' + statusDatas[i] + '</dt>' +
+							'<dd>' + '배출량 : ' + bar_data_columns[i + 1] + '%' + '</dd>' +
 							'</dl>' +
 							'</div>';
-					return function() {
+					return function () {
 						infowindow.setContent(content);
 						infowindow.open(map, marker);
 
@@ -1284,14 +1274,13 @@
 							marker.setAnimation(null);
 						} else {
 							marker.setAnimation(google.maps.Animation.BOUNCE);
-							setTimeout(function(){
+							setTimeout(function () {
 								marker.setAnimation(null);
-							},1500);
+							}, 1500);
 						}
 					}
 				})(marker, i));
-			}
-			map.fitBounds(bounds);
+			}map.fitBounds(bounds);
 		}
 
 		// 장비위치이동 버튼을 누르면 실행되는 함수
@@ -1300,11 +1289,11 @@
 				alertCaution("위치 데이터가 없습니다.");
 				return false;
 			}
-			var center = new google.maps.LatLng(lat, lng);
-
+			//var center = new google.maps.LatLng(lat, lng);
+			var center = new naver.maps.LatLng(lat, lng);
 			map.setZoom(18);
+			//map.panTo(center);
 			map.panTo(center);
-
 			$('html').scrollTop(70);
 		}
 
@@ -1458,7 +1447,6 @@
 					<div class="refresh-pop__progress">
 						<div id="progressbar"></div>
 					</div>
-					
 					<ul class="refresh-pop__context">
 						<li class="refresh-pop__box">
 							<label><input id="monitoring" type="checkbox" onclick="refleshAutomatic()" />자동 새로 고침</label>

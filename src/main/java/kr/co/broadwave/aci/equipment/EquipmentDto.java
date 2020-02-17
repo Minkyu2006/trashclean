@@ -47,6 +47,12 @@ public class EquipmentDto {
     private Double vYellowstart; // 쓰레기량에 따른 노랑색등의 경계값
     private Double vRedstart; // 쓰레기량에 따른 적색등의 경계값
 
+    private String emCertificationNumber; // 인증번호
+
+    public String getEmCertificationNumber() {
+        return emCertificationNumber;
+    }
+
     public Double getvYellowstart() {
         return vYellowstart;
     }

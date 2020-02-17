@@ -95,6 +95,9 @@ public class Equipment {
     @Column(name="v_redstart")
     private Double vRedstart; // 쓰레기량에 따른 적색등의 경계값
 
+    @Column(name="em_certification_number")
+    private String emCertificationNumber; // 인증번호
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 
