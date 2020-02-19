@@ -1,6 +1,8 @@
 package kr.co.broadwave.aci.awsiot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import kr.co.broadwave.aci.equipment.Equipment;
+import kr.co.broadwave.aci.equipment.EquipmentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author InSeok
@@ -27,10 +30,13 @@ public class ACIAWSLambdaService {
     private String ACIAWSAPIBASEURL;
 
     private final ObjectMapper objectMapper;
+    private final EquipmentRepository equipmentRepository;
+
 
     @Autowired
-    public ACIAWSLambdaService(ObjectMapper objectMapper) {
+    public ACIAWSLambdaService(ObjectMapper objectMapper, EquipmentRepository equipmentRepository) {
         this.objectMapper = objectMapper;
+        this.equipmentRepository = equipmentRepository;
     }
 
     //장비목록 가져오기(Dynamodb)
@@ -145,4 +151,47 @@ public class ACIAWSLambdaService {
 
         return getHashMap(res);
     }
+    //장비온라인 상태 확인하기
+    public HashMap getDeviceonlineCheck(String deviceid){
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/devicesonline/{id}" ;
+
+        Optional<Equipment> optionalEquipment = equipmentRepository.findByEmNumber(deviceid);
+        if (!optionalEquipment.isPresent()){
+            return null;
+        }
+        String emCertificationNumber = optionalEquipment.get().getEmCertificationNumber();
+
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        //params
+        Map<String, String> params = new HashMap<>();
+        params.put("id", emCertificationNumber);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(url)
+                .buildAndExpand(params)
+                .toUri();
+        //queryParams
+        uri = UriComponentsBuilder
+                .fromUri(uri)
+                .queryParam("deviceid",deviceid)
+                .build()
+                .toUri();
+
+
+        ResponseEntity<String> res = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+
+        return getHashMap(res);
+    }
+
+
 }

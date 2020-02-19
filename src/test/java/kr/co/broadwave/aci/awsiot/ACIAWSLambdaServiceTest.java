@@ -1,8 +1,5 @@
 package kr.co.broadwave.aci.awsiot;
 
-
-
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,23 +12,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author InSeok
- * Date : 2019-11-25
+ * Date : 2020-02-19
  * Remark :
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ACIAWSIoTRestAPIServiceTest {
-
+public class ACIAWSLambdaServiceTest {
     @Autowired
-    ACIAWSIoTDeviceService aciawsIoTDeviceService;
+    ACIAWSLambdaService aciawsLambdaService;
 
+    //장비온라인상태 조회 API
     @Test
-    @Ignore
-    public void getDeviceList() throws Exception{
-        HashMap deviceList = aciawsIoTDeviceService.getDeviceStatus("ISOL-KR-SEL-0004");
-        //System.out.println(deviceList.get("state"));
-        assertThat(deviceList.containsKey("timestamp")).as("DevicShadow Get Test [expect true] :").isEqualTo(true);
-    }
+    public void getDeviceonlineType(){
+        HashMap deviceonlineCheck = aciawsLambdaService.getDeviceonlineCheck("ISOL-KR-SEL-0001");
+        //System.out.println(deviceonlineCheck);
+        assertThat(deviceonlineCheck.containsKey("statusCode")).as("Device Online Check Test [expect true] :").isEqualTo(true);
 
+    }
 
 }
