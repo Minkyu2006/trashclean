@@ -1478,8 +1478,11 @@ table {
 	text-align: center;
 }
 .equipment__img img {
-
-	height: 200px;
+	height: 180px;
+}
+.equipment__img span {
+	display: block;
+	font-size: 12px;
 }
 .equipment__info {
 	
