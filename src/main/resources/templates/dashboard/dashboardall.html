@@ -524,7 +524,6 @@
 					var deviceOnOffline = [];
 					var deviceOnOfftime = [];
 					var devicetimeIdx = [];
-					var week = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
 					for(var i=0; i<devicetimeLength; i++){
 						if(res.data.deviceOnOffTime[i]!=="") {
 							var deviceOnOffTimeStamp = new Date(res.data.deviceOnOffTime[i]);
@@ -550,8 +549,7 @@
 							if (deviceOnOffSecond < 10) {
 								deviceOnOffSecond = "0" + deviceOnOffSecond
 							}
-							var deviceOnOffDay = deviceOnOffTimeStamp.getDay();
-							var devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond + ' (' + week[deviceOnOffDay] + ')';
+							var devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond;
 							//console.log("devicetime : "+devicetime);
 							devicetimeIdx.push(devicetime);
 						}else{
@@ -749,7 +747,6 @@
 					var deviceOnOffline = [];
 					var deviceOnOfftime = [];
 					var devicetimeIdx = [];
-					var week = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
 					for(var i=0; i<devicetimeLength; i++){
 						if(res.data.deviceOnOffTime[i]!=="") {
 							var deviceOnOffTimeStamp = new Date(res.data.deviceOnOffTime[i]);
@@ -774,8 +771,7 @@
 							if (deviceOnOffSecond < 10) {
 								deviceOnOffSecond = "0" + deviceOnOffSecond
 							}
-							var deviceOnOffDay = deviceOnOffTimeStamp.getDay();
-							var devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond + ' (' + week[deviceOnOffDay] + ')';
+							var devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond;
 							devicetimeIdx.push(devicetime);
 						}else{
 							devicetimeIdx.push("");

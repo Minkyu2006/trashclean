@@ -96,7 +96,7 @@ public class Equipment {
     private Double vRedstart; // 쓰레기량에 따른 적색등의 경계값
 
     @Column(name="em_certification_number")
-    private String emCertificationNumber; // 인증번호
+    private String emCertificationNumber; // AWS보안인증서코드
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;

@@ -28,6 +28,34 @@ public class CompanyListDto {
     private String csTelephone; // 전화번호
     private String csFax; // 팩스번호
 
+    public String getCsDivision() {
+        return csDivision.getName();
+    }
+
+    public String getCsRegional() {
+        return csRegional.getName();
+    }
+
+    public String getCsRepresentative() {
+        return csRepresentative;
+    }
+
+    public String getCsBuisnessNumber() {
+        return csBuisnessNumber;
+    }
+
+    public String getCsManager() {
+        return csManager;
+    }
+
+    public String getCsTelephone() {
+        return csTelephone;
+    }
+
+    public String getCsFax() {
+        return csFax;
+    }
+
     public Long getId() {
         return id;
     }

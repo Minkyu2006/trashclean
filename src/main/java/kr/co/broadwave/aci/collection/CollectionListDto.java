@@ -23,6 +23,11 @@ public class CollectionListDto {
     private String deviceid;
     private String accountName;
     private String vehicleNumber;
+    private LocalDateTime completeDateTime;
+
+    public LocalDateTime getCompleteDateTime() {
+        return completeDateTime;
+    }
 
     public Long getId() {
         return id;

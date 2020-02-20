@@ -32,7 +32,7 @@ public class CollectionTask {
     @Column(name="id")
     private Long id; // 수거등록 고유ID
 
-    @Column(unique = true,name="ct_code")
+    @Column(name="ct_code")
     private String ctCode; // 수거관리코드
 
     @Column(name="ct_seq")

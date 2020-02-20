@@ -212,6 +212,11 @@
 						html += '<td >'+ nvl(value.deviceid,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.accountName,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.vehicleNumber,"확 인 불 가") +'</td>';
+						if(value.completeDateTime==null){
+							html += '<td >'+ "미완료" +'</td>';
+						}else{
+							html += '<td >'+ "완료" +'</td>';
+						}
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+ echoNull2Blank(value.id) +'\');">보기</button></td>';
 						html += '</tr>';
 					});
@@ -342,6 +347,7 @@
 					}
 					$totalCnt.text(totCnt);
 					var html = '';
+					var idx = 0;
 					$.each(res.data.datalist, function(key, value){
 						html += '<tr >';
 						html += '<td >'+ nvl(value.emNumber,"확 인 불 가") +'</td>';
@@ -349,8 +355,10 @@
 						html += '<td >'+ nvl(value.iModel,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.emCountry,"확 인 불 가")+'-'+nvl(value.emLocation,"확 인 불 가")+'</td>';
 						html += '<td >'+ nvl(value.company,"확 인 불 가") +'</td>';
+						html += '<td >'+ nvl(res.data.deviceLevel[idx],"확 인 불 가")+'%'+'</td>';
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="equipmentName(\''+ echoNull2Blank(value.id) +'\');">선택</button></td>';
 						html += '</tr>';
+						idx++
 					});
 					$schList.html(html);
 				}
@@ -636,6 +644,7 @@
 					<col />
 					<col />
 					<col />
+					<col />
 					<col style="width: 50px;" />
 				</colgroup>
 				<thead>
@@ -646,6 +655,7 @@
 						<th>장비코드</th>
 						<th>수거원</th>
 						<th>배차차량번호</th>
+						<th>처리상태</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -804,6 +814,7 @@
 						<col style="width: 160px;" />
 						<col style="width: 120px;" />
 						<col style="width: 120px;" />
+						<col style="width: 120px;" />
 						<col style="width: 60px;" />
 					</colgroup>
 					<thead>
@@ -813,6 +824,7 @@
 						<th>종류</th>
 						<th>국가/지역</th>
 						<th>소속운영사</th>
+						<th>쓰레기량</th>
 						<th></th>
 					</tr>
 					</thead>

@@ -43,7 +43,6 @@ public class CompanyRepositoryCustomImpl extends QuerydslRepositorySupport imple
                         company.csFax
                 ));
 
-
         // 검색조건필터
         if (csNumber != null && !csNumber.isEmpty()){
             query.where(company.csNumber.likeIgnoreCase(csNumber.concat("%")));

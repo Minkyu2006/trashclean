@@ -42,6 +42,8 @@
 			$("#csManager").val('');
 			$("#csTelephone").val('');
 			$("#csFax").val('');
+			$("#csLatitude").val('');
+			$("#csHardness").val('');
 
 			$("#csDivision").show();
 			$("#csRegional").show();
@@ -57,21 +59,21 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/company/reg',
 				type : 'post',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alertSuccess('저장되었습니다.')
+					alertSuccess('저장되었습니다.');
 					init();
 					callList(1);
 				}
@@ -81,7 +83,7 @@
 		// 업체 리스트보기
 		function callList(page) {
 			page = page - 1;
-			if (page < 0) page = 0
+			if (page < 0) page = 0;
 
 			var perPage = 10;
 			var perArea = 5;
@@ -102,14 +104,14 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/company/list?size='+ perPage + '&page=' + page,
 				type : 'post',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
@@ -120,7 +122,7 @@
 						currentPage: page + 1,
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
-					if (totCnt == 0) {
+					if (totCnt === 0) {
 						$schList.empty().append('<tr class="t-c"><td colspan="10" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
@@ -138,7 +140,7 @@
 						html += '<td >'+ echoNull2Blank(value.csTelephone)+'</td>';
 						html += '<td >'+ echoNull2Blank(value.csFax)+'</td>';
 
-						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callInfo(\''+ echoNull2Blank(value.id) +'\');">보기</button></td>';
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+ echoNull2Blank(value.id) +'\');">보기</button></td>';
 						html += '</tr>';
 					});
 					$schList.html(html);
@@ -151,18 +153,18 @@
 
 			var params = {
 				id:id
-			}
+			};
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url: '/api/company/info',
 				type: 'post',
 				data: params,
 				cache: false,
-				error: function (request, status, error) {
+				error: function (request) {
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
@@ -174,6 +176,8 @@
 					$("#csManager").val(res.data.company.csManager);
 					$("#csTelephone").val(res.data.company.csTelephone);
 					$("#csFax").val(res.data.company.csFax);
+					$("#csLatitude").val(res.data.company.csLatitude);
+					$("#csHardness").val(res.data.company.csHardness);
 
 					$("#csDivisionView").val(res.data.company.csDivisionName);
 					$("#csRegionalView").val(res.data.company.csRegionalName);
@@ -190,7 +194,7 @@
 
 		//삭제버튼 실행
 		function del() {
-			if ($("#csNumber").val().trim() == '') {
+			if ($("#csNumber").val().trim() === '') {
 				alertCaution("삭제하고자하는 업체를 선택하세요.");
 				return false;
 			}
@@ -217,11 +221,38 @@
 						if (!Ajax.checkResult(res)) {
 							return;
 						}
-						alertSuccess('업체가 삭제 되었습니다.')
+						alertSuccess('업체가 삭제 되었습니다.');
 						init();
 						callList(1);
 					}
 				})
+			}
+		}
+
+		//숫자만입력가능
+		function delHangle(evt){
+			var objTarget = evt.srcElement || evt.target;
+			var _value = event.srcElement.value;
+			if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
+				alertCaution("숫자만 입력가능합니다.");
+				objTarget.value = null;
+			}
+		}
+
+		//소수점제한
+		function isNumberKey(evt) {
+			var charCode = (evt.which) ? evt.which : event.keyCode;
+			var objTarget = evt.srcElement || evt.target;
+			var _value = event.srcElement.value;
+
+			// 소수점(.)이 두번 이상 나오지 못하게
+			var _pattern0 = /^\d*[.]\d*$/;
+			if (_pattern0.test(_value)) {
+				if (charCode == 46) {
+					alertCaution("소수점 하나만 입력가능합니다.");
+					objTarget.value = null;
+					return false;
+				}
 			}
 		}
 
@@ -424,6 +455,20 @@
 						<td>
 							<div class="c-text">
 								<input type="text" id="csFax" name="csFax" class="c-text__input" />
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th>배차위치 - 위도</th>
+						<td>
+							<div class="c-text">
+								<input type="text" id="csLatitude" name="csLatitude" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+							</div>
+						</td>
+						<th>배차위치 - 경도</th>
+						<td>
+							<div class="c-text">
+								<input type="text" id="csHardness" name="csHardness" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
 					</tr>

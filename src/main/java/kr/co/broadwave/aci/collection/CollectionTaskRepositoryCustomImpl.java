@@ -55,7 +55,8 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                         masterCode.name,
                         collectionTask.deviceid,
                         account.username,
-                        vehicle.vcNumber
+                        vehicle.vcNumber,
+                        collectionTask.completeDateTime
                 ));
 
         // 검색조건필터

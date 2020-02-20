@@ -41,10 +41,10 @@ public class EquipmentBaseDto {
     private Double emLatitude; // 위도
     private Double emHardness; // 경도
 
-    private String emCertificationNumber; // 인증번호
-
     private LocalDateTime insertDateTime;
     private String insert_id;
+
+    private String emCertificationNumber; // AWS보안인증서코드
 
     public String getEmCertificationNumber() {
         return emCertificationNumber;

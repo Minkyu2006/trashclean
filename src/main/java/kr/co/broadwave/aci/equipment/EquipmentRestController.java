@@ -182,7 +182,7 @@ public class EquipmentRestController {
         Equipment equipment = modelMapper.map(equipmentBaseMapperDto, Equipment.class);
 
         List<EquipmentBaseDto> equipmentBaseDto = equipmentService.EquipmentBaseSettingQuerydsl(equipmentBaseMapperDto.getEmNumbers());
-        //log.info("equipmentBaseDto : "+equipmentBaseDto);
+        log.info("equipmentBaseDto : "+equipmentBaseDto);
 
         CodeType codeType = CodeType.valueOf("C0013");
         List<MasterCodeDto> masterCodes= masterCodeService.findCodeList(codeType);

@@ -49,7 +49,6 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                         equipment.mdId
                 ));
 
-
         // 검색조건필터
         if (emNumber != null && !emNumber.isEmpty()){
             query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
@@ -153,10 +152,49 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                 equipment.company,equipment.mdId,
                 equipment.emInstallDate,equipment.emSubName,
                 equipment.emLatitude,equipment.emHardness,
-                equipment.insertDateTime,equipment.insert_id))
+                equipment.insertDateTime,equipment.insert_id,
+                equipment.emCertificationNumber))
                 .from(equipment)
                 .where(equipment.emNumber.in(emNumbers))
                 .fetch();
+    }
+
+    // 수거업무등록페이지 장비리스트쿼리
+    @Override
+    public Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(String emNumber, Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable) {
+
+        QEquipment equipment = QEquipment.equipment;
+
+        JPQLQuery<EquipmentCollectionListDto> query = from(equipment)
+                .select(Projections.constructor(EquipmentCollectionListDto.class,
+                        equipment.emNumber,
+                        equipment.emType,
+                        equipment.emCountry,
+                        equipment.emLocation,
+                        equipment.mdId,
+                        equipment.company,
+                        equipment.mdId.mdMaximumPayload,
+                        equipment.mdId.mdUnit
+                ));
+
+        // 검색조건필터
+        if (emNumber != null && !emNumber.isEmpty()){
+            query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
+        }
+        if (emTypeId != null ){
+            query.where(equipment.emType.id.eq(emTypeId));
+        }
+        if (emCountryId != null ){
+            query.where(equipment.emCountry.id.eq(emCountryId));
+        }
+        if (emLocationId != null ){
+            query.where(equipment.emLocation.id.eq(emLocationId));
+        }
+
+        query.orderBy(equipment.emNumber.asc());
+
+        final List<EquipmentCollectionListDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
+        return new PageImpl<>(equipments, pageable, query.fetchCount());
     }
 
 }

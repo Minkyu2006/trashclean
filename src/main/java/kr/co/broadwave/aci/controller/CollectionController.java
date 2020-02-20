@@ -109,4 +109,17 @@ public class CollectionController {
             return "collection/collectionlist";
         }
     }
+
+    @RequestMapping("collectionreg")
+    public String collectionreg(Model model){
+
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+
+        return "collection/collectionreg";
+    }
+
 }

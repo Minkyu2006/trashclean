@@ -60,6 +60,12 @@ public class Company {
     @Column(name="cs_fax")
     private String csFax; // 팩스번호
 
+    @Column(name="cs_latitude")
+    private Double csLatitude; // 배차위치위도
+
+    @Column(name="cs_hardness")
+    private Double csHardness; // 배차위치경도
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 

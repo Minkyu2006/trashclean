@@ -27,5 +27,7 @@ public class CompanyMapperDto {
     private String csManager; // 담당자
     private String csTelephone; // 전화번호
     private String csFax; // 팩스번호
+    private Double csLatitude; // 차량위치위도
+    private Double csHardness; // 차량위치경도
 
 }

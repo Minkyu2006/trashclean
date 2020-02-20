@@ -112,4 +112,8 @@ public class EquipmentService {
     public List<EquipmentBaseDto> EquipmentBaseSettingQuerydsl(List<String> emNumbers) {
         return equipmentRepositoryCustom.EquipmentBaseSettingQuerydsl(emNumbers);
     }
+
+    public Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId,Pageable pageable) {
+        return equipmentRepositoryCustom.findByEquipmentCollectionQuerydsl(emNumber,emTypeId,emCountryId,emLocationId,pageable);
+    }
 }

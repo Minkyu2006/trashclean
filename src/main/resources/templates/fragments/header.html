@@ -61,7 +61,8 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_COLLECTOR') or hasRole('ROLE_SUBADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">수거관리</a>
 				<ul class="nav-child">
-					<li><a href="/collection/collectiontask">수거업무등록</a></li>
+					<li><a href="/collection/collectionreg">수거업무등록</a></li>
+					<li><a href="/collection/collectiontask">수거업무등록(임시)</a></li>
 					<li><a href="/collection/mobileindex">모바일인덱스</a></li>
 				</ul>
 			</li>

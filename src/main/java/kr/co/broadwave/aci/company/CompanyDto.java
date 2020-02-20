@@ -31,6 +31,8 @@ public class CompanyDto {
     private String csManager; // 담당자
     private String csTelephone; // 전화번호
     private String csFax; // 팩스번호
+    private Double csLatitude; // 차량위치위도
+    private Double csHardness; // 차량위치경도
 
     private LocalDateTime insertDateTime;
     private String insert_id;
@@ -47,6 +49,54 @@ public class CompanyDto {
 
     public String getCsOperator() {
         return csOperator;
+    }
+
+    public String getCsOperatorSub() {
+        return csOperatorSub;
+    }
+
+    public Long getCsDivisionId() {
+        return csDivisionId.getId();
+    }
+
+    public String getCsDivisionName() {
+        return csDivisionName.getName();
+    }
+
+    public Long getCsRegionalId() {
+        return csRegionalId.getId();
+    }
+
+    public String getCsRegionalName() {
+        return csRegionalName.getName();
+    }
+
+    public String getCsRepresentative() {
+        return csRepresentative;
+    }
+
+    public String getCsBuisnessNumber() {
+        return csBuisnessNumber;
+    }
+
+    public String getCsManager() {
+        return csManager;
+    }
+
+    public String getCsTelephone() {
+        return csTelephone;
+    }
+
+    public String getCsFax() {
+        return csFax;
+    }
+
+    public Double getCsLatitude() {
+        return csLatitude;
+    }
+
+    public Double getCsHardness() {
+        return csHardness;
     }
 
     public LocalDateTime getInsertDateTime() {

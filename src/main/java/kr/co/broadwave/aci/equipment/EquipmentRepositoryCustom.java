@@ -20,4 +20,6 @@ public interface EquipmentRepositoryCustom {
     Page<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable);
 
     List<EquipmentBaseDto> EquipmentBaseSettingQuerydsl(List<String> emNumbers);
+
+    Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(String emNumber, Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable);
 }

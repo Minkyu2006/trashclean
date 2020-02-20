@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/default}">
+
+<head>
+	<script type="text/javascript">
+		$(function() {
+			LocationSetting("");
+			equipmentCallList();
+
+			$("#routingBtn").on('click',function(){
+				routing();
+			});
+
+			$("#saveBtn").on('click',function(){
+				save();
+			});
+
+			$("#btnReset").on('click',function(){
+				reset();
+			});
+
+			$("#btnSearch").on('click',function(){
+				equipmentCallList();
+			});
+
+		});
+
+		// 조건초기화
+		function reset() {
+			$("#s_emNumber").val('');
+			$("#s_emDesignation").val('');
+			$("#s_emType").val('');
+			$("#s_emCountry").val('');
+		}
+		
+		function routing() {
+			var emNumbers = [];
+			var $emNumbers = $("#emNumbers");
+			$('input[name="checkemNumber"]:checked').each(function() {
+				emNumbers.push($(this).val());
+			});
+			$emNumbers.val(emNumbers);
+
+			if ($emNumbers.val().trim() === '') {
+				alertCaution("수거업무 등록할 장비를 체크해주세요");
+				return false;
+			}
+			// else{
+			// 	console.log("emNumbers : "+$emNumbers.val());
+			// }
+
+			var itemJson = {};
+			itemJson.deviceids = emNumbers;
+			var devicestr = JSON.stringify(itemJson);
+			//console.log("devicestr : "+devicestr);
+
+			var params = {
+				deviceids:devicestr
+			};
+
+			$.ajax({
+				url: '/api/collection/streetRouting',
+				type: 'post',
+				data : params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					console.log("장비 거리순서 : "+res.data.streetdevice);
+				}
+			});
+		}
+		
+		// 적용버튼
+		// function save() {
+		//
+		// 	var emNumbers = [];
+		// 	var $emNumbers = $("#emNumbers");
+		// 	$('input[name="checkemNumber"]:checked').each(function() {
+		// 		emNumbers.push($(this).val());
+		// 	});
+		// 	$emNumbers.val(emNumbers);
+		//
+		// 	if ($emNumbers.val().trim() === '') {
+		// 		alertCaution("적용할 장비를 체크해주세요");
+		// 		return false;
+		// 	}
+		//
+		// 	var $form = $('form[name="basereg"]');
+		// 	var params = $form.serialize();
+		//
+		// 	var token = $("meta[name='_csrf']").attr("content");
+		// 	var header = $("meta[name='_csrf_header']").attr("content");
+		// 	$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+		//
+		// 	$.ajax({
+		// 		url:'/api/equipment/basereg',
+		// 		type : 'post',
+		// 		data : params,
+		// 		cache:false,
+		// 		error:function(request){
+		// 			ajaxErrorMsg(request);
+		// 		},
+		// 		success: function(res){
+		// 			if (!Ajax.checkResult(res)) {
+		// 				return;
+		// 			}
+		// 			alertSuccess('적용되었습니다.');
+		// 			checkfalse();
+		// 			savereset();
+		// 			callList(1);
+		// 		}
+		// 	});
+		// }
+
+		// 등록장비 리스트보기
+		function equipmentCallList() {
+
+			var $schList = $('#schList');
+
+			var params = {
+				emNumber:$('#s_equipmentNumber').val(),
+				emLocation:$('#s_equipmentLocation').val(),
+				emCountry:$('#s_equipmentCountry').val(),
+				emType:$('#s_equipmentType').val(),
+			};
+
+			$schList.empty().append('<tr ><td colspan="12" align="center">조회 중</td></tr>');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/collection/equipmentList',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					totCnt = res.data.total_rows;
+					if (totCnt === 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="12" align="center">조회된 데이터가 없습니다.</td></tr>');
+					}else{
+						//장비리스트 출력
+						var html = '';
+						var idx = 0;
+						$.each(res.data.datalist, function(key, value){
+							html += '<tr>';
+							html += '<td>'+ '<input name="checkemNumber" type="checkbox" value='+nvl(value.emNumber,"확 인 불 가")+' />' +'</td>';
+							html += '<td >'+ nvl(value.emNumber,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(res.data.deviceLevel[idx],"확 인 불 가")+'%'+'</td>';
+							html += '<td >'+ nvl(res.data.deviceTempBrd[idx],"확 인 불 가")+'℃'+'</td>';
+							html += '<td >'+ nvl(value.maximum,"확 인 불 가")+nvl(value.unit,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(res.data.deviceBattLevel[idx],"확 인 불 가")+'%'+'</td>';
+							html += '<td >'+ nvl(value.emType,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(value.iModel,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(value.emCountry,"확 인 불 가")+'-'+nvl(value.emLocation,"확 인 불 가")+'</td>';
+							html += '<td >'+ nvl(value.company,"확 인 불 가") +'</td>';
+							html += '<td >'+ nvl(res.data.deviceSolarCurrent[idx],"확 인 불 가")+'A'+'</td>';
+							html += '<td >'+ nvl(res.data.deviceSolarVoltage[idx],"확 인 불 가")+'V'+'</td>';
+							html += '</tr>';
+							idx++
+						});
+						$schList.html(html);
+					}
+				}
+			});
+		}
+
+		// 국가,지역검색
+		function LocationSetting(value) {
+
+			var params = {
+				s_emCountry:value
+			};
+
+			var $s_emLocation = $("#s_equipmentLocation");
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/dashboard/location',
+				type: 'post',
+				data: params,
+				cache: false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var html = '';
+					html += '<option value ="">'+'전체'+'</option>';
+					$.each(res.data.locationData, function (key, value) {
+						html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name)+ '</option>';
+					});
+					$s_emLocation.html(html);
+				}
+			});
+		}
+
+		// 체크박스 일괄선택함수
+		function checkAll(){
+			if( $("#th_checkAll").is(':checked') ){
+				$("input[name=checkemNumber]").prop("checked", true);
+			}else{
+				$("input[name=checkemNumber]").prop("checked", false);
+			}
+		}
+		function checkfalse(){
+			$("input[name=checkemNumber]").prop("checked", false);
+			$("#th_checkAll").prop("checked", false);
+		}
+
+	</script>
+</head>
+
+<div layout:fragment="content" class="contents-body">
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>수거업무 등록</h2>
+			</div>
+		</div>
+
+		<div class="dashboard">
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__body panel__body--height-auto">
+							<h2 class="article__heading">업무등록할 장비조회</h2>
+							<div class="l-float-heading">
+								<div class="l-float-heading--left">
+									<h4 class="article__head">검색조건<span class="article__head-caption">(수정하려면 조회 후 초기화 버튼을 클릭하세요.)</span></h4>
+								</div>
+								<div class="l-float-heading--right"><button id="btnReset" class="c-button c-button--small">조건 초기화</button></div>
+							</div>
+							<table class="c-table">
+								<colgroup>
+									<col style="width: 80px;" />
+									<col />
+									<col style="width: 80px;" />
+									<col />
+									<col style="width: 80px;" />
+									<col />
+									<col style="width: 80px;" />
+									<col />
+									<col style="width: 62px;" />
+								</colgroup>
+								<tr>
+									<th>모델 타입</th>
+									<td>
+										<div class="c-select">
+											<select id="s_equipmentType" class="c-select__input">
+												<option th:each ="equipdType : ${equipdTypes}"
+													th:value="${equipdType.code}"
+														th:text="${equipdType.name}"
+												></option>
+											</select>
+										</div>
+									</td>
+									<th>국가</th>
+									<td>
+										<div class="c-select">
+											<select id="s_equipmentCountry" class="c-select__input" onchange="LocationSetting(this.value)">
+												<option value="">전체</option>
+												<option th:each ="equipdCountry : ${equipdCountrys}"
+														th:value="${equipdCountry.code}"
+														th:text="${equipdCountry.name}">
+												</option>
+											</select>
+										</div>
+									</td>
+									<th>지역</th>
+									<td>
+										<div class="c-select">
+											<select id="s_equipmentLocation" class="c-select__input">
+											</select>
+										</div>
+									</td>
+									<th>장비 번호</th>
+									<td>
+										<div class="c-text"><input id="s_equipmentNumber" type="text" class="c-text__input" /></div>
+									</td>
+									<td>
+										<button id="btnSearch" class="c-button c-button--point">조회</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dashboard__row">
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__header">장비 리스트</div>
+						<div class="panel__body panel__body--height-auto">
+							<div class="panel__table">
+								<div class="c-scroll-table">
+									<div class="c-scroll-table__header">
+										<input type="hidden" name="emNumbers" id="emNumbers" />
+										<table style="width: 1589px;">
+											<colgroup>
+												<col style="width: 40px;" />
+												<col style="width: 140px;" />
+												<col style="width: 100px;" />
+												<col style="width: 100px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 210px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 19px;" />
+											</colgroup>
+											<thead>
+											<tr>
+												<th><input type="checkbox" id="th_checkAll" onclick="checkAll();" /></th>
+												<th>장비번호</th>
+												<th>쓰레기량</th>
+												<th>온도</th>
+												<th>최대적재량</th>
+												<th>배터리잔량</th>
+												<th>모델타입</th>
+												<th>모델명/종류</th>
+												<th>국가/지역</th>
+												<th>소속사</th>
+												<th>태양광판넬 전류</th>
+												<th>태양광판넬 전압</th>
+												<th></th>
+											</tr>
+											</thead>
+										</table>
+									</div>
+									<div class="c-scroll-table__body">
+										<table style="width: 1570px;">
+											<colgroup>
+												<col style="width: 40px;" />
+												<col style="width: 140px;" />
+												<col style="width: 100px;" />
+												<col style="width: 100px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 210px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+												<col style="width: 140px;" />
+											</colgroup>
+											<tbody id="schList">
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="dashboard__row">
+				<div class="c-function">
+					<div class="c-function__group c-function__group--right">
+						<div class="c-function__item"><button id="routingBtn" class="c-button c-button--point">라우팅계산</button></div>
+<!--						<div class="c-function__item"><button id="saveBtn" class="c-button c-button&#45;&#45;point">저장</button></div>-->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+</html>
