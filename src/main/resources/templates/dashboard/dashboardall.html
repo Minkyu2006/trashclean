@@ -570,7 +570,7 @@
 						html2 += '</div>';
 						if(res.data.status[idx]==="정상"){
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
-							if(res.data.deviceOnOffstatus[idx]==="true"){
+							if(res.data.deviceOnOffstatus[idx]===true){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							}else{
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
@@ -585,7 +585,7 @@
 							html2 += '</div>';
 						}else if(res.data.status[idx]==="주의"){
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
-							if(res.data.deviceOnOffstatus[idx]==="true"){
+							if(res.data.deviceOnOffstatus[idx]===true){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							}else{
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
@@ -600,7 +600,7 @@
 							html2 += '</div>';
 						}else if(res.data.status[idx]==="심각"){
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
-							if(res.data.deviceOnOffstatus[idx]==="true"){
+							if(res.data.deviceOnOffstatus[idx]===true){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							}else{
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
@@ -790,7 +790,7 @@
 						html2 += '</div>';
 						if(res.data.status[idx]==="정상"){
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
-							if(res.data.deviceOnOffstatus[idx]==="true"){
+							if(res.data.deviceOnOffstatus[idx]===true){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							}else{
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
@@ -805,7 +805,7 @@
 							html2 += '</div>';
 						}else if(res.data.status[idx]==="주의"){
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
-							if(res.data.deviceOnOffstatus[idx]==="true"){
+							if(res.data.deviceOnOffstatus[idx]===true){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							}else{
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
@@ -820,7 +820,7 @@
 							html2 += '</div>';
 						}else if(res.data.status[idx]==="심각"){
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
-							if(res.data.deviceOnOffstatus[idx]==="true"){
+							if(res.data.deviceOnOffstatus[idx]===true){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							}else{
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
