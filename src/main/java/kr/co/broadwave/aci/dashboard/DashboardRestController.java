@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.dashboard;
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountMapperDto;
 import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
@@ -20,14 +21,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.net.URI;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -49,18 +48,21 @@ public class DashboardRestController {
     private final AccountService accountService;
     private final ModelMapper modelMapper;
     private final DevicestatusService devicestatusService;
+    private final ACIAWSLambdaService aciawsLambdaService;
 
     @Autowired
     public DashboardRestController(DashboardService dashboardService,
                                    ModelMapper modelMapper,
                                    AccountService accountService,
                                    MasterCodeService masterCodeService,
-                                   DevicestatusService devicestatusService) {
+                                   DevicestatusService devicestatusService,
+                                   ACIAWSLambdaService aciawsLambdaService) {
         this.modelMapper = modelMapper;
         this.dashboardService = dashboardService;
         this.accountService = accountService;
         this.masterCodeService = masterCodeService;
         this.devicestatusService = devicestatusService;
+        this.aciawsLambdaService = aciawsLambdaService;
     }
 
     @PostMapping("monitering")
@@ -70,7 +72,6 @@ public class DashboardRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         //Sample of deviceids variable : {"deviceids":["ISOL-KR-SEOUL-0001","ISOL-KR-SEOUL-0002"]}
-
         HashMap<String, Object> resData = dashboardService.getDeviceLastestState(deviceids);
         //log.info("resData : "+resData);
 
@@ -102,7 +103,7 @@ public class DashboardRestController {
 
     @PostMapping("devicehitory")
     public ResponseEntity<Map<String,Object>> devicehistory(@RequestParam(value="deviceid", defaultValue="") String deviceid
-                                        ,@RequestParam(value="intervaltime", defaultValue="") String intervaltime){
+            ,@RequestParam(value="intervaltime", defaultValue="") String intervaltime){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
         //log.info("Device History 가져오기 시작");
@@ -121,10 +122,10 @@ public class DashboardRestController {
     //장비 리스트 뿌리기
     @PostMapping ("deviceInfoList")
     public ResponseEntity<Map<String,Object>> deviceInfoList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
-                                                            @RequestParam (value="emType", defaultValue="")String emType,
-                                                            @RequestParam (value="emCountry", defaultValue="")String emCountry,
-                                                            @RequestParam (value="emLocation", defaultValue="")String emLocation,
-                                                            @PageableDefault Pageable pageable){
+                                                             @RequestParam (value="emType", defaultValue="")String emType,
+                                                             @RequestParam (value="emCountry", defaultValue="")String emCountry,
+                                                             @RequestParam (value="emLocation", defaultValue="")String emLocation,
+                                                             @PageableDefault Pageable pageable){
 
         Long emTypeId = null;
         Long emCountryId = null;
@@ -155,7 +156,7 @@ public class DashboardRestController {
 
     // ASW 장치 데이터리스트 뿌리기
     @PostMapping("deviceAWSListView")
-    public ResponseEntity deviceAWSListView(@RequestParam(value="deviceids", defaultValue="") String deviceids) {
+    public ResponseEntity deviceAWSListView(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws ParseException {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -211,8 +212,19 @@ public class DashboardRestController {
             }
         }
 
-        //log.info("위도 : " + gps_laDatas);
-        //log.info("경도 : " + gps_loDatas);
+        //장비 온오프라인구분
+        List<String> deviceOnOffstatus = new ArrayList<>(); // 온라인인지,오프라인인지 넣는 리스트
+        List<String> deviceOnOffTime = new ArrayList<>(); // 마지막 온오프라인 타임스탬프
+        for (int i = 0; i < devices.size(); i++) {
+            HashMap<String,HashMap<String,String>> onOfflineData = aciawsLambdaService.getDeviceonlineCheck(devices.get(i));
+            deviceOnOffstatus.add(onOfflineData.get("data").get("online"));
+            deviceOnOffTime.add(onOfflineData.get("data").get("timestamp"));
+        }
+//        log.info("deviceOnOffstatus : "+deviceOnOffstatus);
+//        log.info("deviceOnOffTime : "+deviceOnOffTime);
+
+
+        //지도상에 장비위치이동
         for (int i = 0; i < number; i++) {
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
@@ -240,7 +252,8 @@ public class DashboardRestController {
             }
         }
 
-        data.clear();
+        data.put("deviceOnOffstatus",deviceOnOffstatus);
+        data.put("deviceOnOffTime",deviceOnOffTime);
         data.put("awss3url",AWSS3URL);
         data.put("devices",devices);
         data.put("status",status);
@@ -252,7 +265,6 @@ public class DashboardRestController {
         data.put("gps_laDatas",gps_laDatas2);
         data.put("gps_loDatas",gps_loDatas2);
 
-//        data.put("aswListDatas",resData.get("data"));
         res.addResponse("data",data);
 
         return ResponseEntity.ok(res.success());
@@ -285,8 +297,8 @@ public class DashboardRestController {
         //log.info("deviceids : " +deviceids);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 
-      //  log.info("AWS 장치 list : "+resData);
-      //  log.info("AWS 장치 data : "+resData.get("data"));
+        //  log.info("AWS 장치 list : "+resData);
+        //  log.info("AWS 장치 data : "+resData.get("data"));
 //        log.info("AWS 장치 size : "+resData.get("datacounts"));
 
         Object datacounts = resData.get("datacounts");
@@ -447,6 +459,7 @@ public class DashboardRestController {
         List<HashMap<String,String>> gps_lanlon = new ArrayList<>();
         List<String> gps_laStreet = new ArrayList<>();
         List<String> gps_loStreet = new ArrayList<>();
+
         HashMap<String,String> lanlondeviceid;
 
         lanlondeviceid = new HashMap<>();
@@ -776,7 +789,7 @@ public class DashboardRestController {
     public ResponseEntity detailMapDataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
-
+        //log.info("deviceids : "+deviceids);
 
         List<String> statusDatas = new ArrayList<>(); // AWS 장비 status값 리스트
         List<String> deviceidDatas = new ArrayList<>(); // AWS 장비 ID값 리스트
@@ -793,8 +806,7 @@ public class DashboardRestController {
         List<String> solar_voltage = new ArrayList<>(); //전압리스트
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
-
-//        log.info("AWS 장치 data : "+resData.get("data"));
+        //log.info("AWS 장치 data : "+resData.get("data"));
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
@@ -802,23 +814,23 @@ public class DashboardRestController {
         barDataColumns.add("쓰레기양"); // 배출량 막대그래프 첫번째값 y축이름 -> 쓰레기양
         for(int i=0; i<number; i++){
             HashMap map = (HashMap)resData.get("data").get(i);
-                if (map.get("status").equals("normal")) {
-                    map.replace("status", "정상");
-                } else if (map.get("status").equals("caution")) {
-                    map.replace("status", "주의");
-                } else if (map.get("status").equals("severe")) {
-                    map.replace("status", "심각");
-                }
-                statusDatas.add((String) map.get("status")); //상태 리스트
-                barDataColumns.add((String) map.get("level")); //배출량 리스트
-                deviceIdNames.add((String) map.get("deviceid")); //장리 리스트
-                gps_laDatas.add((String) map.get("gps_la")); // gps1 리스트
-                gps_loDatas.add((String) map.get("gps_lo")); //gps2 리스트
-                temp_brd.add((String) map.get("temp_brd")); //온도 리스트
-                batt_level.add((String) map.get("batt_level")); //배터리잔량 리스트
-                solar_current.add((String) map.get("solar_current")); //전류 리스트
-                solar_voltage.add((String) map.get("solar_voltage")); //전압 리스트
+            if (map.get("status").equals("normal")) {
+                map.replace("status", "정상");
+            } else if (map.get("status").equals("caution")) {
+                map.replace("status", "주의");
+            } else if (map.get("status").equals("severe")) {
+                map.replace("status", "심각");
             }
+            statusDatas.add((String) map.get("status")); //상태 리스트
+            barDataColumns.add((String) map.get("level")); //배출량 리스트
+            deviceIdNames.add((String) map.get("deviceid")); //장리 리스트
+            gps_laDatas.add((String) map.get("gps_la")); // gps1 리스트
+            gps_loDatas.add((String) map.get("gps_lo")); //gps2 리스트
+            temp_brd.add((String) map.get("temp_brd")); //온도 리스트
+            batt_level.add((String) map.get("batt_level")); //배터리잔량 리스트
+            solar_current.add((String) map.get("solar_current")); //전류 리스트
+            solar_voltage.add((String) map.get("solar_voltage")); //전압 리스트
+        }
 
 //        log.info("위도 : " + gps_laDatas);
 //        log.info("경도 : " + gps_loDatas);
@@ -867,7 +879,7 @@ public class DashboardRestController {
     // 위치기반 상세데이터 보내기
     @PostMapping("deviceDetail")
     public ResponseEntity deviceDetail(@RequestParam(value="pushValue", defaultValue="") String pushValue) {
-            AjaxResponse res = new AjaxResponse();
+        AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         EquipmentDto deviceDetailList = dashboardService.findByEmNumber(pushValue);

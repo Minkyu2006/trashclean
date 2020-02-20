@@ -388,46 +388,46 @@
 					$.each(res.data.datalist, function(key, value){
 						html2 += '<li class="c-list__item">';
 						html2 += '<div class="equipment">';
-							html2 += '<div id='+'mask'+idx+' class="c-loader">';
-							html2 += '<div id='+'loading'+idx+' class="c-loader__active c-loader__active--ring"></div>';
-							html2 += '</div>';
+						html2 += '<div id='+'mask'+idx+' class="c-loader">';
+						html2 += '<div id='+'loading'+idx+' class="c-loader__active c-loader__active--ring"></div>';
+						html2 += '</div>';
 						html2 += '</div>';
 						html2 += '</li>';
 
 						html += '<li class="c-list__item">';
-							html += '<div id='+'listTest'+idx+' class="equipment">';
-							html += '<div class="equipment__section">';
-								html += '<h4 class="equipment__section-title">장치 상세 정보</h4>';
-									html += '<ul class="equipment__info">';
-										html += '<li class="equipment__info-item">';
-											html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>';
-											html += '<span class="equipment__info-value">'+nvl(value.emNumber,"확 인 불 가")+'</span>';
-										html += '</li>';
-										html += '<li class="equipment__info-item">';
-											html += '<span class="equipment__info-title">'+'모델타입 : '+'</span>';
-											html += '<span class="equipment__info-value">'+nvl(value.emType,"확 인 불 가")+'</span>';
-										html += '</li>';
-										html += '<li class="equipment__info-item">';
-											html += '<span class="equipment__info-title">'+'모델명 : '+'</span>';
-											html += '<span class="equipment__info-value">'+nvl(value.mdName,"확 인 불 가")+'</span>';
-										html += '</li>';
-										html += '<li class="equipment__info-item">';
-											html += '<span class="equipment__info-title">'+'최대적재량 : '+'</span>';
-											html += '<span class="equipment__info-value">'+nvl(value.mdMaximumPayload,"확 인 불 가")+nvl(value.mdUnit,"확 인 불 가")+'</span>';
-										html += '</li>';
-										html += '<li class="equipment__info-item">';
-											html += '<span class="equipment__info-title">'+'운영사 : '+'</span>';
-											html += '<span class="equipment__info-value">'+nvl(value.company,"확 인 불 가")+'</span>';
-										html += '</li>';
-										html += '<li class="equipment__info-item">';
-											html += '<span class="equipment__info-title">'+'국가/지역 : '+'</span>';
-											html += '<span class="equipment__info-value">'+nvl(value.emCountry,"확 인 불 가")+'/'+nvl(value.emLocation,"확 인 불 가")+'</span>';
-										html += '</li>';
-										html += '<li class="equipment__info-item">';
-											html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>';
-											html += '<span class="equipment__info-value">'+nvl(value.emInstallDate,"확 인 불 가").substring(0,4)+"년 "+nvl(value.emInstallDate,"확 인 불 가").substring(4,6)+"월 "+nvl(value.emInstallDate,"확 인 불 가").substring(6,8)+"일"+'</span>';
-										html += '</li>';
-									html += '</ul>';
+						html += '<div id='+'listTest'+idx+' class="equipment">';
+						html += '<div class="equipment__section">';
+						html += '<h4 class="equipment__section-title">장치 상세 정보</h4>';
+						html += '<ul class="equipment__info">';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(value.emNumber,"확 인 불 가")+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'모델타입 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(value.emType,"확 인 불 가")+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'모델명 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(value.mdName,"확 인 불 가")+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'최대적재량 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(value.mdMaximumPayload,"확 인 불 가")+nvl(value.mdUnit,"확 인 불 가")+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'운영사 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(value.company,"확 인 불 가")+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'국가/지역 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(value.emCountry,"확 인 불 가")+'/'+nvl(value.emLocation,"확 인 불 가")+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(value.emInstallDate,"확 인 불 가").substring(0,4)+"년 "+nvl(value.emInstallDate,"확 인 불 가").substring(4,6)+"월 "+nvl(value.emInstallDate,"확 인 불 가").substring(6,8)+"일"+'</span>';
+						html += '</li>';
+						html += '</ul>';
 						html += '</div>';
 						html += '</div>';
 						html += '</li>';
@@ -520,8 +520,48 @@
 					var idx = 0;
 					var baseurl = res.data.awss3url;
 
-					$.each(res.data.devices, function () {
+					var devicetimeLength = res.data.deviceOnOffTime.length;
+					var deviceOnOffline = [];
+					var deviceOnOfftime = [];
+					var devicetimeIdx = [];
+					var week = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+					for(var i=0; i<devicetimeLength; i++){
+						if(res.data.deviceOnOffTime[i]!=="") {
+							var deviceOnOffTimeStamp = new Date(res.data.deviceOnOffTime[i]);
+							//console.log("deviceOnOffTimeStamp : "+deviceOnOffTimeStamp);
+							var deviceOnOffYear = deviceOnOffTimeStamp.getFullYear();
+							var deviceOnOffMonth = Number(deviceOnOffTimeStamp.getMonth() + 1);
+							if (deviceOnOffMonth < 10) {
+								deviceOnOffMonth = "0"+deviceOnOffMonth
+							}
+							var deviceOnOffDate = deviceOnOffTimeStamp.getDate();
+							if (deviceOnOffDate < 10) {
+								deviceOnOffDate = "0" + deviceOnOffDate
+							}
+							var deviceOnOffHour = deviceOnOffTimeStamp.getHours();
+							if (deviceOnOffHour < 10) {
+								deviceOnOffHour = "0" + deviceOnOffHour
+							}
+							var deviceOnOffMinute = deviceOnOffTimeStamp.getMinutes();
+							if (deviceOnOffMinute < 10) {
+								deviceOnOffMinute = "0" + deviceOnOffMinute
+							}
+							var deviceOnOffSecond = deviceOnOffTimeStamp.getSeconds();
+							if (deviceOnOffSecond < 10) {
+								deviceOnOffSecond = "0" + deviceOnOffSecond
+							}
+							var deviceOnOffDay = deviceOnOffTimeStamp.getDay();
+							var devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond + ' (' + week[deviceOnOffDay] + ')';
+							//console.log("devicetime : "+devicetime);
+							devicetimeIdx.push(devicetime);
+						}else{
+							devicetimeIdx.push("");
+						}
+						deviceOnOffline.push(res.data.deviceOnOffstatus[i]);
+						deviceOnOfftime.push(res.data.deviceOnOffTime[i]);
+					}
 
+					$.each(res.data.devices, function () {
 						var html = '';
 						var html2 = '';
 						var html3 = '';
@@ -531,72 +571,98 @@
 						html2 += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html2 += '</div>';
 						if(res.data.status[idx]==="정상"){
-								html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
+							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
+							if(res.data.deviceOnOffstatus[idx]==="true"){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
-								html2 += '<div class="equipment__img">';
-								html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
-								html2 += '</div>';
+							}else{
+								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
+							html2 += '<div class="equipment__img">';
+							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+								html2 += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+								html2 += '<span>'+'접속이력없음'+'</span>';
+							}
+							html2 += '</div>';
 						}else if(res.data.status[idx]==="주의"){
-								html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
-								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
-								html2 += '<div class="equipment__img">';
-								html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
-								html2 += '</div>';
-						}else if(res.data.status[idx]==="심각"){
-								html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
+							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
+							if(res.data.deviceOnOffstatus[idx]==="true"){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
-								html2 += '<div class="equipment__img">';
-								html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
-								html2 += '</div>';
-						}else{
-								html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
+							}else{
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
-								html2 += '<div class="equipment__img">';
-								html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
-								html2 += '</div>';
+							}
+							html2 += '<div class="equipment__img">';
+							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+								html2 += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+								html2 += '<span>'+'접속이력없음'+'</span>';
+							}
+							html2 += '</div>';
+						}else if(res.data.status[idx]==="심각"){
+							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
+							if(res.data.deviceOnOffstatus[idx]==="true"){
+								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							}else{
+								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
+							html2 += '<div class="equipment__img">';
+							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+								html2 += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+								html2 += '<span>'+'접속이력없음'+'</span>';
+							}
+							html2 += '</div>';
+						}else{
+							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
+							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							html2 += '<div class="equipment__img">';
+							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							html2 += '</div>';
 						}
 						html2 += '</div>';
 
 						html += '<div id='+'details'+idx+' class="equipment__section">';
-							html += '<div id='+'detailLoading'+idx+' class="c-loader">';
-								html += '<div class="c-loader__active c-loader__active--ring"></div>';
-							html += '</div>';
+						html += '<div id='+'detailLoading'+idx+' class="c-loader">';
+						html += '<div class="c-loader__active c-loader__active--ring"></div>';
+						html += '</div>';
 						html += '<h4 class="equipment__section-title">상태 상세 정보</h4>';
-							html += '<ul class="equipment__info">';
-								html += '<li class="equipment__info-item">';
-									html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
-									html += '<span class="equipment__info-value">'+nvl(installDayDatas[idx],"확 인 불 가 ")+'일'+'</span>';
-								html += '</li>';
-								html += '<li class="equipment__info-item">';
-									html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
-									html += '<span class="equipment__info-value">'+nvl(res.data.temp_brd[idx],"확 인 불 가")+'℃'+'</span>';
-								html += '</li>';
-								html += '<li class="equipment__info-item">';
-									html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
-									html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>';
-								html += '</li>';
-								html += '<li class="equipment__info-item">';
-									html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>';
-									html += '<span class="equipment__info-value">'+nvl(res.data.batt_level[idx],"확 인 불 가")+'%'+'</span>';
-								html += '</li>';
-								html += '<li class="equipment__info-item">';
-									html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>';
-									html += '<span class="equipment__info-value">'+nvl(res.data.solar_current[idx],"확 인 불 가")+'A'+'</span>';
-								html += '</li>';
-								html += '<li class="equipment__info-item">';
-									html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>';
-									html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>';
-								html += '</li>';
-								html += '<li class="equipment__info-item">';
-									html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
-								html += '</li>';
-							html += '</ul>';
+						html += '<ul class="equipment__info">';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(installDayDatas[idx],"확 인 불 가 ")+'일'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.temp_brd[idx],"확 인 불 가")+'℃'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.batt_level[idx],"확 인 불 가")+'%'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.solar_current[idx],"확 인 불 가")+'A'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>';
+						html += '<li class="equipment__info-item">';
+						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						html += '</li>';
+						html += '</ul>';
 						html += '</div>';
 
 						html3 += '<div id='+'graphs'+idx+' class="equipment__section">';
-							html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">';
-								html3 += '<div class="c-loader__active c-loader__active--ring"></div>';
-							html3 += '</div>';
+						html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">';
+						html3 += '<div class="c-loader__active c-loader__active--ring"></div>';
+						html3 += '</div>';
 						html3 += '<canvas id='+'timeStampChart'+idx+' style="width: 100%;height: 220px;"></canvas>';
 						html3 += '</div>';
 
@@ -679,6 +745,45 @@
 					var idx = 0;
 					var baseurl = res.data.awss3url;
 
+					var devicetimeLength = res.data.deviceOnOffTime.length;
+					var deviceOnOffline = [];
+					var deviceOnOfftime = [];
+					var devicetimeIdx = [];
+					var week = ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+					for(var i=0; i<devicetimeLength; i++){
+						if(res.data.deviceOnOffTime[i]!=="") {
+							var deviceOnOffTimeStamp = new Date(res.data.deviceOnOffTime[i]);
+							var deviceOnOffYear = deviceOnOffTimeStamp.getFullYear();
+							var deviceOnOffMonth = Number(deviceOnOffTimeStamp.getMonth() + 1);
+							if (deviceOnOffMonth < 10) {
+								deviceOnOffMonth = "0"+deviceOnOffMonth
+							}
+							var deviceOnOffDate = deviceOnOffTimeStamp.getDate();
+							if (deviceOnOffDate < 10) {
+								deviceOnOffDate = "0" + deviceOnOffDate
+							}
+							var deviceOnOffHour = deviceOnOffTimeStamp.getHours();
+							if (deviceOnOffHour < 10) {
+								deviceOnOffHour = "0" + deviceOnOffHour
+							}
+							var deviceOnOffMinute = deviceOnOffTimeStamp.getMinutes();
+							if (deviceOnOffMinute < 10) {
+								deviceOnOffMinute = "0" + deviceOnOffMinute
+							}
+							var deviceOnOffSecond = deviceOnOffTimeStamp.getSeconds();
+							if (deviceOnOffSecond < 10) {
+								deviceOnOffSecond = "0" + deviceOnOffSecond
+							}
+							var deviceOnOffDay = deviceOnOffTimeStamp.getDay();
+							var devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond + ' (' + week[deviceOnOffDay] + ')';
+							devicetimeIdx.push(devicetime);
+						}else{
+							devicetimeIdx.push("");
+						}
+						deviceOnOffline.push(res.data.deviceOnOffstatus[i]);
+						deviceOnOfftime.push(res.data.deviceOnOffTime[i]);
+					}
+
 					$.each(res.data.devices, function () {
 						var html = '';
 						var html2 = '';
@@ -689,26 +794,56 @@
 						html2 += '</div>';
 						if(res.data.status[idx]==="정상"){
 							html2 += '<span class="equipment__stat normal">'+'정상'+'</span>';
-							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							if(res.data.deviceOnOffstatus[idx]==="true"){
+								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							}else{
+								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
 							html2 += '<div class="equipment__img">';
-
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+								html2 += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+								html2 += '<span>'+'접속이력없음'+'</span>';
+							}
 							html2 += '</div>';
 						}else if(res.data.status[idx]==="주의"){
 							html2 += '<span class="equipment__stat caution">'+'주의'+'</span>';
-							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							if(res.data.deviceOnOffstatus[idx]==="true"){
+								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							}else{
+								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+								html2 += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+								html2 += '<span>'+'접속이력없음'+'</span>';
+							}
 							html2 += '</div>';
 						}else if(res.data.status[idx]==="심각"){
 							html2 += '<span class="equipment__stat severe">'+'심각'+'</span>';
-							html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							if(res.data.deviceOnOffstatus[idx]==="true"){
+								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							}else{
+								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+								html2 += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+								html2 += '<span>'+'접속이력없음'+'</span>';
+							}
 							html2 += '</div>';
 						}else{
 							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
-							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							if(res.data.deviceOnOffstatus[idx]==="true"){
+								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							}else{
+								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
 							html2 += '</div>';
@@ -844,16 +979,16 @@
 						tempMap = (temp_brd_Max+15).toFixed(0);
 						tempMin = (temp_brd_Min-15).toFixed(0);
 						if(tempMap/5!==0){
-							 tempMaxsub = tempMap.substring(1,2);
-							 tempBrdMax = parseInt(tempMap)-parseInt(tempMaxsub);
+							tempMaxsub = tempMap.substring(1,2);
+							tempBrdMax = parseInt(tempMap)-parseInt(tempMaxsub);
 						}else{
-							 tempBrdMax = tempMap;
+							tempBrdMax = tempMap;
 						}
 						if(tempMin/5!==0){
-							 tempMinsub = tempMin.substring(1,2);
-							 tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
+							tempMinsub = tempMin.substring(1,2);
+							tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
 						}else{
-							 tempBrdMin = tempMin;
+							tempBrdMin = tempMin;
 						}
 
 						//var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
@@ -928,36 +1063,36 @@
 											max: max_milliseconds,
 											tooltipFormat: 'YYYY'+'년'+'MM'+'월'+'DD'+'일 '+'HH:mm:ss a',
 										}
-										}],
+									}],
 									yAxes: [{
-											ticks: {
-												callback: function(value) {
-													return value+'%';
-												},
-												max: 100,
-												min: 0,
-												stepSize: 20
+										ticks: {
+											callback: function(value) {
+												return value+'%';
 											},
-											id: 'x',
-											type: 'linear',
-											display: true,
-											position: 'left'
-										},{
-											ticks: {
-												callback: function(value) {
-													return value+'℃';
-												},
-												max: tempBrdMax,
-												min: tempBrdMin
+											max: 100,
+											min: 0,
+											stepSize: 20
+										},
+										id: 'x',
+										type: 'linear',
+										display: true,
+										position: 'left'
+									},{
+										ticks: {
+											callback: function(value) {
+												return value+'℃';
 											},
-											id: 'y',
-											type: 'linear',
-											display: true,
-											position: 'right',
-											gridLines: {
-												drawOnChartArea: false
-											}
-										}]
+											max: tempBrdMax,
+											min: tempBrdMin
+										},
+										id: 'y',
+										type: 'linear',
+										display: true,
+										position: 'right',
+										gridLines: {
+											drawOnChartArea: false
+										}
+									}]
 								}
 							}
 						});
@@ -986,16 +1121,16 @@
 			var barChartData = {
 				labels: timestamps,
 				datasets: [{
-						type: 'line',
-						label: '평균값',
-						yAxisID: '평균',
-						backgroundColor: "#48ae63",
-						borderWidth: 4,
-						borderColor: "#48ae63",
-						data: barData,
-						fill: false
-					}]
-				};
+					type: 'line',
+					label: '평균값',
+					yAxisID: '평균',
+					backgroundColor: "#48ae63",
+					borderWidth: 4,
+					borderColor: "#48ae63",
+					data: barData,
+					fill: false
+				}]
+			};
 
 			window.chart = new Chart(ctx, {
 				data: barChartData,
@@ -1202,7 +1337,6 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-
 					//상태값 차트
 					circleChart(res.data.circle_data_columns,res.data.circle_data_count);
 					//쓰레기양 차트
@@ -1220,7 +1354,7 @@
 
 		// 맵 차트
 		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas,pathobj) {
-			console.log("map_data_columns : "+ map_data_columns)
+			//console.log("map_data_columns : "+ map_data_columns)
 
 			var locations = map_data_columns;
 
@@ -1283,6 +1417,49 @@
 			}map.fitBounds(bounds);
 		}
 
+		// 구글버전 directions
+		// var directionsDisplay;
+		// var directionsService;
+		// var directionsMap;
+		// var z = document.getElementById("map");
+		// var start;
+		// var end;
+		//
+		// function getDirections() {
+		//
+		// 	directionsDisplay = new google.maps.DirectionsRenderer();
+		//
+		// 	var directionsOptions = {
+		// 		zoom:12,
+		// 		mapTypeControl: false,
+		// 		streetViewControl: false
+		// 	};
+		// 	directionsMap = new google.maps.Map(document.getElementById("map"), directionsOptions);
+		// 	directionsDisplay.setMap(directionsMap);
+		// 	calcRoute();
+		// }
+		//
+		// function calcRoute() {
+		//
+		// 	directionsService = new google.maps.DirectionsService();
+		//
+		// 	//travelMode:DRIVING,WALKING,BICYCLING,TRANSIT
+		//
+		// 	start = new google.maps.LatLng(39.052213,125.729329);
+		// 	end = new google.maps.LatLng(39.023130, 125.773078);
+		// 	//end = new google.maps.LatLng(38.925900, -76.786412);
+		// 	var request = {
+		// 		origin:start,
+		// 		destination:end,
+		// 		travelMode: google.maps.TravelMode.DRIVING
+		// 	};
+		// 	directionsService.route(request, function(result, status) {
+		// 		if (status === google.maps.DirectionsStatus.OK) {
+		// 			directionsDisplay.setDirections(result);
+		// 		}
+		// 	});
+		// }
+
 		// 장비위치이동 버튼을 누르면 실행되는 함수
 		function mapMove(lat,lng) {
 			if(lat===0 || lng===0){
@@ -1290,7 +1467,7 @@
 				return false;
 			}
 			//var center = new google.maps.LatLng(lat, lng);
-			var center = new naver.maps.LatLng(lat, lng);
+			var center = new google.maps.LatLng(lat, lng);
 			map.setZoom(18);
 			//map.panTo(center);
 			map.panTo(center);
@@ -1305,18 +1482,18 @@
 			$("#statusSerious").text(circle_data_count[3]);
 
 			c3.generate({
-			bindto: "#pie_chart",
-			data: {
-				columns: circle_data_columns,
-				type: 'pie'
-			},
-			tooltip: {
-				format: {
-					value: function (value) {
-						return value + '개';
+				bindto: "#pie_chart",
+				data: {
+					columns: circle_data_columns,
+					type: 'pie'
+				},
+				tooltip: {
+					format: {
+						value: function (value) {
+							return value + '개';
+						}
 					}
-				}
-			},
+				},
 				color: {
 					pattern: ['#48ae63', '#ffc600', '#e35f5f']
 				}
@@ -1489,7 +1666,7 @@
 					<h4 class="dashbaord__count-title">심각</h4>
 					<p class="dashboard__count-num dashboard__count-num--danger" id='statusSerious'></p>
 				</div>
-				
+
 				<div class="layout-select">
 					<ul>
 						<li><a href="#" id="layout1" class="loyout-select__btn loyout-select__01">레이아웃1</a></li>
