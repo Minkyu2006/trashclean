@@ -27,6 +27,7 @@ public class AccountMapperDto {
     private ApprovalType approvalType;
     private String teamcode;
     private String mode;
+    private Long companyid;
     private Long positionid;
     private Integer userRefleshCheck;
     private Integer userRefleshCount;

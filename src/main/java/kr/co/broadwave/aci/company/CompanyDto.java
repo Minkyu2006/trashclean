@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * @author Minkyu
  * Date : 2019-10-31
  * Time : 16:45
- * Remark : 업체등록 클래스 MapperDto
+ * Remark : 업체등록 클래스 Dto
  */
 @Builder
 @NoArgsConstructor

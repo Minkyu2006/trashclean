@@ -3,6 +3,8 @@ package kr.co.broadwave.aci.controller;
 import kr.co.broadwave.aci.accounts.*;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.CommonUtils;
+import kr.co.broadwave.aci.company.CompanyAccountDto;
+import kr.co.broadwave.aci.company.CompanyService;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import kr.co.broadwave.aci.teams.TeamDto;
@@ -32,13 +34,15 @@ public class Maincontroller {
     private final LoginlogService loginlogService;
     private final MasterCodeService masterCodeService;
     private final TeamService teamService;
+    private final CompanyService companyService;
 
     @Autowired
-    public Maincontroller(AccountService accountService,LoginlogService loginlogService, MasterCodeService masterCodeService, TeamService teamService) {
+    public Maincontroller(AccountService accountService,LoginlogService loginlogService, MasterCodeService masterCodeService, TeamService teamService, CompanyService companyService) {
         this.accountService = accountService;
         this.loginlogService = loginlogService;
         this.masterCodeService = masterCodeService;
         this.teamService = teamService;
+        this.companyService = companyService;
     }
 
     //메인화면
@@ -114,10 +118,13 @@ public class Maincontroller {
     }
 
     @RequestMapping("/signup")
-    public String siguup(Model model){
+    public String signup(Model model){
         List<MasterCodeDto> positions = masterCodeService.findCodeList(CodeType.C0001); // 직급코드가져오기
         List<TeamDto> teams = teamService.findTeamList();
+        List<CompanyAccountDto> companys = companyService.findCompanyList();
+        System.out.println("companys : "+companys);
 
+        model.addAttribute("companys", companys);
         model.addAttribute("roles", AccountRole.values());
         model.addAttribute("positions", positions);
         model.addAttribute("teams", teams);

@@ -5,6 +5,8 @@ import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
+import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.company.CompanyService;
 import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.files.FileUploadService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
@@ -28,10 +30,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 /**
@@ -58,12 +57,13 @@ public class AccountRestController {
     private final MasterCodeService masterCodeService;
     private final FileUploadService fileUploadService;
     private final PasswordEncoder passwordEncoder;
-
+    private final CompanyService companyService;
     @Autowired
     public AccountRestController(AccountService accountService, ModelMapper modelMapper,
-                                 FileUploadService fileUploadService
+                                 FileUploadService fileUploadService, CompanyService companyService
             , TeamService teamService, LoginlogService loginlogService, MasterCodeService masterCodeService, PasswordEncoder passwordEncoder) {
         this.accountService = accountService;
+        this.companyService = companyService;
         this.modelMapper = modelMapper;
         this.teamService = teamService;
         this.loginlogService = loginlogService;
@@ -73,7 +73,7 @@ public class AccountRestController {
     }
 
     @PostMapping("reg")
-    public ResponseEntity accountSave(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> accountSave(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
 
         Account account = modelMapper.map(accountMapperDto, Account.class);
 
@@ -146,16 +146,25 @@ public class AccountRestController {
     }
 
     @PostMapping("modifyReg")
-    public ResponseEntity accountModifySave(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> accountModifySave(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
 
         Account account = modelMapper.map(accountMapperDto, Account.class);
         Optional<Team> optionalTeam = teamService.findByTeamcode(accountMapperDto.getTeamcode());
         Optional<MasterCode> optionalPositionCode = masterCodeService.findById(accountMapperDto.getPositionid());
+        Optional<Company> optionalCompany = companyService.findByid(accountMapperDto.getCompanyid());
 
         //아이디를 입력하세요.
         if (accountMapperDto.getUserid() == null || accountMapperDto.getUserid() ==""){
             log.info(ResponseErrorCode.E007.getDesc());
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E007.getCode(), ResponseErrorCode.E007.getDesc()));
+        }
+
+        //해당업체가 존재하지않으면
+        if (!optionalCompany.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E026.getCode(), ResponseErrorCode.E026.getDesc()));
+        }else{
+            Company company = optionalCompany.get();
+            account.setCompany(company);
         }
 
         //부서코드가 존재하지않으면
@@ -187,6 +196,9 @@ public class AccountRestController {
             account.setInsert_id(optionalAccount.get().getInsert_id());
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
             account.setPassword(optionalAccount.get().getPassword());
+            account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
+            account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
+            account.setUserPhoto(optionalAccount.get().getUserPhoto());
         }
         account.setModify_id(currentuserid);
         account.setModifyDateTime(LocalDateTime.now());
@@ -199,7 +211,7 @@ public class AccountRestController {
     }
 
     @PostMapping("modifyAdminPassword")
-    public ResponseEntity accountmodifyAdminPassword(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> accountmodifyAdminPassword(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
 
 
         Account account = modelMapper.map(accountMapperDto, Account.class);
@@ -230,9 +242,11 @@ public class AccountRestController {
             account.setTeam(optionalAccount.get().getTeam());
             account.setApprovalType(optionalAccount.get().getApprovalType());
             account.setPosition(optionalAccount.get().getPosition());
+            account.setCompany(optionalAccount.get().getCompany());
             account.setRole(optionalAccount.get().getRole());
             account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
             account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
+            account.setUserPhoto(optionalAccount.get().getUserPhoto());
         }
         account.setModify_id(currentuserid);
         account.setModifyDateTime(LocalDateTime.now());
@@ -246,11 +260,12 @@ public class AccountRestController {
 
     //회원가입처리
     @PostMapping("signup")
-    public ResponseEntity signup(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> signup(@ModelAttribute AccountMapperDto accountMapperDto, HttpServletRequest request){
 
         Account account = modelMapper.map(accountMapperDto, Account.class);
         Optional<Team> optionalTeam = teamService.findByTeamcode(accountMapperDto.getTeamcode());
         Optional<MasterCode> optionalPositionCode = masterCodeService.findById(accountMapperDto.getPositionid());
+        Optional<Company> optionalCompany = companyService.findByid(accountMapperDto.getCompanyid());
 
         //패스워드를 입력하세요.
         if (accountMapperDto.getPassword() == null || accountMapperDto.getPassword().equals("")){
@@ -279,6 +294,13 @@ public class AccountRestController {
         account.setUserRefleshCheck(1); // 등록시 새로고침체크 2020/01/02 - 김민규 (기본값 체크1)
         account.setUserRefleshCount(3); // 등록시 새로고침주기 2020/01/02 - 김민규 (기본값 2분)
 
+        //해당업체가 존재하지않으면
+        if (!optionalCompany.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E026.getCode(), ResponseErrorCode.E026.getDesc()));
+        }else{
+            Company company = optionalCompany.get();
+            account.setCompany(company);
+        }
         //부서코드가 존재하지않으면
         if (!optionalTeam.isPresent()) {
             log.info(" 선택한 부서 DB 존재 여부 체크.  부서코드: '" + accountMapperDto.getTeamcode() +"'");
@@ -354,7 +376,7 @@ public class AccountRestController {
 //    }
 
     @PostMapping("list")
-    public ResponseEntity accountList(@RequestParam(value="userid", defaultValue="") String userid,
+    public ResponseEntity<Map<String,Object>> accountList(@RequestParam(value="userid", defaultValue="") String userid,
                                       @RequestParam(value="username", defaultValue="") String username,
                                       @RequestParam(value="email", defaultValue="") String email,
                                       Pageable pageable){
@@ -368,7 +390,7 @@ public class AccountRestController {
     }
 
     @PostMapping("approvallist")
-    public ResponseEntity accountApprovalList(
+    public ResponseEntity<Map<String,Object>> accountApprovalList(
                                       @RequestParam(value="username", defaultValue="") String username,
                                       @RequestParam(value="startdate", defaultValue="") String startdate,
                                       @RequestParam(value="enddate", defaultValue="") String enddate,
@@ -384,7 +406,7 @@ public class AccountRestController {
 
     //회원가입 승인처리
     @PostMapping("approval")
-    public ResponseEntity saveApproval(
+    public ResponseEntity<Map<String,Object>> saveApproval(
                                     @RequestParam(value="userid", defaultValue="") String userid,
                                     @RequestParam(value="approvaltype", defaultValue="") String approvaltype,
                                     HttpServletRequest request
@@ -410,7 +432,7 @@ public class AccountRestController {
 
     //사용자삭제
     @PostMapping("del")
-    public ResponseEntity accountdel(@RequestParam (value="userid", defaultValue="") String userid
+    public ResponseEntity<Map<String,Object>> accountdel(@RequestParam (value="userid", defaultValue="") String userid
                                      ){
         log.info("사용자 삭제 / userid: " + userid );
         Optional<Account> optionalAccount = accountService.findByUserid(userid);
@@ -431,31 +453,29 @@ public class AccountRestController {
     }
 
     @PostMapping("account")
-    public ResponseEntity account(@RequestParam (value="userid", defaultValue="") String userid){
+    public ResponseEntity<Map<String,Object>> account(@RequestParam (value="userid", defaultValue="") String userid){
 
-        log.info("단일사용자조회  / userid: '" + userid + "'");
+        //log.info("단일사용자조회  / userid: '" + userid + "'");
         Optional<Account> optionalAccount = accountService.findByUserid(userid);
 
         if(!optionalAccount.isPresent()){
-            log.info("단일사용자조회실패 : 조회할 데이터가 존재하지않음 , 조회대상 userid : '" + userid +"'");
+            //log.info("단일사용자조회실패 : 조회할 데이터가 존재하지않음 , 조회대상 userid : '" + userid +"'");
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(),ResponseErrorCode.E004.getDesc()));
         }
         Account account = optionalAccount.get();
-
-
+        //log.info("account : "+account);
 
         data.clear();
         data.put("datarow",account);
         res.addResponse("data",data);
-        log.info("단일사용자 조회 성공 : " + account.toString() );
+        //log.info("단일사용자 조회 성공 : " + account.toString() );
 
         return ResponseEntity.ok(res.success());
-
     }
 
     // 프로필변경
     @PostMapping("profilereg")
-    public ResponseEntity profilereg(@ModelAttribute AccountMapperDtoProfile accountMapperDtoProfile,
+    public ResponseEntity<Map<String,Object>> profilereg(@ModelAttribute AccountMapperDtoProfile accountMapperDtoProfile,
                                                     MultipartHttpServletRequest multi,
                                                     HttpServletRequest request) throws Exception{
 
@@ -492,12 +512,13 @@ public class AccountRestController {
             account.setApprovalType(optionalAccount.get().getApprovalType());
             account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
             account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
+            account.setCompany(optionalAccount.get().getCompany());
             account.setInsert_id(optionalAccount.get().getInsert_id());
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
             account.setApprovalDateTime(optionalAccount.get().getApprovalDateTime());
             account.setApproval_id(optionalAccount.get().getApproval_id());
         }else{
-            log.info("사용자정보 수정실패 : 사용자아이디: '" + account.getUserid() + "'");
+            //log.info("사용자정보 수정실패 : 사용자아이디: '" + account.getUserid() + "'");
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
         }
         account.setModify_id(currentuserid);
@@ -509,27 +530,21 @@ public class AccountRestController {
         MultipartFile mFile = multi.getFile(uploadFile);
 
         // 저장할 파일이 존재할때만 실행
+        assert mFile != null;
         if(!mFile.isEmpty()) {
             FileUpload fileUpload = fileUploadService.save(mFile);
             account.setUserPhoto(fileUpload);
         }else{
             //파일은 존재하지않으나, 기존파일이 존재할경우
-            if (optionalAccount.isPresent()) {
-                account.setUserPhoto(optionalAccount.get().getUserPhoto());
-            }else{
-                //파일은 존재하지않으나, 기존파일이 없을경
-                account.setUserPhoto(null);
-            }
+            account.setUserPhoto(optionalAccount.get().getUserPhoto());
         }
 
         accountService.updateAccount(account);
 
         //파일수정일때 실행
         if(!mFile.isEmpty()) {
-            if (optionalAccount.isPresent()) {
-                if (optionalAccount.get().getUserPhoto() != null) {
-                    fileUploadService.del(optionalAccount.get().getUserPhoto().getId());
-                }
+            if (optionalAccount.get().getUserPhoto() != null) {
+                fileUploadService.del(optionalAccount.get().getUserPhoto().getId());
             }
         }
 
@@ -539,48 +554,46 @@ public class AccountRestController {
 
     // 프로필 정보보기
     @PostMapping ("profileinfo")
-    public ResponseEntity profileinfo(HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> profileinfo(HttpServletRequest request){
 
         String currentuserid = CommonUtils.getCurrentuser(request);
 
         Optional<Account> accountProfile = accountService.findByUserid(currentuserid);
-//        AccountDtoProfile accountProfile = accountService.findByUseridProfile(currentuserid);
 //        log.info("유저ID : "+currentuserid);
 //        log.info("유저정보 : "+accountProfile);
 
         data.clear();
-        if(accountProfile.get().getUserPhoto()==null){
-            data.put("profilefilepath","/defaultimage");
-            data.put("profilefilename","/profile.png");
-        }else{
-            data.put("profilefilepath",accountProfile.get().getUserPhoto().getFilePath());
-            data.put("profilefilename","/s_"+accountProfile.get().getUserPhoto().getSaveFileName());
-        }
+        if(accountProfile.isPresent()) {
+            if (accountProfile.get().getUserPhoto() == null) {
+                data.put("profilefilepath", "/defaultimage");
+                data.put("profilefilename", "/profile.png");
+            } else {
+                data.put("profilefilepath", accountProfile.get().getUserPhoto().getFilePath());
+                data.put("profilefilename", "/s_" + accountProfile.get().getUserPhoto().getSaveFileName());
+            }
+            data.put("accountProfile", accountProfile);
+            data.put("accountteamcode", accountProfile.get().getTeam().getTeamcode());
+            data.put("accountposition", accountProfile.get().getPosition().getId());
 
-        data.put("accountProfile",accountProfile);
-        data.put("accountteamcode",accountProfile.get().getTeam().getTeamcode());
-        data.put("accountposition",accountProfile.get().getPosition().getId());
-        data.put("AWSS3URL",AWSS3URL);
-        res.addResponse("data",data);
+            data.put("AWSS3URL",AWSS3URL);
+            res.addResponse("data",data);
+        }
 
         return ResponseEntity.ok(res.success());
     }
 
     // 프로필 부서,직급 select호출
     @PostMapping("teamAndposition")
-    public ResponseEntity teamAndposition(){
+    public ResponseEntity<Map<String,Object>> teamAndposition(){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         List<MasterCodeDto> profilepositions = masterCodeService.findCodeList(CodeType.C0001); // 직급코드가져오기
         List<TeamDto> profileteams = teamService.findTeamList();
 
-//        log.info("profilepositions : "+profilepositions);
-//        log.info("profileteams : " +profileteams);
-
-        data.clear();
         data.put("profilepositions",profilepositions);
         data.put("profileteams",profileteams);
+
         res.addResponse("data",data);
 
         return ResponseEntity.ok(res.success());
@@ -589,7 +602,7 @@ public class AccountRestController {
     // 프로필 비밀번호변경
     @Transactional
     @PostMapping("modifypassword")
-    public ResponseEntity modifypassword(@ModelAttribute AccountMapperDtoModify accountMapperDtoModify,
+    public ResponseEntity<Map<String,Object>> modifypassword(@ModelAttribute AccountMapperDtoModify accountMapperDtoModify,
                                               HttpServletRequest request){
 
         Account account = modelMapper.map(accountMapperDtoModify, Account.class);
@@ -617,6 +630,7 @@ public class AccountRestController {
             account.setCellphone(optionalAccount.get().getCellphone());
             account.setEmail(optionalAccount.get().getEmail());
             account.setRole(optionalAccount.get().getRole());
+            account.setCompany(optionalAccount.get().getCompany());
             account.setTeam(optionalAccount.get().getTeam());
             account.setPosition(optionalAccount.get().getPosition());
             account.setApprovalType(optionalAccount.get().getApprovalType());

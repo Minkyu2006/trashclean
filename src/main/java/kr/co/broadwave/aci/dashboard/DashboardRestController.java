@@ -915,6 +915,7 @@ public class DashboardRestController {
             account.setRole(optionalAccount.get().getRole());
             account.setApprovalType(optionalAccount.get().getApprovalType());
             account.setTeam(optionalAccount.get().getTeam());
+            account.setCompany(optionalAccount.get().getCompany());
             account.setPosition(optionalAccount.get().getPosition());
             account.setUserRefleshCheck(checknum);
             account.setUserRefleshCount(timenum);

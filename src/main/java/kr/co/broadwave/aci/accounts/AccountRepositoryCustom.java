@@ -16,4 +16,6 @@ public interface AccountRepositoryCustom {
     Long saveApproval(Account account, ApprovalType approvalType, String loginId);
 
     Page<AccountDtoCollectionList> findByCollection(String collectionId, String collectionName,AccountRole role, Pageable pageable);
+
+    AccountDtoCollection findByCollectionLanLon(String currentuserid);
 }

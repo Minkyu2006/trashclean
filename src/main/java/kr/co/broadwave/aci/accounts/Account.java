@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.accounts;
 
 import kr.co.broadwave.aci.bscodes.ApprovalType;
+import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.teams.Team;
@@ -71,6 +72,10 @@ public class Account {
     @ManyToOne(targetEntity = FileUpload.class,fetch = FetchType.EAGER)
     @JoinColumn(name = "user_photo")
     private FileUpload userPhoto;
+
+    @ManyToOne(targetEntity = Company.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="user_company")
+    private Company company;
 
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;

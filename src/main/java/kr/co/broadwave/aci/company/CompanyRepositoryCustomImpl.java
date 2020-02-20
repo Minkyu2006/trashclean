@@ -2,6 +2,8 @@ package kr.co.broadwave.aci.company;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import kr.co.broadwave.aci.teams.QTeam;
+import kr.co.broadwave.aci.teams.TeamDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -98,6 +100,19 @@ public class CompanyRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
         final List<CompanyListDto> companys = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(companys, pageable, query.fetchCount());
+    }
+
+    @Override
+    public List<CompanyAccountDto> findCompanyList() {
+
+        QCompany company = QCompany.company;
+        JPQLQuery<CompanyAccountDto> query = from(company)
+                .select(Projections.constructor(CompanyAccountDto.class,
+                        company.id,
+                        company.csOperator
+                ));
+
+        return query.fetch();
     }
 
 }

@@ -2,7 +2,12 @@ package kr.co.broadwave.aci.accounts;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
+import kr.co.broadwave.aci.collection.CollectionInfoDto;
+import kr.co.broadwave.aci.company.QCompany;
+import kr.co.broadwave.aci.equipment.EquipmentBaseDto;
+import kr.co.broadwave.aci.equipment.QEquipment;
 import kr.co.broadwave.aci.mastercode.QMasterCode;
 import kr.co.broadwave.aci.teams.QTeam;
 import org.springframework.data.domain.Page;
@@ -132,7 +137,6 @@ public class AccountRepositoryCustomImpl extends QuerydslRepositorySupport imple
     @Override
     public  Page<AccountDtoCollectionList> findByCollection(String collectionId, String collectionName,AccountRole role, Pageable pageable){
         QAccount qAccount  = QAccount.account;
-
         JPQLQuery<AccountDtoCollectionList> query = from(qAccount)
                 .select(Projections.constructor(AccountDtoCollectionList.class,
                         qAccount.userid,
@@ -151,6 +155,23 @@ public class AccountRepositoryCustomImpl extends QuerydslRepositorySupport imple
 
         final List<AccountDtoCollectionList> accounts = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(accounts, pageable, query.fetchCount());
+    }
+
+    // 현재로그인한사람의 소속사 경도위도가져오는 쿼리dsl
+    @Override
+    public AccountDtoCollection findByCollectionLanLon(String userId) {
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
+
+        QAccount account = QAccount.account;
+        QCompany company = QCompany.company;
+
+        return queryFactory.select(Projections.constructor(AccountDtoCollection.class,
+                company.csOperator,company.csLatitude,company.csHardness))
+                .from(account)
+                .innerJoin(account.company,company)
+                .where(account.userid.eq(userId))
+                .fetchOne();
     }
 
 }

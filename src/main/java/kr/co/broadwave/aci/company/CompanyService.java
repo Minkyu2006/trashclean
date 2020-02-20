@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -51,14 +52,13 @@ public class CompanyService {
         return companyRepositoryCustom.findByCompanySearch(csNumber,csOperator,csDivisionType,csRegionalType,pageable);
     }
 
+    public Optional<Company> findByid(Long id) {
+        return companyRepository.findById(id);
+    }
+
     public CompanyDto findById(Long id) {
         Optional<Company> optionalCompany = companyRepository.findById(id);
         return optionalCompany.map(company -> modelMapper.map(company, CompanyDto.class)).orElse(null);
-//        if (optionalCompany.isPresent()) {
-//            return modelMapper.map(optionalCompany.get(), CompanyDto.class);
-//        } else {
-//            return null;
-//        }
     }
 
     public void delete(Company company) {
@@ -68,5 +68,9 @@ public class CompanyService {
     //운영사명으로 장비등록 아이디저장하기
     public Optional<Company> findByCsOperator(String company) {
         return companyRepository.findByCsOperator(company);
+    }
+
+    public List<CompanyAccountDto> findCompanyList() {
+        return companyRepositoryCustom.findCompanyList();
     }
 }

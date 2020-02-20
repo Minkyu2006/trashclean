@@ -65,7 +65,7 @@
 
 			});
 
-			//부서,직급 select
+			//소속사,부서,직급 select
 			function teamAndposition() {
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
@@ -117,18 +117,6 @@
 				if ($("#prousername").val().trim() === '') {
 					alertCaution("이름을 입력하세요.");
 					$("#prousername").trigger('focus');
-					return false;
-				}
-
-				if ($("#procellphone").val().trim() === '') {
-					alertCaution("전화번호를 입력하세요.");
-					$("#procellphone").trigger('focus');
-					return false;
-				}
-
-				if ($("#proemail").val().trim() === '') {
-					alertCaution("이메일을 입력하세요.");
-					$("#proemail").trigger('focus');
 					return false;
 				}
 

@@ -133,6 +133,16 @@
 						<div class="join__form__article">
 							<div class="join__form-item">
 								<div class="c-select">
+									<label for="role" class="c-select__label">소속사</label>
+									<select name="companyid" id="companyid" class="c-select__input">
+										<option th:each ="company : ${companys}"
+												th:value="${company.id}"
+												th:text="${company.csOperator}"></option>
+									</select>
+								</div>
+							</div>
+							<div class="join__form-item">
+								<div class="c-select">
 									<label for="teamcode" class="c-select__label">부서</label>
 									<select name="teamcode" id="teamcode" class="c-select__input">
 										<option th:each ="team : ${teams}"

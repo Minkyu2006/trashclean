@@ -1,9 +1,6 @@
 package kr.co.broadwave.aci.collection;
 
-import kr.co.broadwave.aci.accounts.Account;
-import kr.co.broadwave.aci.accounts.AccountDtoCollectionList;
-import kr.co.broadwave.aci.accounts.AccountRole;
-import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.accounts.*;
 import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
 import kr.co.broadwave.aci.common.AjaxResponse;
@@ -300,9 +297,15 @@ public class CollectionTaskRestController {
     }
 
     @PostMapping("streetRouting")
-    public ResponseEntity streetRouting(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
+    public ResponseEntity streetRouting(@RequestParam(value="deviceids", defaultValue="") String deviceids, HttpServletRequest request) throws IOException {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
+
+        String currentuserid = CommonUtils.getCurrentuser(request); // 현재로그인한 사용자아이디가져오기
+        AccountDtoCollection collectionAccount = accountService.findByCollectionLanLon(currentuserid);
+//        log.info("소속사 : "+collectionAccount.getOperator());
+//        log.info("출발점 위도 : "+collectionAccount.getCompanyLatitude());
+//        log.info("출발점 경도 : "+collectionAccount.getCompanyHardness());
 
         // 장비 거리간 순서짜기
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
@@ -311,9 +314,14 @@ public class CollectionTaskRestController {
         List<String> street_gps_loList = new ArrayList<>();
         List<String> streetdevice = new ArrayList<>();
         List<String> passdevice = new ArrayList<>();
-        streetdevicenameList.add("Agency");
-        street_gps_laList.add("37.547611");
-        street_gps_loList.add("127.048871"); // 로그인
+        if(collectionAccount.getCompanyLatitude()==null||collectionAccount.getCompanyLatitude()==null){
+            //소속사에 위도나 경도가 존재하지 않을때,
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E027.getCode(),ResponseErrorCode.E027.getDesc()));
+        }else{
+            streetdevicenameList.add(collectionAccount.getOperator());
+            street_gps_laList.add(collectionAccount.getCompanyLatitude());
+            street_gps_loList.add(collectionAccount.getCompanyHardness());
+        }
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
@@ -357,6 +365,7 @@ public class CollectionTaskRestController {
         List<HashMap<String,String>> streetListData = new ArrayList<>();
         HashMap<String,String> streetListDataMap;
         ArrayList<Boolean> BoleanStreet = new ArrayList<>();
+
         for(int i=0; i<streetSize; i++){
             streetListDataMap = new HashMap<>();
             streetListDataMap.put("deviceid",streetdevicenameList.get(i));

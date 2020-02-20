@@ -61,12 +61,6 @@ public class AccountService implements UserDetailsService {
         return this.accountRepository.findByUserid(userid);
     }
 
-
-    public Optional<Account> findByUserid3(String userid ){
-        return accountRepository.findByUserid(userid);
-    }
-
-
     public Page<AccountDtoWithTeam> findAllBySearchStrings(String userid,String username,String email,Pageable pageable){
         return accountRepositoryCustom.findAllBySearchStrings(userid,username,email,pageable);
     }
@@ -143,5 +137,9 @@ public class AccountService implements UserDetailsService {
 
     public Page<AccountDtoCollectionList> findByCollection(String collectionId, String collectionName,AccountRole role, Pageable pageable) {
         return accountRepositoryCustom.findByCollection(collectionId,collectionName,role,pageable);
+    }
+
+    public AccountDtoCollection findByCollectionLanLon(String currentuserid) {
+        return accountRepositoryCustom.findByCollectionLanLon(currentuserid);
     }
 }

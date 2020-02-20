@@ -196,7 +196,7 @@
 		function callList(page){
 
 			page = page - 1;
-			if (page < 0) page = 0
+			if (page < 0) page = 0;
 
 			var perPage = 10;
 			var perArea = 5;
@@ -225,7 +225,6 @@
 				cache:false,
 				error:function(request,status,error){
 					ajaxErrorMsg(request);
-					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 				},
 				success: function(res){
 					//화면 출력
@@ -276,17 +275,15 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/account/account',
 				type : 'post',
-				//dataType: 'html',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
-					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 				},
 				success: function(res){
 					$("#userid").val(res.data.datarow.userid);
@@ -294,6 +291,7 @@
 					$("#password").val('');
 					$("#email").val(res.data.datarow.email);
 					$("#cellphone").val(res.data.datarow.cellphone);
+					$("#companyid").val(res.data.datarow.company.id);
 					$("#role").val(res.data.datarow.role);
 					$("#teamcode").val(res.data.datarow.team.teamcode);
 					$("#positionid").val(res.data.datarow.position.id);
@@ -422,7 +420,14 @@
 								<label for="email" class="c-text__label">이메일</label>
 								<input type="text" class="c-text__input" id="email" name ="email" />
 							</div>
-
+							<div class="member__form-item">
+								<label for="teamcode" class="c-text__label">소속사</label>
+								<select name="companyid" id="companyid" class="c-select__input">
+									<option th:each ="company : ${companys}"
+											th:value="${company.id}"
+											th:text="${company.csOperator}"></option>
+								</select>
+							</div>
 							<div class="member__form-item">
 								<label for="teamcode" class="c-text__label">부서</label>
 								<select name="teamcode" id="teamcode" class="c-select__input">

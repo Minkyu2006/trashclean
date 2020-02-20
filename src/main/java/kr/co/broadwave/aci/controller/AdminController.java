@@ -3,6 +3,8 @@ package kr.co.broadwave.aci.controller;
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.CodeType;
+import kr.co.broadwave.aci.company.CompanyAccountDto;
+import kr.co.broadwave.aci.company.CompanyService;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import kr.co.broadwave.aci.teams.TeamDto;
@@ -25,11 +27,13 @@ public class AdminController {
 
     private final MasterCodeService masterCodeService;
     private final TeamService teamService;
+    private final CompanyService companyService;
 
     @Autowired
-    public AdminController(MasterCodeService masterCodeService, TeamService teamService) {
+    public AdminController(MasterCodeService masterCodeService, TeamService teamService, CompanyService companyService) {
         this.masterCodeService = masterCodeService;
         this.teamService = teamService;
+        this.companyService = companyService;
     }
 
     //사용자관리화면
@@ -38,9 +42,12 @@ public class AdminController {
 
         List<MasterCodeDto> positions = masterCodeService.findCodeList(CodeType.C0001); // 직급코드가져오기
         List<TeamDto> teams = teamService.findTeamList();
+        List<CompanyAccountDto> companys = companyService.findCompanyList();
+
         model.addAttribute("roles", AccountRole.values());
         model.addAttribute("positions", positions);
         model.addAttribute("teams", teams);
+        model.addAttribute("companys", companys);
         model.addAttribute("approvalTypes", ApprovalType.values());
 
         return "admin/accountreg";
