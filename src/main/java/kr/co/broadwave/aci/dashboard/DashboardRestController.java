@@ -213,11 +213,11 @@ public class DashboardRestController {
         }
 
         //장비 온오프라인구분
-        List<String> deviceOnOffstatus = new ArrayList<>(); // 온라인인지,오프라인인지 넣는 리스트
-        List<String> deviceOnOffTime = new ArrayList<>(); // 마지막 온오프라인 타임스탬프
+        List<Boolean> deviceOnOffstatus = new ArrayList<>(); // 온라인인지,오프라인인지 넣는 리스트
+        List<Object> deviceOnOffTime = new ArrayList<>(); // 마지막 온오프라인 타임스탬프
         for (int i = 0; i < devices.size(); i++) {
-            HashMap<String,HashMap<String,String>> onOfflineData = aciawsLambdaService.getDeviceonlineCheck(devices.get(i));
-            deviceOnOffstatus.add(onOfflineData.get("data").get("online"));
+            HashMap<String,HashMap<String,Object>> onOfflineData = aciawsLambdaService.getDeviceonlineCheck(devices.get(i));
+            deviceOnOffstatus.add(Boolean.parseBoolean(String.valueOf((onOfflineData.get("data").get("online")))));
             deviceOnOffTime.add(onOfflineData.get("data").get("timestamp"));
         }
 //        log.info("deviceOnOffstatus : "+deviceOnOffstatus);
