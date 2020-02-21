@@ -618,6 +618,11 @@
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+								html += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+								html += '<span>'+'없는 장비'+'</span>';
+							}
 							html2 += '</div>';
 						}
 						html2 += '</div>';
@@ -835,13 +840,18 @@
 							html2 += '</div>';
 						}else{
 							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
-							if(res.data.deviceOnOffstatus[idx]==="true"){
+							if(res.data.deviceOnOffstatus[idx]===true){
 								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
 							}else{
 								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							}
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
+							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+								html += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+								html += '<span>'+'없는 장비'+'</span>';
+							}
 							html2 += '</div>';
 						}
 

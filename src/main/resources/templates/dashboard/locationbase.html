@@ -186,6 +186,35 @@
 
 						var html = '';
 
+						// console.log("deviceOnOffstatus : "+res.data.deviceOnOffstatus);
+						// console.log("deviceOnOffTime : "+res.data.deviceOnOffTime);
+						var devicetime;
+						if(res.data.deviceOnOffTime!=="") {
+							var deviceOnOffTimeStamp = new Date(res.data.deviceOnOffTime);
+							var deviceOnOffYear = deviceOnOffTimeStamp.getFullYear();
+							var deviceOnOffMonth = Number(deviceOnOffTimeStamp.getMonth() + 1);
+							if (deviceOnOffMonth < 10) {
+								deviceOnOffMonth = "0"+deviceOnOffMonth
+							}
+							var deviceOnOffDate = deviceOnOffTimeStamp.getDate();
+							if (deviceOnOffDate < 10) {
+								deviceOnOffDate = "0" + deviceOnOffDate
+							}
+							var deviceOnOffHour = deviceOnOffTimeStamp.getHours();
+							if (deviceOnOffHour < 10) {
+								deviceOnOffHour = "0" + deviceOnOffHour
+							}
+							var deviceOnOffMinute = deviceOnOffTimeStamp.getMinutes();
+							if (deviceOnOffMinute < 10) {
+								deviceOnOffMinute = "0" + deviceOnOffMinute
+							}
+							var deviceOnOffSecond = deviceOnOffTimeStamp.getSeconds();
+							if (deviceOnOffSecond < 10) {
+								deviceOnOffSecond = "0" + deviceOnOffSecond
+							}
+							devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond;
+						}
+
 						var baseurl = res.data.awss3url; //aws경로 URL
 						var emInstallDate = res.data.deviceDetailList.emInstallDate;
 
@@ -205,27 +234,59 @@
 						html += '</div>';
 						if(state==="정상"){
 							html += '<span class="equipment__stat normal">'+'정상'+'</span>';
-							html += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							if(res.data.deviceOnOffstatus===true){
+								html += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							}else{
+								html += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
 							html += '<div class="equipment__img">';
 							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
+							if(res.data.deviceOnOffstatus===false && devicetime!==""){
+								html += '<span>'+'최종종료일시 : '+devicetime+'</span>';
+							}else if(res.data.deviceOnOffstatus===false && devicetime===""){
+								html += '<span>'+'접속이력없음'+'</span>';
+							}
 							html += '</div>';
 						}else if(state==="주의"){
 							html += '<span class="equipment__stat caution">'+'주의'+'</span>';
-							html += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							if(res.data.deviceOnOffstatus===true){
+								html += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							}else{
+								html += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
 							html += '<div class="equipment__img">';
 							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
+							if(res.data.deviceOnOffstatus===false && devicetime!==""){
+								html += '<span>'+'최종종료일시 : '+devicetime+'</span>';
+							}else if(res.data.deviceOnOffstatus===false && devicetime===""){
+								html += '<span>'+'접속이력없음'+'</span>';
+							}
 							html += '</div>';
 						}else if(state==="심각"){
 							html += '<span class="equipment__stat severe">'+'심각'+'</span>';
-							html += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							if(res.data.deviceOnOffstatus===true){
+								html += '<span class="equipment__connect on">'+'온라인'+'</span>';
+							}else{
+								html += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							}
 							html += '<div class="equipment__img">';
 							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
+							if(res.data.deviceOnOffstatus===false && devicetime!==""){
+								html += '<span>'+'최종종료일시 : '+devicetime+'</span>';
+							}else if(res.data.deviceOnOffstatus===false && devicetime===""){
+								html += '<span>'+'접속이력없음'+'</span>';
+							}
 							html += '</div>';
 						}else{
 							html += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
-							html += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							html += '<span class="equipment__connect off">'+'알수없음'+'</span>';
 							html += '<div class="equipment__img">';
 							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
+							if(res.data.deviceOnOffstatus===false && devicetime!==""){
+								html += '<span>'+'최종종료일시 : '+devicetime+'</span>';
+							}else if(res.data.deviceOnOffstatus===false && devicetime===""){
+								html += '<span>'+'없는 장비'+'</span>';
+							}
 							html += '</div>';
 						}
 						html += '</div>';

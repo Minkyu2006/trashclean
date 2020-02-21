@@ -11,9 +11,20 @@
 				save();
 			});
 
-			// $(document).on("click","#successBtn",function(){
-			// 	init();
-			// });
+			// 팝업열고,닫기
+			$('.pop__list').on('click', function(e) {
+				$('#pop__list').addClass('open');
+				e.preventDefault();
+			});
+			$('.l-popup__close').on('click', function(e) {
+				$('.l-popup').removeClass('open');
+				e.preventDefault();
+			});
+
+			// 운영사조회버튼
+			$("#agencyBtnSearch").on('click',function(){
+				agencyCallList(1);
+			});
 
 		});
 
@@ -24,6 +35,8 @@
 			$("#username").val('');
 			$("#cellphone").val('');
 			$("#email").val('');
+			$("#companyid").val('');
+			$("#companyname").val('');
 		}
 
 		function save(){
@@ -72,6 +85,89 @@
 					}
 					alertSuccess('사용자등록이 완료 되었습니다.');
 					init();
+				}
+			});
+		}
+
+		// 운영사 리스트보기
+		function agencyCallList(page) {
+			page = page - 1;
+			if (page < 0) page = 0;
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+			var $schList = $('#agencySchList');
+			var $totalCnt = $('#agencyTotalCnt');
+			var params = {
+				csNumber:$('#s_csnumber').val(),
+				csOperator:$('#s_csoperator').val(),
+			};
+
+			$schList.empty().append('<tr ><td colspan="5" align = "center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/equipment/agencyList?size='+ perPage + '&page=' + page,
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#agencyPaging").jqueryPager({pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'agencyCallList'});
+					if (totCnt === 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+					$totalCnt.text(totCnt);
+					var html = '';
+					$.each(res.data.datalist, function(key, value){
+						html += '<tr >';
+						html += '<td >'+ echoNull2Blank(value.csNumber) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.csOperator) +'</td>';
+
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callName(\''+ echoNull2Blank(value.id) +'\');">선택</button></td>';
+						html += '</tr>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+
+		// 운영사 넣기
+		function callName(id) {
+			var params = {
+				id:id
+			};
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/equipment/agencyInfo',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					$("#companyid").val(res.data.company.id);
+					$("#companyname").val(res.data.company.csOperator);
+					$('.l-popup__close').click();
 				}
 			});
 		}
@@ -129,16 +225,13 @@
 								</div>
 							</div>
 						</div>
-
 						<div class="join__form__article">
 							<div class="join__form-item">
-								<div class="c-select">
-									<label for="role" class="c-select__label">소속사</label>
-									<select name="companyid" id="companyid" class="c-select__input">
-										<option th:each ="company : ${companys}"
-												th:value="${company.id}"
-												th:text="${company.csOperator}"></option>
-									</select>
+								<div class="c-text">
+									<label for="companyname" class="c-text__label" >소속사</label>
+									<input type="text" class="c-text__input" id="companyname" readonly="readonly" />
+									<input type="hidden" class="c-text__input" name="companyid" id="companyid" readonly="readonly" />
+									<button class="c-search-form__button pop__list">검색</button>
 								</div>
 							</div>
 							<div class="join__form-item">
@@ -182,6 +275,80 @@
 
 				</div>
 			</div>
+
+	<div class="l-popup" id="pop__list">
+		<div class="l-popup__container">
+			<div class="l-popup__head">
+				<h3 class="l-popup__heading">소속사 조회</h3>
+			</div>
+			<div class="l-popup__content">
+				<div class="l-popup__section">
+					<table class="c-table c-table--non-border">
+						<colgroup>
+							<col style="width: 100px;" />
+							<col />
+							<col style="width: 100px;" />
+							<col />
+							<col style="width: 60px;" />
+						</colgroup>
+						<tbody>
+						<tr>
+							<th>관리코드</th>
+							<td>
+								<div class="c-text">
+									<input type="text" class="c-text__input" id="s_csnumber" name="s_csnumber"/>
+								</div>
+							</td>
+							<th>소속사명</th>
+							<td>
+								<div class="c-text">
+									<input type="text" class="c-text__input" id="s_csoperator" name="s_csoperator"/>
+								</div>
+							</td>
+							<td>
+								<button class="c-button c-button--point" id="agencyBtnSearch">조회</button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="l-popup__section">
+					<table class="c-table">
+						<colgroup>
+							<col />
+							<col />
+							<col style="width: 60px;" />
+						</colgroup>
+						<thead>
+						<tr>
+							<th>관리코드</th>
+							<th>운영사명</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody id ="agencySchList">
+
+						</tbody>
+					</table>
+
+					<div class="c-pager">
+						<div class="c-paging" id ="agencyPaging">
+							<!-- 페이징 처리되는곳   -->
+						</div>
+						<div class="c-paging__total">
+							<div class="c-paging__total-group">
+								Total
+							</div>
+							<div class="c-paging__total-group" id ="agencyTotalCnt">0</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" class="l-popup__close">팝업닫기</a>
+		</div>
+	</div>
+
 
 </div>
 </html>

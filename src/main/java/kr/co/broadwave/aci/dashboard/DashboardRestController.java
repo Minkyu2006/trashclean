@@ -786,7 +786,7 @@ public class DashboardRestController {
 
     // 위치기반 선택장비 리스트 상세데이터 보내기
     @PostMapping("detailMapDataGraph")
-    public ResponseEntity detailMapDataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
+    public ResponseEntity<Map<String,Object>> detailMapDataGraph(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws IOException {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
         //log.info("deviceids : "+deviceids);
@@ -878,13 +878,21 @@ public class DashboardRestController {
 
     // 위치기반 상세데이터 보내기
     @PostMapping("deviceDetail")
-    public ResponseEntity deviceDetail(@RequestParam(value="pushValue", defaultValue="") String pushValue) {
+    public ResponseEntity<Map<String,Object>> deviceDetail(@RequestParam(value="pushValue", defaultValue="") String pushValue) {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         EquipmentDto deviceDetailList = dashboardService.findByEmNumber(pushValue);
-        log.info("deviceDetailList : "+deviceDetailList);
+        //log.info("deviceDetailList : "+deviceDetailList);
 
+        HashMap<String,HashMap<String,Object>> onOfflineData = aciawsLambdaService.getDeviceonlineCheck(pushValue);
+        Boolean deviceOnOffstatus = Boolean.parseBoolean(String.valueOf((onOfflineData.get("data").get("online"))));
+        Object deviceOnOffTime = onOfflineData.get("data").get("timestamp");
+//        log.info("onOfflineData : "+onOfflineData);
+//        log.info("deviceOnOffTime : "+deviceOnOffTime);
+
+        data.put("deviceOnOffstatus",deviceOnOffstatus);
+        data.put("deviceOnOffTime",deviceOnOffTime);
         data.put("awss3url",AWSS3URL);
         data.put("deviceDetailList",deviceDetailList);
         res.addResponse("data",data);
@@ -893,7 +901,7 @@ public class DashboardRestController {
 
     // 새로고침체크여부의기 따라 유저정보 저장하기
     @PostMapping("refleshcheck")
-    public ResponseEntity refleshcheck(@ModelAttribute AccountMapperDto accountMapperDto,
+    public ResponseEntity<Map<String,Object>> refleshcheck(@ModelAttribute AccountMapperDto accountMapperDto,
                                        @RequestParam(value="userid", defaultValue="") String userid,
                                        @RequestParam(value="checknum", defaultValue="") Integer checknum,
                                        @RequestParam(value="timenum", defaultValue="") Integer timenum) {
@@ -933,7 +941,7 @@ public class DashboardRestController {
 
     // 지역 select바뀌기
     @PostMapping("location")
-    public ResponseEntity location(@RequestParam(value="s_emCountry", defaultValue="")String emCountry){
+    public ResponseEntity<Map<String,Object>> location(@RequestParam(value="s_emCountry", defaultValue="")String emCountry){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -950,7 +958,6 @@ public class DashboardRestController {
         }else{
             List<MasterCodeDto> locationData = masterCodeService.findAllByCodeTypeEqualsAndBcRef1(codeType,emCountry);
 
-            data.clear();
             data.put("locationData",locationData);
 
             res.addResponse("data",data);
