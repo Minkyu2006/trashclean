@@ -82,6 +82,7 @@
 
 		// 업체 리스트보기
 		function callList(page) {
+
 			page = page - 1;
 			if (page < 0) page = 0;
 
@@ -229,28 +230,21 @@
 			}
 		}
 
-		//숫자만입력가능
-		function delHangle(evt){
-			var objTarget = evt.srcElement || evt.target;
-			var _value = event.srcElement.value;
-			if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
-				alertCaution("숫자만 입력가능합니다.");
-				objTarget.value = null;
-			}
-		}
-
-		//소수점제한
+		// 소수점한개로 제한한 실수값입력할수있게하는 함수
 		function isNumberKey(evt) {
 			var charCode = (evt.which) ? evt.which : event.keyCode;
-			var objTarget = evt.srcElement || evt.target;
+
 			var _value = event.srcElement.value;
 
+			if (event.keyCode < 48 || event.keyCode > 57) {
+				if (event.keyCode != 46) {
+					return false;
+				}
+			}
 			// 소수점(.)이 두번 이상 나오지 못하게
 			var _pattern0 = /^\d*[.]\d*$/;
 			if (_pattern0.test(_value)) {
 				if (charCode == 46) {
-					alertCaution("소수점 하나만 입력가능합니다.");
-					objTarget.value = null;
 					return false;
 				}
 			}
@@ -462,13 +456,13 @@
 						<th>배차위치 - 위도</th>
 						<td>
 							<div class="c-text">
-								<input type="text" id="csLatitude" name="csLatitude" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+								<input type="text" id="csLatitude" name="csLatitude" class="c-text__input" onkeypress="return isNumberKey(event)" />
 							</div>
-						</td>
+						</td>`
 						<th>배차위치 - 경도</th>
 						<td>
 							<div class="c-text">
-								<input type="text" id="csHardness" name="csHardness" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+								<input type="text" id="csHardness" name="csHardness" class="c-text__input" onkeypress="return isNumberKey(event)" />
 							</div>
 						</td>
 					</tr>

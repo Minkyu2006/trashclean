@@ -197,4 +197,23 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         return new PageImpl<>(equipments, pageable, query.fetchCount());
     }
 
+    // 라우팅한 장비의 정보가져오기 위한 쿼리dsl
+    @Override
+    public List<EquipmentCollectionRegDto> findByRoutingEmNumberQuerydsl(List<String> streetRouting) {
+
+        QEquipment equipment = QEquipment.equipment;
+        QMasterCode masterCode = QMasterCode.masterCode;
+
+        JPQLQuery<EquipmentCollectionRegDto> query = from(equipment)
+                .select(Projections.constructor(EquipmentCollectionRegDto.class,
+                        equipment,equipment.emNumber,masterCode))
+                .innerJoin(equipment.emType,masterCode);
+
+        if (streetRouting != null ){
+            query.where(equipment.emNumber.in(streetRouting));
+        }
+
+        return query.fetch();
+    }
+
 }

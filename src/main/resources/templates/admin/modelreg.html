@@ -16,7 +16,7 @@
 			});
 
 			$("#btnSearch").on('click',function(){
-				list(1);
+				modelList(1);
 			});
 
 			$("#btnReset").on('click',function(){
@@ -93,13 +93,13 @@
 					}
 					alertSuccess('저장되었습니다.');
 					init();
-					list(1);
+					modelList(1);
 				}
 			});
 		}
 
 		// 모델조회
-		function list(page){
+		function modelList(page){
 
 			page = page - 1;
 			if (page < 0) page = 0
@@ -139,7 +139,7 @@
 						pageBlock: perArea,
 						currentPage: page + 1,
 						pageTotal: totCnt,
-						clickEvent: 'callList'});
+						clickEvent: 'modelList'});
 					if (totCnt == 0) {
 						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
@@ -159,7 +159,7 @@
 							html += '<td><img width="20" src="'+baseurl+nvl(value.filePath,"확 인 불 가")+nvl(value.saveFileName,"확 인 불 가")+'"</img></td>';
 							html += '<td >'+ nvl(value.mdSubname,"확 인 불 가") +'</td>';
 							html += '<td >'+ nvl(value.mdRemark,"확 인 불 가") +'</td>';
-						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:modelInfo(\''+nvl(value.id,"확 인 불 가")+'\');">보기</button></td>';
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="modelInfo(\''+nvl(value.id,"확 인 불 가")+'\');">보기</button></td>';
 						html += '</tr>';
 					});
 					$schList.html(html);
@@ -234,7 +234,7 @@
 					}
 					alertSuccess('장비가 삭제 되었습니다.');
 					init();
-					list(1);
+					modelList(1);
 				}
 			})
 		}

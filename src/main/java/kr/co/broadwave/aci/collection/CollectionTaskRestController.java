@@ -9,8 +9,9 @@ import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.equipment.Equipment;
 import kr.co.broadwave.aci.equipment.EquipmentCollectionListDto;
-import kr.co.broadwave.aci.equipment.EquipmentDto;
+import kr.co.broadwave.aci.equipment.EquipmentCollectionRegDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
+import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import kr.co.broadwave.aci.vehicle.Vehicle;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -54,9 +56,11 @@ public class CollectionTaskRestController {
     private final CollectionTaskService collectionTaskService;
     private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
     private final DashboardService dashboardService;
+    private final KeyGenerateService keyGenerateService;
 
     @Autowired
     public CollectionTaskRestController(ModelMapper modelMapper,
+                                        KeyGenerateService keyGenerateService,
                                         ACIAWSIoTDeviceService aciawsIoTDeviceService,
                                         CollectionTaskService collectionTaskService,
                                         VehicleService vehicleService,
@@ -72,6 +76,7 @@ public class CollectionTaskRestController {
         this.equipmentService = equipmentService;
         this.modelMapper = modelMapper;
         this.dashboardService = dashboardService;
+        this.keyGenerateService = keyGenerateService;
     }
 
     // 수거관리 저장
@@ -79,57 +84,69 @@ public class CollectionTaskRestController {
     public ResponseEntity<Map<String,Object>> collectionTaskReg(@ModelAttribute CollectionTaskMapperDto collectionTaskMapperDto, HttpServletRequest request){
         AjaxResponse res = new AjaxResponse();
 
-        CollectionTask collectionTask = modelMapper.map(collectionTaskMapperDto, CollectionTask.class);
-
-        //기본값넣기 수거처리단계(확정), 수거처리순번
-        ProcStatsType cl02 = ProcStatsType.valueOf("CL02");
-        collectionTask.setProcStats(cl02);
-        collectionTask.setCtSeq(1);
-
         String currentuserid = CommonUtils.getCurrentuser(request);
-
         Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
         //로그인한 사람 아이디가존재하지않으면 에러처리
         if (!optionalAccount.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(), ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }
 
-        // 장비번호/유저아이디/배차차량 가져오기
-        Optional<Equipment> optionalDeviceid = equipmentService.findByEmNumber(collectionTaskMapperDto.getDeviceid());
+        List<EquipmentCollectionRegDto> equipment = equipmentService.findByRoutingEmNumberQuerydsl(collectionTaskMapperDto.getStreetRouting());
+        List<Equipment> equipmentId = new ArrayList<>();
+        List<String> equipmentEmNumber = new ArrayList<>();
+        List<MasterCode> equipmentEmType = new ArrayList<>();
+        for(int i=0; i<collectionTaskMapperDto.getCollectionSeq(); i++){
+            for(int j=0; j<collectionTaskMapperDto.getCollectionSeq(); j++) {
+                if (collectionTaskMapperDto.getStreetRouting().get(i).contains(equipment.get(j).getEmNumber())) {
+                    equipmentId.add(equipment.get(j).getId());
+                    equipmentEmNumber.add(equipment.get(j).getEmNumber());
+                    equipmentEmType.add(equipment.get(j).getEmType());
+                }
+            }
+        }
+
+        SimpleDateFormat todayFormat = new SimpleDateFormat("yyMMdd");
+        Date time = new Date();
+        String today = todayFormat.format(time);
+        String ctCode = keyGenerateService.keyGenerate("bs_collection", "TS"+today, currentuserid);
+
+        //기본값넣기 수거처리단계(확정)
+        ProcStatsType cl02 = ProcStatsType.valueOf("CL02");
+        // 유저아이디/배차차량 가져오기
         Optional<Account> optionalUserId = accountService.findByUserid(collectionTaskMapperDto.getUserid());
         Optional<Vehicle> optionalVehicleNumber = vehicleService.findByVcNumber(collectionTaskMapperDto.getVehicleNumber());
 
-        //장비번호/유저아이디/배차차량이 존재하지않으면
-        if (!optionalDeviceid.isPresent()  || !optionalUserId.isPresent() ||!optionalVehicleNumber.isPresent()) {
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E024.getCode(),
-                    ResponseErrorCode.E024.getDesc()));
-        }else{
-            collectionTask.setEmId(optionalDeviceid.get());
-            collectionTask.setDevicetype(optionalDeviceid.get().getEmType());
-            collectionTask.setDeviceid(optionalDeviceid.get().getEmNumber());
-            collectionTask.setAccountId(optionalUserId.get());
-            collectionTask.setVehicleId(optionalVehicleNumber.get());
-        }
+        //신규
+        int z = 0;
+        for(int i=1; i<collectionTaskMapperDto.getCollectionSeq()+1; i++) {
+            CollectionTask collectionTask = modelMapper.map(collectionTaskMapperDto, CollectionTask.class);
 
-        // 수거관리코드 가져오기(고유값)
-        CollectionDto optionalCollectionTask = collectionTaskService.findByCtCode(collectionTask.getCtCode());
-        //신규 및 수정여부
-        if (optionalCollectionTask != null) {
-            //수정
-            collectionTask.setId(optionalCollectionTask.getId());
-            collectionTask.setInsert_id(optionalCollectionTask.getInsert_id());
-            collectionTask.setInsertDateTime(optionalCollectionTask.getInsertDateTime());
-            collectionTask.setModify_id(currentuserid);
-            collectionTask.setModifyDateTime(LocalDateTime.now());
-        }else{
-            //신규
+            //유저아이디/배차차량이 존재하지않으면
+            if (!optionalUserId.isPresent() ||!optionalVehicleNumber.isPresent()) {
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E024.getCode(),
+                        ResponseErrorCode.E024.getDesc()));
+            }else{
+                collectionTask.setAccountId(optionalUserId.get());
+                collectionTask.setVehicleId(optionalVehicleNumber.get());
+            }
+
+            collectionTask.setCtCode(ctCode);
+            collectionTask.setEmId(equipmentId.get(z));
+            collectionTask.setDeviceid(equipmentEmNumber.get(z));
+            collectionTask.setDevicetype(equipmentEmType.get(z));
+
+            collectionTask.setProcStats(cl02);
+            collectionTask.setCtSeq(i);
+
             collectionTask.setInsert_id(currentuserid);
             collectionTask.setInsertDateTime(LocalDateTime.now());
             collectionTask.setModify_id(currentuserid);
             collectionTask.setModifyDateTime(LocalDateTime.now());
-        }
 
-        collectionTaskService.save(collectionTask);
+            collectionTaskService.save(collectionTask);
+
+            z++;
+        }
 
         return ResponseEntity.ok(res.success());
     }
@@ -146,9 +163,6 @@ public class CollectionTaskRestController {
         String fromDate = null;
         String toDate = null;
 
-//        log.info("dateFrom : "+dateFrom);
-//        log.info("dateTo : "+dateTo);
-
         if(!dateFrom.equals("")){
             fromDate = dateFrom.substring(0,10).replace("-","");
         }
@@ -163,19 +177,11 @@ public class CollectionTaskRestController {
             emTypeId = emTypes.map(MasterCode::getId).orElse(null);
         }
 
-//        log.info("ctCode : "+ctCode);
-//        log.info("fromDate : "+fromDate);
-//        log.info("toDate : "+toDate);
-//        log.info("emTypeId : "+emTypeId);
-//        log.info("userId : "+userId);
-//        log.info("vehicleNumber : "+vehicleNumber);
         Page<CollectionListDto> collectionListDtos = collectionTaskService.findByCollectionList(ctCode,fromDate,toDate,emTypeId,userName,vehicleNumber,pageable);
 
         return CommonUtils.ResponseEntityPage(collectionListDtos);
 
     }
-
-
 
     // 수거업무 정보 보기
     @PostMapping ("info")
@@ -195,15 +201,18 @@ public class CollectionTaskRestController {
 
     // 수거업무 삭제
     @PostMapping("del")
-    public ResponseEntity<Map<String,Object>> collectionDel(@RequestParam(value="ctCode", defaultValue="") String ctCode){
+    public ResponseEntity<Map<String,Object>> collectionDel(@RequestParam(value="ctCode", defaultValue="") String ctCode,
+                                                            @RequestParam(value="collectionSeq", defaultValue="") Integer collectionSeq){
         AjaxResponse res = new AjaxResponse();
+        log.info("삭제할 관리번호 : "+ctCode);
+        log.info("해당 시퀀스 : "+collectionSeq);
 
-        Optional<CollectionTask> optionalCollectionTask = collectionTaskService.findByCtCodeDel(ctCode);
+        //Optional<CollectionTask> optionalCollectionTask = collectionTaskService.findByCtCodeDel(ctCode,collectionSeq);
 
-        if (!optionalCollectionTask.isPresent()){
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
-        }
-        collectionTaskService.delete(optionalCollectionTask.get());
+//        if (!optionalCollectionTask.isPresent()){
+//            return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+//        }
+//        collectionTaskService.delete(optionalCollectionTask.get());
         return ResponseEntity.ok(res.success());
     }
 
@@ -296,6 +305,7 @@ public class CollectionTaskRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 거리 라우팅계산
     @PostMapping("streetRouting")
     public ResponseEntity streetRouting(@RequestParam(value="deviceids", defaultValue="") String deviceids, HttpServletRequest request) throws IOException {
         AjaxResponse res = new AjaxResponse();
@@ -327,18 +337,17 @@ public class CollectionTaskRestController {
         int number = Integer.parseInt(datacounts.toString()); //반복수
 
         for (int i = 0; i < number; i++) {
-            HashMap testmap = (HashMap) resData.get("data").get(i);
-            streetdevicenameList.add((String)testmap.get("deviceid"));
+            HashMap datamap = (HashMap) resData.get("data").get(i);;
 
-            String gps_laData = String.valueOf(testmap.get("gps_la"));
-            String gps_loData = String.valueOf(testmap.get("gps_lo"));
+            String gps_laData = String.valueOf(datamap.get("gps_la"));
+            String gps_loData = String.valueOf(datamap.get("gps_lo"));
             if(gps_loData.equals("na") || gps_loData == null || gps_loData.equals("") || gps_laData.equals("na") || gps_laData == null || gps_laData.equals("")) {
-                String gps_laSubStirng = "0.0";
-                String gps_loSubStirng = "0.0";
-
-                street_gps_laList.add(gps_laSubStirng);
-                street_gps_loList.add(gps_loSubStirng);
+                //log.info("위도경도데이터없음 장비코드 : "+datamap.get("deviceid"));
+                //장비에 위도나 경도가 존재하지 않을때,
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E029.getCode(),"ㅤ"+datamap.get("deviceid")+ResponseErrorCode.E029.getDesc()));
             }else {
+                streetdevicenameList.add((String)datamap.get("deviceid"));
+
                 if (gps_laData.substring(0, 1).equals("N")) {
                     String gps_laSubStirng = gps_laData.replace("N", "+");
                     street_gps_laList.add(gps_laSubStirng);
@@ -376,8 +385,8 @@ public class CollectionTaskRestController {
         }
 //        log.info("streetListData : "+streetListData);
 //        log.info("BoleanStreet : "+BoleanStreet);
-//        log.info("재료준비완료 여기서부터 다시시작");
-        System.out.println();
+//        log.info("재료준비완료 여기서부터 라우팅시작");
+//        System.out.println();
         int result = 0;
         for(int i=0; i<streetSize; i++){
             ArrayList<Double> minStreet = new ArrayList<>();
@@ -404,8 +413,8 @@ public class CollectionTaskRestController {
                     result = a;
                 }
             }
-            //log.info("최소값의 인덱스번호 : "+result);
             streetdevice.add(streetdevicenameList.get(result));
+//            log.info("최소값의 인덱스번호 : "+result);
 //            log.info("넣은 장비리스트 : "+streetdevice);
 //            log.info("BoleanStreet : "+BoleanStreet);
             if(i==streetSize-1){
@@ -421,8 +430,7 @@ public class CollectionTaskRestController {
 
         return ResponseEntity.ok(res.success());
     }
-
-    //솔라빈 간의 거리
+    //장비 간의 거리계산
     public static double haversine(double x1, double y1, double x2, double y2, String fordeviceid, List<String> passdevice, int size) {
         boolean a = false;
         for(int i=0; i<size; i++){
@@ -432,7 +440,7 @@ public class CollectionTaskRestController {
             }
         }
 
-        double distance;
+        double distance = 0.0;
         double radius = 6371; // 지구 반지름(km)
         double toRadian = Math.PI / 180;
 
@@ -449,18 +457,18 @@ public class CollectionTaskRestController {
     }
 
     // 등록장비 정보따오기
-    @PostMapping ("equipmentInfo")
-    public ResponseEntity<Map<String,Object>> equipmentInfo(@RequestParam (value="id", defaultValue="") Long id){
-        AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
-
-        EquipmentDto equipmentDto = equipmentService.findById(id);
-
-        data.put("equipment",equipmentDto);
-        res.addResponse("data",data);
-
-        return ResponseEntity.ok(res.success());
-    }
+//    @PostMapping ("equipmentInfo")
+//    public ResponseEntity<Map<String,Object>> equipmentInfo(@RequestParam (value="id", defaultValue="") Long id){
+//        AjaxResponse res = new AjaxResponse();
+//        HashMap<String, Object> data = new HashMap<>();
+//
+//        EquipmentDto equipmentDto = equipmentService.findById(id);
+//
+//        data.put("equipment",equipmentDto);
+//        res.addResponse("data",data);
+//
+//        return ResponseEntity.ok(res.success());
+//    }
 
     // 수거원 리스트
     @PostMapping("collectionList")

@@ -37,6 +37,7 @@ public class AjaxResponse {
     }
 
     public Map<String, Object> fail(String err_code,String err_msg) {
+        System.out.println("err_code : "+err_code);
         res.clear();
         res.put("status",500);
         res.put("timestamp", new Timestamp(System.currentTimeMillis()));
@@ -46,4 +47,5 @@ public class AjaxResponse {
 
         return this.res;
     }
+
 }

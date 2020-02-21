@@ -20,4 +20,6 @@ public interface CollectionTaskRepositoryCustom {
     Page<CollectionTaskListDto> findByCollectionsTaskList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable);
 
     CollectionTaskListInfoDto findByCollectionListInfoQueryDsl(Long id);
+
+    CollectionDto findByCtCodeSeqQuerydsl(String ctCode, Integer collectionSeq);
 }

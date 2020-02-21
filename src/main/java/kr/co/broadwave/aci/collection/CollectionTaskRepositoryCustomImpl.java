@@ -51,6 +51,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                 .select(Projections.constructor(CollectionListDto.class,
                         collectionTask.id,
                         collectionTask.ctCode,
+                        collectionTask.ctSeq,
                         collectionTask.yyyymmdd,
                         masterCode.name,
                         collectionTask.deviceid,
@@ -100,8 +101,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
 
         return queryFactory.select(Projections.constructor(CollectionInfoDto.class,
-                collectionTask.ctCode,collectionTask.yyyymmdd,
-                collectionTask.deviceid,collectionTask.devicetype.name,
+                collectionTask.ctCode,collectionTask.ctSeq,collectionTask.yyyymmdd,
                 collectionTask.accountId.username,collectionTask.accountId.userid,
                 collectionTask.vehicleId.vcNumber,collectionTask.vehicleId.vcName))
                 .from(collectionTask)
@@ -109,7 +109,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                 .fetchOne();
     }
 
-    // 수거업무리스트 Querydsl
+    // 모바일 - 수거업무리스트 Querydsl
     @Override
     public Page<CollectionTaskListDto> findByCollectionsTaskList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable){
 
@@ -181,6 +181,23 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                 .innerJoin(collectionTask.emId.mdId,model)
                 .leftJoin(model.mdFileid,fileUpload)
                 .where(collectionTask.id.eq(id))
+                .fetchOne();
+    }
+
+
+    // 수거업무 수정 or 삭제할때 필요한 Querydsl
+    @Override
+    public CollectionDto findByCtCodeSeqQuerydsl(String ctCode, Integer collectionSeq){
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
+
+        QCollectionTask collectionTask = QCollectionTask.collectionTask;
+
+        return queryFactory.select(Projections.constructor(CollectionDto.class,
+                collectionTask.ctSeq))
+                .from(collectionTask)
+                .where(collectionTask.ctCode.eq(ctCode))
+                .where(collectionTask.ctSeq.eq(collectionSeq))
                 .fetchOne();
     }
 

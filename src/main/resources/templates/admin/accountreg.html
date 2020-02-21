@@ -204,6 +204,7 @@
 
 			var $schList = $('#schList');
 			var $totalCnt = $('#totalCnt');
+
 			var params = {
 				userid:$("#s_userid").val(),
 				username:$("#s_username").val(),
@@ -255,7 +256,7 @@
 						html += '<td >'+ echoNull2Blank(value.role) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.approvalType) +'</td>';
 
-						html += '<td ><button class="c-button c-button--point btn__member" onclick="javascript:callinfo(\''+ echoNull2Blank(value.userid) +'\');">수정</button></td>';
+						html += '<td ><button class="c-button c-button--point btn__member" onclick="callinfo(\''+ echoNull2Blank(value.userid) +'\');">수정</button></td>';
 
 						html += '</tr>';
 					});

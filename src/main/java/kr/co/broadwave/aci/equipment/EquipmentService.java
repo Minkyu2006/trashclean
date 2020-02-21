@@ -116,4 +116,8 @@ public class EquipmentService {
     public Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId,Pageable pageable) {
         return equipmentRepositoryCustom.findByEquipmentCollectionQuerydsl(emNumber,emTypeId,emCountryId,emLocationId,pageable);
     }
+
+    public List<EquipmentCollectionRegDto> findByRoutingEmNumberQuerydsl(List<String> streetRouting) {
+        return equipmentRepositoryCustom.findByRoutingEmNumberQuerydsl(streetRouting);
+    }
 }

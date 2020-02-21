@@ -18,12 +18,17 @@ import java.time.LocalDateTime;
 public class CollectionListDto {
     private Long id;
     private String ctCode; // 수거관리코드
+    private Integer ctSeq; // 수거시퀀스
     private String yyyymmdd; // 수거 처리일
     private String devicetype;
     private String deviceid;
     private String accountName;
     private String vehicleNumber;
     private LocalDateTime completeDateTime;
+
+    public Integer getCtSeq() {
+        return ctSeq;
+    }
 
     public LocalDateTime getCompleteDateTime() {
         return completeDateTime;

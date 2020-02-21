@@ -29,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/signup").hasRole("ADMIN")
                 .antMatchers("/dashboard/**").hasAnyRole("ADMIN","USER","COLLECTOR","SUBADMIN")
                 .antMatchers("/devicestats/**").hasAnyRole("ADMIN","SUBADMIN")
+                .antMatchers("/collection/collectionreg").hasAnyRole("ADMIN","SUBADMIN")
                 .antMatchers("/collection/collectiontask").hasAnyRole("ADMIN","SUBADMIN")
                 .antMatchers("/collections/mobileindex").hasAnyRole("ADMIN","SUBADMIN","COLLECTOR")
                 .antMatchers("/collections/collectionlist").hasAnyRole("ADMIN","SUBADMIN","COLLECTOR")

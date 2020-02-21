@@ -115,9 +115,15 @@ public class CollectionController {
 
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+        List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
+        List<MasterCodeDto> vcUsages = masterCodeService.findCodeList(CodeType.C0011);
+        List<MasterCodeDto> vcStates = masterCodeService.findCodeList(CodeType.C0012);
 
         model.addAttribute("equipdTypes", equipdTypes);
         model.addAttribute("equipdCountrys", equipdCountrys);
+        model.addAttribute("vcShapes", vcShapes);
+        model.addAttribute("vcUsages", vcUsages);
+        model.addAttribute("vcStates", vcStates);
 
         return "collection/collectionreg";
     }

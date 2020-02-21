@@ -37,19 +37,7 @@ public class CollectionTaskService {
         this.collectionTaskRepository = collectionTaskRepository;
     }
     public CollectionTask save(CollectionTask collectionTask) {
-        if ( collectionTask.getCtCode() == null || collectionTask.getCtCode().isEmpty()){
-            SimpleDateFormat todayFormat = new SimpleDateFormat("yyMMdd");
-            Date time = new Date();
-            String today = todayFormat.format(time);
-            String ctCode = keyGenerateService.keyGenerate("bs_collection", "TS"+today, collectionTask.getModify_id());
-            collectionTask.setCtCode(ctCode);
-        }
         return collectionTaskRepository.save(collectionTask);
-    }
-
-    public CollectionDto findByCtCode(String ctCode) {
-        Optional<CollectionTask> optionalEquipment = collectionTaskRepository.findByCtCode(ctCode);
-        return optionalEquipment.map(collectionTask -> modelMapper.map(collectionTask, CollectionDto.class)).orElse(null);
     }
 
     public Page<CollectionListDto> findByCollectionList(String ctCode, String dateFrom, String dateTo, Long emTypeId, String userName, String vehicleNumber, Pageable pageable) {
@@ -63,10 +51,6 @@ public class CollectionTaskService {
 
     public CollectionInfoDto findByCollectionInfoQueryDsl(Long id) {
         return collectionTaskRepositoryCustom.findByCollectionInfoQueryDsl(id);
-    }
-
-    public Optional<CollectionTask> findByCtCodeDel(String ctCode) {
-        return collectionTaskRepository.findByCtCode(ctCode);
     }
 
     public void delete(CollectionTask collectionTask) {
@@ -84,5 +68,9 @@ public class CollectionTaskService {
 
     public Optional<CollectionTask> findById2(Long receiveId) {
         return collectionTaskRepository.findById(receiveId);
+    }
+
+    public CollectionDto findByCtCodeSeqQuerydsl(String ctCode, Integer collectionSeq) {
+        return  collectionTaskRepositoryCustom.findByCtCodeSeqQuerydsl(ctCode,collectionSeq);
     }
 }

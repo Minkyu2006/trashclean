@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.collection;
 
+import kr.co.broadwave.aci.bscodes.ProcStatsType;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,16 @@ public class CollectionDto {
     private Long id;
     private LocalDateTime insertDateTime;
     private String insert_id;
+    private Integer seq;
+    private ProcStatsType procStatsType;
+
+    public ProcStatsType getProcStatsType() {
+        return procStatsType;
+    }
+
+    public Integer getSeq() {
+        return seq;
+    }
 
     public LocalDateTime getInsertDateTime() {
         return insertDateTime;
