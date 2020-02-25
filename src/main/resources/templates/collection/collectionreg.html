@@ -384,7 +384,7 @@
 					var $sortable = $('#sortable');
 					var html='';
 					for(i=0; i<streetdeviceSize; i++){
-						html += '<li>'+res.data.streetdevice[i]+'</li>';
+						html += '<li class="sortable-item">'+'<span>'+res.data.streetdevice[i]+'</span>'+'</li>';
 					}
 					$sortable.html(html);
 					$sortable.show();
@@ -969,7 +969,8 @@
 		<article class="article">
 			<h2 class="article__heading">수거업무 등록</h2>
 			<form name="collectionreg">
-				<ul id="sortable" style="display: none">
+				<div class="sortable-comment">드래그하여 순서를 변경할 수 있습니다.</div>
+				<ul id="sortable" style="display: none" class="sortable-list">
 
 				</ul>
 
