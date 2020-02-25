@@ -68,6 +68,7 @@
 			//신규버튼
 			$("#btnNew").on('click',function(){
 				init();
+				checkfalse();
 			});
 
 			//삭제버튼
@@ -77,21 +78,26 @@
 
 			//수거업무저장 버튼
 			$("#collectionSaveBtn").on('click',function(){
+				rouclick($("#collectionSeq").val());
 				collectionSave();
 			});
 
+			var $sortable = $("#sortable");
+			$sortable.sortable(); //태그의 내부에 포함된 태그를 사용해서 드래그 가능한 리스트
+			$sortable.disableSelection(); //아이템 내부의 글자를 드래그 해서 선택하지 못하도록 하는 기능
 		});
 
 		// 신규작성
 		function init(){
+			var $sortable = $("#sortable");
 			var $streetRouting = $("#streetRouting");
 			var $collectionSeq = $("#collectionSeq");
+
+			$sortable.hide();
 
 			$('html').scrollTop(60);
 			$streetRouting.val('');
 			$collectionSeq.val('시퀀스 : 없음');
-			$streetRouting.hide();
-			$collectionSeq.hide();
 
 			$("#ctCode").val('');
 			$("#yyyymmdd").val('');
@@ -350,7 +356,6 @@
 			var itemJson = {};
 			itemJson.deviceids = emNumbers;
 			var devicestr = JSON.stringify(itemJson);
-			//console.log("devicestr : "+devicestr);
 
 			var params = {
 				deviceids:devicestr
@@ -368,25 +373,36 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					console.log("장비 거리순서 : "+res.data.streetdevice);
+					//console.log("장비 거리순서 : "+res.data.streetdevice);
 					var $streetRouting = $("#streetRouting");
 					var $collectionSeq = $("#collectionSeq");
 
 					$streetRouting.val(res.data.streetdevice);
-					$streetRouting.show();
-
 					$collectionSeq.val(res.data.streetdevice.length);
-					$collectionSeq.show();
 
 					var streetdeviceSize = res.data.streetdevice.length;
-					var streetArray = [];
+					var $sortable = $('#sortable');
+					var html='';
 					for(i=0; i<streetdeviceSize; i++){
-						streetArray.push(res.data.streetdevice[i]);
+						html += '<li>'+res.data.streetdevice[i]+'</li>';
 					}
-					console.log("streetArray : "+streetArray);
-
+					$sortable.html(html);
+					$sortable.show();
 				}
 			});
+		}
+
+		//라우팅 순서 변경하는데 필요한 함수
+		function rouclick(length) {
+			// console.log("시퀀스 : "+length);
+			var streetArray = [];
+			var routingSort = $('#sortable').text();
+			var idx = 0;
+			for(i=0; i<length; i++){
+				streetArray.push(routingSort.substring(idx,idx+16));
+				idx = idx+16;
+			}
+			$("#streetRouting").val(streetArray);
 		}
 
 		//업무등록 리스트
@@ -411,7 +427,7 @@
 				vehicleNumber:$('#s_vehicleNumber').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="7" align = "center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="8" align = "center">조회 중</td></tr>');
 			$totalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -429,35 +445,38 @@
 				success: function(res){
 					//화면 출력
 					totCnt = res.data.total_rows;
-					$("#paging1").jqueryPager({pageSize: perPage,
+					$("#paging").jqueryPager({pageSize: perPage,
 						pageBlock: perArea,
 						currentPage: page + 1,
 						pageTotal: totCnt,
 						clickEvent: 'collectionList'});
 
-					if (totCnt == 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="7" align="center">조회된 데이터가 없습니다.</td></tr>');
+					if (totCnt === 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="8" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 
 					$totalCnt.text(totCnt);
 					var html = '';
+					var idx;
 					$.each(res.data.datalist, function(key, value){
-						html += '<tr >';
-						html += '<td >'+ nvl(value.ctCode,'확 인 불 가') +'</td>';
-						html += '<td >'+ nvl(value.yyyymmdd,"확 인 불 가") +'</td>';
-						html += '<td >'+ nvl(value.ctSeq,"확 인 불 가") +'</td>';
-						html += '<td >'+ nvl(value.devicetype,"확 인 불 가") +'</td>';
-						html += '<td >'+ nvl(value.deviceid,"확 인 불 가") +'</td>';
-						html += '<td >'+ nvl(value.accountName,"확 인 불 가") +'</td>';
-						html += '<td >'+ nvl(value.vehicleNumber,"확 인 불 가") +'</td>';
-						if(value.completeDateTime==null){
-							html += '<td >'+ "미완료" +'</td>';
-						}else{
-							html += '<td >'+ "완료" +'</td>';
+						if(idx!==value.ctCode) {
+							html += '<tr >';
+							html += '<td >' + nvl(value.ctCode, '확 인 불 가') + '</td>';
+							html += '<td >' + nvl(value.yyyymmdd, "확 인 불 가") + '</td>';
+							html += '<td >' + nvl(value.ctSeq, "확 인 불 가") + '</td>';
+							html += '<td >' + nvl(value.devicetype, "확 인 불 가") + '</td>';
+							html += '<td >' + nvl(value.accountName, "확 인 불 가") + '</td>';
+							html += '<td >' + nvl(value.vehicleNumber, "확 인 불 가") + '</td>';
+							if (value.completeDateTime == null) {
+								html += '<td >' + "미완료" + '</td>';
+							} else {
+								html += '<td >' + "완료" + '</td>';
+							}
+							html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\'' + echoNull2Blank(value.ctCode) + '\');">보기</button></td>';
+							html += '</tr>';
 						}
-						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+ echoNull2Blank(value.id) +'\');">보기</button></td>';
-						html += '</tr>';
+						idx = value.ctCode;
 					});
 					$schList.html(html);
 				}
@@ -465,10 +484,10 @@
 		}
 
 		// 수거업무 정보보기
-		function callInfo(id) {
+		function callInfo(ctCode) {
 
 			var params = {
-				id:id
+				ctCode:ctCode
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -476,7 +495,7 @@
 			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
-				url: '/api/collection/info',
+				url: '/api/collection/collectionTaskInfo',
 				type: 'post',
 				data: params,
 				cache: false,
@@ -484,21 +503,29 @@
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
+
 					var $streetRouting = $("#streetRouting");
 					var $collectionSeq = $("#collectionSeq");
+					var $sortable = $("#sortable");
 					$streetRouting.val('');
-					$collectionSeq.val(res.data.collection.ctSeq);
-					$streetRouting.hide();
-					$collectionSeq.hide();
+					var streetdeviceLength = res.data.collection.length;
+					$collectionSeq.val(res.data.collection[streetdeviceLength-1].ctSeq);
+					$collectionSeq.show();
+					var html='';
+					for(i=0; i<streetdeviceLength; i++){
+						html += '<li>'+res.data.collection[i].deviceid+'</li>';
+					}
+					$sortable.html(html);
+					$sortable.show();
 
-					$("#ctCode").val(res.data.collection.ctCode);
-					$("#accountUserId").val(res.data.collection.accountuserid);
-					$("#accountName").val(res.data.collection.accountname);
-					$("#vehicleNumber").val(res.data.collection.vehiclenumber);
-					$("#vehicleName").val(res.data.collection.vehiclename);
+					$("#ctCode").val(res.data.collection[0].ctCode);
+					$("#accountUserId").val(res.data.collection[0].accountuserid);
+					$("#accountName").val(res.data.collection[0].accountname);
+					$("#vehicleNumber").val(res.data.collection[0].vehiclenumber);
+					$("#vehicleName").val(res.data.collection[0].vehiclename);
 
 					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
-					var yyyymmdd = res.data.collection.yyyymmdd;
+					var yyyymmdd = res.data.collection[0].yyyymmdd;
 					var yyyymmdd2 = [yyyymmdd[0],yyyymmdd[1],yyyymmdd[2],yyyymmdd[3],"-",yyyymmdd[4],yyyymmdd[5],"-",yyyymmdd[6],yyyymmdd[7]];
 					var fromtoDate = yyyymmdd2.join('');
 					$("#yyyymmdd").val(fromtoDate);
@@ -553,7 +580,7 @@
 					alertSuccess('저장되었습니다.');
 					init();
 					checkfalse();
-					callList(1);
+					collectionList(1);
 				}
 			});
 		}
@@ -851,7 +878,7 @@
 							<input type="text" id="s_ctCode" class="c-text__input" />
 						</div>
 					</td>
-					<th>수거예정일</th>
+					<th>수거처리일</th>
 					<td>
 						<div class="c-date-group" >
 							<div class="c-date">
@@ -905,16 +932,14 @@
 					<col />
 					<col />
 					<col />
-					<col />
 					<col style="width: 50px;" />
 				</colgroup>
 				<thead>
 				<tr>
 					<th>수거관리코드</th>
 					<th>수거처리일</th>
-					<th>수거처리순서</th>
+					<th>최대시퀀스</th>
 					<th>장비타입</th>
-					<th>장비코드</th>
 					<th>수거원</th>
 					<th>배차차량번호</th>
 					<th>처리상태</th>
@@ -927,7 +952,7 @@
 			</table>
 
 			<div class="c-pager">
-				<div class="c-paging" id ="paging1">
+				<div class="c-paging" id ="paging">
 					<!-- 페이징 처리되는곳   -->
 				</div>
 				<div class="c-paging__total">
@@ -944,8 +969,13 @@
 		<article class="article">
 			<h2 class="article__heading">수거업무 등록</h2>
 			<form name="collectionreg">
+				<ul id="sortable" style="display: none">
+
+				</ul>
+
 				<input type="text" class="c-text__input" name="collectionSeq" id="collectionSeq" style="display: none" readonly="readonly" />
 				<input type="text" class="c-text__input" name="streetRouting" id="streetRouting" style="display: none" readonly="readonly" />
+
 				<table class="c-table">
 					<tbody>
 					<tr>
@@ -955,7 +985,7 @@
 								<input type="text" name="ctCode" id="ctCode" class="c-text__input" readonly="readonly" />
 							</div>
 						</td>
-						<th>수거 예정일</th>
+						<th>수거 처리일</th>
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">

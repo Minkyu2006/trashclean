@@ -17,10 +17,15 @@ public class CollectionInfoDto {
     private String ctCode; // 수거관리코드
     private Integer ctSeq; // 수거시퀀스
     private String yyyymmdd; // 수거 처리일
+    private String deviceid; // 장비아이디
     private String accountname; // 유저이름
     private String accountuserid; // 유저아이디(고유)
     private String vehiclenumber; // 차량번호
     private String vehiclename; // 차량명
+
+    public String getDeviceid() {
+        return deviceid;
+    }
 
     public Integer getCtSeq() {
         return ctSeq;

@@ -21,7 +21,6 @@ public class CollectionListDto {
     private Integer ctSeq; // 수거시퀀스
     private String yyyymmdd; // 수거 처리일
     private String devicetype;
-    private String deviceid;
     private String accountName;
     private String vehicleNumber;
     private LocalDateTime completeDateTime;
@@ -51,10 +50,6 @@ public class CollectionListDto {
 
     public String getDevicetype() {
         return devicetype;
-    }
-
-    public String getDeviceid() {
-        return deviceid;
     }
 
     public String getAccountName() {

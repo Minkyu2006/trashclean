@@ -23,8 +23,8 @@ public class CollectionDto {
     private Integer seq;
     private ProcStatsType procStatsType;
 
-    public ProcStatsType getProcStatsType() {
-        return procStatsType;
+    public String getProcStatsType() {
+        return procStatsType.getCode();
     }
 
     public Integer getSeq() {

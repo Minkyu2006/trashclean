@@ -5,6 +5,8 @@ import kr.co.broadwave.aci.bscodes.ProcStatsType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 /**
  * @author Minkyu
  * Date : 2020-01-28
@@ -15,11 +17,11 @@ public interface CollectionTaskRepositoryCustom {
 
     Page<CollectionListDto> findByCollectionList(String ctCode, String dateFrom, String dateTo, Long emTypeId, String userName, String vehicleNumber, Pageable pageable);
 
-    CollectionInfoDto findByCollectionInfoQueryDsl(Long id);
+    List<CollectionInfoDto> findByCollectionInfoQueryDsl(String ctCode);
 
     Page<CollectionTaskListDto> findByCollectionsTaskList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable);
 
     CollectionTaskListInfoDto findByCollectionListInfoQueryDsl(Long id);
 
-    CollectionDto findByCtCodeSeqQuerydsl(String ctCode, Integer collectionSeq);
+    List<CollectionDto> findByCtCodeSeqQuerydsl(String ctCode);
 }

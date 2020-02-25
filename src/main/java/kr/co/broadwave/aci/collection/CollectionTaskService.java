@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -49,8 +50,8 @@ public class CollectionTaskService {
         return optionalEquipment.map(collectionTask -> modelMapper.map(collectionTask, CollectionInfoDto.class)).orElse(null);
     }
 
-    public CollectionInfoDto findByCollectionInfoQueryDsl(Long id) {
-        return collectionTaskRepositoryCustom.findByCollectionInfoQueryDsl(id);
+    public List<CollectionInfoDto> findByCollectionInfoQueryDsl(String ctCode) {
+        return collectionTaskRepositoryCustom.findByCollectionInfoQueryDsl(ctCode);
     }
 
     public void delete(CollectionTask collectionTask) {
@@ -70,7 +71,7 @@ public class CollectionTaskService {
         return collectionTaskRepository.findById(receiveId);
     }
 
-    public CollectionDto findByCtCodeSeqQuerydsl(String ctCode, Integer collectionSeq) {
-        return  collectionTaskRepositoryCustom.findByCtCodeSeqQuerydsl(ctCode,collectionSeq);
+    public List<CollectionDto> findByCtCodeSeqQuerydsl(String ctCode) {
+        return  collectionTaskRepositoryCustom.findByCtCodeSeqQuerydsl(ctCode);
     }
 }

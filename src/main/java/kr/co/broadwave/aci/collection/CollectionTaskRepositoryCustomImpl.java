@@ -54,7 +54,6 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                         collectionTask.ctSeq,
                         collectionTask.yyyymmdd,
                         masterCode.name,
-                        collectionTask.deviceid,
                         account.username,
                         vehicle.vcNumber,
                         collectionTask.completeDateTime
@@ -94,7 +93,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
 
     // 수거업무 보기버튼누를시 나오는 Querydsl
     @Override
-    public CollectionInfoDto findByCollectionInfoQueryDsl(Long id) {
+    public List<CollectionInfoDto> findByCollectionInfoQueryDsl(String ctCode) {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
 
@@ -102,11 +101,12 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
 
         return queryFactory.select(Projections.constructor(CollectionInfoDto.class,
                 collectionTask.ctCode,collectionTask.ctSeq,collectionTask.yyyymmdd,
-                collectionTask.accountId.username,collectionTask.accountId.userid,
+                collectionTask.deviceid,collectionTask.accountId.username,collectionTask.accountId.userid,
                 collectionTask.vehicleId.vcNumber,collectionTask.vehicleId.vcName))
                 .from(collectionTask)
-                .where(collectionTask.id.eq(id))
-                .fetchOne();
+                .where(collectionTask.ctCode.eq(ctCode))
+                .groupBy(collectionTask.ctSeq)
+                .fetch();
     }
 
     // 모바일 - 수거업무리스트 Querydsl
@@ -187,18 +187,18 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
 
     // 수거업무 수정 or 삭제할때 필요한 Querydsl
     @Override
-    public CollectionDto findByCtCodeSeqQuerydsl(String ctCode, Integer collectionSeq){
+    public List<CollectionDto> findByCtCodeSeqQuerydsl(String ctCode){
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
 
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
 
         return queryFactory.select(Projections.constructor(CollectionDto.class,
-                collectionTask.ctSeq))
+                collectionTask.id,collectionTask.insertDateTime,collectionTask.insert_id,
+                collectionTask.ctSeq,collectionTask.procStats))
                 .from(collectionTask)
                 .where(collectionTask.ctCode.eq(ctCode))
-                .where(collectionTask.ctSeq.eq(collectionSeq))
-                .fetchOne();
+                .fetch();
     }
 
 }
