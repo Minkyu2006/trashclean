@@ -18,15 +18,22 @@ import java.time.LocalDateTime;
 public class CollectionListDto {
     private Long id;
     private String ctCode; // 수거관리코드
-    private Integer ctSeq; // 수거시퀀스
     private String yyyymmdd; // 수거 처리일
     private String devicetype;
     private String accountName;
     private String vehicleNumber;
     private LocalDateTime completeDateTime;
+    private String mdName; //모델명
+    private String mdType; //모델종류
 
-    public Integer getCtSeq() {
-        return ctSeq;
+
+
+    public String getMdName() {
+        return mdName;
+    }
+
+    public String getMdType() {
+        return mdType;
     }
 
     public LocalDateTime getCompleteDateTime() {

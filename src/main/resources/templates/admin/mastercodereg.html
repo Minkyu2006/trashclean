@@ -6,6 +6,11 @@
 <head>
 	<script>
 		$(function(){
+			$("#header_platform").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_platform").css('display','none');
+			});
+
 			$("#btnSave").on('click',function(){
 				save();
 			});

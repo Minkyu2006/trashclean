@@ -2,15 +2,12 @@ package kr.co.broadwave.aci.collection;
 
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
-import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,18 +20,15 @@ import java.util.Optional;
 @Service
 public class CollectionTaskService {
     private final ModelMapper modelMapper;
-    private final KeyGenerateService keyGenerateService;
     private final CollectionTaskRepositoryCustom collectionTaskRepositoryCustom;
     private final CollectionTaskRepository collectionTaskRepository;
 
     @Autowired
     public CollectionTaskService(CollectionTaskRepository collectionTaskRepository,
-                                 KeyGenerateService keyGenerateService,
                                  CollectionTaskRepositoryCustom collectionTaskRepositoryCustom,
                                  ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
         this.collectionTaskRepositoryCustom = collectionTaskRepositoryCustom;
-        this.keyGenerateService = keyGenerateService;
         this.collectionTaskRepository = collectionTaskRepository;
     }
     public CollectionTask save(CollectionTask collectionTask) {
@@ -50,6 +44,7 @@ public class CollectionTaskService {
         return optionalEquipment.map(collectionTask -> modelMapper.map(collectionTask, CollectionInfoDto.class)).orElse(null);
     }
 
+
     public List<CollectionInfoDto> findByCollectionInfoQueryDsl(String ctCode) {
         return collectionTaskRepositoryCustom.findByCollectionInfoQueryDsl(ctCode);
     }
@@ -59,8 +54,16 @@ public class CollectionTaskService {
     }
 
 
-    public Page<CollectionTaskListDto> findByCollectionsTaskList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable) {
-        return collectionTaskRepositoryCustom.findByCollectionsTaskList(currentuserid,role,procStatsType,pageable);
+    public Page<CollectionTaskListDateDto> findByCollectionsTaskDateList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable) {
+        return collectionTaskRepositoryCustom.findByCollectionsTaskDateList(currentuserid,role,procStatsType,pageable);
+    }
+
+    public List<CollectionTaskListDeviceDto> findByCollectionsTaskDeviceList(String ctCode,String currentuserid, AccountRole role){
+        return collectionTaskRepositoryCustom.findByCollectionsTaskDeviceList(ctCode,currentuserid,role);
+    }
+
+    public CollectionTaskListDto findByCollectionsTaskInfoList(Long id){
+        return collectionTaskRepositoryCustom.findByCollectionsTaskInfoList(id);
     }
 
     public CollectionTaskListInfoDto findByCollectionListInfoQueryDsl(Long id) {
@@ -73,5 +76,9 @@ public class CollectionTaskService {
 
     public List<CollectionDto> findByCtCodeSeqQuerydsl(String ctCode) {
         return  collectionTaskRepositoryCustom.findByCtCodeSeqQuerydsl(ctCode);
+    }
+
+    public Optional<CollectionTask> findByCtCode(String ctCode) {
+        return collectionTaskRepository.findByCtCode(ctCode);
     }
 }

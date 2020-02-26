@@ -6,6 +6,11 @@
 <head>
 	<script type="text/javascript">
 		$(function() {
+			$("#header_collection").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_collection").css('display','none');
+			});
+
 			LocationSetting("");
 			equipmentCallList();
 
@@ -69,6 +74,7 @@
 			$("#btnNew").on('click',function(){
 				init();
 				checkfalse();
+				$('html').scrollTop(60);
 			});
 
 			//삭제버튼
@@ -94,11 +100,21 @@
 			var $collectionSeq = $("#collectionSeq");
 
 			$sortable.hide();
-
-			$('html').scrollTop(60);
 			$streetRouting.val('');
-			$collectionSeq.val('시퀀스 : 없음');
+			$collectionSeq.val('');
+			$streetRouting.hide();
+			$collectionSeq.hide();
+			$("#sortableDrag").hide();
 
+			$("#ctCode").val('');
+			$("#yyyymmdd").val('');
+			$("#accountUserId").val('');
+			$("#accountName").val('');
+			$("#vehicleName").val('');
+			$("#vehicleNumber").val('');
+		}
+
+		function routingInit() {
 			$("#ctCode").val('');
 			$("#yyyymmdd").val('');
 			$("#accountUserId").val('');
@@ -139,7 +155,8 @@
 					}
 					alertSuccess('업무가 삭제 되었습니다.');
 					init();
-					callList(1);
+					checkfalse();
+					collectionList(1);
 				}
 			})
 		}
@@ -334,6 +351,7 @@
 
 		// 조건초기화
 		function btnDevcieReset() {
+			$("#s_equipmentType").val('ISOL');
 			$("#s_equipmentCountry").val('');
 			$("#s_equipmentLocation").val('');
 			$("#s_equipmentNumber").val('');
@@ -388,6 +406,9 @@
 					}
 					$sortable.html(html);
 					$sortable.show();
+
+					routingInit();
+					$("#sortableDrag").show();
 				}
 			});
 		}
@@ -458,25 +479,21 @@
 
 					$totalCnt.text(totCnt);
 					var html = '';
-					var idx;
 					$.each(res.data.datalist, function(key, value){
-						if(idx!==value.ctCode) {
-							html += '<tr >';
-							html += '<td >' + nvl(value.ctCode, '확 인 불 가') + '</td>';
-							html += '<td >' + nvl(value.yyyymmdd, "확 인 불 가") + '</td>';
-							html += '<td >' + nvl(value.ctSeq, "확 인 불 가") + '</td>';
-							html += '<td >' + nvl(value.devicetype, "확 인 불 가") + '</td>';
-							html += '<td >' + nvl(value.accountName, "확 인 불 가") + '</td>';
-							html += '<td >' + nvl(value.vehicleNumber, "확 인 불 가") + '</td>';
-							if (value.completeDateTime == null) {
-								html += '<td >' + "미완료" + '</td>';
-							} else {
-								html += '<td >' + "완료" + '</td>';
-							}
-							html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\'' + echoNull2Blank(value.ctCode) + '\');">보기</button></td>';
-							html += '</tr>';
+						html += '<tr >';
+						html += '<td >' + nvl(value.ctCode, '확 인 불 가') + '</td>';
+						html += '<td >' + nvl(value.yyyymmdd, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.mdName, "확 인 불 가")+'/'+nvl(value.mdType, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.devicetype, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.accountName, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.vehicleNumber, "확 인 불 가") + '</td>';
+						if (value.completeDateTime == null) {
+							html += '<td >' + "미완료" + '</td>';
+						} else {
+							html += '<td >' + "완료" + '</td>';
 						}
-						idx = value.ctCode;
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\'' + echoNull2Blank(value.ctCode) + '\');">보기</button></td>';
+						html += '</tr>';
 					});
 					$schList.html(html);
 				}
@@ -510,13 +527,13 @@
 					$streetRouting.val('');
 					var streetdeviceLength = res.data.collection.length;
 					$collectionSeq.val(res.data.collection[streetdeviceLength-1].ctSeq);
-					$collectionSeq.show();
 					var html='';
 					for(i=0; i<streetdeviceLength; i++){
-						html += '<li>'+res.data.collection[i].deviceid+'</li>';
+						html += '<li class="sortable-item">'+'<span>'+res.data.collection[i].deviceid+'</span>'+'</li>';
 					}
 					$sortable.html(html);
 					$sortable.show();
+					$("#sortableDrag").show();
 
 					$("#ctCode").val(res.data.collection[0].ctCode);
 					$("#accountUserId").val(res.data.collection[0].accountuserid);
@@ -529,7 +546,58 @@
 					var yyyymmdd2 = [yyyymmdd[0],yyyymmdd[1],yyyymmdd[2],yyyymmdd[3],"-",yyyymmdd[4],yyyymmdd[5],"-",yyyymmdd[6],yyyymmdd[7]];
 					var fromtoDate = yyyymmdd2.join('');
 					$("#yyyymmdd").val(fromtoDate);
+				}
+			});
+		}
 
+		// 수거업무 경로보기
+		function deviceDirection(ctCode,deviceid,deviceseq,key1,key2) {
+			if(deviceid===null){
+				alertCaution("장비코드 데이터가 존재하지 않습니다.");
+				return false;
+			}
+			if(deviceseq===null){
+				alertCaution("장비시퀀스 데이터가 존재하지 않습니다.");
+				return false;
+			}
+
+			console.log("데이터 존재 deviceid : "+deviceid);
+			console.log("데이터 존재 deviceseq : "+deviceseq);
+			console.log("데이터 존재 key1 : "+key1);
+			console.log("데이터 존재 key2 : "+key2);
+
+			var params = {
+				ctCode: ctCode,
+				deviceid: deviceid,
+				deviceseq: deviceseq
+			};
+
+			$.ajax({
+				url: '/api/collection/collectionDirection',
+				data: params,
+				type: 'post',
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					console.log("네이버 Api 실행");
+
+					//console.log("res.data.apiResultBody : "+res.data.apiResultBody);
+					var jsonParse = JSON.parse(res.data.apiResultBody);
+					//console.log("message : " + jsonParse['message']);
+					var obj = jsonParse['route']['traoptimal'][0]['path'];
+					//console.log("obj : "+obj);
+					//console.log("obj.length : "+obj.length);
+
+					var pathObj = [];
+					for (i = 0; i < obj.length; i++) {
+						pathObj.push(new naver.maps.LatLng(obj[i][1], obj[i][0]))
+					}
+					var $dircetionMap = $("#dircetionMap"+key1+key2);
+					//console.log("pathObj : "+pathObj);
+					//console.log("$dircetionMap : "+$dircetionMap);
+					deviceDirectionMap(pathObj,$dircetionMap);
 				}
 			});
 		}
@@ -697,12 +765,6 @@
 
 <div layout:fragment="content" class="contents-body">
 	<div class="page">
-		<div class="page-title">
-			<div class="page-title__left">
-				<h2>수거업무 등록</h2>
-			</div>
-		</div>
-
 		<div class="dashboard">
 			<div class="dashboard__row">
 				<div class="panel">
@@ -927,7 +989,7 @@
 				<colgroup>
 					<col />
 					<col />
-					<col />
+					<col style="width: 230px;">
 					<col />
 					<col />
 					<col />
@@ -938,7 +1000,7 @@
 				<tr>
 					<th>수거관리코드</th>
 					<th>수거처리일</th>
-					<th>최대시퀀스</th>
+					<th>모델명/종류</th>
 					<th>장비타입</th>
 					<th>수거원</th>
 					<th>배차차량번호</th>
@@ -969,7 +1031,7 @@
 		<article class="article">
 			<h2 class="article__heading">수거업무 등록</h2>
 			<form name="collectionreg">
-				<div class="sortable-comment">드래그하여 순서를 변경할 수 있습니다.</div>
+				<div id="sortableDrag" class="sortable-comment" style="display: none">드래그하여 순서를 변경할 수 있습니다.</div>
 				<ul id="sortable" style="display: none" class="sortable-list">
 
 				</ul>

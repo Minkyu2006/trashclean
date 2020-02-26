@@ -69,6 +69,9 @@ public class Account {
     @Column(name="user_reflesh_count")
     private Integer userRefleshCount;
 
+    @Column(name="user_layout_number")
+    private Integer userLayoutNumber;
+
     @ManyToOne(targetEntity = FileUpload.class,fetch = FetchType.EAGER)
     @JoinColumn(name = "user_photo")
     private FileUpload userPhoto;

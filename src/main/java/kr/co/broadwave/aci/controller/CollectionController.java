@@ -42,8 +42,9 @@ public class CollectionController {
         this.collectionTaskService=collectionTaskService;
     }
 
-    @RequestMapping("collectiontask")
-    public String collectiontask(Model model){
+    @RequestMapping("collectionreg")
+    public String collectionreg(Model model){
+
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
         List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
@@ -56,7 +57,7 @@ public class CollectionController {
         model.addAttribute("vcUsages", vcUsages);
         model.addAttribute("vcStates", vcStates);
 
-        return "collection/collectiontask";
+        return "collection/collectionreg";
     }
 
     @RequestMapping("mobileindex")
@@ -108,24 +109,6 @@ public class CollectionController {
         }else{
             return "collection/collectionlist";
         }
-    }
-
-    @RequestMapping("collectionreg")
-    public String collectionreg(Model model){
-
-        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
-        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
-        List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
-        List<MasterCodeDto> vcUsages = masterCodeService.findCodeList(CodeType.C0011);
-        List<MasterCodeDto> vcStates = masterCodeService.findCodeList(CodeType.C0012);
-
-        model.addAttribute("equipdTypes", equipdTypes);
-        model.addAttribute("equipdCountrys", equipdCountrys);
-        model.addAttribute("vcShapes", vcShapes);
-        model.addAttribute("vcUsages", vcUsages);
-        model.addAttribute("vcStates", vcStates);
-
-        return "collection/collectionreg";
     }
 
 }

@@ -20,24 +20,27 @@
 	<!-- nav -->
 	<div class="nav">
 		<ul>
+
 			<li>
 				<a href="#" class="nav__link nav__link--dash toggle">대시보드</a>
-				<ul class="nav-child">
+				<ul id="header_dashboard" class="nav-child">
 					<li><a href="/dashboard/dashboardall">대시보드종합</a></li>
 					<li><a href="/dashboard/locationbase">위치기반</a></li>
 				</ul>
 			</li>
+
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--user toggle">사용자관리</a>
-				<ul class="nav-child">
+				<ul id="header_account" class="nav-child">
 					<li><a href="/admin/accountapproval">사용자승인</a></li>
 					<li><a href="/admin/accountreg">사용자관리</a></li>
 					<li><a href="/signup">사용자등록 </a></li>
 				</ul>
 			</li>
+
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')or hasRole('ROLE_SUBADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">플랫폼관리</a>
-				<ul class="nav-child">
+				<ul id="header_platform" class="nav-child">
 					<li><a href="/admin/mastercodereg">마스터코드등록</a></li>
 					<li><a href="/admin/teamreg">부서등록</a></li>
 					<li><a href="/admin/compreg">업체등록</a></li>
@@ -45,9 +48,10 @@
 					<li><a href="/admin/vehiclereg">차량등록</a></li>
 				</ul>
 			</li>
+
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_SUBADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">장비관리</a>
-				<ul class="nav-child">
+				<ul id="header_device" class="nav-child">
 					<li><a href="/devicestats/daysdevice">일자별장비현황</a></li>
 					<li><a href="/devicestats/equipreg">장비등록</a></li>
 					<li><a href="/devicestats/devicecontrol">장비제어</a></li>
@@ -55,19 +59,14 @@
 				</ul>
 			</li>
 
-
-
-			<!--모바일전용-->
+			<!--수거업무등록빼고, 모바일전용-->
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_COLLECTOR') or hasRole('ROLE_SUBADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">수거관리</a>
-				<ul class="nav-child">
+				<ul id="header_collection" class="nav-child">
 					<li><a href="/collection/collectionreg">수거업무등록</a></li>
-					<li><a href="/collection/collectiontask">수거업무등록(임시)</a></li>
 					<li><a href="/collection/mobileindex">모바일인덱스</a></li>
 				</ul>
 			</li>
-
-
 
 
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">

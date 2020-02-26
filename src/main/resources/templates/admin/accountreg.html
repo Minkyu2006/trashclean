@@ -5,6 +5,11 @@
 <head>
 	<script>
 		$(function(){
+			$("#header_account").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_account").css('display','none');
+			});
+
 			$("#btnSearch").on('click',function(){
 				callList(1);
 			});

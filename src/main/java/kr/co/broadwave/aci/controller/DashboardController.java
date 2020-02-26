@@ -42,16 +42,19 @@ public class DashboardController {
         String userId = null;
         Integer refleshCheck = null;
         Integer refleshCount = null;
+        Integer layoutNumber = null;
 
         if(account.isPresent()){
             userId = account.get().getUserid();
             refleshCheck = account.get().getUserRefleshCheck();
             refleshCount = account.get().getUserRefleshCount();
+            layoutNumber = account.get().getUserLayoutNumber();
         }
 
         model.addAttribute("userId", userId);
         model.addAttribute("refleshCheck", refleshCheck);
         model.addAttribute("refleshCount", refleshCount);
+        model.addAttribute("layoutNumber", layoutNumber);
 
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);

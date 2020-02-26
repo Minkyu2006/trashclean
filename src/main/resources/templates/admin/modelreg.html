@@ -6,6 +6,10 @@
 	<script type="text/javascript">
 
 		$(function(){
+			$("#header_platform").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_platform").css('display','none');
+			});
 
 			$("#mdSaveBtn").on('click',function(){
 				save();

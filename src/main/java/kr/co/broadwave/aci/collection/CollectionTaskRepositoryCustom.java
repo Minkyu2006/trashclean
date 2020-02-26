@@ -19,9 +19,14 @@ public interface CollectionTaskRepositoryCustom {
 
     List<CollectionInfoDto> findByCollectionInfoQueryDsl(String ctCode);
 
-    Page<CollectionTaskListDto> findByCollectionsTaskList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable);
+    Page<CollectionTaskListDateDto> findByCollectionsTaskDateList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable);
+
+    List<CollectionTaskListDeviceDto> findByCollectionsTaskDeviceList(String ctCode,String currentuserid, AccountRole role);
+
+    CollectionTaskListDto findByCollectionsTaskInfoList(Long id);
 
     CollectionTaskListInfoDto findByCollectionListInfoQueryDsl(Long id);
 
     List<CollectionDto> findByCtCodeSeqQuerydsl(String ctCode);
+
 }

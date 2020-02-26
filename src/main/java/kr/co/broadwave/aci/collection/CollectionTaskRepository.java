@@ -13,6 +13,5 @@ import java.util.Optional;
  * Remark : CollectionTaskRepository
  */
 public interface CollectionTaskRepository extends JpaRepository<CollectionTask,Long>, QuerydslPredicateExecutor<CollectionTask> {
-
-    //Optional<CollectionTask> findByCtCode(String , Integer );
+    Optional<CollectionTask> findByCtCode(String ctCode);
 }

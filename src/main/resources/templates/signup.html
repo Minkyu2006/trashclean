@@ -6,6 +6,10 @@
 	<script>
 
 		$(function(){
+			$("#header_account").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_account").css('display','none');
+			});
 
 			$("#btnSave").on('click',function(){
 				save();

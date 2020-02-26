@@ -11,12 +11,37 @@
 		var polyline; // 맵에 길찾기그려주는 라인
 
 		$(function() {
-
 			$("#dateFrom").datepicker({});
 
 			$("#removehour").removeClass(" active");
 			$("#starthour").addClass(" active");
 			$("#intervaltime").val("3");
+
+			var $layoutNumber = $("#layoutNumber");
+			var $layout1 = $("#layout1");
+			var $layout2 = $("#layout2");
+			var $layout3 = $("#layout3");
+			//console.log("사용자 layout 모드번호 : "+$layoutNumber.val());
+			var firstNum = 0;
+			$layout1.on('click',function(){
+				layoutMode(1,firstNum);
+				firstNum = 1;
+			});
+			$layout2.on('click',function(){
+				layoutMode(2,firstNum);
+				firstNum = 1;
+			});
+			$layout3.on('click',function(){
+				layoutMode(3,firstNum);
+				firstNum = 1;
+			});
+			if($layoutNumber.val()==="1"){
+				$layout1.click();
+			}else if($layoutNumber.val()==="2"){
+				$layout2.click();
+			}else{
+				$layout3.click();
+			}
 
 			deviceListView(1);
 			LocationSetting("");
@@ -86,28 +111,9 @@
 				masterReflesh()
 			});
 
-			$("#layout1").on('click',function() {
-				$("#pieChartLoading").show();
-				$("#barChartLoading").show();
-				refleshMapChart();
-				refleshBarChart();
-				refleshCircleChart();
-			});
-
-			$("#layout2").on('click',function() {
-				$("#pieChartLoading").show();
-				$("#barChartLoading").show();
-				refleshMapChart();
-				refleshBarChart();
-				refleshCircleChart();
-			});
-
-			$("#layout3").on('click',function() {
-				$("#pieChartLoading").show();
-				$("#barChartLoading").show();
-				refleshMapChart();
-				refleshBarChart();
-				refleshCircleChart();
+			$("#header_dashboard").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_dashboard").css('display','none');
 			});
 		});
 
@@ -253,6 +259,41 @@
 			if(timerId != null) {
 				clearInterval(timerId);
 			}
+		}
+
+		// 레이아웃모드변경
+		function layoutMode(layoutNum,firstNum) {
+			//console.log("layoutNum : "+layoutNum);
+			var params = {
+				userid:$('#userid').val(),
+				layoutNum:layoutNum
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/dashboard/layoutNumber',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request) {
+					ajaxErrorMsg(request);
+				},
+				success: function(){
+					// console.log("변경되었습니다 : "+layoutNum+"번모드");
+					// console.log("뻘스트넘 : "+firstNum);
+					if(firstNum!==0){
+						//console.log("그래프 새로고침됨");
+						$("#pieChartLoading").show();
+						$("#barChartLoading").show();
+						refleshMapChart();
+						refleshBarChart();
+						refleshCircleChart();
+					}
+				}
+			});
 		}
 
 		// 맵 새로고침
@@ -1848,6 +1889,6 @@
 	<input type="hidden" id="userid" th:value="${userId}" readonly="readonly" />
 	<input type="hidden" id="refleshCheck" th:value="${refleshCheck}" readonly="readonly" />
 	<input type="hidden" id="refleshCount" th:value="${refleshCount}" readonly="readonly" />
-
+	<input type="hidden" id="layoutNumber" th:value="${layoutNumber}" readonly="readonly" />
 </div>
 </html>

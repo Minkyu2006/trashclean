@@ -7,6 +7,10 @@
 	<script>
 
 		$(function(){
+			$("#header_account").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_account").css('display','none');
+			});
 
 			$("#dateFrom").datepicker({});
 			$("#dateTo").datepicker({});

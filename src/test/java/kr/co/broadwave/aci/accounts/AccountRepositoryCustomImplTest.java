@@ -154,6 +154,7 @@ public class AccountRepositoryCustomImplTest {
                 .position(p1)
                 .userRefleshCount(1)
                 .userRefleshCheck(3)
+                .userLayoutNumber(1)
                 .build();
         Account a2 = Account.builder()
                 .userid("S0002")
@@ -167,6 +168,7 @@ public class AccountRepositoryCustomImplTest {
                 .position(p1)
                 .userRefleshCount(1)
                 .userRefleshCheck(3)
+                .userLayoutNumber(1)
                 .build();
         Account a3 = Account.builder()
                 .userid("S0003")
@@ -180,6 +182,7 @@ public class AccountRepositoryCustomImplTest {
                 .position(p1)
                 .userRefleshCount(1)
                 .userRefleshCheck(3)
+                .userLayoutNumber(1)
                 .build();
         accountRepository.save(a1);
         accountRepository.save(a2);

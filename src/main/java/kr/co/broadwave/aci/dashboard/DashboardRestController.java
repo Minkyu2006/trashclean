@@ -927,6 +927,47 @@ public class DashboardRestController {
             account.setPosition(optionalAccount.get().getPosition());
             account.setUserRefleshCheck(checknum);
             account.setUserRefleshCount(timenum);
+            account.setUserLayoutNumber(optionalAccount.get().getUserLayoutNumber());
+            account.setUserPhoto(optionalAccount.get().getUserPhoto());
+            account.setInsert_id(optionalAccount.get().getInsert_id());
+            account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
+            account.setModify_id(optionalAccount.get().getModify_id());
+            account.setModifyDateTime(optionalAccount.get().getModifyDateTime());
+        }
+
+        accountService.modifyAccount(account);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    //레이아웃 변경마다 로그인한 유저의 레이아웃모드 업데이트
+    @PostMapping("layoutNumber")
+    public ResponseEntity<Map<String,Object>> layoutNumber(@ModelAttribute AccountMapperDto accountMapperDto,
+                                                           @RequestParam(value="userid", defaultValue="") String userid,
+                                                           @RequestParam(value="layoutNum", defaultValue="") Integer layoutNum) {
+        AjaxResponse res = new AjaxResponse();
+
+        Account account = modelMapper.map(accountMapperDto, Account.class);
+        Optional<Account> optionalAccount = accountService.findByUserid(userid);
+
+        if(!optionalAccount.isPresent()){
+            //log.info("사용자 일반 관리자(일반정보) : 사용자아이디: '" + account.getUserid() + "'");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+        }else{
+            account.setId(optionalAccount.get().getId());
+            account.setUserid(userid);
+            account.setPassword(optionalAccount.get().getPassword());
+            account.setUsername(optionalAccount.get().getUsername());
+            account.setEmail(optionalAccount.get().getEmail());
+            account.setCellphone(optionalAccount.get().getCellphone());
+            account.setRole(optionalAccount.get().getRole());
+            account.setApprovalType(optionalAccount.get().getApprovalType());
+            account.setTeam(optionalAccount.get().getTeam());
+            account.setCompany(optionalAccount.get().getCompany());
+            account.setPosition(optionalAccount.get().getPosition());
+            account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
+            account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
+            account.setUserLayoutNumber(layoutNum);
             account.setUserPhoto(optionalAccount.get().getUserPhoto());
             account.setInsert_id(optionalAccount.get().getInsert_id());
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
@@ -950,7 +991,6 @@ public class DashboardRestController {
         if (emCountry.equals("")) {
             List<MasterCodeDto> locationData = null;
 
-            data.clear();
             data.put("locationData",locationData);
 
             res.addResponse("data",data);

@@ -198,6 +198,7 @@ public class AccountRestController {
             account.setPassword(optionalAccount.get().getPassword());
             account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
             account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
+            account.setUserLayoutNumber(optionalAccount.get().getUserLayoutNumber());
             account.setUserPhoto(optionalAccount.get().getUserPhoto());
         }
         account.setModify_id(currentuserid);
@@ -246,6 +247,7 @@ public class AccountRestController {
             account.setRole(optionalAccount.get().getRole());
             account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
             account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
+            account.setUserLayoutNumber(optionalAccount.get().getUserLayoutNumber());
             account.setUserPhoto(optionalAccount.get().getUserPhoto());
         }
         account.setModify_id(currentuserid);
@@ -293,6 +295,7 @@ public class AccountRestController {
         account.setApprovalType(ApprovalType.AT02); // 등록시 승인처리 2019/12/16 - 김민규
         account.setUserRefleshCheck(1); // 등록시 새로고침체크 2020/01/02 - 김민규 (기본값 체크1)
         account.setUserRefleshCount(3); // 등록시 새로고침주기 2020/01/02 - 김민규 (기본값 2분)
+        account.setUserLayoutNumber(1); // 등록시 레이아웃모드 상태번호 2020/02/25 - 김민규 (기본값 1)
 
         //해당업체가 존재하지않으면
         if (!optionalCompany.isPresent()) {
@@ -512,6 +515,7 @@ public class AccountRestController {
             account.setApprovalType(optionalAccount.get().getApprovalType());
             account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
             account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
+            account.setUserLayoutNumber(optionalAccount.get().getUserLayoutNumber());
             account.setCompany(optionalAccount.get().getCompany());
             account.setInsert_id(optionalAccount.get().getInsert_id());
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
@@ -636,6 +640,7 @@ public class AccountRestController {
             account.setApprovalType(optionalAccount.get().getApprovalType());
             account.setUserRefleshCheck(optionalAccount.get().getUserRefleshCheck());
             account.setUserRefleshCount(optionalAccount.get().getUserRefleshCount());
+            account.setUserLayoutNumber(optionalAccount.get().getUserLayoutNumber());
             account.setInsert_id(optionalAccount.get().getInsert_id());
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
             account.setApprovalDateTime(optionalAccount.get().getApprovalDateTime());

@@ -43,21 +43,24 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
         QAccount account = QAccount.account;
         QVehicle vehicle = QVehicle.vehicle;
         QMasterCode masterCode = QMasterCode.masterCode;
+        QIModel iModel = QIModel.iModel;
 
         JPQLQuery<CollectionListDto> query = from(collectionTask)
+                .innerJoin(collectionTask.emId.mdId,iModel)
                 .innerJoin(collectionTask.devicetype,masterCode)
                 .innerJoin(collectionTask.accountId,account)
                 .innerJoin(collectionTask.vehicleId,vehicle)
                 .select(Projections.constructor(CollectionListDto.class,
                         collectionTask.id,
                         collectionTask.ctCode,
-                        collectionTask.ctSeq,
                         collectionTask.yyyymmdd,
                         masterCode.name,
                         account.username,
                         vehicle.vcNumber,
-                        collectionTask.completeDateTime
-                ));
+                        collectionTask.completeDateTime,
+                        iModel.mdName,
+                        iModel.mdType.name
+                )).groupBy(collectionTask.ctCode);
 
         // 검색조건필터
         if (ctCode != null && !ctCode.isEmpty()){
@@ -109,12 +112,84 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                 .fetch();
     }
 
-    // 모바일 - 수거업무리스트 Querydsl
-    @Override
-    public Page<CollectionTaskListDto> findByCollectionsTaskList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable){
 
-        //AccountRole admin = AccountRole.valueOf("ROLE_ADMIN");
+    // 모바일 - 수거업무리스트 수거예정일 Querydsl
+    @Override
+    public Page<CollectionTaskListDateDto> findByCollectionsTaskDateList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable){
+
+        AccountRole admin = AccountRole.valueOf("ROLE_ADMIN");
         AccountRole subadmin = AccountRole.valueOf("ROLE_SUBADMIN");
+
+        QCollectionTask collectionTask = QCollectionTask.collectionTask;
+
+        JPQLQuery<CollectionTaskListDateDto> query = from(collectionTask)
+                .select(Projections.constructor(CollectionTaskListDateDto.class,
+                        collectionTask.ctCode,
+                        collectionTask.yyyymmdd
+                ));
+
+        // 검색조건필터
+        if(role != admin){
+            if (role != null && currentuserid != null ){
+                query.where(collectionTask.accountId.role.eq(role));
+                query.where(collectionTask.accountId.userid.eq(currentuserid));
+            }
+        }
+
+//        if(role != subadmin){
+//            if (role != null && currentuserid != null ){
+//                query.where(collectionTask.accountId.role.eq(role));
+//                query.where(collectionTask.accountId.userid.eq(currentuserid));
+//            }
+//        }
+
+        if (procStatsType != null ){
+            query.where(collectionTask.procStats.eq(procStatsType));
+        }
+
+        query.orderBy(collectionTask.id.desc());
+        query.groupBy(collectionTask.ctCode);
+
+        final List<CollectionTaskListDateDto> collections = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
+        return new PageImpl<>(collections, pageable, query.fetchCount());
+    }
+
+    // 모바일 - 수거업무리스트 장비코드 Querydsl
+    @Override
+    public List<CollectionTaskListDeviceDto> findByCollectionsTaskDeviceList(String ctCode,String currentuserid, AccountRole role){
+
+        AccountRole admin = AccountRole.valueOf("ROLE_ADMIN");
+        AccountRole subadmin = AccountRole.valueOf("ROLE_SUBADMIN");
+
+        QCollectionTask collectionTask = QCollectionTask.collectionTask;
+
+        JPQLQuery<CollectionTaskListDeviceDto> query = from(collectionTask)
+                .select(Projections.constructor(CollectionTaskListDeviceDto.class,
+                        collectionTask.id,
+                        collectionTask.ctSeq,
+                        collectionTask.deviceid
+                ));
+
+        // 검색조건필터
+        if(role != admin){
+            if (role != null && currentuserid != null ){
+                query.where(collectionTask.accountId.role.eq(role));
+                query.where(collectionTask.accountId.userid.eq(currentuserid));
+            }
+        }
+
+        if (ctCode != null){
+            query.where(collectionTask.ctCode.eq(ctCode));
+        }
+
+        query.orderBy(collectionTask.ctSeq.asc());
+
+        return query.fetch();
+    }
+
+    // 모바일 - 수거업무리스트 장비정보보기 Querydsl
+    @Override
+    public CollectionTaskListDto findByCollectionsTaskInfoList(Long id){
 
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
         QEquipment equipment = QEquipment.equipment;
@@ -129,6 +204,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                 .leftJoin(model.mdFileid,fileUpload)
                 .select(Projections.constructor(CollectionTaskListDto.class,
                         collectionTask.id,
+                        collectionTask.ctSeq,
                         collectionTask.ctCode,
                         collectionTask.yyyymmdd,
                         collectionTask.deviceid,
@@ -139,25 +215,14 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                         fileUpload.saveFileName
                 ));
 
-        // 검색조건필터
-        if(role != subadmin){
-            if (role != null && currentuserid != null ){
-                query.where(collectionTask.accountId.role.eq(role));
-                query.where(collectionTask.accountId.userid.eq(currentuserid));
-            }
+        if (id != null){
+            query.where(collectionTask.id.eq(id));
         }
 
-        if (procStatsType != null ){
-            query.where(collectionTask.procStats.eq(procStatsType));
-        }
-
-        query.orderBy(collectionTask.yyyymmdd.desc());
-
-        final List<CollectionTaskListDto> collections = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
-        return new PageImpl<>(collections, pageable, query.fetchCount());
+        return query.fetchOne();
     }
 
-    // 수거업무리스트 수거업무버튼 누를시 나오는 Querydsl
+    // 모바일 - 수거업무리스트 수거업무버튼 누를시 나오는 Querydsl
     @Override
     public CollectionTaskListInfoDto findByCollectionListInfoQueryDsl(Long id) {
 
@@ -194,8 +259,9 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
 
         return queryFactory.select(Projections.constructor(CollectionDto.class,
-                collectionTask.id,collectionTask.insertDateTime,collectionTask.insert_id,
-                collectionTask.ctSeq,collectionTask.procStats))
+                collectionTask.id,collectionTask.ctCode,
+                collectionTask.ctSeq,collectionTask.procStats,
+                collectionTask.insert_id,collectionTask.insertDateTime))
                 .from(collectionTask)
                 .where(collectionTask.ctCode.eq(ctCode))
                 .fetch();

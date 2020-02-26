@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko"
-	  xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+	  xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
@@ -15,31 +14,30 @@
 
 	<link rel="stylesheet" href="/assets/css/mobile.css"/>
 	<script src="/assets/js/mobile/mobile.js"></script>
+	<link rel="stylesheet" href="/assets/js/alert/min_alert.css"/>
+	<script src="/assets/js/alert/min_alert.js"></script>
 
 	<script type="text/javascript">
 
 		$(function() {
-
-			collectionTaskList(1);
-
+			collectionTaskListDate();
 		});
 
 		function listhide() {
+			var $collectionlist__heading = $('.m-collectionlist__heading');
 			$('.m-collectionlist__detail').hide();
-			$('.m-collectionlist__heading').on('click', function(e) {
+			$collectionlist__heading.on('click', function(e) {
 				$(this).toggleClass('active');
 				$(this).next().slideToggle(300);
-				$('.m-collectionlist__heading').not(this).removeClass('active');
-				$('.m-collectionlist__heading').not(this).next().slideUp(300);
+				$collectionlist__heading.not(this).removeClass('active');
+				$collectionlist__heading.not(this).next().slideUp(300);
 				e.preventDefault();
 				return false;
 			})
 		}
 
-		function collectionTaskList(page) {
-			page = page - 1;
-			if (page < 0) page = 0;
-
+		// 수거업무리스트 - 수거예정일
+		function collectionTaskListDate() {
 			var $schList = $('#schList');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -47,30 +45,115 @@
 			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
-				url:'/api/collection/collectionTaskList?size=' + '&page=' + page,
+				url:'/api/collection/collectionTaskListDate',
 				type : 'post',
 				cache:false,
 				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
-					var baseurl = res.data.awss3url;
 					var html = '';
+					var idx = 0;
 					$.each(res.data.datalist, function(key, value){
 						html += '<li>';
-							html += '<a  href="#" class="m-collectionlist__heading">'+'수거예정일 :' + nvl(value.yyyymmdd,"확 인 불 가") +'</a>';
-							html += '<ul class="m-collectionlist__detail">';
-								html += '<li >'+'장비코드 : ' + nvl(value.deviceid,"확 인 불 가") +'</li>';
-								html += '<li >'+'수거번호 : ' + nvl(value.ctCode,"확 인 불 가") +'</li>';
-								html += '<li >'+'모델타입 : ' + nvl(value.devicetype,"확 인 불 가")+' - '+nvl(value.devicemodeltype,"확 인 불 가")+'</li>';
-								html += '<li >'+'운영사 : ' + nvl(value.company,"확 인 불 가") +'</li>';
-								html += '<li ><img width="100" src="'+baseurl+nvl(value.filePath,"확 인 불 가")+nvl(value.saveFileName,"확 인 불 가")+'"</img></li>';
-								html += '<li ><a class="m-collectionlist__button" href="/collection/collectionprocess/'+echoNull2Blank(value.id)+'">수거업무</a></li>';
+							html += '<a onclick="collectionTaskListDevice('+"'"+nvl(value.ctCode,null)+"'"+','+idx+')" href="#" class="m-collectionlist__heading">'+'수거예정일 :' + nvl(value.yyyymmdd,"확 인 불 가") +'</a>';
+							html += '<ul id="collectionTaskList'+idx+'" class="m-collectionlist__detail">';
 							html += '</ul>';
 						html += '</li>';
+						idx++;
 					});
 					$schList.html(html);
 					listhide();
+				}
+			});
+		}
+
+		// 수거업무리스트 - 장비코드
+		function collectionTaskListDevice(ctCode,idx) {
+			if(ctCode===null){
+				alertCaution("수거업무 데이터가 존재하지 않습니다.");
+				return false;
+			}
+
+			var $collectionTaskList = $("#collectionTaskList"+idx);
+
+			// console.log("데이터 존재 ctCode : "+ctCode);
+			// console.log("idx : "+idx);
+
+			var params = {
+				ctCode: ctCode,
+			};
+
+			$.ajax({
+				url:'/api/collection/collectionTaskListDevice',
+				data: params,
+				type : 'post',
+				cache: false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					//console.log("라우팅 장비리스트");
+					if(res.data.collection===undefined){
+						alertCaution("수거업무 데이터가 존재하지 않습니다.");
+						return false;
+					}
+					// console.log("deviceid : "+res.data.collection[0].deviceid);
+					// console.log("collectionSize : "+res.data.collectionSize);
+
+					var html ='';
+					for(i=0; i<res.data.collectionSize; i++) {
+						html += '<li class="m-collectionlist__heading" id="collectionDevice'+idx+i+'" onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')">'+nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") + '</li>';
+					}
+
+					$collectionTaskList.html(html);
+				}
+			});
+		}
+
+		// 수거업무리스트 - 장비정보
+		function collectionTaskListInfo(id,key1,key2) {
+			if(id===null){
+				alertCaution("수거업무 데이터가 존재하지 않습니다.");
+				return false;
+			}
+			var $collectionDevice = $("#collectionDevice"+key1+key2);
+
+			// console.log("데이터 존재 id : "+id);
+			// console.log("idx : "+idx);
+
+			var params = {
+				id: id,
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/collection/collectionTaskListInfo',
+				data: params,
+				type : 'post',
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					if(res.data.collection===undefined){
+						alertCaution("수거업무 데이터가 존재하지 않습니다.");
+						return false;
+					}
+					var baseurl = res.data.awss3url;
+					var html ='';
+					html += '<ul class="m-collectionlist__detail">';
+					html += '<li >' + '장비코드 : ' + nvl(res.data.collection.deviceid, "확 인 불 가") + '</li>';
+					html += '<li >' + '수거번호 : ' + nvl(res.data.collection.ctCode, "확 인 불 가") + '</li>';
+					html += '<li >' + '모델타입 : ' + nvl(res.data.collection.devicetype, "확 인 불 가") + ' - ' + nvl(res.data.collection.devicemodeltype, "확 인 불 가") + '</li>';
+					html += '<li >' + '운영사 : ' + nvl(res.data.collection.csOperator, "확 인 불 가") + '</li>';
+					html += '<li ><img alt="" width="100" src="' + baseurl + nvl(res.data.collection.filePath, "확 인 불 가") + nvl(res.data.collection.saveFileName, "확 인 불 가") + '"</img></li>';
+					html += '<li ><a class="m-collectionlist__button" href="/collection/collectionprocess/' + echoNull2Blank(res.data.collection.id) + '">수거업무</a></li>';
+					html += '</ul>';
+					$collectionDevice.html(html);
 				}
 			});
 		}
@@ -97,6 +180,8 @@
 				</div>
 			</div>
 			<div class="m-footer">© 2019 Broadwave Corporation. All rights Reserved.</div>
+		</div>
+		<div id='alertpop'>
 		</div>
 	</body>
 </html>

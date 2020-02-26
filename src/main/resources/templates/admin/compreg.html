@@ -6,6 +6,11 @@
     <script type="text/javascript">
 
 		$(function() {
+			$("#header_platform").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_platform").css('display','none');
+			});
+
 			//업체 등록
 			$("#compSaveBtn").on('click',function(){
 				save();

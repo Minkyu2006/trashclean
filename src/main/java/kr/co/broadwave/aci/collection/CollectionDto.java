@@ -1,6 +1,8 @@
 package kr.co.broadwave.aci.collection;
 
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
+import kr.co.broadwave.aci.equipment.Equipment;
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,25 +20,30 @@ import java.time.LocalDateTime;
 @Setter
 public class CollectionDto {
     private Long id;
-    private LocalDateTime insertDateTime;
-    private String insert_id;
+    private String ctCode;
     private Integer seq;
     private ProcStatsType procStatsType;
+    private String insert_id;
+    private LocalDateTime insertDateTime;
 
-    public String getProcStatsType() {
-        return procStatsType.getCode();
+    public String getCtCode() {
+        return ctCode;
+    }
+
+    public ProcStatsType getProcStatsType() {
+        return procStatsType;
     }
 
     public Integer getSeq() {
         return seq;
     }
 
-    public LocalDateTime getInsertDateTime() {
-        return insertDateTime;
-    }
-
     public String getInsert_id() {
         return insert_id;
+    }
+
+    public LocalDateTime getInsertDateTime() {
+        return insertDateTime;
     }
 
     public Long getId() {

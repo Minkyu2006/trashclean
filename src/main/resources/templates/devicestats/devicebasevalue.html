@@ -6,6 +6,11 @@
 <head>
 	<script type="text/javascript">
 		$(function() {
+			$("#header_device").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_device").css('display','none');
+			});
+
 			LocationSetting("");
 			callList(1);
 

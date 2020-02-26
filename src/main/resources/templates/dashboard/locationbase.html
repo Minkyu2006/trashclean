@@ -7,6 +7,11 @@
 		<script>
 
 			$(function() {
+				$("#header_dashboard").css('display','block');
+				$("#default_wrap").on('click',function(){
+					$("#header_dashboard").css('display','none');
+				});
+
 				$("#dateFrom").datepicker({});
 
 				$("#removehour").removeClass(" active");

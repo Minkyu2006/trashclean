@@ -5,6 +5,10 @@
 <head>
     <script type="text/javascript">
 		$(function() {
+			$("#header_device").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_device").css('display','none');
+			});
 
 			$("#emInstallDate").datepicker({});
 
@@ -180,7 +184,7 @@
 						html += '<td >'+ echoNull2Blank(value.csNumber) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.csOperator) +'</td>';
 
-						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callName(\''+ echoNull2Blank(value.id) +'\');">선택</button></td>';
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callName(\''+ echoNull2Blank(value.id) +'\');">선택</button></td>';
 						html += '</tr>';
 					});
 					$schList.html(html);
@@ -248,7 +252,7 @@
 						html += '<td >'+ echoNull2Blank(value.emEmbeddedNumber) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.company) +'</td>';
 
-						html += '<td ><button class="c-button c-button--point c-button--small" onclick="javascript:callInfo(\''+ echoNull2Blank(value.id) +'\');">보기</button></td>';
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+ echoNull2Blank(value.id) +'\');">보기</button></td>';
 						html += '</tr>';
 					});
 					$schList.html(html);

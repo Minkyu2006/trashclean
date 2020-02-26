@@ -8,6 +8,11 @@
         var levelChart=null;
 
         $(function() {
+            $("#header_device").css('display','block');
+            $("#default_wrap").on('click',function(){
+                $("#header_device").css('display','none');
+            });
+
             //몬쓰픽커
             $('#s_monthDate').MonthPicker({
                 IsRTL: true,
