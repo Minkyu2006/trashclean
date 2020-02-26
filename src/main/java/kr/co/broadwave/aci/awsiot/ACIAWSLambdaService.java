@@ -192,6 +192,41 @@ public class ACIAWSLambdaService {
 
         return getHashMap(res);
     }
+    //DeviceInfo 값 가져오기(ex. 펌워어,통신사정보등)
+    public HashMap getDeviceInfo(String deviceid){
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/deviceinfo/{id}" ;
+
+
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        //params
+        Map<String, String> params = new HashMap<>();
+        params.put("id", deviceid);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(url)
+                .buildAndExpand(params)
+                .toUri();
+        //queryParams
+        uri = UriComponentsBuilder
+                .fromUri(uri)
+                .build()
+                .toUri();
+
+
+        ResponseEntity<String> res = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+
+        return getHashMap(res);
+    }
 
 
 }

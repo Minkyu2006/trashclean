@@ -29,5 +29,13 @@ public class ACIAWSLambdaServiceTest {
         assertThat(deviceonlineCheck.containsKey("statusCode")).as("Device Online Check Test [expect true] :").isEqualTo(true);
 
     }
+    @Test
+    public void getDeviceInfo(){
+        HashMap deviceInfo = aciawsLambdaService.getDeviceInfo("ISOL-KR-SEL-0001");
+        //System.out.println(deviceInfo);
+        assertThat(deviceInfo.containsKey("statusCode")).as("Device Online Check Test [expect true] :").isEqualTo(true);
+
+
+    }
 
 }
