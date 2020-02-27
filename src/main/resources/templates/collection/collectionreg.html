@@ -19,6 +19,11 @@
 			$("#s_dateTo").datepicker({});
 			$("#yyyymmdd").datepicker({});
 
+			//수거업무초기화
+			$("#collectionbtnReset").on('click',function(){
+				collectionbtnReset();
+			});
+
 			//수거원팝업열기
 			$('#collectionMan').on('click', function(e) {
 				$('#collectionMan_popup').addClass('open');
@@ -53,6 +58,8 @@
 			//라우팅계산버튼
 			$("#routingBtn").on('click',function(){
 				routing();
+				$("#directionService").hide();
+				$("#directionLoading").hide();
 			});
 
 			//장비검색 조건리셋버튼
@@ -63,29 +70,39 @@
 			//장비검색 조회버튼
 			$("#btnSearch").on('click',function(){
 				equipmentCallList();
+				$("#directionService").hide();
+				$("#directionLoading").hide();
 			});
 
 			//업무등록 리스트조회버튼
 			$("#collectionTaskBtnSearch").on('click',function(){
 				collectionList(1);
+				$("#directionService").hide();
+				$("#directionLoading").hide();
 			});
 
 			//신규버튼
 			$("#btnNew").on('click',function(){
 				init();
 				checkfalse();
+				$("#directionService").hide();
+				$("#directionLoading").hide();
 				$('html').scrollTop(60);
 			});
 
 			//삭제버튼
 			$("#btnDel").on('click',function(){
 				del();
+				$("#directionService").hide();
+				$("#directionLoading").hide();
 			});
 
 			//수거업무저장 버튼
 			$("#collectionSaveBtn").on('click',function(){
 				rouclick($("#collectionSeq").val());
 				collectionSave();
+				$("#directionService").hide();
+				$("#directionLoading").hide();
 			});
 
 			var $sortable = $("#sortable");
@@ -166,12 +183,15 @@
 			$("#collectionId").val('');
 			$("#collectionName").val('');
 		}
+
 		// 배차차량 조건초기화
 		function vehreset() {
-			$("#s_vcNumber").val('');
-			$("#s_vcState").val('');
-			$("#s_vcUsage").val('');
-			$("#s_vcShape").val('');
+			$("#s_ctCode").val('');
+			$("#s_dateFrom").val('');
+			$("#s_dateTo").val('');
+			$("#s_modelType").val('');
+			$("#s_userName").val('');
+			$("#s_vehicleNumber").val('');
 		}
 
 		// 수거원 리스트보기
@@ -349,8 +369,15 @@
 			});
 		}
 
-		// 조건초기화
+		// 장비검색 조건초기화
 		function btnDevcieReset() {
+			$("#s_equipmentType").val('ISOL');
+			$("#s_equipmentCountry").val('');
+			$("#s_equipmentLocation").val('');
+			$("#s_equipmentNumber").val('');
+		}
+		// 수거업무검색 조건초기화
+		function collectionbtnReset() {
 			$("#s_equipmentType").val('ISOL');
 			$("#s_equipmentCountry").val('');
 			$("#s_equipmentLocation").val('');
@@ -520,7 +547,7 @@
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
-
+					var deviceList = [];
 					var $streetRouting = $("#streetRouting");
 					var $collectionSeq = $("#collectionSeq");
 					var $sortable = $("#sortable");
@@ -530,6 +557,7 @@
 					var html='';
 					for(i=0; i<streetdeviceLength; i++){
 						html += '<li class="sortable-item">'+'<span>'+res.data.collection[i].deviceid+'</span>'+'</li>';
+						deviceList.push(res.data.collection[i].deviceid);
 					}
 					$sortable.html(html);
 					$sortable.show();
@@ -546,30 +574,32 @@
 					var yyyymmdd2 = [yyyymmdd[0],yyyymmdd[1],yyyymmdd[2],yyyymmdd[3],"-",yyyymmdd[4],yyyymmdd[5],"-",yyyymmdd[6],yyyymmdd[7]];
 					var fromtoDate = yyyymmdd2.join('');
 					$("#yyyymmdd").val(fromtoDate);
+
+					deviceDirection(deviceList);
 				}
 			});
 		}
 
 		// 수거업무 경로보기
-		function deviceDirection(ctCode,deviceid,deviceseq,key1,key2) {
-			if(deviceid===null){
-				alertCaution("장비코드 데이터가 존재하지 않습니다.");
-				return false;
-			}
-			if(deviceseq===null){
-				alertCaution("장비시퀀스 데이터가 존재하지 않습니다.");
-				return false;
+		function deviceDirection(deviceList) {
+			//console.log("deviceList : "+deviceList);
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			var deviceIds = [];
+			for (var i=0; i<deviceList.length; i++){
+				deviceIds.push(deviceList[i]);
 			}
 
-			console.log("데이터 존재 deviceid : "+deviceid);
-			console.log("데이터 존재 deviceseq : "+deviceseq);
-			console.log("데이터 존재 key1 : "+key1);
-			console.log("데이터 존재 key2 : "+key2);
+			var itemJson = {};
+			itemJson.deviceids = deviceIds;
+			var devicestr = JSON.stringify(itemJson);
 
 			var params = {
-				ctCode: ctCode,
-				deviceid: deviceid,
-				deviceseq: deviceseq
+				deviceids: devicestr,
+				deviceArray: deviceIds,
 			};
 
 			$.ajax({
@@ -581,25 +611,99 @@
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
-					console.log("네이버 Api 실행");
+					//console.log("네이버 Api 실행");
 
-					//console.log("res.data.apiResultBody : "+res.data.apiResultBody);
-					var jsonParse = JSON.parse(res.data.apiResultBody);
-					//console.log("message : " + jsonParse['message']);
-					var obj = jsonParse['route']['traoptimal'][0]['path'];
-					//console.log("obj : "+obj);
-					//console.log("obj.length : "+obj.length);
+					if(res.data.apiResultBody!==null) {
+						$("#directionService").show();
+						$("#directionLoading").show();
 
-					var pathObj = [];
-					for (i = 0; i < obj.length; i++) {
-						pathObj.push(new naver.maps.LatLng(obj[i][1], obj[i][0]))
+						// console.log("direction_noGps_deviceSize : "+res.data.direction_noGps_deviceSize);
+						// console.log("direction_noGps_device : "+res.data.direction_noGps_device);
+						var html ='';
+						$noGps = $("#noGps");
+						for(i=0; i<res.data.direction_noGps_deviceSize; i++){
+							html += '<li>'+'<span>'+res.data.direction_noGps_device[i]+" 장비는 경도/위도 값이 존재하지 않습니다."+'</span>'+'</li>';
+						}
+						$noGps.html(html);
+
+						//console.log("res.data.apiResultBody : " + res.data.apiResultBody);
+						var jsonParse = JSON.parse(res.data.apiResultBody);
+						//console.log("message : " + jsonParse['message']);
+						var obj = jsonParse['route']['traoptimal'][0]['path'];
+						//console.log("obj : "+obj);
+						//console.log("obj.length : "+obj.length);
+
+						var pathObj = [];
+						for (i = 0; i < obj.length; i++) {
+							pathObj.push(new naver.maps.LatLng(obj[i][1], obj[i][0]))
+						}
+
+						// console.log("pathObj : " + pathObj);
+						// console.log("res.data.start : " + res.data.start);
+						// console.log("res.data.goal : " + res.data.goal);
+						deviceDirectionMap(pathObj,res.data.htmlStart,res.data.htmlGoal,res.data.directionSize,res.data.direction_gps_laList,res.data.direction_gps_loList);
+					}else{
+						alertCaution("경도/위도 데이터가 존재하지 않습니다.");
+						$("#directionService").hide();
 					}
-					var $dircetionMap = $("#dircetionMap"+key1+key2);
-					//console.log("pathObj : "+pathObj);
-					//console.log("$dircetionMap : "+$dircetionMap);
-					deviceDirectionMap(pathObj,$dircetionMap);
+
 				}
 			});
+		}
+
+		var map;
+		var marker;
+		function deviceDirectionMap(pathobj,htmlStart,htmlGoal,directionSize,direction_gps_laList,direction_gps_loList) {
+			// console.log("htmlStart : " + htmlStart);
+			// console.log("htmlGoal : " + htmlGoal);
+
+			//네이버맵
+			var startSp = htmlStart.split(",");
+			var goalSp = htmlGoal.split(",");
+			// console.log("startSp : " + startSp);
+			// console.log("goalSp : " + goalSp);
+
+			// 맵중앙좌표계산
+			var center_lagps = (Number(startSp[0])+Number(goalSp[0]))/2;
+			var center_logps = (Number(startSp[1])+Number(goalSp[1]))/2;
+			// console.log("center_lagps : " + center_lagps);
+			// console.log("center_logps : " + center_logps);
+
+			var center = new naver.maps.LatLng(center_lagps,center_logps),
+
+			map = new naver.maps.Map(document.getElementById('naverMap'), {
+				center: center,
+				useStyleMap: true,
+				zoom: 11,
+			});
+
+			new naver.maps.Polyline({
+				map: map,
+				path: pathobj,
+				strokeStyle: 'solid',
+				strokeWeight: 5
+			});
+
+			// console.log("direction_gps_laList : " + direction_gps_laList);
+			// console.log("direction_gps_loList : " + direction_gps_loList);
+			var marker_latlngs = [];
+			marker_latlngs.push(new naver.maps.LatLng(startSp[0], startSp[1]));
+			marker_latlngs.push(new naver.maps.LatLng(goalSp[0], goalSp[1]));
+			for(var i=0; i<directionSize; i++){
+				marker_latlngs.push(new naver.maps.LatLng(direction_gps_laList[i],direction_gps_loList[i]));
+			}
+			//console.log("marker_latlngs : " + marker_latlngs);
+
+			//네이버마커
+			for(i=0; i<marker_latlngs.length; i++) {
+				marker = new naver.maps.Marker({
+					position: marker_latlngs[i],
+					map: map,
+					// clickable: true
+				});
+			}
+
+			$("#directionLoading").hide();
 		}
 
 		// 수거업무 저장
@@ -1090,6 +1194,21 @@
 						<button class="c-button" id="btnDel">삭제</button>
 					</div>
 				</div>
+			</div>
+		</article>
+	</section>
+
+	<section class="section" id="directionService" style="display: none">
+		<article class="article">
+			<h2 class="article__heading">수거업무 경로서비스</h2>
+			<div class="panel__body">
+				<div class="c-loader" style="display: none">
+					<div id="directionLoading" class="c-loader__active c-loader__active--ring"></div>
+				</div>
+				<div id="naverMap" style="height: 300px"></div>
+				<ul id="noGps">
+
+				</ul>
 			</div>
 		</article>
 	</section>

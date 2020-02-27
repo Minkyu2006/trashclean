@@ -477,7 +477,7 @@ public class CollectionTaskRestController {
     }
     //장비 간의 거리계산
     public static double haversine(double x1, double y1, double x2, double y2, String fordeviceid, List<String> passdevice, int size) {
-        boolean a = false;
+        boolean a;
         for(int i=0; i<size; i++){
             a = passdevice.get(i).contains(fordeviceid);
             if(a){
@@ -485,7 +485,7 @@ public class CollectionTaskRestController {
             }
         }
 
-        double distance = 0.0;
+        double distance;
         double radius = 6371; // 지구 반지름(km)
         double toRadian = Math.PI / 180;
 
@@ -503,56 +503,213 @@ public class CollectionTaskRestController {
 
     // 수거업무 DirectionAPI 맵생성
     @PostMapping("collectionDirection")
-    public ResponseEntity<Map<String,Object>> collectionDirection(@RequestParam (value="ctCode", defaultValue="") String ctCode,
-                                                                  @RequestParam (value="deviceid", defaultValue="") String deviceid,
-                                                                  @RequestParam (value="deviceseq", defaultValue="") Integer deviceseq){
+    public ResponseEntity<Map<String,Object>> collectionDirection(@RequestParam(value="deviceids", defaultValue="") String deviceids,
+                                                                  @RequestParam(value="deviceArray[]", defaultValue="") List<String> deviceArray,
+                                                                  HttpServletRequest request){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
-        log.info("ctCode : "+ctCode);
-        log.info("deviceid : "+deviceid);
-        log.info("deviceseq : "+deviceseq);
+        List<String> street_gps_laList = new ArrayList<>();
+        List<String> street_gps_loList = new ArrayList<>();
 
-//         driving 옵션
-//         trafast 실시간 빠른길
-//         tracomfort 실시간 편한길
-//         traoptimal 실시간 최적
-//         traavoidtoll 무료 우선
-//         traavoidcaronly 자동차 전용도로 회피 우선
+        String currentuserid = CommonUtils.getCurrentuser(request); // 현재로그인한 사용자아이디가져오기
+        AccountDtoCollection collectionAccount = accountService.findByCollectionLanLon(currentuserid);
 
-        //Rest URL (Open Api Test)
-        String clientId = "n1xv5m63g5";//애플리케이션 클라이언트 아이디값";
-        String clientSecret = "PJoblCQiihINMwQD5pX3WNQVLZuw6wvIZv0ec6DM";//애플리케이션 클라이언트 시크릿값";
+        HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
+        //log.info("resData : "+resData);
+        int streetSize = Integer.parseInt(String.valueOf(resData.get("datacounts")));
 
-        String start = "127.046566,37.547305"; //출발점
-        String goal = "126.758476,37.320080"; //도착점
+        for (String deviceid : deviceArray){
+            for (int i = 0; i < streetSize; i++) {
+                HashMap map = (HashMap) resData.get("data").get(i);
+                if (map.get("deviceid").equals(deviceid)) {
+                    street_gps_laList.add((String) map.get("gps_la")); //맵 데이터 차트
+                    street_gps_loList.add((String) map.get("gps_lo")); //맵 데이터 차트
+                }
+            }
+        }
 
-//        String via = "127.050374,37.546808"; //경유지 1번장치
-//        String via2 = "127.028192,37.558203"; //경유지2 대림아파트
-//        String via3 = "127.063791,37.557296"; //경유지3 장한평역
-//        String via4 = "127.085515,37.555643"; //경유지4
-//        String via5 = "127.081469,37.580941"; //경유지5
-//        String via6 = "127.058825,37.579615"; //경유지6
+//        log.info("장비배열 : "+deviceArray);
+//        log.info("streetSize : "+streetSize);
+//        log.info("street_gps_laList : "+street_gps_laList);
+//        log.info("street_gps_loList : "+street_gps_loList);
 
-        final String url = "https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start="+start+"&goal="+goal+"&option=traoptima";
-        // Direction 15적용
-        //final String url = "https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start="+start+"&goal="+goal+"&option=traoptimal&waypoints="+via2+"|"+via3+"|"+via4+"|"+via5+"|"+via6+"|"+via+"";
-//        System.out.println("url : "+url);
+        List<String> direction_gps_devicename = new ArrayList<>();
+        List<String> direction_gps_laList = new ArrayList<>();
+        List<String> direction_gps_loList = new ArrayList<>();
 
-        RestTemplate restTemplate = new RestTemplate();
+        List<String> direction_noGps_device = new ArrayList<>();
 
-        //header
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("X-NCP-APIGW-API-KEY-ID",clientId);
-        headers.add("X-NCP-APIGW-API-KEY",clientSecret);
+        String htmlStart = null;
+        String htmlGoal = null;
+        String startName = null; //시작점이름(소속사명)
+        String start = null; //시작점
+        String goalName = null; //도착점이름(도착점장비)
+        String goal = null; //도착점
 
-        HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
-        URI uri = UriComponentsBuilder.fromUriString(url).build().toUri();
-        ResponseEntity<String> apiResult = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
-        log.info("apiResult : "+apiResult);
+        for (int i = 0; i < streetSize; i++) {
+            String gps_laData = street_gps_laList.get(i);
+            String gps_loData = street_gps_loList.get(i);
+            if (gps_loData.equals("na") || gps_loData == null || gps_loData.equals("") || gps_laData.equals("na") || gps_laData == null || gps_laData.equals("")) {
+                direction_noGps_device.add(deviceArray.get(i));
+            }else {
+                if (gps_laData.substring(0, 1).equals("N")) {
+                    String gps_laSubStirng = gps_laData.replace("N", "");
+                    direction_gps_laList.add(gps_laSubStirng);
+                } else if (gps_laData.substring(0, 1).equals("S")) {
+                    String gps_laSubStirng = gps_laData.replace("S", "-");
+                    direction_gps_laList.add(gps_laSubStirng);
+                }
+                if (gps_loData.substring(0, 1).equals("E")) {
+                    String gps_loSubStirng = gps_loData.replace("E", "");
+                    direction_gps_loList.add(gps_loSubStirng);
+                } else if (gps_loData.substring(0, 1).equals("W")) {
+                    String gps_loSubStirng = gps_loData.replace("W", "-");
+                    direction_gps_loList.add(gps_loSubStirng);
+                }
+                direction_gps_devicename.add(deviceArray.get(i));
+            }
+        }
 
-        data.put("apiResultBody", apiResult.getBody());
+//        log.info("direction_gps_devicename : "+direction_gps_devicename);
+//        log.info("direction_gps_laList : "+direction_gps_laList);
+//        log.info("direction_gps_loList : "+direction_gps_loList);
+//        log.info("direction_gps_devicename.size() : "+direction_gps_devicename.size());
+        if(direction_gps_devicename.size()!=0){
+            int directionSize = direction_gps_devicename.size()-1;
+            goalName = direction_gps_devicename.get(directionSize);
+            goal = direction_gps_loList.get(directionSize)+","+direction_gps_laList.get(directionSize);
+            htmlGoal =  direction_gps_laList.get(directionSize)+","+direction_gps_loList.get(directionSize);
+            direction_gps_devicename.remove(directionSize);
+            direction_gps_laList.remove(directionSize);
+            direction_gps_loList.remove(directionSize);
+        }
+
+        int directionSize = direction_gps_devicename.size();
+
+        if(collectionAccount.getCompanyLatitude() != null || collectionAccount.getCompanyHardness() != null){
+            startName = collectionAccount.getOperator();
+            start = collectionAccount.getCompanyHardness()+","+collectionAccount.getCompanyLatitude(); //출발점
+            htmlStart = collectionAccount.getCompanyLatitude()+","+collectionAccount.getCompanyHardness(); //자바스크립트용 출발점
+        }else{
+            startName = "경도위도없음";
+            start = "126.82752,37.568666";
+            htmlStart = "37.568666,126.82752";
+        }
+
+//        log.info("start : "+start);
+//        log.info("goal : "+goal);
+//        log.info("시작점이름 : "+startName);
+//        log.info("도착점이름 : "+goalName);
+//        log.info("directionSize : "+directionSize);
+        StringBuilder url = null;
+//        log.info("direction_gps_devicename.size() : "+direction_gps_devicename.size());
+
+        //driving 옵션
+        //trafast 실시간 빠른길
+        //tracomfort 실시간 편한길
+        //traoptimal 실시간 최적
+        //traavoidtoll 무료 우선
+        //traavoidcaronly 자동차 전용도로 회피 우선
+        if(directionSize > 0 && directionSize < 16) {
+            //log.info("경우지점있음");
+            if(directionSize<=6){
+                url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
+                for (int i = 0; i < directionSize; i++) {
+                    if(i==directionSize-1) {
+                        url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i)).append("|");
+                    }else{
+                        url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i));
+                    }
+                }
+            }else{
+                url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
+                for (int i = 0; i < directionSize; i++) {
+                    if(i==directionSize-1) {
+                        url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i)).append("|");
+                    }else{
+                        url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i));
+                    }
+                }
+            }
+
+            //Rest URL (Open Api Test)
+            String clientId = "n1xv5m63g5";//애플리케이션 클라이언트 아이디값";
+            String clientSecret = "PJoblCQiihINMwQD5pX3WNQVLZuw6wvIZv0ec6DM";//애플리케이션 클라이언트 시크릿값";
+
+            //ex
+//            String via = "127.050374,37.546808"; //경유지 1번장치
+//            String via2 = "127.028192,37.558203"; //경유지2 대림아파트
+//            String via3 = "127.063791,37.557296"; //경유지3 장한평역
+//            String via4 = "127.085515,37.555643"; //경유지4
+//            String via5 = "127.081469,37.580941"; //경유지5
+//            String via6 = "127.058825,37.579615"; //경유지6
+//
+//            // Direction 15적용
+//            final String test = "https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptimal&waypoints=" + via2 + "|" + via3 + "|" + via4 + "|" + via5 + "|" + via6 + "|" + via + "";
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            //header
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
+            headers.add("X-NCP-APIGW-API-KEY", clientSecret);
+
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
+            URI uri = UriComponentsBuilder.fromUriString(String.valueOf(url)).build().toUri();
+            ResponseEntity<String> apiResult = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+//            log.info("유알엘 : "+url);
+//            log.info("유알엘 : "+test);
+//            log.info("apiResult : " + apiResult);
+//            log.info("direction_gps_laList : " + direction_gps_laList);
+//            log.info("direction_gps_loList : " + direction_gps_loList);
+
+            data.put("direction_noGps_device",direction_noGps_device);
+            data.put("direction_noGps_deviceSize",direction_noGps_device.size());
+            data.put("direction_gps_laList",direction_gps_laList);
+            data.put("direction_gps_loList",direction_gps_loList);
+            data.put("directionSize", directionSize);
+            data.put("htmlStart", htmlStart);
+            data.put("htmlGoal", htmlGoal);
+            data.put("apiResultBody", apiResult.getBody());
+        }else if(goal!=null){
+            //log.info("골인지점만있음");
+            url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima");
+
+            String clientId = "n1xv5m63g5";//애플리케이션 클라이언트 아이디값";
+            String clientSecret = "PJoblCQiihINMwQD5pX3WNQVLZuw6wvIZv0ec6DM";//애플리케이션 클라이언트 시크릿값";
+
+            RestTemplate restTemplate = new RestTemplate();
+
+            //header
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
+            headers.add("X-NCP-APIGW-API-KEY", clientSecret);
+
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
+            URI uri = UriComponentsBuilder.fromUriString(String.valueOf(url)).build().toUri();
+            ResponseEntity<String> apiResult = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+            //log.info("유알엘 : "+url);
+            //log.info("apiResult : " + apiResult);
+
+            data.put("direction_noGps_device",direction_noGps_device);
+            data.put("direction_noGps_deviceSize",direction_noGps_device.size());
+            data.put("direction_gps_laList",direction_gps_laList);
+            data.put("direction_gps_loList",direction_gps_loList);
+            data.put("directionSize", directionSize);
+            data.put("htmlStart", htmlStart);
+            data.put("htmlGoal", htmlGoal);
+            data.put("apiResultBody", apiResult.getBody());
+        }else {
+//            log.info("도착점이 없습니다(에러)");
+//            log.info("유알엘 : "+url);
+            data.put("apiResultBody", null);
+        }
+//        log.info("htmlStart : "+htmlStart);
+//        log.info("htmlGoal : "+htmlGoal);
+
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());
     }
