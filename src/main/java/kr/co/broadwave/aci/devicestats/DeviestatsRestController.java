@@ -1,6 +1,8 @@
 package kr.co.broadwave.aci.devicestats;
 
+import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
 import kr.co.broadwave.aci.common.AjaxResponse;
+import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.equipment.EquipmentEmnumberDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
@@ -30,12 +32,14 @@ public class DeviestatsRestController {
     private final MasterCodeService masterCodeService;
     private final EquipmentService equipmentService;
     private final DevicestatusService devicestatusService;
-
+    private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
     @Autowired
     public DeviestatsRestController(EquipmentService equipmentService,
                                     MasterCodeService masterCodeService,
+                                    ACIAWSIoTDeviceService aciawsIoTDeviceService,
                                     DevicestatusService devicestatusService) {
         this.equipmentService = equipmentService;
+        this.aciawsIoTDeviceService = aciawsIoTDeviceService;
         this.masterCodeService = masterCodeService;
         this.devicestatusService = devicestatusService;
     }
@@ -417,5 +421,21 @@ public class DeviestatsRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 장비 최신업데이트요청
+    @PostMapping("deviceUpdateInfo")
+    public ResponseEntity<Map<String,Object>> deviceUpdateInfo(@RequestParam(value="deviceid", defaultValue="") String deviceid
+            ,@RequestParam(value="today", defaultValue="") String today) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setDeviceInfoRequest(deviceid,today);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+
+    }
 
 }

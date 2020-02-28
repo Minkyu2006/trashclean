@@ -36,64 +36,160 @@
 	<script type="text/javascript">
 
          $(function(){
-			console.log("조회한 장비코드 : "+$("#header_deviceid").text());
+			//console.log("조회한 "+$("#header_deviceid").text());
+
+			timeStampfnc($("#updateTime").text(),"#updateTime",null); // 업데이트 시간계산실행
+
+			 var $onlineTime = $("#onlineTime");
+			if($onlineTime.val()!==""){
+				//console.log("오프라인");
+				//console.log("onlineTime : "+$("#onlineTime").val());
+				timeStampfnc($onlineTime.val(),"#offlineTimeName","최종종료일시 : "); // 최종종료 시간계산실행
+			}
+
+			 deviceinstallDate($("#devcieInstalDateBtw").text());
+
+			 $("#upDateRequest").on('click',function(){
+				 upDateRequest();
+			 });
+
+			 setTimeout(function() {
+				 $("#loadingInfo").hide();
+			 },2000);
+
 		 });
+
+         // 최신업데이트요청
+		 function upDateRequest() {
+			 var timestamp =+ new Date(); //현재날짜 타임스탬프 밀리세컨드
+			 var token = $("meta[name='_csrf']").attr("content");
+			 var header = $("meta[name='_csrf_header']").attr("content");
+			 $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			 var params = {
+				 deviceid : $("#deviceid").text(),
+				 today : timestamp
+			 };
+
+			 $.ajax({
+				 url:'/api/deviestats/deviceUpdateInfo',
+				 type : 'post',
+				 data : params,
+				 cache:false,
+				 error:function(request){
+					 ajaxErrorMsg(request);
+				 },
+				 success: function(res){
+					 //화면 출력
+					 statuscode= res.status;
+					 if (statuscode ===200) {
+						 alertSuccess("최신업데이트요청을 하였습니다.");
+					 }else{
+						 alertCancel("처리오류");
+					 }
+				 }
+			 });
+		 }
+
+		 // 밀리세컨드 타임스탬프 계산하기
+         function timeStampfnc(timestampVal,idName,idComment) {
+			 // console.log("timestampVal : "+timestampVal);
+			 // console.log("idName : "+idName);
+			 // console.log("idComment : "+idComment);
+
+			 var deviceOnOffTimeStamp = new Date(Number(timestampVal));
+			 var deviceOnOffYear = deviceOnOffTimeStamp.getFullYear();
+			 var deviceOnOffMonth = Number(deviceOnOffTimeStamp.getMonth() + 1);
+			 if (deviceOnOffMonth < 10) {
+			  deviceOnOffMonth = "0"+deviceOnOffMonth
+			 }
+			 var deviceOnOffDate = deviceOnOffTimeStamp.getDate();
+			 if (deviceOnOffDate < 10) {
+			  deviceOnOffDate = "0" + deviceOnOffDate
+			 }
+			 var deviceOnOffHour = deviceOnOffTimeStamp.getHours();
+			 if (deviceOnOffHour < 10) {
+			  deviceOnOffHour = "0" + deviceOnOffHour
+			 }
+			 var deviceOnOffMinute = deviceOnOffTimeStamp.getMinutes();
+			 if (deviceOnOffMinute < 10) {
+			  deviceOnOffMinute = "0" + deviceOnOffMinute
+			 }
+			 var deviceOnOffSecond = deviceOnOffTimeStamp.getSeconds();
+			 if (deviceOnOffSecond < 10) {
+			  deviceOnOffSecond = "0" + deviceOnOffSecond
+			 }
+			 var devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond;
+
+			 // console.log("deviceOnOffTimeStamp : "+deviceOnOffTimeStamp);
+			 // console.log("devicetime : "+devicetime);
+			 if(idComment!==null){
+				 $(idName).text(idComment+devicetime);
+			 }else{
+				 $(idName).text(devicetime);
+			 }
+		 }
+
+		 //운영일구하기
+		 function deviceinstallDate(installDate) {
+			 var today = new Date(); // 현재날짜시간
+			 var dateObj = new Date(installDate.substring(0,4),Number(installDate.substring(4,6))-1,installDate.substring(6,8));
+			 //console.log("dateObj :"+dateObj);
+			 date1 = parseInt(today.getTime()/1000);
+			 date2 = parseInt(dateObj.getTime()/1000);
+			 var timeDifference = date1 - date2;
+			 var timeDifferenceInHours = timeDifference / 60 / 60;
+			 var betweenDay = timeDifferenceInHours  / 24;
+			 $("#devcieInstalDateBtw").text(parseInt(betweenDay)+"일");
+		 }
 
     </script>
 
 </head>
-
 <div layout:fragment="content" class="winpop">
-    <section class="section">
-        <article class="article">
-		<h2 id="header_deviceid" th:text="${deviceid}" class="article__heading"></h2>
+    <section class="section" style="padding: 10px">
+        <article class="article" style="padding: 13px">
+		<h2 id="header_deviceid" th:text="${header_deviceid}" class="article__heading"></h2>
 		<div class="winpop__layout--flex">
 			<div class="winpop__section">
-				<div id="stateLoading" class="c-loader">
-<!--					html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';-->
-<!--					files.push(nvl(value.filePath+'/s_'+value.saveFileName,"확 인 불 가"));-->
-					<div class="c-loader__active c-loader__active--ring">
-						<span class="equipment__stat normal">정상</span>
-						<span class="equipment__connect on">온라인</span>
-					</div>
-					<div class="equipment__img">
-						<span class="equipment__connect on">온라인</span>
-						<img th:src="${AWSS3URL}+${filePath}+'/s_'+${saveFileName}" />
-					<span>최종종료일시 :  2020-02-27 11:05:05</span>
-					</div>
+				<div class="equipment__img">
+					<span th:class="${status}" th:text="${stausName}"></span>
+					<span th:class="${onoffline}" th:text="${offlineName}"></span>
+					<img th:src="${AWSS3URL}+${filePath}+'/s_'+${saveFileName}" />
+					<span id="offlineTimeName"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">
 				</div>
 			</div>
 
 			<div class="winpop__section">
-				<h4 class="equipment__section-title">장치 상세 정보</h4>
+				<h4 class="equipment__section-title">장비 기본정보</h4>
 				<ul class="equipment__info">
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">장비 ID : </span>
-						<span class="equipment__info-value">ISOL-KR-SEL-0001</span>
+						<span class="equipment__info-value" id="deviceid" th:text="${deviceid}"></span>
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">모델타입 : </span>
-						<span class="equipment__info-value">iSolarbin</span>
+						<span class="equipment__info-value" th:text="${emtype}"></span>
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">모델명 : </span>
-						<span class="equipment__info-value">iSolarbinS120</span>
+						<span class="equipment__info-value" th:text="${mdName}"></span>
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">최대적재량 : </span>
-						<span class="equipment__info-value">120L</span>
+						<span class="equipment__info-value" th:text="${mdMaxUnit}"></span>
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">운영사 : </span>
-						<span class="equipment__info-value">인텔</span>
+						<span class="equipment__info-value" th:text="${company}"></span>
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">국가/지역 : </span>
-						<span class="equipment__info-value">대한민국/서울</span>
+						<span class="equipment__info-value" th:text="${emCountryLoaction}"></span>
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">설치일자 : </span>
-						<span class="equipment__info-value">2020년 02월 01일</span>
+						<span class="equipment__info-value" th:text="${instalDate}"></span>
 					</li>
 				</ul>
 			</div>
@@ -102,43 +198,80 @@
         </article>
     </section>
 
-	<section class="section">
-		<article class="article">
-			<ul class="equipment__info">
-					<li class="equipment__info-item">
-						<span class="equipment__info-title">장비 ID : </span>
-						<span class="equipment__info-value">ISOL-KR-SEL-0001</span>
-					</li>
-					<li class="equipment__info-item">
-						<span class="equipment__info-title">모델타입 : </span>
-						<span class="equipment__info-value">iSolarbin</span>
-					</li>
-					<li class="equipment__info-item">
-						<span class="equipment__info-title">모델명 : </span>
-						<span class="equipment__info-value">iSolarbinS120</span>
-					</li>
-					<li class="equipment__info-item">
-						<span class="equipment__info-title">최대적재량 : </span>
-						<span class="equipment__info-value">120L</span>
-					</li>
-					<li class="equipment__info-item">
-						<span class="equipment__info-title">운영사 : </span>
-						<span class="equipment__info-value">인텔</span>
-					</li>
-					<li class="equipment__info-item">
-						<span class="equipment__info-title">국가/지역 : </span>
-						<span class="equipment__info-value">대한민국/서울</span>
-					</li>
-					<li class="equipment__info-item">
-						<span class="equipment__info-title">설치일자 : </span>
-						<span class="equipment__info-value">2020년 02월 01일</span>
-					</li>
-				</ul>
+	<section class="section" style="padding: 10px">
+		<article class="article" style="padding: 13px">
+			<div class="winpop__layout--flex">
+				<div class="winpop__section">
+					<h4 class="equipment__section-title">장비 상태정보</h4>
+					<ul class="equipment__info">
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">운영일 : </span>
+							<span class="equipment__info-value" id="devcieInstalDateBtw" th:text="${devcieInstalDateBtw}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">온도 : </span>
+							<span class="equipment__info-value" th:text="${temp_brd}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">배출량 : </span>
+							<span class="equipment__info-value" th:text="${level}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">배터리잔량 : </span>
+							<span class="equipment__info-value" th:text="${batt_level}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">태양광판넬 전류 : </span>
+							<span class="equipment__info-value" th:text="${solar_current}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">태양광판넬 전압 : </span>
+							<span class="equipment__info-value" th:text="${solar_voltage}"></span>
+						</li>
+					</ul>
+				</div>
+				<div class="winpop__section">
+					<h4 class="equipment__section-title">장비 상세정보</h4>
+					<ul class="equipment__info">
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">업데이트 시간 : </span>
+							<span class="equipment__info-value" id="updateTime" th:text="${updateTime}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">펌웨어 : </span>
+							<span class="equipment__info-value" th:text="${firmware}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">보드 SerialNo. : </span>
+							<span class="equipment__info-value" th:text="${serialno}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">통신사 : </span>
+							<span class="equipment__info-value" th:text="${carrier}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">전화번호 : </span>
+							<span class="equipment__info-value" th:text="${phonenumber}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">블루투스MAC : </span>
+							<span class="equipment__info-value" th:text="${blemacaddr}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">LoRaID : </span>
+							<span class="equipment__info-value" th:text="${loraid}"></span>
+						</li>
+					</ul>
+				</div>
+			</div>
 		</article>
 	</section>
 	
-	<button class="c-button winpop__button">최신업데이트요청</button>
-
-
+	<button id="upDateRequest" class="c-button winpop__button">최신업데이트요청</button>
+</div>
+<div id='alertpop'>
+</div>
+<div id="loadingInfo" class="c-loader" style="background-color: #FFFFFF">
+	<div class="c-loader__active c-loader__active--ring"></div>
 </div>
 </html>
