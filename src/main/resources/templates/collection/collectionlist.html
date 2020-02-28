@@ -103,7 +103,10 @@
 
 					var html ='';
 					for(i=0; i<res.data.collectionSize; i++) {
-						html += '<li class="m-collectionlist__heading" id="collectionDevice'+idx+i+'" onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')">'+nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") + '</li>';
+						html += '<li id="collectionDevice'+idx+i+'" onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')">';
+						html += '<a href="#">' + nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") +'</a>'
+						html += '<ul id=""></ul'
+						html += '</li>'
 					}
 
 					$collectionTaskList.html(html);

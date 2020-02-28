@@ -907,11 +907,11 @@ a.c-button {
 }
 .c-search-form__button {
 	position: absolute;
-	top:0;
+	bottom:0;
 	right: 0;
 	width: 30px;
 	height: 30px;
-	background: #efefef url(/assets/images/icon__search--b.png) no-repeat;
+	background: #8d8d8d url(/assets/images/icon__search--b.png) no-repeat;
 	background-position: center center;
 	-webkit-background-size: 24px 24px;
 	background-size: 24px 24px;
