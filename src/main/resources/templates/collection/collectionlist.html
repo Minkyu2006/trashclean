@@ -35,6 +35,19 @@
 				return false;
 			})
 		}
+		
+		function listhide2() {
+			var $collectionlist__headingdepth = $('.m-collectionlist__detail-heading');
+			$('.m-collectionlist__detail-depth').hide();
+			$collectionlist__headingdepth.on('click', function(e) {
+				$(this).toggleClass('active');
+				$(this).next().slideToggle(300);
+				$collectionlist__headingdepth.not(this).removeClass('active');
+				$collectionlist__headingdepth.not(this).next().slideUp(300);
+				e.preventDefault();
+				return false;
+			})
+		}
 
 		// 수거업무리스트 - 수거예정일
 		function collectionTaskListDate() {
@@ -103,13 +116,16 @@
 
 					var html ='';
 					for(i=0; i<res.data.collectionSize; i++) {
-						html += '<li onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')">';
-						html += '<a href="#">' + nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") +'</a>';
-						html += '<ul id="collectionDevice'+idx+i+'" class="m-collectionlist__detail"></ul>';
+						html += '<li class="nonpadding" onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')">';
+						html += '<div class="m-collectionlist__box">'
+						html += '<a href="#" class="m-collectionlist__detail-heading" style="text-align: left;">' + nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") +'</a>';
+						html += '<ul id="collectionDevice'+idx+i+'" class="m-collectionlist__detail-depth"></ul>';
+						html += '</div>'
 						html += '</li>'
 					}
 
 					$collectionTaskList.html(html);
+					listhide2();
 				}
 			});
 		}
@@ -153,7 +169,7 @@
 					html += '<li >' + '모델타입 : ' + nvl(res.data.collection.devicetype, "확 인 불 가") + ' - ' + nvl(res.data.collection.devicemodeltype, "확 인 불 가") + '</li>';
 					html += '<li >' + '운영사 : ' + nvl(res.data.collection.csOperator, "확 인 불 가") + '</li>';
 					html += '<li ><img alt="" width="100" src="' + baseurl + nvl(res.data.collection.filePath, "확 인 불 가") + nvl(res.data.collection.saveFileName, "확 인 불 가") + '"</img></li>';
-					html += '<li ><a class="m-collectionlist__button" href="/collection/collectionprocess/' + echoNull2Blank(res.data.collection.id) + '">수거업무</a></li>';
+					html += '<li style="text-align: right;"><a class="m-collectionlist__button" href="/collection/collectionprocess/' + echoNull2Blank(res.data.collection.id) + '">수거업무</a></li>';
 					$collectionDevice.html(html);
 				}
 			});

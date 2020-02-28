@@ -206,6 +206,30 @@ body {
 	background-color: #89aaa1;
 	color: #fff;
 }
+.m-collectionlist__box {
+	position: relative;
+	width: 100%;
+	background-color: #fff;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.m-collectionlist__box li {
+	
+}
+.m-collectionlist__detail-heading {
+	display: block;
+	width: 100%;
+	height: 30px;
+	padding: 0 10px;
+	color: #333;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 30px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
 .m-collectionlist__detail {
 	padding: 5px 10px;
 	background-color: #ecffff;
@@ -231,6 +255,9 @@ body {
 .m-collectionlist__detail li:last-child {
 	text-align: right;
 }
+.m-collectionlist__detail li.nonpadding {
+	padding: 0;
+}
 .m-collectionlist__button {
 	display: inline-block;
 	padding: 5px;
@@ -240,6 +267,18 @@ body {
 	border-radius: 5px;
 	color: #fff;
 	font-size: 12px;
+}
+.m-collectionlist__detail-depth {
+	padding: 5px 10px;
+	border-top: 1px solid #666;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.m-collectionlist__detail-depth li,
+.m-collectionlist__detail-depth li:nth-child(2),
+.m-collectionlist__detail-depth li:last-child {
+	text-align: left;
 }
 
 .m-collection {
