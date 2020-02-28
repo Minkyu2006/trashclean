@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+
+	<meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+	<!-- default header name is X-CSRF-TOKEN -->
+	<meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+	<!-- 공통으로 쓰이는 css파일을넣는다.-->
+	<link rel="stylesheet" href="/assets/css/main.css"/>
+	<link rel="stylesheet" href="/assets/css/new/component.css"/>
+	<link rel="stylesheet" href="/assets/css/new/common.css"/>
+	<link rel="stylesheet" href="/assets/js/alert/min_alert.css"/>
+	<link rel="stylesheet" href="/assets/js/charts/Chart.min.css"/>
+	<link rel="stylesheet" href="/assets/js/c3/c3.css"/>
+
+	<!-- 공통으로 쓰이는 js파일을넣는다.-->
+	<script src="/assets/js/jquery.min.js"></script>
+	<script src="/assets/js/jquery-ui.min.js"></script>
+	<script src="/assets/js/monthpicker/MonthPicker.min.js"></script>
+	<script src="/assets/js/broadwave.common.js"></script>
+	<!--<script src="/assets/js/common-pc.js"></script>-->
+	<script src="/assets/js/broadwave.ajax.js"></script>
+	<script src="/assets/js/charts/Chart.min.js"></script>
+	<script src="/assets/js/charts/ChartBundle.min.js"></script>
+	<script src="/assets/js/charts/utils.js"></script>
+	<script src="/assets/js/d3/d3.js"></script>
+	<script src="/assets/js/c3/c3.js"></script>
+	<script src="/assets/js/new/common.js"></script>
+	<script src="/assets/js/alert/min_alert.js"></script>
+
+	<script type="text/javascript">
+
+         $(function(){
+			console.log("조회한 장비코드 : "+$("#header_deviceid").text());
+		 });
+
+    </script>
+
+</head>
+
+<div layout:fragment="content" class="contents-body">
+    <section class="section">
+        <article class="article">
+		<h2 id="header_deviceid" th:text="${deviceid}" class="article__heading"></h2>
+
+			<div class="equipment__section">
+				<div id="stateLoading" class="c-loader">
+					<div class="c-loader__active c-loader__active--ring">
+						<span class="equipment__stat normal">정상</span>
+						<span class="equipment__connect on">온라인</span>
+					</div>
+					<div class="equipment__img">
+						<img alt="이미지" src=""/>
+					<span>최종종료일시 :  2020-02-27 11:05:05</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="equipment__section">
+				<h4 class="equipment__section-title">장치 상세 정보</h4>
+				<ul class="equipment__info">
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">장비 ID : </span>
+						<span class="equipment__info-value">ISOL-KR-SEL-0001</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">모델타입 : </span>
+						<span class="equipment__info-value">iSolarbin</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">모델명 : </span>
+						<span class="equipment__info-value">iSolarbinS120</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">최대적재량 : </span>
+						<span class="equipment__info-value">120L</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">운영사 : </span>
+						<span class="equipment__info-value">인텔</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">국가/지역 : </span>
+						<span class="equipment__info-value">대한민국/서울</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">설치일자 : </span>
+						<span class="equipment__info-value">2020년 02월 01일</span>
+					</li>
+				</ul>
+			</div>
+
+			<div class="c-function">
+				<div class="c-function__item">
+					<button class="c-button">최신업데이트요청</button>
+				</div>
+			</div>
+
+        </article>
+    </section>
+
+	<section class="section">
+		<article class="article">
+			<div class="equipment__section">
+				<ul class="equipment__info">
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">장비 ID : </span>
+						<span class="equipment__info-value">ISOL-KR-SEL-0001</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">모델타입 : </span>
+						<span class="equipment__info-value">iSolarbin</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">모델명 : </span>
+						<span class="equipment__info-value">iSolarbinS120</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">최대적재량 : </span>
+						<span class="equipment__info-value">120L</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">운영사 : </span>
+						<span class="equipment__info-value">인텔</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">국가/지역 : </span>
+						<span class="equipment__info-value">대한민국/서울</span>
+					</li>
+					<li class="equipment__info-item">
+						<span class="equipment__info-title">설치일자 : </span>
+						<span class="equipment__info-value">2020년 02월 01일</span>
+					</li>
+				</ul>
+			</div>
+		</article>
+	</section>
+
+
+</div>
+</html>

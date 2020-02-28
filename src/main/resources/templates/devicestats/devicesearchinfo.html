@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate ="~{layout/default}">
+<head>
+    <script>
+
+        $(function(){
+			$("#header_device").css('display','block');
+			$("#default_wrap").on('click',function(){
+				$("#header_device").css('display','none');
+			});
+
+			deviceList();
+
+			$("#btnSearch").on('click',function(){
+				deviceInfo($('#deviceid').val());
+			});
+
+		});
+
+        // 장비리스트
+		function deviceList() {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+
+			var $deviceid = $('#deviceid');
+
+			$.ajax({
+				url:'/api/equipment/devicelist',
+				type : 'post',
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					var html = '';
+					$.each(res.data.equipment, function(key, value){
+						html +=  '<option value='+value.emNumber+'>'+value.emNumber+'</option>'
+					});
+					$deviceid.html(html);
+				}
+			});
+		}
+
+		function deviceInfo(emNumber) {
+			var newWindow;
+			var setting = "top=5, left=20, scrollbars=no ,width=630 ,height=800";
+			newWindow = window.open ("/devicestats/deviceinfo/"+emNumber , "", setting);
+			newWindow.focus();
+		}
+
+    </script>
+
+</head>
+
+<div layout:fragment="content" class="contents-body">
+
+    <section class="section">
+        <article class="article">
+			<h2 class="article__heading">장비정보조회</h2>
+        	<div class="control">
+        		<div class="control__head">
+        			<div class="control__head-item">
+        				<div class="c-select">
+	        				<label for="deviceid" class="c-select__label">장비선택</label>
+	        				<select name="deviceid" id="deviceid" class="c-select__input">
+	        				</select>
+	       				</div>
+        			</div>
+        			<div class="control__head-item" style="padding-top: 15px;">
+        				<button class="c-button c-button--point" id="btnSearch">장비정보조회</button>
+        			</div>
+				</div>
+
+				<div class="c-function">
+				</div>
+			</div>
+
+        </article>
+    </section>
+
+</div>
+</html>
