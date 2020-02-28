@@ -43,12 +43,12 @@
 
 </head>
 
-<div layout:fragment="content" class="contents-body">
+<div layout:fragment="content" class="winpop">
     <section class="section">
         <article class="article">
 		<h2 id="header_deviceid" th:text="${deviceid}" class="article__heading"></h2>
-
-			<div class="equipment__section">
+		<div class="winpop__layout--flex">
+			<div class="winpop__section">
 				<div id="stateLoading" class="c-loader">
 					<div class="c-loader__active c-loader__active--ring">
 						<span class="equipment__stat normal">정상</span>
@@ -61,7 +61,7 @@
 				</div>
 			</div>
 
-			<div class="equipment__section">
+			<div class="winpop__section">
 				<h4 class="equipment__section-title">장치 상세 정보</h4>
 				<ul class="equipment__info">
 					<li class="equipment__info-item">
@@ -94,20 +94,14 @@
 					</li>
 				</ul>
 			</div>
-
-			<div class="c-function">
-				<div class="c-function__item">
-					<button class="c-button">최신업데이트요청</button>
-				</div>
-			</div>
-
+		</div>
+			
         </article>
     </section>
 
 	<section class="section">
 		<article class="article">
-			<div class="equipment__section">
-				<ul class="equipment__info">
+			<ul class="equipment__info">
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">장비 ID : </span>
 						<span class="equipment__info-value">ISOL-KR-SEL-0001</span>
@@ -137,9 +131,10 @@
 						<span class="equipment__info-value">2020년 02월 01일</span>
 					</li>
 				</ul>
-			</div>
 		</article>
 	</section>
+	
+	<button class="c-button winpop__button">최신업데이트요청</button>
 
 
 </div>

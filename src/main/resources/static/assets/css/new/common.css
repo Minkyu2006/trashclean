@@ -2151,7 +2151,50 @@ h4.article__heading {
 }
 
 
-
+.winpop {
+	position: relative;
+	width: 100%;
+	padding-bottom: 48px;
+	background-color: #f7f7f7;
+}
+.winpop .section:before,
+.winpop .article:before,
+.winpop__layout--flex:before {
+	content: " ";
+	display: table;
+}
+.winpop .section:after,
+.winpop .article:after,
+.winpop__layout--flex:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.winpop .section + .section {
+	margin-top: 0;
+}
+.winpop__layout--flex {
+	position: relative;
+	width: 100%;
+}
+.winpop__layout--flex .winpop__section {
+	float: left;
+	position: relative;
+	width: 50%;
+	height: 240px;
+	padding: 20px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.winpop__layout--flex .winpop__section + .winpop__section {
+	border-left: 1px solid #ddd;
+}
+.winpop__button {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+}
 
 
 
