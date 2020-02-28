@@ -103,9 +103,9 @@
 
 					var html ='';
 					for(i=0; i<res.data.collectionSize; i++) {
-						html += '<li id="collectionDevice'+idx+i+'" onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')">';
-						html += '<a href="#">' + nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") +'</a>'
-						html += '<ul id=""></ul'
+						html += '<li onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')">';
+						html += '<a href="#">' + nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") +'</a>';
+						html += '<ul id="collectionDevice'+idx+i+'" class="m-collectionlist__detail"></ul>';
 						html += '</li>'
 					}
 
@@ -148,14 +148,12 @@
 					}
 					var baseurl = res.data.awss3url;
 					var html ='';
-					html += '<ul class="m-collectionlist__detail">';
 					html += '<li >' + '장비코드 : ' + nvl(res.data.collection.deviceid, "확 인 불 가") + '</li>';
 					html += '<li >' + '수거번호 : ' + nvl(res.data.collection.ctCode, "확 인 불 가") + '</li>';
 					html += '<li >' + '모델타입 : ' + nvl(res.data.collection.devicetype, "확 인 불 가") + ' - ' + nvl(res.data.collection.devicemodeltype, "확 인 불 가") + '</li>';
 					html += '<li >' + '운영사 : ' + nvl(res.data.collection.csOperator, "확 인 불 가") + '</li>';
 					html += '<li ><img alt="" width="100" src="' + baseurl + nvl(res.data.collection.filePath, "확 인 불 가") + nvl(res.data.collection.saveFileName, "확 인 불 가") + '"</img></li>';
 					html += '<li ><a class="m-collectionlist__button" href="/collection/collectionprocess/' + echoNull2Blank(res.data.collection.id) + '">수거업무</a></li>';
-					html += '</ul>';
 					$collectionDevice.html(html);
 				}
 			});
