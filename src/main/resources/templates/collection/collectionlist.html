@@ -116,14 +116,13 @@
 
 					var html ='';
 					for(i=0; i<res.data.collectionSize; i++) {
-						html += '<li class="nonpadding" onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')">';
+						html += '<li class="nonpadding">';
 						html += '<div class="m-collectionlist__box">'
-						html += '<a href="#" class="m-collectionlist__detail-heading" style="text-align: left;">' + nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") +'</a>';
+						html += '<a href="#" onclick="collectionTaskListInfo('+"'"+nvl(res.data.collection[i].id,null)+"'"+','+idx+','+i+')" class="m-collectionlist__detail-heading" style="text-align: left;">' + nvl(res.data.collection[i].ctSeq, "확 인 불 가")+'번 수거장비 : '+ nvl(res.data.collection[i].deviceid, "확 인 불 가") +'</a>';
 						html += '<ul id="collectionDevice'+idx+i+'" class="m-collectionlist__detail-depth"></ul>';
-						html += '</div>'
+						html += '</div>';
 						html += '</li>'
 					}
-
 					$collectionTaskList.html(html);
 					listhide2();
 				}

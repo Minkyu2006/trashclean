@@ -53,6 +53,10 @@
 				 upDateRequest();
 			 });
 
+			 $("#infoReload").on('click',function(){
+				 location.reload();
+			 });
+
 			 setTimeout(function() {
 				 $("#loadingInfo").hide();
 			 },2000);
@@ -266,8 +270,10 @@
 			</div>
 		</article>
 	</section>
-	
+
+	<button id="infoReload" class="c-button winpop__button" style="right: 4%;bottom: 92%;color:black;">새로고침</button>
 	<button id="upDateRequest" class="c-button winpop__button">최신업데이트요청</button>
+
 </div>
 <div id='alertpop'>
 </div>
