@@ -50,12 +50,15 @@
 		<div class="winpop__layout--flex">
 			<div class="winpop__section">
 				<div id="stateLoading" class="c-loader">
+<!--					html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';-->
+<!--					files.push(nvl(value.filePath+'/s_'+value.saveFileName,"확 인 불 가"));-->
 					<div class="c-loader__active c-loader__active--ring">
 						<span class="equipment__stat normal">정상</span>
 						<span class="equipment__connect on">온라인</span>
 					</div>
 					<div class="equipment__img">
-						<img alt="이미지" src=""/>
+						<span class="equipment__connect on">온라인</span>
+						<img th:src="${AWSS3URL}+${filePath}+'/s_'+${saveFileName}" />
 					<span>최종종료일시 :  2020-02-27 11:05:05</span>
 					</div>
 				</div>

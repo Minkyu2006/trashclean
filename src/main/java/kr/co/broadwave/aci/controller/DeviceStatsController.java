@@ -2,10 +2,15 @@ package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.bscodes.CodeType;
+import kr.co.broadwave.aci.dashboard.DashboardDeviceListViewDto;
 import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +29,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/devicestats")
 public class DeviceStatsController {
+
+    @Value("${aci.aws.s3.bucket.url}")
+    private String AWSS3URL;
 
     private final MasterCodeService masterCodeService;
     private final ACIAWSLambdaService aciawsLambdaService;
@@ -85,7 +93,7 @@ public class DeviceStatsController {
     }
 
     @RequestMapping("deviceinfo/{emNumber}")
-    public String deviceinfo(Model model,@PathVariable String emNumber){
+    public String deviceinfo(Model model,@PathVariable String emNumber, @PageableDefault Pageable pageable){
 
         // Json String emNumber 만들기
         String stateEmNumber = '"'+emNumber+'"';
@@ -96,18 +104,29 @@ public class DeviceStatsController {
         String aswDeviceid = deviceids.toString().replace("=",":").replace(" ","");
 
         HashMap<String, HashMap<String,String>> deviceInfoMap = aciawsLambdaService.getDeviceInfo(emNumber);
-        HashMap<String, HashMap<String,String>> resData = dashboardService.getDeviceLastestState(aswDeviceid);
-
-        System.out.println("emNumber : "+emNumber);
-        System.out.println("deviceInfoMap : "+deviceInfoMap);
-        System.out.println("resData : "+resData);
+        HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceid);
+        Page<DashboardDeviceListViewDto> deviceInfoListDtos = dashboardService.findByDashboardListView(emNumber, null, null, null, pageable);
+//        System.out.println("deviceInfoMap : "+deviceInfoMap);
+//        System.out.println("resData : "+resData);
 
         HashMap<String,String> deviceInfo = deviceInfoMap.get("data");
-//        HashMap<String,String> deviceAws = resData.get("data");
+
+        HashMap map = (HashMap)resData.get("data").get(0);
+        System.out.println("deviceid : "+map.get("deviceid"));
+        System.out.println("status : "+map.get("status"));
+
+        System.out.println("emNumber : "+emNumber);
         System.out.println("deviceInfo : "+deviceInfo);
-        //System.out.println("deviceAws : "+deviceAws);
+        System.out.println("deviceInfoListDtos : "+deviceInfoListDtos.getContent());
+//        System.out.println("deviceAws : "+deviceAws);
+
+
 
         model.addAttribute("deviceid", deviceInfo.get("deviceid"));
+
+        model.addAttribute("AWSS3URL", AWSS3URL);
+        model.addAttribute("filePath", deviceInfoListDtos.getContent().get(0).getFilePath());
+        model.addAttribute("saveFileName", deviceInfoListDtos.getContent().get(0).getSaveFileName());
 //        model.addAttribute("equipdCountrys", equipdCountrys);
 //        model.addAttribute("equipdTypes", equipdTypes);
 //        model.addAttribute("equipdCountrys", equipdCountrys);
