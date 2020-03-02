@@ -61,6 +61,15 @@
 				 $("#loadingInfo").hide();
 			 },2000);
 
+			 var $statusName = $("#statusName");
+			 if($statusName.text()==="normal"){
+				 $statusName.text("정상");
+			 }else if($statusName.text()==="caution"){
+				 $statusName.text("주의");
+			 }else{
+				 $statusName.text("심각");
+			 }
+
 		 });
 
          // 최신업데이트요청
@@ -157,7 +166,7 @@
 		<div class="winpop__layout--flex">
 			<div class="winpop__section">
 				<div class="equipment__img">
-					<span th:class="${status}" th:text="${stausName}"></span>
+					<span id="statusName" th:class="${status}" th:text="${stausName}"></span>
 					<span th:class="${onoffline}" th:text="${offlineName}"></span>
 					<img th:src="${AWSS3URL}+${filePath}+'/s_'+${saveFileName}" />
 					<span id="offlineTimeName"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">

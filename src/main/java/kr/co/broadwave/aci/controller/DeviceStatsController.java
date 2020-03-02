@@ -120,15 +120,6 @@ public class DeviceStatsController {
 //        System.out.println("deviceInfo : "+deviceInfo);
 //        System.out.println("onOffline : "+onOffline);
 
-        String stausName = null;
-        if(awsData.get("status")=="normal"){
-            stausName="정상";
-        }else if(awsData.get("status")=="caution"){
-            stausName="주의";
-        }else{
-            stausName="심각";
-        }
-
         boolean onoffline = Boolean.parseBoolean(String.valueOf(onOfflineData.get("online")));
         //System.out.println("onoffline : "+onoffline);
         if(onoffline){
@@ -144,7 +135,7 @@ public class DeviceStatsController {
 
         // 장비온오프라인정보
         model.addAttribute("status","equipment__stat "+awsData.get("status"));
-        model.addAttribute("stausName",stausName);
+        model.addAttribute("stausName",awsData.get("status"));
 
         // 장비이미지전송
         model.addAttribute("AWSS3URL", AWSS3URL);
