@@ -51,6 +51,11 @@ public class CollectionTaskRestController {
     @Value("${aci.aws.s3.bucket.url}")
     private String AWSS3URL;
 
+    @Value("${aci.naver.client.id}")
+    private String NAVERCLIENTID;
+    @Value("${aci.naver.client.secret}")
+    private String NAVERCLIENTSECRET;
+
     private final ModelMapper modelMapper;
     private final EquipmentService equipmentService;
     private final AccountService accountService;
@@ -509,6 +514,9 @@ public class CollectionTaskRestController {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
+//        log.info("NAVERCLIENTID : "+NAVERCLIENTID);
+//        log.info("NAVERCLIENTSECRET : "+NAVERCLIENTSECRET);
+
         List<String> street_gps_laList = new ArrayList<>();
         List<String> street_gps_loList = new ArrayList<>();
 
@@ -634,8 +642,8 @@ public class CollectionTaskRestController {
             }
 
             //Rest URL (Open Api Test)
-            String clientId = "n1xv5m63g5";//애플리케이션 클라이언트 아이디값";
-            String clientSecret = "PJoblCQiihINMwQD5pX3WNQVLZuw6wvIZv0ec6DM";//애플리케이션 클라이언트 시크릿값";
+            String clientId = NAVERCLIENTID;//애플리케이션 클라이언트 아이디값";
+            String clientSecret = NAVERCLIENTSECRET;//애플리케이션 클라이언트 시크릿값";
 
             //ex
 //            String via = "127.050374,37.546808"; //경유지 1번장치
@@ -677,8 +685,8 @@ public class CollectionTaskRestController {
             //log.info("골인지점만있음");
             url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima");
 
-            String clientId = "n1xv5m63g5";//애플리케이션 클라이언트 아이디값";
-            String clientSecret = "PJoblCQiihINMwQD5pX3WNQVLZuw6wvIZv0ec6DM";//애플리케이션 클라이언트 시크릿값";
+            String clientId = NAVERCLIENTID;//애플리케이션 클라이언트 아이디값";
+            String clientSecret = NAVERCLIENTSECRET;//애플리케이션 클라이언트 시크릿값";
 
             RestTemplate restTemplate = new RestTemplate();
 

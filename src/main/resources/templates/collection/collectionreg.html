@@ -4,6 +4,10 @@
 	  layout:decorate ="~{layout/default}">
 
 <head>
+
+	<!--네이버지도-->
+	<script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=f5am0m1e6z&callback=CALLBACK_FUNCTION"></script>
+
 	<script type="text/javascript">
 		$(function() {
 			$("#header_collection").css('display','block');
@@ -669,9 +673,9 @@
 			// console.log("center_lagps : " + center_lagps);
 			// console.log("center_logps : " + center_logps);
 
+			mapDiv = document.getElementById('naverMap');
 			var center = new naver.maps.LatLng(center_lagps,center_logps),
-
-			map = new naver.maps.Map(document.getElementById('naverMap'), {
+			map = new naver.maps.Map(mapDiv, {
 				center: center,
 				useStyleMap: true,
 				zoom: 11,
@@ -702,7 +706,6 @@
 					// clickable: true
 				});
 			}
-
 			$("#directionLoading").hide();
 		}
 
