@@ -102,4 +102,15 @@ public class TestpageController {
     public String devicebasevaluetest(){
         return "testpage/devicebasevaluetest";
     }
+
+    @RequestMapping("routingtest1")
+    public String routingtest1(){
+        return "testpage/routingtest1";
+    }
+
+    @RequestMapping("routingtest2")
+    public String routingtest2(){
+        return "testpage/routingtest2";
+    }
+
 }

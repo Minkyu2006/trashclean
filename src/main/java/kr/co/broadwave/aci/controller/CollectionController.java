@@ -111,4 +111,9 @@ public class CollectionController {
         }
     }
 
+    @RequestMapping("collectionrouting")
+    public String collectionrouting(){
+        return "collection/collectionrouting";
+    }
+
 }
