@@ -455,6 +455,17 @@ $(document).ready(function() {
 		fileURL(this);
 	}).change();
 	
+	
+	// tab menu
+	$('.c-tab-heading').on('click', 'a.c-tab-heading__title', function(e) {
+		var $parent = $(this).parent();
+		var _index = $parent.index();
+		var $content = $('.c-tab .c-tab__item').eq(_index);
+
+		$parent.add($content).addClass('active').siblings().removeClass('active');
+
+		e.preventDefault();
+	}).find('.c-tab-heading__title').eq(0).trigger('click');
 })
 
 
