@@ -2197,8 +2197,36 @@ h4.article__heading {
 	float: left;
 }
 .routing__item-body ul li + li {
-	
+	float: right;
 }
+.routing__item-body ul li .tresh {
+	display: block;
+	width: 28px;
+	height: 20px;
+	border: 1px solid #241615;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	background-color: #338b34;
+	background-image: url(/assets/images/icon__trash.png);
+	background-repeat: no-repeat;
+	-webkit-background-size: 80%;
+	background-size: 80%;
+	background-position: center center;
+}
+.routing__item-body ul li .tresh.can {
+	background-color: #b43b40;
+	background-image: url(/assets/images/icon__can.png);
+}
+.routing__item-body ul li .tresh.plastic {
+	background-color: #2f94d8;
+	background-image: url(/assets/images/icon__plastic.png);
+}
+.routing__item-body ul li .tresh.paper {
+	background-color: #cd883d;
+	background-image: url(/assets/images/icon__paper.png);
+}
+
 .routing__info-title {
 	display: inline-block;
 	width: 100%;
@@ -2212,6 +2240,8 @@ h4.article__heading {
 	font-size: 14px;
 	text-align: right;
 }
+
+
 
 /* 수거원/차량 배치 */
 .place {
