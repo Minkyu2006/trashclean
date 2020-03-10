@@ -2,6 +2,22 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate ="~{layout/default}">
+	  
+	  <head>
+	  	<script>
+	  		$(document).ready(function() {
+	  			$('.routing-map').on('click', function( ) {
+	  				$('#pop_routing').addClass('open');
+	  			});
+	  			
+	  			$('.l-popup__close').on('click', function(e) {
+	  				$(this).parents('.l-popup').removeClass('open');
+	  				
+	  				e.preventDefault();
+	  			})
+	  		})
+	  	</script>
+	  </head>
 
 	<div layout:fragment="content" class="contents-body">
 		<section class="section">
@@ -79,416 +95,198 @@
 					</article>
 					
 					<article class="article">
-						<div class="c-scroll-table">
-							<div class="c-scroll-table__header">
-								<table style="width: 1009px">
-									<colgroup>
-										<col style="width: 40px;" />
-										<col style="width: 150px;" />
-										<col style="width: 100px;" />
-										<col style="width: 100px;" />
-										<col style="width: 100px;" />
-										<col style="width: 100px;" />
-										<col style="width: 150px;" />
-										<col style="width: 150px;" />
-										<col style="width: 100px;" />
-										<col style="width: 19px;" />
-									</colgroup>
-									<thead>
-										<tr>
-											<th><input type="checkbox" /></th>
-											<th>장비번호</th>
-											<th>쓰레기양</th>
-											<th>온도</th>
-											<th>최대적재량</th>
-											<th>배터리잔량</th>
-											<th>모델명/종류</th>
-											<th>국가/지역</th>
-											<th>소속사</th>
-											<th></th>
-										</tr>
-									</thead>
-								</table>
+						<div class="article__float-item" style="height: 563px;">
+							<div class="c-scroll-table">
+								<div class="c-scroll-table__header">
+									<table style="width: 609px">
+										<colgroup>
+											<col style="width: 40px;" />
+											<col style="width: 150px;" />
+											<col style="width: 100px;" />
+											<col style="width: 150px;" />
+											<col style="width: 150px;" />
+											<col style="width: 19px;" />
+										</colgroup>
+										<thead>
+											<tr>
+												<th><input type="checkbox" /></th>
+												<th>장비번호</th>
+												<th>쓰레기양</th>
+												<th>모델명/종류</th>
+												<th>국가/지역</th>
+												<th></th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+								
+								<div class="c-scroll-table__body c-scroll-table__body--height-auto">
+									<table style="width: 590px;">
+										<colgroup>
+											<col style="width: 40px;" />
+											<col style="width: 150px;" />
+											<col style="width: 100px;" />
+											<col style="width: 150px;" />
+											<col style="width: 150px;" />
+										</colgroup>
+										
+										<tbody>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+											<tr>
+												<td><input type="checkbox" /></td>
+												<td>ISOL-KR-SEL-0001</td>
+												<td>80%</td>
+												<td>iSolarbinS120/종이</td>
+												<td>대한민국/서울</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
-							
-							<div class="c-scroll-table__body c-scroll-table__body--height-auto">
-								<table style="width: 990px;">
-									<colgroup>
-										<col style="width: 40px;" />
-										<col style="width: 150px;" />
-										<col style="width: 100px;" />
-										<col style="width: 100px;" />
-										<col style="width: 100px;" />
-										<col style="width: 100px;" />
-										<col style="width: 150px;" />
-										<col style="width: 150px;" />
-										<col style="width: 100px;" />
-									</colgroup>
-									
-									<tbody>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-										<tr>
-											<td><input type="checkbox" /></td>
-											<td>ISOL-KR-SEL-0001</td>
-											<td>80%</td>
-											<td>35.42℃</td>
-											<td>120L</td>
-											<td>91%</td>
-											<td>iSolarbinS120/종이</td>
-											<td>대한민국/서울</td>
-											<td>ACI</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-						<div class="c-function">
-							<div class="c-function__group c-function__group--right">
-								<div class="c-function__item">
-									<button class="c-button c-button--point">수거 대상 확정</button>
+							<div class="c-function">
+								<div class="c-function__group c-function__group--right">
+									<div class="c-function__item">
+										<button class="c-button c-button--point">수거 대상 확정</button>
+									</div>
 								</div>
 							</div>
 						</div>
+						<div class="article__float-item" style="height: 563px;">
+							설명이 들어갈 영역
+						</div>
+						
 					</article>
 				</li>
 				
@@ -502,7 +300,7 @@
 								<div class="routing__header">
 									<h4 class="routing__title">수거 경로 지정</h4>
 									<div class="routing__header-btn">
-										<button class="c-button c-button--small">수거 경로 확인</button>
+										<button class="c-button c-button--small routing-map">수거 경로 확인</button>
 									</div>
 								</div>
 								<div class="routing__body">
@@ -517,16 +315,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="75">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh" title="일반쓰레기"></span>
 														</li>
 													</ul>
 												</div>
@@ -542,16 +338,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="10">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh can" title="캔"></span>
 														</li>
 													</ul>
 												</div>
@@ -567,16 +361,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="30">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh paper" title="종이"></span>
 														</li>
 													</ul>
 												</div>
@@ -592,216 +384,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="20">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">5</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">6</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">7</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">8</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">9</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">10</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">11</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">12</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh plastic" title="플라스틱"></span>
 														</li>
 													</ul>
 												</div>
@@ -821,7 +411,7 @@
 								<div class="routing__header">
 									<h4 class="routing__title">수거 경로 지정</h4>
 									<div class="routing__header-btn">
-										<button class="c-button c-button--small">수거 경로 확인</button>
+										<button class="c-button c-button--small routing-map">수거 경로 확인</button>
 									</div>
 								</div>
 								<div class="routing__body">
@@ -836,16 +426,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="75">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh" title="일반쓰레기"></span>
 														</li>
 													</ul>
 												</div>
@@ -861,16 +449,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="10">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh can" title="캔"></span>
 														</li>
 													</ul>
 												</div>
@@ -886,16 +472,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="30">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh paper" title="종이"></span>
 														</li>
 													</ul>
 												</div>
@@ -911,216 +495,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="20">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">5</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">6</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">7</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">8</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">9</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">10</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">11</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">12</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh plastic" title="플라스틱"></span>
 														</li>
 													</ul>
 												</div>
@@ -1152,7 +534,7 @@
 								<div class="routing__header">
 									<h4 class="routing__title">수거 경로 지정</h4>
 									<div class="routing__header-btn">
-										<button class="c-button c-button--small">수거 경로 확인</button>
+										<button class="c-button c-button--small routing-map">수거 경로 확인</button>
 									</div>
 								</div>
 								<div class="routing__body">
@@ -1167,16 +549,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="75">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh" title="일반쓰레기"></span>
 														</li>
 													</ul>
 												</div>
@@ -1192,16 +572,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="10">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh can" title="캔"></span>
 														</li>
 													</ul>
 												</div>
@@ -1217,16 +595,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="30">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh paper" title="종이"></span>
 														</li>
 													</ul>
 												</div>
@@ -1242,216 +618,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="20">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">5</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">6</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">7</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">8</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">9</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">10</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">11</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</li>
-										<li>
-											<div class="routing__item">
-												<div class="routing__item-header">
-	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
-													<span class="routing__num">12</span>
-													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
-												</div>
-												<div class="routing__item-body">
-													<ul>
-														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
-														</li>
-														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh plastic" title="플라스틱"></span>
 														</li>
 													</ul>
 												</div>
@@ -1522,7 +696,7 @@
 								<div class="routing__header">
 									<h4 class="routing__title">수거 경로 지정</h4>
 									<div class="routing__header-btn">
-										<button class="c-button c-button--small">수거 경로 확인</button>
+										<button class="c-button c-button--small routing-map">수거 경로 확인</button>
 									</div>
 								</div>
 								<div class="routing__body">
@@ -1537,16 +711,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="75">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh" title="일반쓰레기"></span>
 														</li>
 													</ul>
 												</div>
@@ -1562,16 +734,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="10">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh can" title="캔"></span>
 														</li>
 													</ul>
 												</div>
@@ -1587,16 +757,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="30">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh paper" title="종이"></span>
 														</li>
 													</ul>
 												</div>
@@ -1612,16 +780,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="20">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh plastic" title="플라스틱"></span>
 														</li>
 													</ul>
 												</div>
@@ -1637,16 +803,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="75">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh" title="일반쓰레기"></span>
 														</li>
 													</ul>
 												</div>
@@ -1662,16 +826,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="10">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh can" title="캔"></span>
 														</li>
 													</ul>
 												</div>
@@ -1687,16 +849,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="30">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh paper" title="종이"></span>
 														</li>
 													</ul>
 												</div>
@@ -1712,16 +872,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="20">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh plastic" title="플라스틱"></span>
 														</li>
 													</ul>
 												</div>
@@ -1737,16 +895,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="75">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh" title="일반쓰레기"></span>
 														</li>
 													</ul>
 												</div>
@@ -1762,16 +918,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="10">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh can" title="캔"></span>
 														</li>
 													</ul>
 												</div>
@@ -1787,16 +941,14 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="30">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
-														</li>
-														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh paper" title="종이"></span>
 														</li>
 													</ul>
 												</div>
@@ -1812,16 +964,83 @@
 												<div class="routing__item-body">
 													<ul>
 														<li>
-															<span class="routing__info-title">소재지</span>
-															<span class="routing__info-data">서울특별시 강서구 마곡동</span>
+															<div class="c-basket" data-percent="20">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">쓰레기양</span>
-															<span class="routing__info-data">80%</span>
+															<span class="tresh plastic" title="플라스틱"></span>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="routing__item">
+												<div class="routing__item-header">
+	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
+													<span class="routing__num">13</span>
+													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
+												</div>
+												<div class="routing__item-body">
+													<ul>
+														<li>
+															<div class="c-basket" data-percent="75">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
 														</li>
 														<li>
-															<span class="routing__info-title">모델명/종류</span>
-															<span class="routing__info-data">iSolarbinS120/종이</span>
+															<span class="tresh" title="일반쓰레기"></span>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="routing__item">
+												<div class="routing__item-header">
+	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
+													<span class="routing__num">14</span>
+													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
+												</div>
+												<div class="routing__item-body">
+													<ul>
+														<li>
+															<div class="c-basket" data-percent="10">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
+														</li>
+														<li>
+															<span class="tresh can" title="캔"></span>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</li>
+										<li>
+											<div class="routing__item">
+												<div class="routing__item-header">
+	 												<h5 class="routing__id">ISOL-KR-SEL-0001</h5>
+													<span class="routing__num">15</span>
+													<div class="routing__drag">드래그하여 순서를 이동하세요</div>
+												</div>
+												<div class="routing__item-body">
+													<ul>
+														<li>
+															<div class="c-basket" data-percent="80">
+																<div class="c-basket__inner">
+																	<div class="c-basket__fill"></div>																
+																</div>
+															</div>
+														</li>
+														<li>
+															<span class="tresh paper" title="종이"></span>
 														</li>
 													</ul>
 												</div>
@@ -1887,6 +1106,27 @@
 				</li>
 			</ul>
 		</section>
+		
+		<!-- popup -->
+		<div class="l-popup" id="pop_routing">
+			<div class="l-popup__container">
+				<div class="l-popup__head">
+					<h3 class="l-popup__heading">수거 경로</h3>
+				</div>
+				<div class="l-popup__content">
+					<div class="l-popup__map"></div>
+					<div class="c-function">
+						<div class="c-function__group c-function__group--right">
+							<div class="c-functino__item">
+								<button class="c-button c-button--point">확인</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a href="#" class="l-popup__close">팝업닫기</a>
+			</div>
+		</div>
+		
 		
 	</div>
 </html>

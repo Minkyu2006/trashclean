@@ -201,6 +201,15 @@ $(document).ready(function() {
 	$('.contents-profile').on('click', function(e) {
 		e.stopPropagation();
 	})
+	
+	// 쓰레기통
+	$('.c-basket').each(function() {
+        var $basket = $(this),
+            percent = parseInt($basket.data('percent'))
+
+        $basket.find('.c-basket__fill').css('height', percent + '%');
+        $basket.attr('title', percent + '%');
+    });
 
 	//김민규추가 기존파일 : broadwave.ajax.js 추후정리(안쓰는함수는 주석처리)
 	var globalAjaxLoginStatus = true;

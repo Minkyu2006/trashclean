@@ -1061,6 +1061,54 @@ a.c-button {
 	margin-top: -40px;
 	margin-left: -40px;
 }
+
+/* wastebasket */
+.c-basket {
+	position: relative;
+	width: 14px;
+	height: 20px;
+	border: 2px solid #484848;
+	border-bottom-left-radius: 3px;
+	border-bottom-right-radius: 3px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.c-basket:before {
+	content: " ";
+	position: absolute;
+	top: -2px;
+	left: -4px;
+	width: 18px;
+	height: 2px;
+	background-color: #484848;
+}
+.c-basket:after {
+	content: " ";
+	position: absolute;
+	top: -4px;
+	left: 3px;
+	width: 4px;
+	height: 2px;
+	background-color: #484848;
+}
+.c-basket__inner {
+	overflow: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.c-basket__fill {
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	height: 0;
+	background-color: #ff7f7f;
+}
+
 /* ring */
 .c-loader__active.c-loader__active--ring:after {
 	content: " ";
