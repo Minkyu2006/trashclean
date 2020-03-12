@@ -173,9 +173,9 @@ public class DeviestatsRestController {
         List<DevicestatsDailyHourLevelDto> devicestatsDailyHourLevelDtos =
                 devicestatusService.queryDslDeviceDailyHourLevel(deviceid,sendDate);
 
-        log.info("받은 날짜 : "+sendDate);
-        log.info("받은 장치아이디 : "+deviceid);
-        log.info("devicestatsDailyHourLevelDtos : "+devicestatsDailyHourLevelDtos);
+//        log.info("받은 날짜 : "+sendDate);
+//        log.info("받은 장치아이디 : "+deviceid);
+//        log.info("devicestatsDailyHourLevelDtos : "+devicestatsDailyHourLevelDtos);
 
         List<String> xhour = new ArrayList<>(); // 24시간 넣는 리스트
 

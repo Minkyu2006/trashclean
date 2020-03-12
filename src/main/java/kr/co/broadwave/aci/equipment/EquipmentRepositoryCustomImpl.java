@@ -161,7 +161,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
     // 수거업무등록페이지 장비리스트쿼리
     @Override
-    public Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(String emNumber, Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable) {
+    public Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable) {
 
         QEquipment equipment = QEquipment.equipment;
 
@@ -178,9 +178,9 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                 ));
 
         // 검색조건필터
-        if (emNumber != null && !emNumber.isEmpty()){
-            query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
-        }
+//        if (emNumber != null && !emNumber.isEmpty()){
+//            query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
+//        }
         if (emTypeId != null ){
             query.where(equipment.emType.id.eq(emTypeId));
         }
@@ -203,17 +203,39 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
         QEquipment equipment = QEquipment.equipment;
         QMasterCode masterCode = QMasterCode.masterCode;
+        QIModel iModel = QIModel.iModel;
 
         JPQLQuery<EquipmentCollectionRegDto> query = from(equipment)
                 .select(Projections.constructor(EquipmentCollectionRegDto.class,
-                        equipment,equipment.emNumber,masterCode))
-                .innerJoin(equipment.emType,masterCode);
+                        equipment,equipment.emNumber,masterCode,iModel.mdSubname,iModel.mdType.name))
+                .innerJoin(equipment.emType,masterCode)
+                .innerJoin(equipment.mdId,iModel);
 
         if (streetRouting != null ){
             query.where(equipment.emNumber.in(streetRouting));
         }
 
         return query.fetch();
+    }
+
+    // 장비의 타입 종류가져오기
+    @Override
+    public EquipmentCollectionTypeDto findByRoutingEmTypeQuerydsl(String streetdevice) {
+
+        QEquipment equipment = QEquipment.equipment;
+        QIModel iModel = QIModel.iModel;
+        JPQLQuery<EquipmentCollectionTypeDto> query = from(equipment)
+                .select(Projections.constructor(EquipmentCollectionTypeDto.class,
+                        equipment.emNumber,
+                        iModel.mdName,
+                        iModel.mdType.name))
+                .innerJoin(equipment.mdId,iModel);
+
+        if (streetdevice != null ){
+            query.where(equipment.emNumber.eq(streetdevice));
+        }
+
+        return query.fetchOne();
     }
 
 }

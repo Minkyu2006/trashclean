@@ -22,6 +22,11 @@ public class CollectionInfoDto {
     private String accountuserid; // 유저아이디(고유)
     private String vehiclenumber; // 차량번호
     private String vehiclename; // 차량명
+    private String mdTypeName; // 모델타입이름
+
+    public String getMdTypeName() {
+        return mdTypeName;
+    }
 
     public String getDeviceid() {
         return deviceid;

@@ -113,11 +113,15 @@ public class EquipmentService {
         return equipmentRepositoryCustom.EquipmentBaseSettingQuerydsl(emNumbers);
     }
 
-    public Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId,Pageable pageable) {
-        return equipmentRepositoryCustom.findByEquipmentCollectionQuerydsl(emNumber,emTypeId,emCountryId,emLocationId,pageable);
+    public Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(Long emTypeId, Long emCountryId, Long emLocationId,Pageable pageable) {
+        return equipmentRepositoryCustom.findByEquipmentCollectionQuerydsl(emTypeId,emCountryId,emLocationId,pageable);
     }
 
     public List<EquipmentCollectionRegDto> findByRoutingEmNumberQuerydsl(List<String> streetRouting) {
         return equipmentRepositoryCustom.findByRoutingEmNumberQuerydsl(streetRouting);
+    }
+
+    public EquipmentCollectionTypeDto findByRoutingEmTypeQuerydsl(String streetdevice) {
+        return equipmentRepositoryCustom.findByRoutingEmTypeQuerydsl(streetdevice);
     }
 }

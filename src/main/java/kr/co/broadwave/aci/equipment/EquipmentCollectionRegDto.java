@@ -21,6 +21,16 @@ public class EquipmentCollectionRegDto {
     private Equipment id; // 고유값 아이디
     private String emNumber; // 장비 번호
     private MasterCode emType; // 장비타입
+    private String mdSubname;
+    private String mdTypeName; // 모델타입이름
+
+    public String getMdSubname() {
+        return mdSubname;
+    }
+
+    public String getMdTypeName() {
+        return mdTypeName;
+    }
 
     public Equipment getId() {
         return id;

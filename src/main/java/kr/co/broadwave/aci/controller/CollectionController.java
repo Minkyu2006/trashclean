@@ -42,6 +42,7 @@ public class CollectionController {
         this.collectionTaskService=collectionTaskService;
     }
 
+    // 안쓰는거
     @RequestMapping("collectionreg")
     public String collectionreg(Model model){
 
@@ -60,6 +61,7 @@ public class CollectionController {
         return "collection/collectionreg";
     }
 
+    //수거업무메인화면 - 모바일
     @RequestMapping("mobileindex")
     public String mobileindex(HttpServletRequest request){
         String currentuserid = CommonUtils.getCurrentuser(request);
@@ -70,6 +72,7 @@ public class CollectionController {
         }
     }
 
+    //수거업무처리 - 모바일
     @RequestMapping("collectionprocess/{id}")
     public String collectionprocessid(HttpServletRequest request,Model model, @PathVariable Long id){
         String currentuserid = CommonUtils.getCurrentuser(request);
@@ -91,6 +94,7 @@ public class CollectionController {
         }
     }
 
+    //수거업무처리 - 모바일
     @RequestMapping("collectionprocess")
     public String collectionprocess(HttpServletRequest request){
         String currentuserid = CommonUtils.getCurrentuser(request);
@@ -101,6 +105,7 @@ public class CollectionController {
         }
     }
 
+    //수거업무리스트 - 모바일
     @RequestMapping("collectionlist")
     public String collectionlist(HttpServletRequest request){
         String currentuserid = CommonUtils.getCurrentuser(request);
@@ -111,9 +116,42 @@ public class CollectionController {
         }
     }
 
+    // 수거업무등록
     @RequestMapping("collectionrouting")
-    public String collectionrouting(){
+    public String collectionrouting(Model model){
+
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+        List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
+        List<MasterCodeDto> vcUsages = masterCodeService.findCodeList(CodeType.C0011);
+        List<MasterCodeDto> vcStates = masterCodeService.findCodeList(CodeType.C0012);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+        model.addAttribute("vcShapes", vcShapes);
+        model.addAttribute("vcUsages", vcUsages);
+        model.addAttribute("vcStates", vcStates);
+
         return "collection/collectionrouting";
+    }
+
+    // 수거업무조회
+    @RequestMapping("collectionsearch")
+    public String collectionsearch(Model model){
+
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+        List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
+        List<MasterCodeDto> vcUsages = masterCodeService.findCodeList(CodeType.C0011);
+        List<MasterCodeDto> vcStates = masterCodeService.findCodeList(CodeType.C0012);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+        model.addAttribute("vcShapes", vcShapes);
+        model.addAttribute("vcUsages", vcUsages);
+        model.addAttribute("vcStates", vcStates);
+
+        return "collection/collectionsearch";
     }
 
 }

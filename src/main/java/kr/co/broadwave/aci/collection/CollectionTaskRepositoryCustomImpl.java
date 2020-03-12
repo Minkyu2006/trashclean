@@ -101,14 +101,18 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
         JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
 
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
+        QEquipment equipment =QEquipment.equipment;
+        QIModel iModel =QIModel.iModel;
 
         return queryFactory.select(Projections.constructor(CollectionInfoDto.class,
                 collectionTask.ctCode,collectionTask.ctSeq,collectionTask.yyyymmdd,
                 collectionTask.deviceid,collectionTask.accountId.username,collectionTask.accountId.userid,
-                collectionTask.vehicleId.vcNumber,collectionTask.vehicleId.vcName))
+                collectionTask.vehicleId.vcNumber,collectionTask.vehicleId.vcName,iModel.mdType.name))
                 .from(collectionTask)
                 .where(collectionTask.ctCode.eq(ctCode))
                 .groupBy(collectionTask.ctSeq)
+                .innerJoin(collectionTask.emId,equipment)
+                .innerJoin(equipment.mdId,iModel)
                 .fetch();
     }
 
@@ -259,7 +263,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
 
         return queryFactory.select(Projections.constructor(CollectionDto.class,
-                collectionTask.id,collectionTask.ctCode,
+                collectionTask.id,collectionTask.ctCode,collectionTask.yyyymmdd,
                 collectionTask.ctSeq,collectionTask.procStats,
                 collectionTask.insert_id,collectionTask.insertDateTime))
                 .from(collectionTask)
