@@ -57,6 +57,7 @@
 					<li><a href="/devicestats/devicecontrol">장비제어</a></li>
 					<li><a href="/devicestats/devicesearchinfo">장비정보조회</a></li>
 					<li><a href="/devicestats/devicebasevalue">장비기본값일괄셋팅</a></li>
+					<li><a href="/devicestats/firmware">펌웨어페이지</a></li>
 				</ul>
 			</li>
 
@@ -64,8 +65,9 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_COLLECTOR') or hasRole('ROLE_SUBADMIN')">
 				<a href="#" class="nav__link nav__link--platform toggle">수거관리</a>
 				<ul id="header_collection" class="nav-child">
-					<li><a href="/collection/collectionrouting">수거라우팅</a></li>
-					<li><a href="/collection/collectionreg">수거업무등록</a></li>
+					<li><a href="/collection/collectionrouting">수거업무등록</a></li>
+					<li><a href="/collection/collectionsearch">수거업무조회</a></li>
+					<li><a href="/collection/collectionreg">수거업무등록(베타)</a></li>
 					<li><a href="/collection/mobileindex">모바일인덱스</a></li>
 				</ul>
 			</li>
@@ -74,6 +76,7 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--dash toggle">테스트페이지</a>
 				<ul class="nav-child">
+					<li><a href="/testpage/firmwaretest">펌웨어페이지</a></li>
 					<li><a href="/testpage/routingtest1">라우팅페이지1</a></li>
 					<li><a href="/testpage/routingtest2">라우팅페이지2</a></li>
 					<li><a href="/testpage/devicebasevaluetest">장비기본값셋팅</a></li>

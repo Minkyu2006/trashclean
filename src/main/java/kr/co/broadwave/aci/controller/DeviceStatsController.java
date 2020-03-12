@@ -171,4 +171,9 @@ public class DeviceStatsController {
         return "devicestats/deviceinfo";
     }
 
+    @RequestMapping("firmware")
+    public String firmware(){
+        return "devicestats/firmware";
+    }
+
 }
