@@ -113,4 +113,9 @@ public class TestpageController {
         return "testpage/routingtest2";
     }
 
+    @RequestMapping("firmwaretest")
+    public String firmwaretest(){
+        return "testpage/firmwaretest";
+    }
+
 }
