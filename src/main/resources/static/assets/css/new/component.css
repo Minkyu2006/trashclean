@@ -996,6 +996,50 @@ a.c-button {
 	border: 0;
 }
 
+.c-file {
+	overflow: hidden;
+	width: 100%;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.c-file__input {
+	float: left;
+	width: calc(100% - 84px);
+	height: 30px;
+	padding: 0 10px;
+	border: 1px solid #ddd;
+	border-bottom-left-radius: 3px;
+	border-top-left-radius: 3px;
+	background-color: #fff;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	outline: none;
+}
+.c-file__btn {
+	display: block;
+	float: left;
+	width: 84px;
+	height: 30px;
+	padding: 0 14px;
+	background-color: #eee;
+	border: 0;
+	font-size: 14px;
+	line-height: 30px;
+	cursor: pointer;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.c-file__btn input[type="file"] {
+	display: none;
+}
+
+
 /* tabs */
 .c-tab-heading {
 	overflow: hidden;

@@ -9,6 +9,144 @@
 </head>
 
 <div layout:fragment="content" class="contents-body">
-
+	<section class="section">
+		<div class="firmware">
+			<h3 class="firmware__heading">펌웨어 파일 등록</h3>
+			<div class="firmware__info">
+				<ul>
+					<li>
+						<div class="c-select">
+							<label for="" class="c-select__label">모델 타입</label>
+							<select name="" id="" class="c-select__input">
+								<option value="">iSolarbin</option>
+								<option value="">iTainer</option>
+							</select>
+						</div>
+					</li>
+					<li>
+						<div class="c-text">
+							<label for="" class="c-text__label">Version Number</label>
+							<input type="text" class="c-text__input" />
+						</div>
+					</li>
+					<li class="firmware__info-wide">
+						<div class="c-file">
+							<input type="text" class="c-file__input" />
+							<label for="file" class="c-file__btn">파일선택
+								<input type="file" id="file" />
+							</label>
+						</div>
+					</li>
+				</ul>
+				<div class="c-function">
+					<div class="c-function__group c-function__group--right">
+						<div class="c-function__item">
+							<button class="c-button c-button--point">펌웨어파일등록</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="firmware">
+			<h3 class="firmware__heading">펌웨어 리스트</h3>
+			<div class="firmware__list">
+				<table class="c-table">
+					<colgroup>
+						<col style="width: 80px;" />
+						<col style="width: 80px;" />
+						<col />
+					</colgroup>
+					<thead>
+						<tr>
+							<th>장비타입</th>
+							<th>버전</th>
+							<th>AWS 경로</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+						<tr>
+							<td>iSolarbin</td>
+							<td>V1.0.1</td>
+							<td>https://s3.ap-northeast-2.am.com/uploadfiles/327b7106ce2b06a33c9.zip</td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div class="c-pager">
+					<div class="c-paging" id="paging1"><div class="c-paging__wrapper"><div class="c-paging__arrow"><a href="javascript:callList(1);" class="c-paging__item c-paging__control"><img src="/assets/images/icon__first-page.png" alt="첫 페이지"></a></div><div class="c-paging__arrow"><a href="javascript:callList(0);" class="c-paging__item c-paging__control"><img src="/assets/images/icon__last-page.png" alt="마지막 페이지"></a></div></div></div>
+					<div class="c-paging__total">
+						<div class="c-paging__total-group">
+							Total
+						</div>
+						<div class="c-paging__total-group" id="totalCnt">0</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="firmware">
+			<h3 class="firmware__heading">펌웨어 업데이트</h3>
+			<div class="firmware__upload">
+				<div class="c-text">
+					<label for="" class="c-text__label">소속사</label>
+					<input type="text" class="c-text__input" id="" readonly="readonly">
+					<button class="c-search-form__button pop__list">검색</button>
+				</div>
+			</div>
+			<div class="c-function">
+					<div class="c-function__group c-function__group--right">
+						<div class="c-function__item">
+							<button class="c-button c-button--point">장비선택 및 펌웨어 업데이트</button>
+						</div>
+					</div>
+				</div>
+		</div>
+	</section>
 </div>
 </html>

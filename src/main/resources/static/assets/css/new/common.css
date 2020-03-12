@@ -2276,6 +2276,49 @@ h4.article__heading {
 	margin-top: 20px;
 }
 
+/* firmware */
+.firmware {
+	position: relative;
+	width: 100%;
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 15px;
+	background-color: #fff;
+	border: 1px solid #dfdfdf;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.firmware + .firmware {
+	margin-top: 5px;
+}
+.firmware__heading {
+	margin-bottom: 10px;
+	font-size: 16px;
+	font-weight: 700;
+}
+.firmware ul:before {
+	content: " ";
+	display: table;
+}
+.firmware ul:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.firmware ul li {
+	float: left;
+	width: 50%;
+	padding: 5px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.firmware ul li.firmware__info-wide {
+	width: 100%;
+}
+
+
 /* popup */
 .l-popup {
 	display: none;

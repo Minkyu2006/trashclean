@@ -210,6 +210,14 @@ $(document).ready(function() {
         $basket.find('.c-basket__fill').css('height', percent + '%');
         $basket.attr('title', percent + '%');
     });
+	
+	$('.c-file__btn input').change(function(){
+		var txt = [];
+		for(var i=0; i<this.files.length; i++){
+			txt.push(this.files[i].name);
+		}
+		$(this).parent().prev('.c-file__input').val(txt.join("_"));
+	}).change();
 
 	//김민규추가 기존파일 : broadwave.ajax.js 추후정리(안쓰는함수는 주석처리)
 	var globalAjaxLoginStatus = true;
@@ -390,6 +398,8 @@ $(document).ready(function() {
 		e.preventDefault();
 
 	}).find('.loyout-select__btn').eq(0).trigger('click');
+	
+	
 	
 	$('.loyout-select__btn.loyout-select__01').on('click', function(e) {
 		$('.panel--layout').removeClass('panel--layout-2');
