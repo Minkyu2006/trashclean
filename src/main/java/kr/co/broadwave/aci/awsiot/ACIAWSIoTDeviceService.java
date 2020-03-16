@@ -115,6 +115,14 @@ public class ACIAWSIoTDeviceService {
         aciIoTService.shadowNonblockingSend(deviceid,"deviceinfo",ts);
 
     }
+    //Shadow firmwareupdate(IoT) -> param : 디바이스 아이디, 펌웨어버전 및 경로 ($@로 문자열구분 버전 및 파일경로
+    // ex. v1.0.1$@https://s3.ap-northeast-2.amazonaws.com/iecoprocuploadfiles/uploadfiles/20191225/3b48ccb2aa744327b7106ce2b06a33c9.bin
+    public void setFirmwareUpdate(String deviceid,String str) throws Exception {
+        log.info("장비 Shadow firmwareupdate 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"firmwareupdate",str);
+
+    }
 
 
 }
