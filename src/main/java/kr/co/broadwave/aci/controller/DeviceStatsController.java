@@ -6,6 +6,7 @@ import kr.co.broadwave.aci.dashboard.DashboardDeviceListViewDto;
 import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ import java.util.List;
  * Date : 2019-01-06
  * Remark :
  */
-
+@Slf4j
 @Controller
 @RequestMapping("/devicestats")
 public class DeviceStatsController {
@@ -93,8 +95,10 @@ public class DeviceStatsController {
     }
 
     @RequestMapping("deviceinfo/{emNumber}")
-    public String deviceinfo(Model model,@PathVariable String emNumber, @PageableDefault Pageable pageable){
-
+    public String deviceinfo(Model model,@PathVariable String emNumber,
+                             @RequestParam(value="efVer", defaultValue="") String efVer,
+                             @RequestParam(value="filePath", defaultValue="") String filePath,
+                             @PageableDefault Pageable pageable){
         // Json String emNumber 만들기
         String stateEmNumber = '"'+emNumber+'"';
         List<String> emNumbers = new ArrayList<>();
@@ -161,18 +165,29 @@ public class DeviceStatsController {
 
         // 장비상세정보
         model.addAttribute("updateTime",deviceInfo.get("timestamp"));
-        model.addAttribute("firmware",deviceInfo.get("firmware"));
+        model.addAttribute("firmware","v"+deviceInfo.get("firmware"));
         model.addAttribute("serialno",deviceInfo.get("serialno"));
         model.addAttribute("carrier",deviceInfo.get("carrier"));
         model.addAttribute("phonenumber",deviceInfo.get("phonenumber"));
         model.addAttribute("blemacaddr",deviceInfo.get("blemacaddr"));
         model.addAttribute("loraid",deviceInfo.get("loraid"));
 
+        if(efVer!=null &&  filePath!=null){
+            model.addAttribute("efVer",efVer);
+            model.addAttribute("efFilePath",filePath);
+        }
+
         return "devicestats/deviceinfo";
     }
 
     @RequestMapping("firmware")
-    public String firmware(){
+    public String firmware(Model model){
+        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdTypes", equipdTypes);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+
         return "devicestats/firmware";
     }
 

@@ -1,21 +1,38 @@
 package kr.co.broadwave.aci.devicestats;
 
+import kr.co.broadwave.aci.accounts.Account;
+import kr.co.broadwave.aci.accounts.AccountService;
 import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
+import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
+import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.equipment.EquipmentEmnumberDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
+import kr.co.broadwave.aci.files.FileUpload;
+import kr.co.broadwave.aci.files.FileUploadService;
+import kr.co.broadwave.aci.imodel.IModel;
+import kr.co.broadwave.aci.imodel.IModelListDto;
+import kr.co.broadwave.aci.imodel.IModelMapperDto;
 import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -29,18 +46,31 @@ import java.util.*;
 @RequestMapping("/api/deviestats")
 public class DeviestatsRestController {
 
+    @Value("${aci.aws.s3.bucket}")
+    private String AWSS3;
+
+    private final ModelMapper modelMapper;
     private final MasterCodeService masterCodeService;
     private final EquipmentService equipmentService;
     private final DevicestatusService devicestatusService;
     private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
+    private final AccountService accountService;
+    private final FileUploadService fileUploadService;
+
     @Autowired
-    public DeviestatsRestController(EquipmentService equipmentService,
+    public DeviestatsRestController(ModelMapper modelMapper,
+                                    FileUploadService fileUploadService,
+                                    AccountService accountService,
+                                    EquipmentService equipmentService,
                                     MasterCodeService masterCodeService,
                                     ACIAWSIoTDeviceService aciawsIoTDeviceService,
                                     DevicestatusService devicestatusService) {
+        this.modelMapper = modelMapper;
         this.equipmentService = equipmentService;
+        this.fileUploadService = fileUploadService;
         this.aciawsIoTDeviceService = aciawsIoTDeviceService;
         this.masterCodeService = masterCodeService;
+        this.accountService = accountService;
         this.devicestatusService = devicestatusService;
     }
 
@@ -438,4 +468,123 @@ public class DeviestatsRestController {
 
     }
 
+    // 장비 펌웨어파일등록
+    @PostMapping("firmSave")
+    public ResponseEntity<Map<String,Object>> firmSave(@ModelAttribute FirmwareMapperDto firmwareMapperDto,
+                                                       MultipartHttpServletRequest multi,
+                                                       HttpServletRequest request) {
+        AjaxResponse res = new AjaxResponse();
+
+        String currentuserid = CommonUtils.getCurrentuser(request);
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+        //로그인한 사람 아이디가존재하지않으면 에러처리
+        if (!optionalAccount.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(),
+                    ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'"));
+        }
+
+        Firmware firmware = modelMapper.map(firmwareMapperDto, Firmware.class);
+//        log.info("firmware : "+firmware);
+
+        //모델타입 코드가 존재하지않으면
+        Optional<MasterCode> optionalEfType = masterCodeService.findById(firmwareMapperDto.getEfType());
+
+        if (!optionalEfType.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(),
+                    ResponseErrorCode.E021.getDesc()));
+        } else {
+            //모델타입 저장
+            firmware.setEfType(optionalEfType.get());
+        }
+
+        firmware.setInsert_id(currentuserid);
+        firmware.setInsertDateTime(LocalDateTime.now());
+        firmware.setModify_id(currentuserid);
+        firmware.setModifyDateTime(LocalDateTime.now());
+
+        //파일저장
+        Iterator<String> files = multi.getFileNames();
+        String uploadFile = files.next();
+        MultipartFile mFile = multi.getFile(uploadFile);
+
+        // 저장할 파일이 존재할때만 실행
+        assert mFile != null;
+        FileUpload fileUpload = fileUploadService.save(mFile);
+        firmware.setEfFileid(fileUpload);
+
+        devicestatusService.save(firmware);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 펌웨어파일리스트
+    @PostMapping("firmwareFileList")
+    public ResponseEntity<Map<String,Object>> firmwareFileList(@PageableDefault Pageable pageable) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        CodeType codeType = CodeType.valueOf("C0014");
+        Optional<MasterCode> path = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"SP01");
+        Page<firmwareFileListDto> firmwareListDtos = devicestatusService.findByFirmwareListQuerydsl(pageable);
+//        log.info("figetContent() : "+firmwareListDtos.getContent());
+
+        if(firmwareListDtos.getTotalElements()> 0 ){
+            data.put("datalist",firmwareListDtos.getContent());
+            path.ifPresent(masterCode -> data.put("awss3", masterCode.getName()+AWSS3));
+            data.put("total_page",firmwareListDtos.getTotalPages());
+            data.put("current_page",firmwareListDtos.getNumber() + 1);
+            data.put("total_rows",firmwareListDtos.getTotalElements());
+            data.put("current_rows",firmwareListDtos.getNumberOfElements());
+
+            res.addResponse("data",data);
+        }else{
+            data.put("total_page",firmwareListDtos.getTotalPages());
+            data.put("current_page",firmwareListDtos.getNumber() + 1);
+            data.put("total_rows",firmwareListDtos.getTotalElements());
+            data.put("current_rows",firmwareListDtos.getNumberOfElements());
+
+            res.addResponse("data",data);
+        }
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 펌웨어파일삭제
+    @PostMapping("firmwareDel")
+    public ResponseEntity<Map<String,Object>> firmwareDel(@RequestParam(value="id", defaultValue="") Long id){
+        AjaxResponse res = new AjaxResponse();
+
+        Optional<Firmware> firmware = devicestatusService.findById(id);
+        if (!firmware.isPresent()){
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+        }
+
+        devicestatusService.firmwareDelete(firmware.get());
+
+        if (firmware.get().getEfFileid()!=null) {
+            //log.info("기존파일 존재하면 삭제");
+            fileUploadService.del(firmware.get().getEfFileid().getId());
+        }
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 펌웨어업데이트요청
+    @PostMapping("firmUpdate")
+    public ResponseEntity<Map<String,Object>> firmUpdate(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                         @RequestParam(value="efVer", defaultValue="") String efVer,
+                                                         @RequestParam(value="efFilePath", defaultValue="") String efFilePath) {
+        AjaxResponse res = new AjaxResponse();
+        log.info("deviceid : "+deviceid);
+        log.info("efVer : "+efVer);
+        log.info("efFilePath : "+efFilePath);
+        String str = efVer+"$@"+efFilePath;
+        log.info("str : "+str);
+
+        try{
+            aciawsIoTDeviceService.setFirmwareUpdate(deviceid,str);
+            return ResponseEntity.ok(res.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
 }

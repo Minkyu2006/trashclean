@@ -43,7 +43,7 @@ public class AWSS3Service {
         String awsFilePath =AWSBUCKET+ uploadPath;
 
         // Copy file to the target location (Replacing existing file with the same name)
-        //PutObjectResult putObjectResult = s3Client.putObject(new PutObjectRequest(awsFilePath, storedFileName, multipartFile.getInputStream(), omd));
+        PutObjectResult putObjectResult = s3Client.putObject(new PutObjectRequest(awsFilePath, storedFileName, multipartFile.getInputStream(), omd));
 
         //이미지 화일이면 섬네일변환후 울리기 파일명앞에 "s_" 를 붙임
         if(multipartFile.getContentType().substring(0,5).toUpperCase().equals("IMAGE")){

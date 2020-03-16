@@ -1,38 +1,15 @@
 $(function() {
 
-    $(document).on("click","#checksuccessBtn",function(){
-        //console.log("확인버튼누름")
-        alertSuccess('성공!');
+    $(document).on("click","#checkSuccessBtn",function(){
+        startDel($("#delId").val(),true)
+    });
+    $(document).on("click","#checkCancelBtn",function(){
+        startDel($("#delId").val(),false)
     });
 
-    $(document).on("click","#cancelBtn",function(){
-        //console.log("취소버튼누름")
+    $(document).on("click","#successBtn",function(id){
         $('#popupId').remove();
     });
-
-    $(document).on("click","#successBtn",function(){
-        $('#popupId').remove();
-    });
-
-    // $('#success').on('click', function() {
-    //     //console.log("성공버튼 실행");
-    //     alertSuccess('성공!');
-    // });
-    //
-    // $('#fail').on('click', function() {
-    //     //console.log("실패버튼 실행");
-    //     alertCancel('실패!');
-    // });
-    //
-    // $('#caution').on('click', function() {
-    //     //console.log("경고버튼 실행");
-    //     alertCaution("경고!");
-    // });
-    //
-    // $('#confirm').on('click', function() {
-    //     //console.log("확인버튼 실행")
-    //     alertCheck('확인!');
-    // });
 
 });
 
@@ -98,9 +75,8 @@ function alertCaution(text) { //경고창
 
 }
 
-// 추후에 다시만들기 삭제 알림창.
-function alertCheck(text) { //정말삭제할껀지확인하는창
-
+// 삭제 알림창.
+function alertCheck(text,id) { //정말삭제할껀지확인하는창
     var html = '';
 
     html +='<div id="popupId" class="popup popup--dim">';
@@ -110,8 +86,9 @@ function alertCheck(text) { //정말삭제할껀지확인하는창
                 html +='<div class="popup__text">'+text+'</div>';
             html +='</div>';
             html +='<div class="popup__buttons">';
-                html +='<button id="checksuccessBtn" class="popup__btn popup__btn--success" value="true" onclick="a(this.value)">확인</button>';
-                html +='<button id="cancelBtn" class="popup__btn popup__btn--cancel" value="false" onclick="a(this.value)">취소</button>';
+                html +='<input type="hidden" id="delId" value="'+id+'" />';
+                html +='<button id="checkSuccessBtn" class="popup__btn popup__btn--success">확인</button>';
+                html +='<button id="checkCancelBtn" class="popup__btn popup__btn--cancel">취소</button>';
             html +='</div>';
         html +='</div>';
     html +='</div>';

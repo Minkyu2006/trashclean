@@ -144,7 +144,7 @@
 						currentPage: page + 1,
 						pageTotal: totCnt,
 						clickEvent: 'modelList'});
-					if (totCnt == 0) {
+					if (totCnt === 0) {
 						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
@@ -209,13 +209,14 @@
 
 		//삭제버튼 실행
 		function del() {
-			if ($("#mdNumber").val().trim() == '') {
+			var $mdNumber = $("#mdNumber")
+			if ($mdNumber.val().trim() === '') {
 				alertCaution("삭제하고자하는 장비를 선택하세요.");
 				return false;
 			}
 
 			var params = {
-				mdNumber: $("#mdNumber").val()
+				mdNumber: $mdNumber.val()
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");

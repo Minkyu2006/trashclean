@@ -36,7 +36,12 @@
 	<script type="text/javascript">
 
          $(function(){
-			//console.log("조회한 "+$("#header_deviceid").text());
+         	if($("#efVer").val()!=="" && $("#efFilePath").val()!=="" ){
+				console.log("있음");
+				versionCheck();
+			}else{
+				console.log("없음");
+			}
 
 			timeStampfnc($("#updateTime").text(),"#updateTime",null); // 업데이트 시간계산실행
 
@@ -70,7 +75,54 @@
 				 $statusName.text("심각");
 			 }
 
+			 $("#firmUpdateBtn").on('click',function(){
+				 firmUpdate();
+			 });
+
 		 });
+
+         //버젼확인하기
+         function versionCheck() {
+			var html ='';
+			var $firmwareUpdatList = $('#firmwareUpdatList');
+			html += '<li style="position:absolute;right: 407px">'+ '<span>현재버젼 : </span>' + $("#firmware").text() +" -> "+ $("#efVer").val() +'</li>';
+			html += '<li style="display:none;">'+ $("#efFilePath").val() +'</li>';
+			html += '<button id="firmUpdateBtn" class="c-button" style="color:black;border-color:black;position: absolute;right: 300px;top: 602px;">업데이트시작</button>';
+			$firmwareUpdatList.html(html);
+		 }
+
+		 // 펌웨어업데이트요청
+		 function firmUpdate(){
+			 // console.log("efVer : " + $("#efVer").val());
+			 // console.log("efFilePath : " + $("#efFilePath").val());
+			 var token = $("meta[name='_csrf']").attr("content");
+			 var header = $("meta[name='_csrf_header']").attr("content");
+			 $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			 var params = {
+				 deviceid:$("#deviceid").text(),
+				 efVer:$("#efVer").val(),
+				 efFilePath:$("#efFilePath").val()
+			 };
+
+			 $.ajax({
+				 url:'/api/deviestats/firmUpdate',
+				 type : 'post',
+				 data : params,
+				 cache:false,
+				 error:function(request){
+					 ajaxErrorMsg(request);
+				 },
+				 success: function(res){
+					 statuscode= res.status;
+					 if (statuscode ===200) {
+						 alertSuccess("펌웨어 업데이트를 완료하였습니다.");
+					 }else{
+						 alertCancel("처리오류");
+					 }
+				 }
+			 });
+		 }
 
          // 최신업데이트요청
 		 function upDateRequest() {
@@ -252,7 +304,7 @@
 						</li>
 						<li class="equipment__info-item">
 							<span class="equipment__info-title">펌웨어 : </span>
-							<span class="equipment__info-value" th:text="${firmware}"></span>
+							<span class="equipment__info-value" id="firmware" th:text="${firmware}"></span>
 						</li>
 						<li class="equipment__info-item">
 							<span class="equipment__info-title">보드 SerialNo. : </span>
@@ -280,8 +332,16 @@
 		</article>
 	</section>
 
+	<input type="hidden" id="efVer" th:value="${efVer}" />
+	<input type="hidden" id="efFilePath" th:value="${efFilePath}" />
+	<div>
+		<ul id="firmwareUpdatList">
+
+		</ul>
+	</div>
+
 	<button id="infoReload" class="c-button" style="right:35px;position:absolute;top:30px;color:black;border-color:black;">새로고침</button>
-	<button id="upDateRequest" class="c-button winpop__button">최신업데이트요청</button>
+	<button id="upDateRequest" class="c-button winpop__button" style="bottom:68px;">최신업데이트요청</button>
 
 </div>
 <div id='alertpop'>

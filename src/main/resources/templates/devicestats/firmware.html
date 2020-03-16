@@ -3,12 +3,548 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate ="~{layout/default}">
 <head>
-    <script>
-		
+    <script type="text/javascript">
+
+        $(function() {
+            $("#header_device").css('display','block');
+            $("#default_wrap").on('click',function(){
+                $("#header_device").css('display','none');
+            });
+
+            //장비팝업열기
+            $('#device').on('click', function(e) {
+                $('#device_popup').addClass('open');
+                e.preventDefault();
+            });
+            //장비팝업닫기
+            $('#deviceClose').on('click', function(e) {
+                deviceReset();
+                $('.l-popup').removeClass('open');
+                e.preventDefault();
+            });
+            //장비리스트 조회
+            $("#deviceBtnSearch").on('click',function () {
+                deviceListSearch(1);
+            });
+
+            // 펌웨어파일저장버튼
+            $("#firmSaveBtn").on('click',function () {
+                firmSave();
+            });
+
+            // 장비선택후 펌웨어업데이트
+            $("#firmwareUpdateBtn").on('click',function () {
+                firmwareUpdate();
+            });
+
+            // 펌웨어파일리스트
+            firmwareFileList(1);
+
+        });
+
+        // 펌웨어파일초기화
+        function fileReset() {
+            var $updateFile = $("#updateFile")
+            var agent = navigator.userAgent.toLowerCase();
+            if ( (navigator.appName === 'Netscape' && navigator.userAgent.search('Trident') !== -1) || (agent.indexOf("msie") !== -1) ){
+                // IE 일때 input[type=file] init.
+                $updateFile.replaceWith($updateFile.clone(true) );
+            } else {
+                //other browser 일때 input[type=file] init.
+                $updateFile.val("");
+            }
+        }
+
+        // 펌웨어파일저장 인풋초기화
+        function init(){
+            fileReset();
+            $("#efType").val('');
+            $("#efVer").val('');
+            $("#efRemark").val('');
+            $("#filename").val('');
+            $("#firmware_emNumber").val('');
+            $("#firmware_emType").val('');
+        }
+
+        // 펌웨어파일 저장
+        function firmSave() {
+            var $efType = $("#efType");
+            var $efVer = $("#efVer");
+            var $updateFile = $("#updateFile");
+
+            if ($efType.val().trim() === '') {
+                alertCaution("모델을 선택해주세요.");
+                return false;
+            }
+            if ($efVer.val().trim() === '') {
+                alertCaution("버전을 입력해주세요.");
+                return false;
+            }
+            if ($updateFile.val().trim() === '') {
+                alertCaution("업데이트파일을 선택해주세요.");
+                return false;
+            }
+
+            var formData =  new FormData($("#efReg")[0]);
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url:'/api/deviestats/firmSave',
+                type : 'post',
+                data : formData,
+                processData : false,
+                contentType : false,
+                enctype: 'multipart/form-data',
+                cache:false,
+                error:function(request){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+                    alertSuccess('펌웨어 파일이 등록되었습니다.');
+                    firmwareFileList(1);
+                    init();
+                    deviceReset();
+                }
+            });
+        }
+
+        // 펌웨어파일 리스트
+        function firmwareFileList(page){
+
+            page = page - 1;
+            if (page < 0) page = 0;
+
+            var perPage = 10;
+            var perArea = 5;
+            var totCnt = 0;
+
+            var $schList = $('#schList');
+            var $totalCnt = $('#totalCnt');
+
+            $schList.empty().append('<tr ><td colspan="6" align = "center">조회 중</td></tr>');
+            $totalCnt.text('0');
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token);});
+
+            $.ajax({
+                url:'/api/deviestats/firmwareFileList?size='+ perPage + '&page=' + page,
+                type : 'post',
+                cache:false,
+                error:function(request){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res) {
+                    totCnt = res.data.total_rows;
+                    $("#paging").jqueryPager({pageSize: perPage,
+                        pageBlock: perArea,
+                        currentPage: page + 1,
+                        pageTotal: totCnt,
+                        clickEvent: 'firmwareFileList'});
+                    if (totCnt===0) {
+                        $schList.empty().append('<tr class="t-c"><td colspan="6" align="center">조회된 데이터가 없습니다.</td></tr>');
+                        return;
+                    }
+                    $totalCnt.text(totCnt);
+
+                    var baseurl = res.data.awss3;
+                    var html = '';
+                    var j=0;
+                    $.each(res.data.datalist, function(key, value){
+                        html += '<tr >';
+                        html += '<td style="text-align: center;">' + '<input name="radioBtn" type="radio" value=' + nvl(value.efType+j, "확 인 불 가") + ' />' +
+                            '<label style="display:none;" for=' + nvl(value.efType+j, "확 인 불 가") + '>'+nvl(value.efVer,"확 인 불 가")+'</label>' +
+                            '<input style="display:none;" type="text" name='+nvl(value.efType + j, "확 인 불 가")+' value='+nvl(value.efType, "확 인 불 가")+' />' +
+                            '<span style="display:none;" name=' + nvl(value.efType+j, "확 인 불 가") + '>'+ baseurl + nvl(value.fileFullPath,"확 인 불 가")+'</span>';
+                        html += '<td >'+ nvl(value.efType,"확 인 불 가") +'</td>';
+                        html += '<td >'+ nvl(value.efVer,"확 인 불 가") +'</td>';
+                        html += '<td >'+ baseurl + nvl(value.fileFullPath,"확 인 불 가") +'</td>';
+                        html += '<td >'+ nvl(value.efRemark,"확 인 불 가") +'</td>';
+                        html += '<td ><button class="c-button c-button--point c-button--small" onclick="checkDel(\''+nvl(value.id,"확 인 불 가")+'\');">삭제</button></td>';
+                        html += '</tr>';
+                        j++;
+                    });
+                    $schList.html(html);
+                }
+            });
+        }
+
+        // 삭제버튼 - 정말 삭제할껀지 묻기
+        function checkDel(id){
+            alertCheck("파일을 삭제하겠습니까?",id);
+        }
+        // 삭제실행여부확인
+        function startDel(id,booleanValue) {
+            $('#popupId').remove();
+            if(booleanValue===true){
+                firmwareDel(id)
+            }else{
+                return false;
+            }
+        }
+        //삭제실행
+        function firmwareDel(id) {
+
+            var params = {
+                id: id
+            };
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr){xhr.setRequestHeader(header, token);});
+
+            $.ajax({
+                url: '/api/deviestats/firmwareDel',
+                type: 'post',
+                data: params,
+                cache: false,
+                error: function (request) {
+                    ajaxErrorMsg(request);
+                },
+                success: function (res) {
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+                    alertSuccess("삭제되었습니다.");
+                    firmwareFileList(1);
+                    init();
+                    deviceReset();
+                }
+            });
+        }
+
+        // 장비리스트 팝업
+        function deviceListSearch(page) {
+
+            page = page - 1;
+            if (page < 0) page = 0;
+
+            var perPage = 10;
+            var perArea = 5;
+            var totCnt = 0;
+
+            var $deviceSchList = $('#deviceSchList');
+            var $deviceTotalCnt = $('#deviceTotalCnt');
+
+            var params = {
+                emNumber:$('#s_emNumber').val(),
+                emType:$('#s_emType').val(),
+                emCountry:$('#s_emCountry').val(),
+            };
+
+            $deviceSchList.empty().append('<tr ><td colspan="5" align = "center">조회 중</td></tr>');
+            $deviceTotalCnt.text('0');
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url:'/api/equipment/list?size='+ perPage + '&page=' + page,
+                type : 'post',
+                data : params,
+                cache:false,
+                error:function(request){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    //화면 출력
+                    totCnt = res.data.total_rows;
+                    $("#devicePaging").jqueryPager({pageSize: perPage,
+                        pageBlock: perArea,
+                        currentPage: page + 1,
+                        pageTotal: totCnt,
+                        clickEvent: 'deviceBtnSearch'});
+                    if (totCnt === 0) {
+                        $deviceSchList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
+                        return;
+                    }
+                    $deviceTotalCnt.text(totCnt);
+                    var html = '';
+                    $.each(res.data.datalist, function(key, value){
+                        html += '<tr >';
+                        html += '<td >'+ echoNull2Blank(value.emNumber) +'</td>';
+                        html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
+                        html += '<td >'+ echoNull2Blank(value.iModel) +'</td>';
+                        html += '<td >'+ echoNull2Blank(value.emCountry)+'-'+echoNull2Blank(value.emLocation)+'</td>';
+                        html += '<td ><button class="c-button c-button--point c-button--small" onclick="deviceCallInfo('+"'"+nvl(value.emNumber)+"'"+','+"'"+nvl(value.emType)+"'"+');">선택</button></td>';
+                        html += '</tr>';
+                    });
+                    $deviceSchList.html(html);
+                }
+            });
+        }
+
+        // 장비선택후 펌웨어업데이트
+        function firmwareUpdate() {
+            var $radioVal = $('input[name="radioBtn"]:checked');
+            var $efVar = $("label[for='"+$radioVal.val()+"']").text();
+            var $filePath = $("span[name='"+$radioVal.val()+"']").text();
+            var $type = $("input[name='"+$radioVal.val()+"']").val();
+            // console.log("$efVar : "+$efVar);
+            // console.log("$filePath : "+$filePath);
+            // console.log("$type : "+$type);
+
+            var $firmware_emNumber = $("#firmware_emNumber").val();
+            var $firmware_emType = $("#firmware_emType").val();
+            if($firmware_emNumber.trim()===''){
+                alertCaution("장비를 선택해주세요.");
+                return false;
+            }
+            if($("input:radio[name=radioBtn]").is(":checked") === false) {
+                alertCaution("업데이트할 파일을 선택해주세요.");
+                return false;
+            }
+            if($type!==$firmware_emType){
+                alertCaution("선택한 장비타입이 일치하지 않습니다.");
+                return false;
+            }
+
+            var setting = "top=5, left=20, scrollbars=no ,width=630 ,height=655";
+            window.open('/devicestats/deviceinfo/'+$firmware_emNumber+'?efVer='+$efVar+'&filePath='+$filePath,"",setting)
+        }
+
+        // 장비 검색조건리셋
+        function deviceReset() {
+            $("#s_emCountry").val('');
+            $("#s_emNumber").val('');
+            $("#s_emType").val('');
+        }
+
+        // 장비정보받기
+        function deviceCallInfo(emNumber,emType) {
+            deviceReset();
+            $("#firmware_emNumber").val(emNumber);
+            $("#firmware_emType").val(emType);
+            $('.l-popup').removeClass('open');
+        }
+
+
+        // 버전길이제한 - 5
+        function numberMaxLength(e){
+            if(e.value.length > e.maxLength){
+                e.value = e.value.slice(0, e.maxLength);
+            }
+        }
+
     </script>
 </head>
 
 <div layout:fragment="content" class="contents-body">
+    <section class="section">
+
+        <div class="firmware">
+            <h3 class="firmware__heading">펌웨어 업데이트</h3>
+            <div class="firmware__upload">
+                <div class="c-text">
+                    <input type="hidden" class="c-text__input" id="firmware_emType" readonly="readonly">
+                    <label for="firmware_emNumber" class="c-text__label">장비코드</label>
+                    <input type="text" class="c-text__input" id="firmware_emNumber" readonly="readonly">
+                    <button id="device" class="c-search-form__button pop__list">검색</button>
+                </div>
+            </div>
+            <div class="c-function">
+                <div class="c-function__group c-function__group--right">
+                    <div class="c-function__item">
+                        <button id="firmwareUpdateBtn" class="c-button c-button--point">장비선택 및 펌웨어 업데이트</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="firmware">
+            <h3 class="firmware__heading">펌웨어 리스트</h3>
+            <div class="firmware__list">
+                <table class="c-table">
+                    <colgroup>
+                        <col style="width: 37px;" />
+                        <col style="width: 80px;" />
+                        <col style="width: 80px;" />
+                        <col />
+                        <col style="width: 100px;" />
+                        <col style="width: 50px;" />
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th style="text-align: center;">파일 선택</th>
+                        <th>모델 타입</th>
+                        <th>버전</th>
+                        <th>AWS 경로</th>
+                        <th>비고</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody id="schList">
+                    </tbody>
+                </table>
+
+                <div class="c-pager">
+                    <div class="c-paging" id="paging">
+                    </div>
+                    <div class="c-paging__total">
+                        <div class="c-paging__total-group">
+                            Total
+                        </div>
+                        <div class="c-paging__total-group" id="totalCnt">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="firmware">
+            <h3 class="firmware__heading">펌웨어 파일 등록</h3>
+            <div class="firmware__info">
+                <form id ="efReg" enctype="multipart/form-data">
+                <ul>
+                    <li>
+                        <div class="c-select">
+                            <label for="efType" class="c-select__label">모델 타입</label>
+                            <select name="efType" id="efType" class="c-select__input">
+                                <option value="">필수선택</option>
+                                <option th:each ="equipdType : ${equipdTypes}"
+                                        th:value="${equipdType.id}"
+                                        th:text="${equipdType.name}"
+                                ></option>
+                            </select>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="c-text">
+                            <label for="efVer" class="c-text__label">Version Number</label>
+                            <input name="efVer" id="efVer" type="text" class="c-text__input" maxlength="5" oninput="numberMaxLength(this);" />
+                        </div>
+                    </li>
+                    <li>
+                        <div class="c-text">
+                            <label for="efRemark" class="c-text__label">Remark</label>
+                            <input name="efRemark" id="efRemark" type="text" class="c-text__input" />
+                        </div>
+                    </li>
+                    <li class="firmware__info-wide">
+                        <div class="c-file">
+                            <input type="text" id="filename" class="c-file__input" />
+                            <label for="updateFile" class="c-file__btn">파일선택
+                                <input type="file" name="updateFile" id="updateFile" />
+                            </label>
+                        </div>
+                    </li>
+                </ul>
+                </form>
+                <div class="c-function">
+                    <div class="c-function__group c-function__group--right">
+                        <div class="c-function__item">
+                            <button id="firmSaveBtn" class="c-button c-button--point">펌웨어파일등록</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- 장비리스트 팝업 -->
+    <div class="l-popup" id="device_popup">
+        <div class="l-popup__container">
+            <div class="l-popup__head">
+                <h3 class="l-popup__heading">장비 조회</h3>
+            </div>
+            <div class="l-popup__content">
+                <div class="l-popup__section">
+                    <table class="c-table c-table--non-border">
+                        <colgroup>
+                            <col style="width: 100px;" />
+                            <col />
+                            <col style="width: 100px;" />
+                            <col />
+                            <col style="width: 100px;" />
+                            <col />
+                            <col style="width: 60px;" />
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th>모델타입</th>
+                            <td>
+                                <div class="c-text">
+                                    <select id="s_emType" class="c-select__input">
+                                        <option value="">전체</option>
+                                        <option th:each ="equipdType : ${equipdTypes}"
+                                                th:value="${equipdType.code}"
+                                                th:text="${equipdType.name}"
+                                        ></option>
+                                    </select>
+                                </div>
+                            </td>
+                            <th>국가</th>
+                            <td>
+                                <div class="c-select">
+                                    <select id="s_emCountry" class="c-select__input" >
+                                        <option value="">전체</option>
+                                        <option th:each ="equipdCountry : ${equipdCountrys}"
+                                                th:value="${equipdCountry.code}"
+                                                th:text="${equipdCountry.name}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </td>
+                            <th>장비 번호</th>
+                            <td>
+                                <div class="c-text">
+                                    <input type="text" id="s_emNumber" class="c-text__input" />
+                                </div>
+                            </td>
+                            <td>
+                                <button class="c-button c-button--point" id="deviceBtnSearch">조회</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="l-popup__section">
+                    <table class="c-table">
+                        <colgroup>
+                            <col />
+                            <col />
+                            <col />
+                            <col />
+                            <col style="width: 60px;" />
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>장비 번호</th>
+                            <th>모델 타입</th>
+                            <th>모델명/종류</th>
+                            <th>국가/지역</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id ="deviceSchList">
+
+                        </tbody>
+                    </table>
+
+                    <div class="c-pager">
+                        <div class="c-paging" id ="devicePaging">
+                            <!-- 페이징 처리되는곳   -->
+                        </div>
+                        <div class="c-paging__total">
+                            <div class="c-paging__total-group">
+                                Total
+                            </div>
+                            <div class="c-paging__total-group" id ="deviceTotalCnt">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="#" id="deviceClose" class="l-popup__close">팝업닫기</a>
+        </div>
+    </div>
 
 </div>
 </html>
