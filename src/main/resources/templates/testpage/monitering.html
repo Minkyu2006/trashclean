@@ -9,6 +9,174 @@
 </head>
 
 <div layout:fragment="content" class="contents-body">
-
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>수거처리 모니터링</h2>
+			</div>
+		</div>
+		
+		<div class="dashboard">
+			<div class="dashboard__row">
+				<div class="panel panel--w500">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h3 class="panel__title">업무 리스트</h3>
+						</div>
+						<div class="panel__body panel__body--height-auto">
+							<article class="article">
+								<h4 class="article__heading" style="margin-bottom: 10px;">업무 조회</h4>
+								<table class="c-table">
+									<colgroup>
+										<col />
+										<col style="width: 62px;" />
+									</colgroup>
+									<tbody>
+										<tr>
+											<td>
+												<div class="c-date-group">
+													<div class="c-date">
+														<label for="dateFrom" class="c-date__label">from</label>
+														<input type="text" class="c-text__input hasDatepicker" id="dateFrom" placeholder="연 - 월 - 일">
+													</div>
+													<div class="c-date">
+														<label for="dateTo" class="c-date__label">today</label>
+														<input type="text" class="c-text__input" id="dateTo" placeholder="연 - 월 - 일" readonly="readonly">
+													</div>
+												</div>
+											</td>
+											<td>
+												<button class="c-button c-button--point">조회</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</article>
+							<article class="article">
+								<table class="c-table">
+									<colgroup>
+										<col />
+										<col />
+										<col style="width: 80px;" />
+										<col style="width: 50px;" />
+									</colgroup>
+									<thead>
+										<tr>
+											<th>수거관리코드</th>
+											<th>수거처리일</th>
+											<th>처리율</th>
+											<th></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+										<tr>
+											<td>TS2002270001</td>
+											<td>2020-02-28</td>
+											<td>100%</td>
+											<td>
+												<button class="c-button c-button--small">조회</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								
+								<div class="c-pager">
+									<div class="c-paging" id="paging"><div class="c-paging__wrapper"><div class="c-paging__arrow"><a href="javascript:collectionList(1);" class="c-paging__item c-paging__control"><img src="/assets/images/icon__first-page.png" alt="첫 페이지"></a></div><div class="c-paging__group"><a href="javascript:collectionList(1);" class="c-paging__item check">1</a></div><div class="c-paging__arrow"><a href="javascript:collectionList(1);" class="c-paging__item c-paging__control"><img src="/assets/images/icon__last-page.png" alt="마지막 페이지"></a></div></div></div>
+									<div class="c-paging__total">
+										<div class="c-paging__total-group">
+											Total
+										</div>
+										<div class="c-paging__total-group" id="totalCnt">6</div>
+									</div>
+								</div>
+							</article>
+						</div>
+					</div>
+				</div>
+				<div class="panel">
+					<div class="panel__inner">
+						<div class="panel__header">
+							<h3 class="panel__title">업무 현황</h3>
+						</div>
+						<div class="panel__body panel__body--height-auto">
+							<div class="map" style="height: 602px;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 </html>

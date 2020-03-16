@@ -2505,6 +2505,28 @@ h4.article__heading {
 	right: 20px;
 	bottom: 15px;
 }
+.winpop__firmware {
+	position: absolute;
+	bottom: 20px;
+	left: 20px;
+}
+.winpop__firmware ul:before {
+	content: " ";
+	display: table;
+}
+.winpop__firmware:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.winpop__firmware ul li {
+	float: left;
+	font-size: 14px;
+	line-height: 28px;
+}
+.winpop__firmware ul li + li {
+	margin-left: 10px;
+}
 
 
 

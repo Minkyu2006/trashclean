@@ -85,9 +85,9 @@
          function versionCheck() {
 			var html ='';
 			var $firmwareUpdatList = $('#firmwareUpdatList');
-			html += '<li style="position:absolute;right: 407px">'+ '<span>현재버젼 : </span>' + $("#firmware").text() +" -> "+ $("#efVer").val() +'</li>';
+			html += '<li>'+ '<span>현재버젼 : </span>' + $("#firmware").text() +" -> "+ $("#efVer").val() +'</li>';
 			html += '<li style="display:none;">'+ $("#efFilePath").val() +'</li>';
-			html += '<button id="firmUpdateBtn" class="c-button" style="color:black;border-color:black;position: absolute;right: 300px;top: 602px;">업데이트시작</button>';
+			html += '<li><button id="firmUpdateBtn" class="c-button">업데이트시작</button></li>';
 			$firmwareUpdatList.html(html);
 		 }
 
@@ -334,7 +334,7 @@
 
 	<input type="hidden" id="efVer" th:value="${efVer}" />
 	<input type="hidden" id="efFilePath" th:value="${efFilePath}" />
-	<div>
+	<div class="winpop__firmware">
 		<ul id="firmwareUpdatList">
 
 		</ul>
