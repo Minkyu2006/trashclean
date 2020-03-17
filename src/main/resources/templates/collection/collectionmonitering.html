@@ -77,7 +77,7 @@
                         html += '<td >' + nvl(value.ctCode, '확 인 불 가') + '</td>';
                         html += '<td >' + nvl(value.yyyymmdd, "확 인 불 가") + '</td>';
                         html += '<td >' + nvl(res.data.percents[i], "확 인 불 가") + '</td>';
-                        html += '<td ><button class="c-button c-button--small" onclick="monitering(\'' + echoNull2Blank(value.ctCode) + '\');">조회</button></td>';
+                        html += '<td ><button class="c-button c-button--small" onclick="monitering(\''+nvl(value.ctCode, '확 인 불 가')+ '\',\''+res.data.percents[i]+'\');">조회</button></td>';
                         html += '</tr>';
                         i++;
                     });
@@ -86,8 +86,9 @@
             });
         }
 
-        function monitering(ctCode) {
+        function monitering(ctCode,percent) {
             // console.log("ctCode : "+ctCode);
+            // console.log("percent : "+percent);
 
             var params = {
                 ctCode:ctCode
@@ -112,13 +113,21 @@
                     // console.log("loList : "+res.data.monitering_gps_loList);
                     // console.log("moniteringSize : "+res.data.deviceid.length);
 
+                    var $processPercent = $("#processPercent");
+                    var html2='';
+                    html2 +='<span class="task-progress__num">'+percent+'</span>';
+                    html2 +='<div class="task-progress__base">';
+                    html2 +='<div class="task-progress__bar" style="width: '+percent+';"></div>';
+                    html2 +='</div>';
+                    $processPercent.html(html2);
+
                     var $deviceState = $("#deviceState");
                     var html='';
                     html+='<tr>';
-                    html+='<th>수거업무 등록된 장비수</th>';
-                    html+='<th>수거처리된 장비수</th>';
-                    html+='<th>수거처리해야할 장비수</th>';
-                    html+='<th>경위도데이터 없는 장비수</th>';
+                    html+='<th>수거업무에 등록된 장비 수</th>';
+                    html+='<th>수거처리 완료 장비 수</th>';
+                    html+='<th>수처처리 미완료 장비 수</th>';
+                    html+='<th>경도/위도의 데이터가 없는 장비 수</th>';
                     html+='</tr>';
                     html+='<tr>';
                     html+='<td>'+res.data.deviceSize+'</td>';
@@ -278,11 +287,7 @@
                     <div class="panel__inner">
                         <div class="panel__header">
                             <h3 class="panel__title">업무 현황</h3>
-                            <div class="task-progress">
-                            	<span class="task-progress__num">67%</span>
-                            	<div class="task-progress__base">
-                            		<div class="task-progress__bar" style="width: 67%;"></div>
-                            	</div>
+                            <div class="task-progress" id="processPercent">
                             </div>
                         </div>
                         <div class="panel__body panel__body--height-auto">

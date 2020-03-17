@@ -411,7 +411,7 @@ public class EquipmentRestController {
         try{
             HashMap deviceList = aciawsIoTDeviceService.getDeviceStatus(deviceid);
             dataLocal.put("datastate",deviceList.get("state"));
-
+//            log.info("deviceList : "+deviceList);
             resLocal.addResponse("data",dataLocal);
             return ResponseEntity.ok(resLocal.success());
         }catch(Exception e){

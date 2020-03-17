@@ -898,7 +898,85 @@ public class CollectionTaskRestController {
     }
 
 
+    // 모니터링 맵
+    @PostMapping("moniteringMap")
+    public ResponseEntity<Map<String,Object>> moniteringMap(@RequestParam (value="ctCode", defaultValue="") String ctCode){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
+        List<String> emNumbers = new ArrayList<>();
+        HashMap<String,List<String>> deviceids = new HashMap<>();
+
+        List<String> deviceid = new ArrayList<>();
+        List<String> noDataDeviceid = new ArrayList<>();
+        List<String> completeState = new ArrayList<>();
+        List<String> monitering_gps_laList = new ArrayList<>();
+        List<String> monitering_gps_loList = new ArrayList<>();
+
+        List<CollectionMoniteringListDto> moniteringListDtos = collectionTaskService.moniteringQuerydsl(ctCode);
+//        log.info("moniteringListDtos : "+moniteringListDtos);
+
+        int complete = 0;
+        int uncomplete = 0;
+        for(int i=0; i<moniteringListDtos.size(); i++) {
+            emNumbers.add('"' + moniteringListDtos.get(i).getDeviceid() + '"');
+            deviceids.put('"' + "deviceids" + '"', emNumbers);
+            String aswDeviceids = deviceids.toString().replace("=", ":").replace(" ", "");
+            emNumbers.remove(0);
+            HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceids);
+//            log.info("resData : " + resData);
+
+            HashMap map = (HashMap) resData.get("data").get(0);
+
+            String gps_laData = (String) map.get("gps_la");
+            String gps_loData = (String) map.get("gps_lo");
+            if (gps_loData.equals("na") || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals("")) {
+                uncomplete++;
+                noDataDeviceid.add((String) map.get("deviceid"));
+                continue;
+            }else {
+                if (gps_laData.substring(0, 1).equals("N")) {
+                    String gps_laSubStirng = gps_laData.replace("N", "");
+                    monitering_gps_laList.add(gps_laSubStirng);
+                } else if (gps_laData.substring(0, 1).equals("S")) {
+                    String gps_laSubStirng = gps_laData.replace("S", "-");
+                    monitering_gps_laList.add(gps_laSubStirng);
+                }
+                if (gps_loData.substring(0, 1).equals("E")) {
+                    String gps_loSubStirng = gps_loData.replace("E", "");
+                    monitering_gps_loList.add(gps_loSubStirng);
+                } else if (gps_loData.substring(0, 1).equals("W")) {
+                    String gps_loSubStirng = gps_loData.replace("W", "-");
+                    monitering_gps_loList.add(gps_loSubStirng);
+                }
+                if(moniteringListDtos.get(i).getCompleteDateTime()!=null){
+                    completeState.add("완료");
+                    complete++;
+                }else{
+                    completeState.add("미완료");
+                    uncomplete++;
+                }
+                deviceid.add((String) map.get("deviceid"));
+            }
+        }
+
+//        log.info("deviceid : "+deviceid);
+//        log.info("completeState : "+completeState);
+//        log.info("monitering_gps_laList : "+monitering_gps_laList);
+//        log.info("monitering_gps_loList : "+monitering_gps_loList);
+
+        data.put("deviceid",deviceid);
+        data.put("noDataDeviceid",noDataDeviceid.size());
+        data.put("completeState",completeState);
+        data.put("monitering_gps_laList",monitering_gps_laList);
+        data.put("monitering_gps_loList",monitering_gps_loList);
+        data.put("deviceSize",moniteringListDtos.size());
+        data.put("complete",complete);
+        data.put("uncomplete",uncomplete);
+
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
 
 
     //////////////////////// 여기서부턴 모바일 ////////////////////////
@@ -974,7 +1052,7 @@ public class CollectionTaskRestController {
         //log.info("id : "+id);
 
         CollectionTaskListDto collection = collectionTaskService.findByCollectionsTaskInfoList(id);
-        log.info("collection : "+collection);
+//        log.info("collection : "+collection);
 
 
         if(collection != null){
@@ -993,8 +1071,8 @@ public class CollectionTaskRestController {
                                                               @RequestParam(value="timestamp", defaultValue="") String timestamp) throws Exception {
         AjaxResponse res = new AjaxResponse();
 
-        //log.info("장비코드 : "+deviceid);
-
+//        log.info("장비코드 : "+deviceid);
+//        log.info("timestamp : "+timestamp);
         //Shadow Isolarbin LED 점멸 (IoT) -> param :  디바이스 아이디, 타임스탬프
         aciawsIoTDeviceService.setLightFlicker(deviceid,timestamp);
 
@@ -1110,86 +1188,6 @@ public class CollectionTaskRestController {
 
         collectionTaskService.save(collectionTask);
 
-        return ResponseEntity.ok(res.success());
-    }
-
-    // 모니터링 맵
-    @PostMapping("moniteringMap")
-    public ResponseEntity<Map<String,Object>> moniteringMap(@RequestParam (value="ctCode", defaultValue="") String ctCode){
-        AjaxResponse res = new AjaxResponse();
-        HashMap<String, Object> data = new HashMap<>();
-
-        List<String> emNumbers = new ArrayList<>();
-        HashMap<String,List<String>> deviceids = new HashMap<>();
-
-        List<String> deviceid = new ArrayList<>();
-        List<String> noDataDeviceid = new ArrayList<>();
-        List<String> completeState = new ArrayList<>();
-        List<String> monitering_gps_laList = new ArrayList<>();
-        List<String> monitering_gps_loList = new ArrayList<>();
-
-        List<CollectionMoniteringListDto> moniteringListDtos = collectionTaskService.moniteringQuerydsl(ctCode);
-        log.info("moniteringListDtos : "+moniteringListDtos);
-
-        int complete = 0;
-        int uncomplete = 0;
-        for(int i=0; i<moniteringListDtos.size(); i++) {
-            emNumbers.add('"' + moniteringListDtos.get(i).getDeviceid() + '"');
-            deviceids.put('"' + "deviceids" + '"', emNumbers);
-            String aswDeviceids = deviceids.toString().replace("=", ":").replace(" ", "");
-            emNumbers.remove(0);
-            HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceids);
-//            log.info("resData : " + resData);
-
-            HashMap map = (HashMap) resData.get("data").get(0);
-
-            String gps_laData = (String) map.get("gps_la");
-            String gps_loData = (String) map.get("gps_lo");
-            if (gps_loData.equals("na") || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals("")) {
-                uncomplete++;
-                noDataDeviceid.add((String) map.get("deviceid"));
-                continue;
-            }else {
-                if (gps_laData.substring(0, 1).equals("N")) {
-                    String gps_laSubStirng = gps_laData.replace("N", "");
-                    monitering_gps_laList.add(gps_laSubStirng);
-                } else if (gps_laData.substring(0, 1).equals("S")) {
-                    String gps_laSubStirng = gps_laData.replace("S", "-");
-                    monitering_gps_laList.add(gps_laSubStirng);
-                }
-                if (gps_loData.substring(0, 1).equals("E")) {
-                    String gps_loSubStirng = gps_loData.replace("E", "");
-                    monitering_gps_loList.add(gps_loSubStirng);
-                } else if (gps_loData.substring(0, 1).equals("W")) {
-                    String gps_loSubStirng = gps_loData.replace("W", "-");
-                    monitering_gps_loList.add(gps_loSubStirng);
-                }
-                if(moniteringListDtos.get(i).getCompleteDateTime()!=null){
-                    completeState.add("완료");
-                    complete++;
-                }else{
-                    completeState.add("미완료");
-                    uncomplete++;
-                }
-                deviceid.add((String) map.get("deviceid"));
-            }
-        }
-
-//        log.info("deviceid : "+deviceid);
-//        log.info("completeState : "+completeState);
-//        log.info("monitering_gps_laList : "+monitering_gps_laList);
-//        log.info("monitering_gps_loList : "+monitering_gps_loList);
-
-        data.put("deviceid",deviceid);
-        data.put("noDataDeviceid",noDataDeviceid.size());
-        data.put("completeState",completeState);
-        data.put("monitering_gps_laList",monitering_gps_laList);
-        data.put("monitering_gps_loList",monitering_gps_loList);
-        data.put("deviceSize",moniteringListDtos.size());
-        data.put("complete",complete);
-        data.put("uncomplete",uncomplete);
-
-        res.addResponse("data",data);
         return ResponseEntity.ok(res.success());
     }
 

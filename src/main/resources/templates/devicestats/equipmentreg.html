@@ -47,7 +47,47 @@
 				agencyCallList(1);
 			});
 
+			$("#devcieCheckBtn").on('click',function(){
+				devcieCheck();
+			});
 		});
+
+		function devcieCheck() {
+			var $emNumber = $("#emNumber");
+
+			if ($emNumber.val().trim() === '') {
+				alertCaution("장비를 선택해주세요.");
+				return false;
+			}
+
+			timestamp = + new Date();
+
+			var deviceid = $emNumber.val();
+
+			var params = {
+				deviceid:deviceid,
+				timestamp:timestamp
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/collection/collectionCheck',
+				data : params,
+				type : 'post',
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(){
+					alertSuccess("장비등록확인완료");
+					var pat=1;
+					// lightLoading(deviceid,0,null,pat);
+				}
+			});
+		}
 
 		// 조건초기화
 		function reset() {
@@ -87,21 +127,23 @@
 			$("#emCountry").show();
 			$("#emLocation").show();
 
+			$("#devcieCheckBtn").hide();
+
 			ModelChange();
 		}
 
 		// 장비저장
 		function save() {
 
-			if ($("#mdId").val().trim() == '') {
+			if ($("#mdId").val().trim() === '') {
 				alertCaution("모델을 선택해주세요.");
 				return false;
 			}
-			if ($("#emInstallDate").val().trim() == '') {
+			if ($("#emInstallDate").val().trim() === '') {
 				alertCaution("설치일자를 선택해주세요.");
 				return false;
 			}
-			if ($("#operator").val().trim() == '') {
+			if ($("#operator").val().trim() === '') {
 				alertCaution("소속 운영사를 선택해주세요.");
 				return false;
 			}
@@ -155,7 +197,7 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/equipment/agencyList?size='+ perPage + '&page=' + page,
@@ -304,20 +346,26 @@
 					var installArray = install2.join('');
 					$("#emInstallDate").val(installArray);
 
-					$("#emCountry").hide();
+					var $emCountry = $("#emCountry");
+					var $emCountryView = $("#emCountryView");
+					var $emLocationView = $("#emLocationView");
+
+					$emCountry.hide();
 					$("#emLocation").hide();
 
-					$("#emCountryView").show();
-					$("#emLocationView").show();
+					$emCountryView.show();
+					$emLocationView.show();
 
 					// 보기버튼 클릭시 나라/지역 변경
-					$("#emCountryView").val(res.data.equipment.emCountryName);
-					$("#emLocationView").val(res.data.equipment.emLocationName);
+					$emCountryView.val(res.data.equipment.emCountryName);
+					$emLocationView.val(res.data.equipment.emLocationName);
 
-					$("#emType").val(res.data.equipment.emTypeId)
-					$("#mdId").val(res.data.equipment.mdId.id)
-					$("#emCountry").val(res.data.equipment.emCountryId)
-					$("#addSell").val(res.data.equipment.emLocationId)
+					$("#emType").val(res.data.equipment.emTypeId);
+					$("#mdId").val(res.data.equipment.mdId.id);
+					$emCountry.val(res.data.equipment.emCountryId);
+					$("#addSell").val(res.data.equipment.emLocationId);
+
+					$("#devcieCheckBtn").show();
 
 					LocationSetting();
 				}
@@ -810,6 +858,9 @@
 			</form>
 			<div class="c-function">
 				<div class="c-function__group c-function__group--right">
+					<div class="c-function__item">
+						<button style="display: none" class="c-button c-button--point" id="devcieCheckBtn">장비등록확인</button>
+					</div>
 					<div class="c-function__item">
 						<button class="c-button c-button--point" id="btnNew">신규</button>
 					</div>
