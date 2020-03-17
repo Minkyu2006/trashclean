@@ -21,7 +21,7 @@
 		<div class="m-wrap">
 			<div class="m-header">
 				<h1 class="m-logo">
-					<a href="/collection/mobileindex">NatureStore</a>
+					<a href="/mobile/mobileindex">NatureStore</a>
 				</h1>
 				<form th:action="@{/logout}" method="post" id="logout">
 					<ul class="m-head-console">
@@ -32,7 +32,7 @@
 			<div class="m-contents">
 				<ul class="m-main-menu" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_COLLECTOR')or hasRole('ROLE_SUBADMIN')">
 					<li><a href="/devicestats/devicecontrol" sec:authorize = "hasRole('ROLE_ADMIN') or hasRole('ROLE_SUBADMIN')" class="m-banner">장치제어</a></li>
-					<li><a href="/collection/collectionlist" class="m-banner">수거업무리스트</a></li>
+					<li><a href="/mobile/collectionlist" class="m-banner">수거업무리스트</a></li>
 				</ul>
 			</div>
 			<div class="m-footer">© 2019 Broadwave Corporation. All rights Reserved.</div>

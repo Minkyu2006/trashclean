@@ -546,12 +546,25 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alertSuccess('업무가 등록되었습니다.');
-					// init();
-					// checkfalse();
+					alertCollectionSuccess('업무가 등록되었습니다.');
 				}
 			});
 		}
+
+		//계속 등록할껀지 여부묻기
+		function continueSaveCheck() {
+			alertSaveCheck("계속 업무를 등록하겠습니까?",null);
+		}
+		//작성여부
+		function startYesorNo(booleanValue) {
+			$('#popupId').remove();
+			if(booleanValue===true){
+				return false;
+			}else{
+				return location.href = "/collection/collectionrouting";
+			}
+		}
+
 
 		// 수거원팝업
 		function collectionManPop(y) {

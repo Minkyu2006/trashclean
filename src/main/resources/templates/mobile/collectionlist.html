@@ -168,7 +168,7 @@
 					html += '<li >' + '모델타입 : ' + nvl(res.data.collection.devicetype, "확 인 불 가") + ' - ' + nvl(res.data.collection.devicemodeltype, "확 인 불 가") + '</li>';
 					html += '<li >' + '운영사 : ' + nvl(res.data.collection.csOperator, "확 인 불 가") + '</li>';
 					html += '<li ><img alt="" width="100" src="' + baseurl + nvl(res.data.collection.filePath, "확 인 불 가") + nvl(res.data.collection.saveFileName, "확 인 불 가") + '"</img></li>';
-					html += '<li style="text-align: right;"><a class="m-collectionlist__button" href="/collection/collectionprocess/' + echoNull2Blank(res.data.collection.id) + '">수거업무</a></li>';
+					html += '<li style="text-align: right;"><a class="m-collectionlist__button" href="/mobile/collectionprocess/' + echoNull2Blank(res.data.collection.id) + '">수거업무</a></li>';
 					$collectionDevice.html(html);
 				}
 			});
@@ -179,11 +179,11 @@
 		<div class="m-wrap">
 			<div class="m-header">
 				<h1 class="m-logo">
-					<a href="/collection/mobileindex">NatureStore</a>
+					<a href="/mobile/mobileindex">NatureStore</a>
 				</h1>
 				<form th:action="@{/logout}" method="post" id="logout">
 					<ul class="m-head-console">
-						<li><a href="/collection/mobileindex">Back</a></li>
+						<li><a href="/mobile/mobileindex">Back</a></li>
 						<li><a href="#" onclick="document.getElementById('logout').submit();">Logout</a></li>
 					</ul>
 				</form>

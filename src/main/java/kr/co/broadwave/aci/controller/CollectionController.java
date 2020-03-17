@@ -1,21 +1,14 @@
 package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.bscodes.CodeType;
-import kr.co.broadwave.aci.bscodes.ProcStatsType;
-import kr.co.broadwave.aci.collection.CollectionTaskListInfoDto;
-import kr.co.broadwave.aci.collection.CollectionTaskService;
-import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -29,91 +22,11 @@ import java.util.List;
 @RequestMapping("/collection")
 public class CollectionController {
 
-    @Value("${aci.aws.s3.bucket.url}")
-    private String AWSS3URL;
-
     private final MasterCodeService masterCodeService;
-    private final CollectionTaskService collectionTaskService;
 
     @Autowired
-    public CollectionController(MasterCodeService masterCodeService,
-                                CollectionTaskService collectionTaskService){
+    public CollectionController(MasterCodeService masterCodeService){
         this.masterCodeService=masterCodeService;
-        this.collectionTaskService=collectionTaskService;
-    }
-
-    // 안쓰는거
-    @RequestMapping("collectionreg")
-    public String collectionreg(Model model){
-
-        List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
-        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
-        List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
-        List<MasterCodeDto> vcUsages = masterCodeService.findCodeList(CodeType.C0011);
-        List<MasterCodeDto> vcStates = masterCodeService.findCodeList(CodeType.C0012);
-
-        model.addAttribute("equipdTypes", equipdTypes);
-        model.addAttribute("equipdCountrys", equipdCountrys);
-        model.addAttribute("vcShapes", vcShapes);
-        model.addAttribute("vcUsages", vcUsages);
-        model.addAttribute("vcStates", vcStates);
-
-        return "collection/collectionreg";
-    }
-
-    //수거업무메인화면 - 모바일
-    @RequestMapping("mobileindex")
-    public String mobileindex(HttpServletRequest request){
-        String currentuserid = CommonUtils.getCurrentuser(request);
-        if(currentuserid.equals("system")){
-            return "login";
-        }else{
-            return "collection/mobileindex";
-        }
-    }
-
-    //수거업무처리 - 모바일
-    @RequestMapping("collectionprocess/{id}")
-    public String collectionprocessid(HttpServletRequest request,Model model, @PathVariable Long id){
-        String currentuserid = CommonUtils.getCurrentuser(request);
-        CollectionTaskListInfoDto collectionTasks = collectionTaskService.findByCollectionListInfoQueryDsl(id);
-        //log.info("collectionTasks : "+collectionTasks);
-        ProcStatsType procStatsType = ProcStatsType.valueOf("CL02");
-        //AccountRole accountRole = AccountRole.valueOf("ROLE_COLLECTOR");
-        if(currentuserid.equals("system")) {
-            return "login";
-        }else if(!collectionTasks.getProcStatsType().equals(procStatsType)){
-            return "collection/collectionlist";
-        }else{
-            model.addAttribute("collectionTasks", collectionTasks);
-            model.addAttribute("mdmaximum", Math.round(collectionTasks.getMdmaximum())+collectionTasks.getMdunit());
-            model.addAttribute("emcountrylocation", collectionTasks.getEmCountry()+"/"+collectionTasks.getEmLoation());
-            model.addAttribute("fileurl", AWSS3URL+collectionTasks.getFilePath()+collectionTasks.getSaveFileName());
-
-            return "collection/collectionprocess";
-        }
-    }
-
-    //수거업무처리 - 모바일
-    @RequestMapping("collectionprocess")
-    public String collectionprocess(HttpServletRequest request){
-        String currentuserid = CommonUtils.getCurrentuser(request);
-        if(currentuserid.equals("system")){
-            return "login";
-        }else{
-            return "error/404";
-        }
-    }
-
-    //수거업무리스트 - 모바일
-    @RequestMapping("collectionlist")
-    public String collectionlist(HttpServletRequest request){
-        String currentuserid = CommonUtils.getCurrentuser(request);
-        if(currentuserid.equals("system")){
-            return "login";
-        }else{
-            return "collection/collectionlist";
-        }
     }
 
     // 수거업무등록
@@ -152,6 +65,11 @@ public class CollectionController {
         model.addAttribute("vcStates", vcStates);
 
         return "collection/collectionsearch";
+    }
+
+    @RequestMapping("collectionmonitering")
+    public String collectionmonitering(){
+        return "collection/collectionmonitering";
     }
 
 }

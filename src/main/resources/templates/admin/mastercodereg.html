@@ -21,7 +21,7 @@
 				init();
 			});
 			$("#btnDel").on('click',function(){
-				del();
+				masterDelCheck()();
 			});
 		});
 
@@ -178,13 +178,23 @@
 			});
 		}
 
-		function del(){
-
-			if ($("#codeType").attr("readonly") != "readonly"){
+		function masterDelCheck() {
+			if ($("#codeType").attr("readonly") !== "readonly"){
 				alertCaution("삭제하고자하는 코드를 하단에서 <BR> 선택 후 삭제하세요.");
 				return false;
 			}
-
+			alertCheck("마스터코드를 삭제하겠습니까?",null);
+		}
+		// 삭제실행여부확인
+		function startDel(id,booleanValue) {
+			$('#popupId').remove();
+			if(booleanValue===true){
+				del()
+			}else{
+				return false;
+			}
+		}
+		function del(){
 			var params = {
 				codetype:$("#codeType").val(),
 				code:$("#code").val()

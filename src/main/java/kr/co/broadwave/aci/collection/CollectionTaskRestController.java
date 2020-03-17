@@ -97,21 +97,20 @@ public class CollectionTaskRestController {
         Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
         String yyyymmdd = yyyymmddNum.replaceAll("-", "");
 
-        log.info("저장시작");
+//        log.info("저장시작");
 
         //로그인한 사람 아이디가존재하지않으면 에러처리
         if (!optionalAccount.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(), ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }
 
-        log.info("현재로그인한 아이디 : "+currentuserid);
-
-        log.info("deviceList : "+deviceList);
-        log.info("deviceListlen : "+deviceListlen);
-        log.info("ctCodeNum : "+ctCodeNum);
-        log.info("yyyymmdd : "+yyyymmdd);
-        log.info("accountNum : "+accountNum);
-        log.info("vehicleNum : "+vehicleNum);
+//        log.info("현재로그인한 아이디 : "+currentuserid);
+//        log.info("deviceList : "+deviceList);
+//        log.info("deviceListlen : "+deviceListlen);
+//        log.info("ctCodeNum : "+ctCodeNum);
+//        log.info("yyyymmdd : "+yyyymmdd);
+//        log.info("accountNum : "+accountNum);
+//        log.info("vehicleNum : "+vehicleNum);
 
         //장비아이디,장비코드,모델타입 리스트에 넣기
         List<EquipmentCollectionRegDto> equipment = equipmentService.findByRoutingEmNumberQuerydsl(deviceList);
@@ -131,8 +130,6 @@ public class CollectionTaskRestController {
 //        log.info("equipmentId : "+equipmentId);
 //        log.info("equipmentEmNumber : "+equipmentEmNumber);
 //        log.info("equipmentEmType : "+equipmentEmType);
-
-
 
         //기본값넣기 수거처리단계(확정)
         ProcStatsType cl02 = ProcStatsType.valueOf("CL02");
@@ -227,28 +224,53 @@ public class CollectionTaskRestController {
                                                             @RequestParam (value="modelType", defaultValue="")String modelType,
                                                             @RequestParam (value="userName", defaultValue="")String userName,
                                                             @RequestParam (value="vehicleNumber", defaultValue="")String vehicleNumber,
-                                                            @PageableDefault Pageable pageable){
+                                                            @PageableDefault Pageable pageable) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
         String fromDate = null;
         String toDate = null;
 
-        if(!dateFrom.equals("")){
-            fromDate = dateFrom.substring(0,10).replace("-","");
+        if (!dateFrom.equals("")) {
+            fromDate = dateFrom.substring(0, 10).replace("-", "");
         }
-        if(!dateTo.equals("")){
-            toDate = dateTo.substring(0,10).replace("-","");
+        if (!dateTo.equals("")) {
+            toDate = dateTo.substring(0, 10).replace("-", "");
         }
 
         Long emTypeId = null;
 
-        if(!modelType.equals("")){
+        if (!modelType.equals("")) {
             Optional<MasterCode> emTypes = masterCodeService.findByCode(modelType);
             emTypeId = emTypes.map(MasterCode::getId).orElse(null);
         }
 
-        Page<CollectionListDto> collectionListDtos = collectionTaskService.findByCollectionList(ctCode,fromDate,toDate,emTypeId,userName,vehicleNumber,pageable);
+        Page<CollectionListDto> collectionListDtos = collectionTaskService.findByCollectionList(ctCode, fromDate, toDate, emTypeId, userName, vehicleNumber, pageable);
+        if (collectionListDtos.getTotalElements() > 0) {
+            List<String> percents = new ArrayList<>();
 
-        return CommonUtils.ResponseEntityPage(collectionListDtos);
+            for (int i = 0; i < collectionListDtos.getTotalElements(); i++) {
+                int y = 0;
+                List<CollectionMoniteringListDto> moniteringListDtos = collectionTaskService.moniteringQuerydsl(collectionListDtos.getContent().get(i).getCtCode());
+//                log.info("moniter : "+moniteringListDtos);
+                for(int j=0; j<moniteringListDtos.size(); j++){
+                    if(moniteringListDtos.get(j).getCompleteDateTime()!=null){
+                        y++;
+                    }
+                }
+                int x = moniteringListDtos.size();
+                percents.add(Math.round((double)y / (double)x * 100.0)+"%");
+            }
 
+            data.put("percents",percents);
+            data.put("datalist",collectionListDtos.getContent());
+            data.put("total_rows",collectionListDtos.getTotalElements());
+            res.addResponse("data", data);
+        } else {
+            data.put("total_rows", collectionListDtos.getTotalElements());
+            res.addResponse("data", data);
+        }
+        return ResponseEntity.ok(res.success());
     }
 
     // 수거업무 정보 보기
@@ -491,35 +513,6 @@ public class CollectionTaskRestController {
                     gps_loSubStirng = gps_loData.replace("W", "-");
                     street_gps_loList.add(gps_loSubStirng);
                 }
-
-//                url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=" + gps_loSubStirng + "," + gps_laSubStirng );
-//
-//                String clientId = NAVERCLIENTID;//애플리케이션 클라이언트 아이디값";
-//                String clientSecret = NAVERCLIENTSECRET;//애플리케이션 클라이언트 시크릿값";
-//
-//                RestTemplate restTemplate = new RestTemplate();
-//
-//                //header
-//                HttpHeaders headers = new HttpHeaders();
-//                headers.setContentType(MediaType.APPLICATION_JSON);
-//                headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
-//                headers.add("X-NCP-APIGW-API-KEY", clientSecret);
-//
-//                HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
-//                URI uri = UriComponentsBuilder.fromUriString(String.valueOf(url)).build().toUri();
-//                ResponseEntity<String> apiResult = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
-//                //region.area1.name  region.area2.name region.area3.name
-//                log.info("유알엘 : "+url);
-//                log.info("apiResult : "+apiResult);
-////                try {
-////                    JSONParser parser = new JSONParser();
-////                    JSONObject jsonObj = (JSONObject)parser.parse(apiResult.getBody());
-////                    log.info("jsonObj : "+jsonObj);
-////                } catch (ParseException e) {
-////                    System.out.println("에러");
-////                }
-//                gcList.add(apiResult);
-
             }
         }
         int streetSize = streetdevicenameList.size();
@@ -1120,5 +1113,84 @@ public class CollectionTaskRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 모니터링 맵
+    @PostMapping("moniteringMap")
+    public ResponseEntity<Map<String,Object>> moniteringMap(@RequestParam (value="ctCode", defaultValue="") String ctCode){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        List<String> emNumbers = new ArrayList<>();
+        HashMap<String,List<String>> deviceids = new HashMap<>();
+
+        List<String> deviceid = new ArrayList<>();
+        List<String> noDataDeviceid = new ArrayList<>();
+        List<String> completeState = new ArrayList<>();
+        List<String> monitering_gps_laList = new ArrayList<>();
+        List<String> monitering_gps_loList = new ArrayList<>();
+
+        List<CollectionMoniteringListDto> moniteringListDtos = collectionTaskService.moniteringQuerydsl(ctCode);
+        log.info("moniteringListDtos : "+moniteringListDtos);
+
+        int complete = 0;
+        int uncomplete = 0;
+        for(int i=0; i<moniteringListDtos.size(); i++) {
+            emNumbers.add('"' + moniteringListDtos.get(i).getDeviceid() + '"');
+            deviceids.put('"' + "deviceids" + '"', emNumbers);
+            String aswDeviceids = deviceids.toString().replace("=", ":").replace(" ", "");
+            emNumbers.remove(0);
+            HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceids);
+//            log.info("resData : " + resData);
+
+            HashMap map = (HashMap) resData.get("data").get(0);
+
+            String gps_laData = (String) map.get("gps_la");
+            String gps_loData = (String) map.get("gps_lo");
+            if (gps_loData.equals("na") || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals("")) {
+                uncomplete++;
+                noDataDeviceid.add((String) map.get("deviceid"));
+                continue;
+            }else {
+                if (gps_laData.substring(0, 1).equals("N")) {
+                    String gps_laSubStirng = gps_laData.replace("N", "");
+                    monitering_gps_laList.add(gps_laSubStirng);
+                } else if (gps_laData.substring(0, 1).equals("S")) {
+                    String gps_laSubStirng = gps_laData.replace("S", "-");
+                    monitering_gps_laList.add(gps_laSubStirng);
+                }
+                if (gps_loData.substring(0, 1).equals("E")) {
+                    String gps_loSubStirng = gps_loData.replace("E", "");
+                    monitering_gps_loList.add(gps_loSubStirng);
+                } else if (gps_loData.substring(0, 1).equals("W")) {
+                    String gps_loSubStirng = gps_loData.replace("W", "-");
+                    monitering_gps_loList.add(gps_loSubStirng);
+                }
+                if(moniteringListDtos.get(i).getCompleteDateTime()!=null){
+                    completeState.add("완료");
+                    complete++;
+                }else{
+                    completeState.add("미완료");
+                    uncomplete++;
+                }
+                deviceid.add((String) map.get("deviceid"));
+            }
+        }
+
+//        log.info("deviceid : "+deviceid);
+//        log.info("completeState : "+completeState);
+//        log.info("monitering_gps_laList : "+monitering_gps_laList);
+//        log.info("monitering_gps_loList : "+monitering_gps_loList);
+
+        data.put("deviceid",deviceid);
+        data.put("noDataDeviceid",noDataDeviceid.size());
+        data.put("completeState",completeState);
+        data.put("monitering_gps_laList",monitering_gps_laList);
+        data.put("monitering_gps_loList",monitering_gps_loList);
+        data.put("deviceSize",moniteringListDtos.size());
+        data.put("complete",complete);
+        data.put("uncomplete",uncomplete);
+
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
+    }
 
 }

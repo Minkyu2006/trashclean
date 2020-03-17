@@ -84,25 +84,24 @@
 			}
 			refleshAutomatic();
 
-			$("#closeMasterfold").on('click',function(){
-				$("#mapfold").toggleClass(" fold");
-				$("#circlefold").toggleClass(" fold");
-				$("#levelfold").toggleClass(" fold");
-				refleshBarChart();
-				refleshCircleChart();
-				$("#closeMasterfold").hide();
-				$("#openMasterfold").show();
-			});
-
-			$("#openMasterfold").on('click',function(){
-				$("#mapfold").toggleClass(" fold");
-				$("#circlefold").toggleClass(" fold");
-				$("#levelfold").toggleClass(" fold");
-				refleshBarChart();
-				refleshCircleChart();
-				$("#openMasterfold").hide();
-				$("#closeMasterfold").show();
-			});
+			// $("#closeMasterfold").on('click',function(){
+			// 	$("#mapfold").toggleClass(" fold");
+			// 	$("#circlefold").toggleClass(" fold");
+			// 	$("#levelfold").toggleClass(" fold");
+			// 	refleshBarChart();
+			// 	refleshCircleChart();
+			// 	$("#closeMasterfold").hide();
+			// 	$("#openMasterfold").show();
+			// });
+			// $("#openMasterfold").on('click',function(){
+			// 	$("#mapfold").toggleClass(" fold");
+			// 	$("#circlefold").toggleClass(" fold");
+			// 	$("#levelfold").toggleClass(" fold");
+			// 	refleshBarChart();
+			// 	refleshCircleChart();
+			// 	$("#openMasterfold").hide();
+			// 	$("#closeMasterfold").show();
+			// });
 
 			$("#refreshMaster").on('click',function() {
 				$("#mapChartLoading").show();
@@ -1400,7 +1399,7 @@
 		}
 
 		// 맵 차트
-		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas,pathobj) {
+		function mapDeviceId(map_data_columns,bar_data_columns,statusDatas) {
 			//console.log("map_data_columns : "+ map_data_columns)
 
 			var locations = map_data_columns;
@@ -1815,11 +1814,11 @@
 											</div>
 										</div>
 
-										<div class="c-float__item" style="padding-top: 15px;">
-											<button id="closeMasterfold" class="c-button c-button--point">접기</button>
-											<button id="openMasterfold" class="c-button c-button--point" style="display: none">펴기</button>
-										</div>
-										<div class="c-float__item" style="padding-top: 15px;">
+<!--										<div class="c-float__item" style="padding-top: 15px;">-->
+<!--											<button id="closeMasterfold" class="c-button c-button&#45;&#45;point">접기</button>-->
+<!--											<button id="openMasterfold" class="c-button c-button&#45;&#45;point" style="display: none">펴기</button>-->
+<!--										</div>-->
+										<div class="c-float__item" style="padding-top: 15px;padding-right: 12px;">
 											<button id="btnSearch" class="c-button c-button--point">조회</button>
 										</div>
 									</div>

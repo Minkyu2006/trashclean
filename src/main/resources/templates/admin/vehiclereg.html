@@ -44,7 +44,7 @@
 			});
 
 			$("#btnDel").on('click',function(){
-				del();
+				vehicleDelCheck();
 			});
 		});
 
@@ -231,12 +231,24 @@
 			});
 		}
 
-		//삭제버튼 실행
-		function del() {
+		function vehicleDelCheck(){
 			if ($("#vcId").val().trim() === '') {
-				alertCaution("삭제하고자하는 장비를 선택하세요.");
+				alertCaution("삭제하고자하는 차량을 선택하세요.");
 				return false;
 			}
+			alertCheck("차량을 삭제하겠습니까?",null);
+		}
+		// 삭제실행여부확인
+		function startDel(id,booleanValue) {
+			$('#popupId').remove();
+			if(booleanValue===true){
+				del()
+			}else{
+				return false;
+			}
+		}
+		//삭제버튼 실행
+		function del() {
 
 			var params = {
 				id: $("#vcId").val()

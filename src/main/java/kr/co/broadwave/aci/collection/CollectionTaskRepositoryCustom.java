@@ -29,4 +29,5 @@ public interface CollectionTaskRepositoryCustom {
 
     List<CollectionDto> findByCtCodeSeqQuerydsl(String ctCode);
 
+    List<CollectionMoniteringListDto> moniteringQuerydsl(String ctCode);
 }

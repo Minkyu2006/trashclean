@@ -44,7 +44,7 @@
 
         // 펌웨어파일초기화
         function fileReset() {
-            var $updateFile = $("#updateFile")
+            var $updateFile = $("#updateFile");
             var agent = navigator.userAgent.toLowerCase();
             if ( (navigator.appName === 'Netscape' && navigator.userAgent.search('Trident') !== -1) || (agent.indexOf("msie") !== -1) ){
                 // IE 일때 input[type=file] init.
@@ -420,11 +420,9 @@
                             <input name="efVer" id="efVer" type="text" class="c-text__input" maxlength="5" oninput="numberMaxLength(this);" />
                         </div>
                     </li>
-                    <li>
-                        <div class="c-text">
-                            <label for="efRemark" class="c-text__label">Remark</label>
-                            <input name="efRemark" id="efRemark" type="text" class="c-text__input" />
-                        </div>
+                    <li class="firmware__info-wide">
+                        <label for="efRemark" class="c-textarea__label">비고</label>
+                        <textarea name="efRemark" id="efRemark" class="c-textarea"></textarea>
                     </li>
                     <li class="firmware__info-wide">
                         <div class="c-file">

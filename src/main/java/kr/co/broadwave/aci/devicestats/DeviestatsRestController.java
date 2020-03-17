@@ -574,11 +574,11 @@ public class DeviestatsRestController {
                                                          @RequestParam(value="efVer", defaultValue="") String efVer,
                                                          @RequestParam(value="efFilePath", defaultValue="") String efFilePath) {
         AjaxResponse res = new AjaxResponse();
-        log.info("deviceid : "+deviceid);
-        log.info("efVer : "+efVer);
-        log.info("efFilePath : "+efFilePath);
+//        log.info("deviceid : "+deviceid);
+//        log.info("efVer : "+efVer);
+//        log.info("efFilePath : "+efFilePath);
         String str = efVer+"$@"+efFilePath;
-        log.info("str : "+str);
+//        log.info("str : "+str);
 
         try{
             aciawsIoTDeviceService.setFirmwareUpdate(deviceid,str);

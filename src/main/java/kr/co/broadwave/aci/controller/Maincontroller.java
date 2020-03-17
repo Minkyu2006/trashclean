@@ -51,7 +51,7 @@ public class Maincontroller {
         String userAgent = request.getHeader("User-Agent").toUpperCase();
         String IS_MOBILE = "MOBILE";
         if(userAgent.contains(IS_MOBILE)) {
-            return "redirect:/collection/mobileindex";
+            return "redirect:/mobile/mobileindex";
         }
         return "index";
     }
@@ -102,7 +102,7 @@ public class Maincontroller {
         String userAgent = request.getHeader("User-Agent").toUpperCase();
         String IS_MOBILE = "MOBILE";
         if(userAgent.contains(IS_MOBILE)) {
-            return "redirect:/collection/mobileindex";
+            return "redirect:/mobile/mobileindex";
         }
         return "redirect:/dashboard/dashboardall";
 

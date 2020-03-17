@@ -1,8 +1,6 @@
 package kr.co.broadwave.aci.collection;
 
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
-import kr.co.broadwave.aci.equipment.Equipment;
-import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
 import java.time.LocalDateTime;

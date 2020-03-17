@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate ="~{layout/default}">
+<head>
+    <script type="text/javascript">
+
+        $(function() {
+            $("#header_collection").css('display', 'block');
+            $("#default_wrap").on('click', function () {
+                $("#header_collection").css('display', 'none');
+            });
+
+            //달력폼
+            $("#s_dateFrom").datepicker({});
+            $("#s_dateTo").datepicker({});
+
+            collectionList(1);
+            // 수거업무모니터링 리스트버튼
+            $('#collectionListBtn').on('click', function(e) {
+                collectionList(1);
+            });
+
+        });
+
+        // 수거업무모니터링 리스트
+        function collectionList(page) {
+            page = page - 1;
+            if (page < 0) page = 0;
+
+            var perPage = 10;
+            var perArea = 5;
+            var totCnt = 0;
+
+            var $schList = $('#schCollectionList');
+            var $totalCnt = $('#totalCnt');
+
+            var params = {
+                dateFrom:$('#s_dateFrom').val(),
+                dateTo:$('#s_dateTo').val(),
+            };
+
+            $schList.empty().append('<tr ><td colspan="4" align = "center">조회 중</td></tr>');
+            $totalCnt.text('0');
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url:'/api/collection/list?size='+ perPage + '&page=' + page,
+                type : 'post',
+                data : params,
+                cache:false,
+                error:function(request){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    //화면 출력
+                    totCnt = res.data.total_rows;
+                    $("#paging").jqueryPager({pageSize: perPage,
+                        pageBlock: perArea,
+                        currentPage: page + 1,
+                        pageTotal: totCnt,
+                        clickEvent: 'collectionList'});
+
+                    if (totCnt === 0) {
+                        $schList.empty().append('<tr class="t-c"><td colspan="4" align="center">조회된 데이터가 없습니다.</td></tr>');
+                        return;
+                    }
+
+                    $totalCnt.text(totCnt);
+                    var html = '';
+                    var i=0;
+                    $.each(res.data.datalist, function(key, value){
+                        html += '<tr >';
+                        html += '<td >' + nvl(value.ctCode, '확 인 불 가') + '</td>';
+                        html += '<td >' + nvl(value.yyyymmdd, "확 인 불 가") + '</td>';
+                        html += '<td >' + nvl(res.data.percents[i], "확 인 불 가") + '</td>';
+                        html += '<td ><button class="c-button c-button--small" onclick="monitering(\'' + echoNull2Blank(value.ctCode) + '\');">조회</button></td>';
+                        html += '</tr>';
+                        i++;
+                    });
+                    $schList.html(html);
+                }
+            });
+        }
+
+        function monitering(ctCode) {
+            // console.log("ctCode : "+ctCode);
+
+            var params = {
+                ctCode:ctCode
+            };
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url:'/api/collection/moniteringMap',
+                type : 'post',
+                data : params,
+                cache:false,
+                error:function(request){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    // console.log("deviceid : "+res.data.deviceid);
+                    // console.log("completeState : "+res.data.completeState);
+                    // console.log("laList : "+res.data.monitering_gps_laList);
+                    // console.log("loList : "+res.data.monitering_gps_loList);
+                    // console.log("moniteringSize : "+res.data.deviceid.length);
+
+                    var $deviceState = $("#deviceState");
+                    var html='';
+                    html+='<tr>';
+                    html+='<th>수거업무 등록된 장비수</th>';
+                    html+='<th>수거처리된 장비수</th>';
+                    html+='<th>수거처리해야할 장비수</th>';
+                    html+='<th>경위도데이터 없는 장비수</th>';
+                    html+='</tr>';
+                    html+='<tr>';
+                    html+='<td>'+res.data.deviceSize+'</td>';
+                    html+='<td>'+res.data.complete+'</td>';
+                    html+='<td>'+res.data.uncomplete+'</td>';
+                    html+='<td>'+res.data.noDataDeviceid+'</td>';
+                    html+='</tr>';
+                    $deviceState.html(html);
+
+                    deviceMoniteringMap(res.data.deviceid,res.data.completeState,res.data.deviceid.length,res.data.monitering_gps_laList,res.data.monitering_gps_loList);
+
+                }
+            });
+        }
+
+        var map;
+        var marker;
+        //모니터링 지도그리기
+        function deviceMoniteringMap(deviceid,completeState,moniteringSize,laList,loList) {
+
+            //var map;
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 37.14450, lng: 127.03312},
+                zoom: 8,
+                mapTypeControl: false,
+                streetViewControl: false
+            });
+
+            var i;
+            var iconSrc = [];
+
+            iconSrc['완료'] = "/assets/images/marker.png";
+            iconSrc['미완료'] = "/assets/images/marker--severe.png";
+
+            var infowindow = new google.maps.InfoWindow();
+
+            var bounds = new google.maps.LatLngBounds();
+
+            for (i = 0; i < moniteringSize; i++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(laList[i], loList[i]),
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                    icon: iconSrc[completeState[i]]
+                });
+
+                bounds.extend(marker.position);
+
+                google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                    var content =
+                        '<div class="iw-container" id="iw-container">' +
+                        '<h2>' + (deviceid[i]) + '</h2>' +
+                        '<dl>' +
+                        '<dt>' + '처리상태 : ' + completeState[i] + '</dt>' +
+                        '</dl>' +
+                        '</div>';
+                    return function () {
+                        infowindow.setContent(content);
+                        infowindow.open(map, marker);
+
+                        if (marker.getAnimation() != null) {
+                            marker.setAnimation(null);
+                        } else {
+                            marker.setAnimation(google.maps.Animation.BOUNCE);
+                            setTimeout(function () {
+                                marker.setAnimation(null);
+                            }, 1500);
+                        }
+                    }
+                })(marker, i));
+            }map.fitBounds(bounds);
+        }
+
+    </script>
+</head>
+
+<div layout:fragment="content" class="contents-body">
+    <div class="page">
+        <div class="page-title">
+            <div class="page-title__left">
+                <h2>수거처리 모니터링</h2>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="dashboard__row">
+                <div class="panel panel--w500">
+                    <div class="panel__inner">
+                        <div class="panel__header">
+                            <h3 class="panel__title">업무 리스트</h3>
+                        </div>
+                        <div class="panel__body panel__body--height-auto">
+                            <article class="article">
+                                <h4 class="article__heading" style="margin-bottom: 10px;">업무 조회</h4>
+                                <table class="c-table">
+                                    <colgroup>
+                                        <col />
+                                        <col style="width: 62px;" />
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="c-date-group">
+                                                <div class="c-date">
+                                                    <label for="s_dateFrom" class="c-date__label">from</label>
+                                                    <input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일">
+                                                </div>
+                                                <div class="c-date">
+                                                    <label for="s_dateTo" class="c-date__label">to</label>
+                                                    <input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button id="collectionListBtn" class="c-button c-button--point">조회</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </article>
+                            <article class="article">
+                                <table class="c-table">
+                                    <colgroup>
+                                        <col />
+                                        <col />
+                                        <col style="width: 80px;" />
+                                        <col style="width: 50px;" />
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>수거관리코드</th>
+                                        <th>수거처리일</th>
+                                        <th>처리율</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="schCollectionList">
+                                    </tbody>
+                                </table>
+
+                                <div class="c-pager">
+                                    <div class="c-paging" id ="paging">
+                                        <!-- 페이징 처리되는곳   -->
+                                    </div>
+                                    <div class="c-paging__total">
+                                        <div class="c-paging__total-group">
+                                            Total
+                                        </div>
+                                        <div class="c-paging__total-group" id ="totalCnt">0</div>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="panel__inner">
+                        <div class="panel__header">
+                            <h3 class="panel__title">업무 현황</h3>
+                        </div>
+                        <div class="panel__body panel__body--height-auto">
+                            <table id="deviceState">
+
+                            </table>
+                            <div class="map" id="map" style="height: 570px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

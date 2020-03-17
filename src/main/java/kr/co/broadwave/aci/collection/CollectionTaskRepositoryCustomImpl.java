@@ -271,5 +271,20 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
                 .fetch();
     }
 
+    // 모니터링 처리율 , 완료미완료 리스트
+    @Override
+    public List<CollectionMoniteringListDto> moniteringQuerydsl(String ctCode) {
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
+
+        QCollectionTask collectionTask = QCollectionTask.collectionTask;
+
+        return queryFactory.select(Projections.constructor(CollectionMoniteringListDto.class,
+                collectionTask.id,collectionTask.deviceid,collectionTask.completeDateTime))
+                .from(collectionTask)
+                .where(collectionTask.ctCode.eq(ctCode))
+                .fetch();
+    }
+
 }
 

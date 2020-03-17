@@ -24,7 +24,7 @@
 			});
 
 			$("#btnDel").on('click',function(){
-				del();
+				teamDelCheck();
 			});
 			$("#btnExcelDown").on('click',function(){
 				exceldown();
@@ -39,26 +39,36 @@
 
 			document.location.href = '/admin/teamlist.xls?teamcode=' + teamcode +"&teamname=" + teamname;
 		}
-		function del(){
 
+		function teamDelCheck(){
 			if ($("#teamcode").attr("readonly") != "readonly"){
 
 				alertCaution("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
 				return false;
 			}
-
 			if ($("#teamcode").val().trim() == '') {
 				alertCaution("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
 				$("#teamcode").trigger('focus');
 				return false;
 			}
 
-
+			alertCheck("부서를 삭제하겠습니까?",null);
+		}
+		// 삭제실행여부확인
+		function startDel(id,booleanValue) {
+			$('#popupId').remove();
+			if(booleanValue===true){
+				del()
+			}else{
+				return false;
+			}
+		}
+		//삭제버튼 실행
+		function del(){
 
 			var params = {
 				teamcode:$("#teamcode").val()
 			};
-
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");

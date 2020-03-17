@@ -69,7 +69,7 @@
 
 			// //삭제버튼
 			$("#btnDel").on('click',function(){
-				coellctiondel();
+				coellctionDelCheck();
 			});
 
 			//수거업무저장 버튼(수정)
@@ -317,6 +317,7 @@
 
 					$totalCnt.text(totCnt);
 					var html = '';
+					var i=0;
 					$.each(res.data.datalist, function(key, value){
 						html += '<tr >';
 						html += '<td >' + nvl(value.ctCode, '확 인 불 가') + '</td>';
@@ -325,13 +326,14 @@
 						html += '<td >' + nvl(value.devicetype, "확 인 불 가") + '</td>';
 						html += '<td >' + nvl(value.accountName, "확 인 불 가") + '</td>';
 						html += '<td >' + nvl(value.vehicleNumber, "확 인 불 가") + '</td>';
-						if (value.completeDateTime == null) {
+						if (res.data.percents[i] !== "100%") {
 							html += '<td >' + "미완료" + '</td>';
 						} else {
 							html += '<td >' + "완료" + '</td>';
 						}
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\'' + echoNull2Blank(value.ctCode) + '\');">보기</button></td>';
 						html += '</tr>';
+						i++;
 					});
 					$schList.html(html);
 				}
@@ -494,14 +496,14 @@
 		var marker;
 		//팝업지도그리기
 		function deviceDirectionMap(pathobj,htmlStart,htmlGoal,directionSize,direction_gps_laList,direction_gps_loList) {
-			// console.log("htmlStart : " + htmlStart);
-			// console.log("htmlGoal : " + htmlGoal);
+			console.log("htmlStart : " + htmlStart);
+			console.log("htmlGoal : " + htmlGoal);
 
 			//네이버맵
 			var startSp = htmlStart.split(",");
 			var goalSp = htmlGoal.split(",");
-			// console.log("startSp : " + startSp);
-			// console.log("goalSp : " + goalSp);
+			console.log("startSp : " + startSp);
+			console.log("goalSp : " + goalSp);
 
 			// 맵중앙좌표계산
 			var center_lagps = (Number(startSp[0])+Number(goalSp[0]))/2;
@@ -613,12 +615,25 @@
 			});
 		}
 
-		//업무삭제
-		function coellctiondel() {
+		//삭제여부묻기
+		function coellctionDelCheck(){
 			if ($("#ctCode").val().trim() === '') {
 				alertCaution("삭제하고자하는 업무를 선택하세요.");
 				return false;
 			}
+			alertCheck("업무를 삭제하겠습니까?",null);
+		}
+		// 삭제실행여부확인
+		function startDel(id,booleanValue) {
+			$('#popupId').remove();
+			if(booleanValue===true){
+				coellctiondel()
+			}else{
+				return false;
+			}
+		}
+		//업무삭제
+		function coellctiondel() {
 
 			var params = {
 				ctCode: $("#ctCode").val(),
@@ -643,7 +658,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alertSuccess('업무가 삭제 되었습니다.');
+					alertSuccess('업무가 삭제되었습니다.');
 					$("#directionForm").hide();
 					collectionList(1);
 				}

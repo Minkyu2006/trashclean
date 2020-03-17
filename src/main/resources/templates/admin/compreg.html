@@ -20,7 +20,7 @@
 				callList(1);
 			});
 			$("#btnDel").on('click',function(){
-				del();
+				companyDelCheck();
 			});
 			$("#btnNew").on('click',function(){
 				init();
@@ -186,54 +186,69 @@
 					$("#csLatitude").val(res.data.company.csLatitude);
 					$("#csHardness").val(res.data.company.csHardness);
 
-					$("#csDivisionView").val(res.data.company.csDivisionName);
-					$("#csRegionalView").val(res.data.company.csRegionalName);
-					$("#csDivisionView").show();
-					$("#csRegionalView").show();
+					var $csDivisionView = $("#csDivisionView");
+					var $csRegionalView = $("#csRegionalView");
+					var $csDivision = $("#csDivision");
+					var $csRegional = $("#csRegional");
 
-					$("#csDivision").val(res.data.company.csDivisionId);
-					$("#csRegional").val(res.data.company.csRegionalId);
-					$("#csDivision").hide();
-					$("#csRegional").hide();
+					$csDivisionView.val(res.data.company.csDivisionName);
+					$csRegionalView.val(res.data.company.csRegionalName);
+					$csDivisionView.show();
+					$csRegionalView.show();
+
+					$csDivision.val(res.data.company.csDivisionId);
+					$csRegional.val(res.data.company.csRegionalId);
+					$csDivision.hide();
+					$csRegional.hide();
 				}
 			});
 		}
 
-		//삭제버튼 실행
-		function del() {
+		function companyDelCheck(){
 			if ($("#csNumber").val().trim() === '') {
 				alertCaution("삭제하고자하는 업체를 선택하세요.");
 				return false;
 			}
-			if (result.value) {
-				var params = {
-					csNumber: $("#csNumber").val()
-				};
-
-				var token = $("meta[name='_csrf']").attr("content");
-				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function (e, xhr) {
-					xhr.setRequestHeader(header, token);
-				});
-
-				$.ajax({
-					url: '/api/company/del',
-					type: 'post',
-					data: params,
-					cache: false,
-					error: function (request) {
-						ajaxErrorMsg(request);
-					},
-					success: function (res) {
-						if (!Ajax.checkResult(res)) {
-							return;
-						}
-						alertSuccess('업체가 삭제 되었습니다.');
-						init();
-						callList(1);
-					}
-				})
+			alertCheck("업체를 삭제하겠습니까?",null);
+		}
+		// 삭제실행여부확인
+		function startDel(id,booleanValue) {
+			$('#popupId').remove();
+			if(booleanValue===true){
+				del()
+			}else{
+				return false;
 			}
+		}
+		//삭제버튼 실행
+		function del() {
+			var params = {
+				csNumber: $("#csNumber").val()
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) {
+				xhr.setRequestHeader(header, token);
+			});
+
+			$.ajax({
+				url: '/api/company/del',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alertSuccess('업체가 삭제 되었습니다.');
+					init();
+					callList(1);
+				}
+			});
 		}
 
 		// 소수점한개로 제한한 실수값입력할수있게하는 함수
@@ -243,14 +258,14 @@
 			var _value = event.srcElement.value;
 
 			if (event.keyCode < 48 || event.keyCode > 57) {
-				if (event.keyCode != 46) {
+				if (event.keyCode !== 46) {
 					return false;
 				}
 			}
 			// 소수점(.)이 두번 이상 나오지 못하게
 			var _pattern0 = /^\d*[.]\d*$/;
 			if (_pattern0.test(_value)) {
-				if (charCode == 46) {
+				if (charCode === 46) {
 					return false;
 				}
 			}

@@ -44,7 +44,6 @@ public class CollectionTaskService {
         return optionalEquipment.map(collectionTask -> modelMapper.map(collectionTask, CollectionInfoDto.class)).orElse(null);
     }
 
-
     public List<CollectionInfoDto> findByCollectionInfoQueryDsl(String ctCode) {
         return collectionTaskRepositoryCustom.findByCollectionInfoQueryDsl(ctCode);
     }
@@ -78,7 +77,7 @@ public class CollectionTaskService {
         return  collectionTaskRepositoryCustom.findByCtCodeSeqQuerydsl(ctCode);
     }
 
-    public Optional<CollectionTask> findByCtCode(String ctCode) {
-        return collectionTaskRepository.findByCtCode(ctCode);
+    public List<CollectionMoniteringListDto> moniteringQuerydsl(String ctCode) {
+        return collectionTaskRepositoryCustom.moniteringQuerydsl(ctCode);
     }
 }
