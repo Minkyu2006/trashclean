@@ -287,12 +287,6 @@
 					var html = '';
 					var lengthList = res.data.equipmentList.length;
 
-					console.log("lengthList : "+lengthList);
-
-					console.log("deviceLevel : "+res.data.deviceLevel.length);
-					console.log("emNumber : "+res.data.equipmentList[0]["emNumber"]);
-
-					console.log("리스트넣기시작");
 					for(i=0; i<lengthList; i++){
 						if(res.data.deviceLevel[i]!=null) {
 							html += '<tr>';
@@ -625,7 +619,7 @@
 					if(res.data.apiResultBody!==null) {
 						// console.log("res.data.apiResultBody : " + res.data.apiResultBody);
 						var jsonParse = JSON.parse(res.data.apiResultBody);
-						console.log("message : " + jsonParse['message']);
+						// console.log("message : " + jsonParse['message']);
 						var obj = jsonParse['route']['traoptimal'][0]['path'];
 						// console.log("obj : " + obj);
 						// console.log("obj.length : " + obj.length);

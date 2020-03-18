@@ -662,7 +662,7 @@ public class CollectionTaskRestController {
         AccountDtoCollection collectionAccount = accountService.findByCollectionLanLon(currentuserid);
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
-        //log.info("resData : "+resData);
+//        log.info("resData : "+resData);
         int streetSize = Integer.parseInt(String.valueOf(resData.get("datacounts")));
 
         for (String deviceid : deviceArray){
@@ -716,9 +716,10 @@ public class CollectionTaskRestController {
         }
 
 //        log.info("direction_gps_devicename : "+direction_gps_devicename);
+//        log.info("direction_gps_devicename.size() : "+direction_gps_devicename.size());
 //        log.info("direction_gps_laList : "+direction_gps_laList);
 //        log.info("direction_gps_loList : "+direction_gps_loList);
-//        log.info("direction_gps_devicename.size() : "+direction_gps_devicename.size());
+
         if(direction_gps_devicename.size()!=0){
             int directionSize = direction_gps_devicename.size()-1;
             goalName = direction_gps_devicename.get(directionSize);
@@ -748,19 +749,19 @@ public class CollectionTaskRestController {
 //        log.info("directionSize : "+directionSize);
         StringBuilder url = null;
 //        log.info("direction_gps_devicename.size() : "+direction_gps_devicename.size());
-
-        //driving 옵션
-        //trafast 실시간 빠른길
-        //tracomfort 실시간 편한길
-        //traoptimal 실시간 최적
-        //traavoidtoll 무료 우선
-        //traavoidcaronly 자동차 전용도로 회피 우선
+//
+//        //driving 옵션
+//        //trafast 실시간 빠른길
+//        //tracomfort 실시간 편한길
+//        //traoptimal 실시간 최적
+//        //traavoidtoll 무료 우선
+//        //traavoidcaronly 자동차 전용도로 회피 우선
         if(directionSize > 0 && directionSize < 16) {
-            //log.info("경우지점있음");
+//            log.info("경유지점있음");
             if(directionSize<=6){
                 url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
                 for (int i = 0; i < directionSize; i++) {
-                    if(i==directionSize-1) {
+                    if(i!=directionSize-1) {
                         url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i)).append("|");
                     }else{
                         url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i));
@@ -769,7 +770,7 @@ public class CollectionTaskRestController {
             }else{
                 url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
                 for (int i = 0; i < directionSize; i++) {
-                    if(i==directionSize-1) {
+                    if(i!=directionSize-1) {
                         url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i)).append("|");
                     }else{
                         url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i));
@@ -815,8 +816,9 @@ public class CollectionTaskRestController {
             data.put("htmlStart", htmlStart);
             data.put("htmlGoal", htmlGoal);
             data.put("apiResultBody", apiResult.getBody());
+
         }else if(goal!=null){
-            //log.info("골인지점만있음");
+//            log.info("골인지점만있음");
             url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima");
 
             String clientId = NAVERCLIENTID;//애플리케이션 클라이언트 아이디값";
@@ -833,8 +835,8 @@ public class CollectionTaskRestController {
             HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
             URI uri = UriComponentsBuilder.fromUriString(String.valueOf(url)).build().toUri();
             ResponseEntity<String> apiResult = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
-            //log.info("유알엘 : "+url);
-            //log.info("apiResult : " + apiResult);
+//            log.info("유알엘 : "+url);
+//            log.info("apiResult : " + apiResult);
 
             data.put("direction_gps_laList",direction_gps_laList);
             data.put("direction_gps_loList",direction_gps_loList);
