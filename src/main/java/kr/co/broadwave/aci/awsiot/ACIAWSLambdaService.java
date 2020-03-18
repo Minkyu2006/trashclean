@@ -160,8 +160,11 @@ public class ACIAWSLambdaService {
         if (!optionalEquipment.isPresent()){
             return null;
         }
-        String emCertificationNumber = optionalEquipment.get().getEmCertificationNumber();
 
+        String emCertificationNumber = optionalEquipment.get().getEmCertificationNumber();
+        if(emCertificationNumber==null || emCertificationNumber.equals("")){
+            emCertificationNumber=deviceid;
+        }
 
         RestTemplate restTemplate = new RestTemplate();
 

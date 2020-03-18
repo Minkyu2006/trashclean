@@ -351,94 +351,118 @@ public class CollectionTaskRestController {
             emLocationId = emLocations.map(MasterCode::getId).orElse(null);
         }
 
-        Page<EquipmentCollectionListDto> equipmentCollectionListDtos =
+        List<EquipmentCollectionListDto> equipmentCollectionListDtos =
                 equipmentService.findByEquipmentCollectionQuerydsl(emTypeId,emCountryId,emLocationId,pageable);
-        //log.info("equipmentCollectionListDtos : "+equipmentCollectionListDtos.getContent());
+//        log.info("getContent : "+equipmentCollectionListDtos);
+//        log.info("getTotalElements : "+equipmentCollectionListDtos.size());
 
-        if(equipmentCollectionListDtos.getTotalElements()> 0 ){
+        if(equipmentCollectionListDtos.size()> 0 ){
+            List<String> emNumber = new ArrayList<>();
             List<String> emNumbers = new ArrayList<>();
             HashMap<String,List<String>> deviceids = new HashMap<>();
 
-            for(int i=0; i<equipmentCollectionListDtos.getTotalElements(); i++){
-                emNumbers.add('"'+equipmentCollectionListDtos.getContent().get(i).getEmNumber()+'"');
+            for(int i=0; i<equipmentCollectionListDtos.size(); i++){
+                emNumber.add(equipmentCollectionListDtos.get(i).getEmNumber());
+                emNumbers.add('"'+equipmentCollectionListDtos.get(i).getEmNumber()+'"');
             }
             deviceids.put('"'+"deviceids"+'"',emNumbers);
             String aswDeviceids = deviceids.toString().replace("=",":").replace(" ","");
-
+//            log.info("aswDeviceids : "+aswDeviceids);
             HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceids);
 //            log.info("emNumbers : "+emNumbers);
 //            log.info("aswDeviceids : "+aswDeviceids);
 //            log.info("AWS 장비 data : "+resData.get("data"));
 
+            Object datacounts = resData.get("datacounts");
+            int number = Integer.parseInt(datacounts.toString()); //반복수
+
             List<String> sortDevice = new ArrayList<>();
-            for (int i = 0; i < emNumbers.size(); i++) {
+            for (int i = 0; i < number; i++) {
                 HashMap map = (HashMap) resData.get("data").get(i);
                 sortDevice.add((String) map.get("deviceid"));
             }
             sortDevice.sort(Comparator.naturalOrder());
+//            log.info("sortDevice : "+sortDevice);
 
             List<String> deviceLevel = new ArrayList<>(); // 쓰레기량
             List<String> deviceTempBrd = new ArrayList<>(); // 온도
             List<String> deviceBattLevel = new ArrayList<>(); // 배터리잔량
             List<String> deviceSolarCurrent = new ArrayList<>(); //태양광판넬 전류
             List<String> deviceSolarVoltage = new ArrayList<>(); //태양관판넬 전압
-            List<String> devicelan = new ArrayList<>(); //경도
-            List<String> devicelon = new ArrayList<>(); //위도
-            //gps_loData.equals("na") || gps_loData == null || gps_loData.equals("") || gps_laData.equals("na") || gps_laData == null || gps_laData.equals("")
-            for (String deviceid : sortDevice) {
-                for (int i = 0; i < emNumbers.size(); i++) {
-                    HashMap map = (HashMap) resData.get("data").get(i);
-                    if (map.get("deviceid")==deviceid) {
-                        if(!map.get("gps_la").equals("na") || !map.get("gps_lo").equals("na")) {
-                            if (emLevel != null) {
-                                if (emLevel <= Double.parseDouble(String.valueOf(map.get("level")))) {
-                                    //log.info("emLevel : " + emLevel + "이상인 장비");
+
+            //equipmentCollectionListDtos.get(i).getEmNumber()
+            int x=0;
+            for (int j=0; j<equipmentCollectionListDtos.size(); j++) {
+                String deviceList = emNumber.get(j);
+                String deviceid = sortDevice.get(x);
+                if(deviceid.equals(deviceList)) {
+                    for (int i = 0; i < number; i++) {
+                        HashMap map = (HashMap) resData.get("data").get(i);
+                        if (map.get("deviceid") == deviceid) {
+                            if (!map.get("gps_la").equals("na") || !map.get("gps_lo").equals("na")) {
+                                if (emLevel != null) {
+                                    if (emLevel <= Double.parseDouble(String.valueOf(map.get("level")))) {
+                                        //log.info("emLevel : " + emLevel + "이상인 장비");
+                                        deviceLevel.add((String) map.get("level"));
+                                        deviceTempBrd.add((String) map.get("temp_brd"));
+                                        deviceBattLevel.add((String) map.get("batt_level"));
+                                        deviceSolarCurrent.add((String) map.get("solar_current"));
+                                        deviceSolarVoltage.add((String) map.get("solar_voltage"));
+                                        x++;
+                                    } else {
+                                        //log.info("emLevel : " + emLevel + "이하인 장비");
+                                        deviceLevel.add(null);
+                                        deviceTempBrd.add(null);
+                                        deviceBattLevel.add(null);
+                                        deviceSolarCurrent.add(null);
+                                        deviceSolarVoltage.add(null);
+                                        x++;
+                                    }
+                                } else {
+                                    //log.info("emLevel : " + emLevel + "없음");
                                     deviceLevel.add((String) map.get("level"));
                                     deviceTempBrd.add((String) map.get("temp_brd"));
                                     deviceBattLevel.add((String) map.get("batt_level"));
                                     deviceSolarCurrent.add((String) map.get("solar_current"));
                                     deviceSolarVoltage.add((String) map.get("solar_voltage"));
-                                } else {
-                                    //log.info("emLevel : " + emLevel + "이하인 장비");
-                                    deviceLevel.add(null);
-                                    deviceTempBrd.add(null);
-                                    deviceBattLevel.add(null);
-                                    deviceSolarCurrent.add(null);
-                                    deviceSolarVoltage.add(null);
+                                    x++;
                                 }
                             } else {
-                                //log.info("emLevel : " + emLevel + "없음");
-                                deviceLevel.add((String) map.get("level"));
-                                deviceTempBrd.add((String) map.get("temp_brd"));
-                                deviceBattLevel.add((String) map.get("batt_level"));
-                                deviceSolarCurrent.add((String) map.get("solar_current"));
-                                deviceSolarVoltage.add((String) map.get("solar_voltage"));
+                                deviceLevel.add(null);
+                                deviceTempBrd.add(null);
+                                deviceBattLevel.add(null);
+                                deviceSolarCurrent.add(null);
+                                deviceSolarVoltage.add(null);
+                                x++;
                             }
-                        }else{
-                            deviceLevel.add(null);
-                            deviceTempBrd.add(null);
-                            deviceBattLevel.add(null);
-                            deviceSolarCurrent.add(null);
-                            deviceSolarVoltage.add(null);
                         }
                     }
+                }else{
+                    deviceLevel.add(null);
+                    deviceTempBrd.add(null);
+                    deviceBattLevel.add(null);
+                    deviceSolarCurrent.add(null);
+                    deviceSolarVoltage.add(null);
                 }
             }
+
+//            log.info("deviceLevel : "+deviceLevel);
+//            log.info("deviceTempBrd : "+deviceTempBrd);
+//            log.info("deviceBattLevel : "+deviceBattLevel);
+//            log.info("deviceSolarCurrent : "+deviceSolarCurrent);
+//            log.info("deviceSolarVoltage : "+deviceSolarVoltage);
+//            log.info("equipmentCollectionListDtos : "+equipmentCollectionListDtos);
 
             data.put("deviceLevel",deviceLevel);
             data.put("deviceTempBrd",deviceTempBrd);
             data.put("deviceBattLevel",deviceBattLevel);
             data.put("deviceSolarCurrent",deviceSolarCurrent);
             data.put("deviceSolarVoltage",deviceSolarVoltage);
-            data.put("datalist",equipmentCollectionListDtos.getContent());
-            data.put("total_rows",equipmentCollectionListDtos.getTotalElements());
-
-            res.addResponse("data",data);
-        }else{
-            data.put("total_rows",equipmentCollectionListDtos.getTotalElements());
+            data.put("equipmentList",equipmentCollectionListDtos);
 
             res.addResponse("data",data);
         }
+
         return ResponseEntity.ok(res.success());
     }
 

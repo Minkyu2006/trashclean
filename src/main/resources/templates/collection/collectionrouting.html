@@ -281,33 +281,33 @@
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
-					totCnt = res.data.total_rows;
-					if (totCnt === 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="6" align="center">조회된 데이터가 없습니다.</td></tr>');
-					}else{
-						checkfalse();
+					checkfalse();
 
-						//장비리스트 출력
-						var html = '';
-						var idx = 0;
+					//장비리스트 출력
+					var html = '';
+					var lengthList = res.data.equipmentList.length;
 
-						$.each(res.data.datalist, function(key, value){
-							if(res.data.deviceLevel[idx]!=null) {
-								html += '<tr>';
-								html += '<td>' + '<input name="checkemNumber" type="checkbox" value=' + nvl(value.emNumber, "확 인 불 가") + ' />' + '</td>';
-								html += '<td >' + nvl(value.emNumber, "확 인 불 가") + '</td>';
-								html += '<td >' + nvl(res.data.deviceLevel[idx], "확 인 불 가") + '%' + '</td>';
-								html += '<td >' + nvl(res.data.deviceBattLevel[idx], "확 인 불 가") + '%' + '</td>';
-								html += '<td >' + nvl(value.iModel, "확 인 불 가") + '</td>';
-								html += '<td >' + nvl(value.emCountry, "확 인 불 가") + '-' + nvl(value.emLocation, "확 인 불 가") + '</td>';
-								html += '</tr>';
-							}
-							idx++
-						});
-						$schList.html(html);
+					console.log("lengthList : "+lengthList);
+
+					console.log("deviceLevel : "+res.data.deviceLevel.length);
+					console.log("emNumber : "+res.data.equipmentList[0]["emNumber"]);
+
+					console.log("리스트넣기시작");
+					for(i=0; i<lengthList; i++){
+						if(res.data.deviceLevel[i]!=null) {
+							html += '<tr>';
+							html += '<td>' + '<input name="checkemNumber" type="checkbox" value=' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + ' />' + '</td>';
+							html += '<td >' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + '</td>';
+							html += '<td >' + nvl(res.data.deviceLevel[i], "확 인 불 가") + '%' + '</td>';
+							html += '<td >' + nvl(res.data.deviceBattLevel[i], "확 인 불 가") + '%' + '</td>';
+							html += '<td >' + nvl(res.data.equipmentList[i]["iModel"], "확 인 불 가") + '</td>';
+							html += '<td >' + nvl(res.data.equipmentList[i]["emCountry"], "확 인 불 가") + '-' + nvl(res.data.equipmentList[i]["emLocation"], "확 인 불 가") + '</td>';
+							html += '</tr>';
+						}
 					}
+					$schList.html(html);
 				}
-			});
+			})
 		}
 
 		// 장비라우팅계산 실행함수

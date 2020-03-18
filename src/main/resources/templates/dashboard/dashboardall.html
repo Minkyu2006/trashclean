@@ -425,7 +425,9 @@
 
 					var idx = 0;
 
-					$.each(res.data.datalist, function(key, value){
+					var lengthList = res.data.deviceInfoListDtos.length;
+
+					for(var i=0; i<lengthList; i++){
 						html2 += '<li class="c-list__item">';
 						html2 += '<div class="equipment">';
 						html2 += '<div id='+'mask'+idx+' class="c-loader">';
@@ -441,31 +443,31 @@
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(value.emNumber,"확 인 불 가")+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'모델타입 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(value.emType,"확 인 불 가")+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.deviceInfoListDtos[i]["emType"],"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'모델명 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(value.mdName,"확 인 불 가")+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.deviceInfoListDtos[i]["mdName"],"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'최대적재량 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(value.mdMaximumPayload,"확 인 불 가")+nvl(value.mdUnit,"확 인 불 가")+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.deviceInfoListDtos[i]["mdMaximumPayload"],"확 인 불 가")+nvl(res.data.deviceInfoListDtos[i]["mdUnit"],"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'운영사 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(value.company,"확 인 불 가")+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.deviceInfoListDtos[i]["company"],"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'국가/지역 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(value.emCountry,"확 인 불 가")+'/'+nvl(value.emLocation,"확 인 불 가")+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.deviceInfoListDtos[i]["emCountry"],"확 인 불 가")+'/'+nvl(res.data.deviceInfoListDtos[i]["emLocation"],"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(value.emInstallDate,"확 인 불 가").substring(0,4)+"년 "+nvl(value.emInstallDate,"확 인 불 가").substring(4,6)+"월 "+nvl(value.emInstallDate,"확 인 불 가").substring(6,8)+"일"+'</span>';
+						html += '<span class="equipment__info-value">'+nvl(res.data.deviceInfoListDtos[i]["emInstallDate"],"확 인 불 가").substring(0,4)+"년 "+nvl(res.data.deviceInfoListDtos[i]["emInstallDate"],"확 인 불 가").substring(4,6)+"월 "+nvl(res.data.deviceInfoListDtos[i]["emInstallDate"],"확 인 불 가").substring(6,8)+"일"+'</span>';
 						html += '</li>';
 						html += '</ul>';
 						html += '</div>';
@@ -474,11 +476,11 @@
 
 						idx++;
 
-						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-						installDate.push(nvl(value.emInstallDate,"확 인 불 가"));
-						files.push(nvl(value.filePath+'/s_'+value.saveFileName,"확 인 불 가"));
-					});
-					//console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
+						pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가"));
+						installDate.push(nvl(res.data.deviceInfoListDtos[i]["emInstallDate"],"확 인 불 가"));
+						files.push(nvl(res.data.deviceInfoListDtos[i]["filePath"]+'/s_'+res.data.deviceInfoListDtos[i]["saveFileName"],"확 인 불 가"));
+					}
+					// console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
 					$deviceList.html(html2);
 					setTimeout(function(){
 						for(var i=0; i<pushValue.length; i++){
@@ -499,7 +501,7 @@
 
 		// ASW 장치 데이터리스트
 		function deviceAWSListView(pushValue,installDate,files) {
-			// console.log("장비리스트 뿌리기 시작")
+			// console.log("장비리스트 뿌리기 시작");
 			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
 			// console.log("받은 파일경로 : "+files);
@@ -537,6 +539,7 @@
 
 			var params = {
 				deviceids:devicestr,
+				deviceIdList:pushValue,
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -618,7 +621,7 @@
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
 							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
-								html2 += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+								html2 += '<span>'+'최종종료일시 : '+deviceOnOfftime[idx]+'</span>';
 							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
 								html2 += '<span>'+'접속이력없음'+'</span>';
 							}
@@ -654,15 +657,15 @@
 							}
 							html2 += '</div>';
 						}else{
-							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
+							html2 += '<span class="equipment__stat severe">'+'없음'+'</span>';
 							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
-							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
-								html += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
-							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
-								html += '<span>'+'없는 장비'+'</span>';
-							}
+							// if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+							// 	html += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							// }else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+							// 	html += '<span>'+'없는 장비'+'</span>';
+							// }
 							html2 += '</div>';
 						}
 						html2 += '</div>';
@@ -721,14 +724,14 @@
 
 						idx++
 					});
-					//console.log("출력완료");
+					console.log("출력완료");
 				}
 			});
 		}
 
 		// ASW 장치 데이터리스트(새로고침)
 		function deviceAWSListViewReflesh(pushValue,installDate,files) {
-			// console.log("장비리스트 뿌리기 시작")
+			// console.log("새로고침 장비리스트 뿌리기 시작");
 			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
 
@@ -887,11 +890,11 @@
 							}
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
-							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
-								html += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
-							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
-								html += '<span>'+'없는 장비'+'</span>';
-							}
+							// if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
+							// 	html += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
+							// }else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
+							// 	html += '<span>'+'없는 장비'+'</span>';
+							// }
 							html2 += '</div>';
 						}
 

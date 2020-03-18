@@ -1,7 +1,8 @@
 package kr.co.broadwave.aci.dashboard;
 
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * @author Minkyu
@@ -9,5 +10,5 @@ import org.springframework.data.domain.Pageable;
  * Remark :
  */
 public interface DashboardRepositoryCustom {
-    Page<DashboardDeviceListViewDto> findByDashboardListView(String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable);
+    List<DashboardDeviceListViewDto> findByDashboardListView(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId, Pageable pageable);
 }

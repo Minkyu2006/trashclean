@@ -160,7 +160,7 @@
 						currentPage: page + 1,
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
-					if (totCnt == 0) {
+					if (totCnt === 0) {
 						$schList.empty().append('<tr class="t-c"><td colspan="10" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
@@ -287,7 +287,7 @@
 			var totCnt = 0;
 
 			var $schList = $('#agencySchList');
-			var $totalCnt = $('#agencyTotalCnt');
+			var $agencyTotalCnt = $('#agencyTotalCnt');
 
 			var params = {
 				csNumber:$('#s_csnumber').val(),
@@ -295,7 +295,7 @@
 			};
 
 			$schList.empty().append('<tr ><td colspan="5" align="center">조회 중</td></tr>');
-			$totalCnt.text('0');
+			$agencyTotalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -312,16 +312,16 @@
 				success: function(res){
 					//화면 출력
 					totCnt = res.data.total_rows;
-					$("#paging1").jqueryPager({pageSize: perPage,
+					$("#agencyPaging").jqueryPager({pageSize: perPage,
 						pageBlock: perArea,
 						currentPage: page + 1,
 						pageTotal: totCnt,
-						clickEvent: 'callList'});
+						clickEvent: 'agencyCallList'});
 					if (totCnt === 0) {
 						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
-					$totalCnt.text(totCnt);
+					$agencyTotalCnt.text(totCnt);
 					var html = '';
 					$.each(res.data.datalist, function(key, value){
 						html += '<tr >';

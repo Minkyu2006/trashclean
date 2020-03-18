@@ -127,6 +127,9 @@ public class DashboardRestController {
                                                              @RequestParam (value="emLocation", defaultValue="")String emLocation,
                                                              @PageableDefault Pageable pageable){
 
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
         Long emTypeId = null;
         Long emCountryId = null;
         Long emLocationId = null;
@@ -149,14 +152,19 @@ public class DashboardRestController {
             emLocationId = emLocations.get().getId();
         }
 
-        Page<DashboardDeviceListViewDto> deviceInfoListDtos =
+        List<DashboardDeviceListViewDto> deviceInfoListDtos =
                 dashboardService.findByDashboardListView(emNumber, emTypeId, emCountryId, emLocationId, pageable);
-        return CommonUtils.ResponseEntityPage(deviceInfoListDtos);
+//        log.info("deviceInfoListDtos : "+deviceInfoListDtos);
+
+        data.put("deviceInfoListDtos",deviceInfoListDtos);
+        res.addResponse("data",data);
+        return ResponseEntity.ok(res.success());
     }
 
     // ASW 장치 데이터리스트 뿌리기
     @PostMapping("deviceAWSListView")
-    public ResponseEntity deviceAWSListView(@RequestParam(value="deviceids", defaultValue="") String deviceids) throws ParseException {
+    public ResponseEntity deviceAWSListView(@RequestParam(value="deviceids", defaultValue="") String deviceids,
+                                            @RequestParam(value="deviceIdList[]", defaultValue="") List<String> deviceIdList) throws ParseException {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -171,64 +179,85 @@ public class DashboardRestController {
         List<String> gps_loDatas = new ArrayList<>();  // 경도리스트
         List<String> gps_laDatas2 = new ArrayList<>();// 위도리스트
         List<String> gps_loDatas2 = new ArrayList<>();  // 경도리스트
-
+//        log.info("deviceids : " + deviceids);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
+//        log.info("resData : " + resData);
         List<String> sortDevice = new ArrayList<>();
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
+
+        int deviceIdListSize = deviceIdList.size();
 
         for (int i = 0; i < number; i++) {
             HashMap map = (HashMap) resData.get("data").get(i);
             sortDevice.add((String) map.get("deviceid"));
         }
         sortDevice.sort(Comparator.naturalOrder());
-        //log.info("오름차순 : " + sortDevice);
 
-        // 아이디값의 따라 데이터넣기(오름차순)
-        for (String deviceid : sortDevice) {
-            for (int i = 0; i < number; i++) {
-                HashMap map = (HashMap) resData.get("data").get(i);
-                if (map.get("deviceid") == deviceid) {
+        int x=0;
+        for (int i=0; i<deviceIdListSize; i++) {
+            String deviceList = deviceIdList.get(i);
+            String deviceid = sortDevice.get(x);
+            if (deviceid.equals(deviceList)) {
+                for (int j = 0; j < number; j++) {
+                    HashMap map = (HashMap) resData.get("data").get(j);
+                    String resDeviceid = (String) map.get("deviceid");
+                    if (resDeviceid.equals(deviceid)) {
+                        if (map.get("status").equals("normal")) {
+                            map.replace("status", "정상");
+                        } else if (map.get("status").equals("caution")) {
+                            map.replace("status", "주의");
+                        } else if (map.get("status").equals("severe")) {
+                            map.replace("status", "심각");
+                        }
 
-                    if (map.get("status").equals("normal")) {
-                        map.replace("status", "정상");
-                    } else if (map.get("status").equals("caution")) {
-                        map.replace("status", "주의");
-                    } else if (map.get("status").equals("severe")) {
-                        map.replace("status", "심각");
+                        devices.add((String) map.get("deviceid")); //장비값넣기
+                        status.add((String) map.get("status")); //상태값넣기
+                        temp_brd.add((String) map.get("temp_brd")); // 온도값넣기
+                        level.add((String) map.get("level")); //배출량값넣기
+                        batt_level.add((String) map.get("batt_level")); //배터리잔량값넣기
+                        solar_current.add((String) map.get("solar_current")); //전류값넣기
+                        solar_voltage.add((String) map.get("solar_voltage")); //전압값넣기
+                        gps_laDatas.add((String) map.get("gps_la")); //위도값넣기
+                        gps_loDatas.add((String) map.get("gps_lo")); //경도값넣기
+
+                        x++;
                     }
-
-                    devices.add((String) map.get("deviceid")); //장비값넣기
-                    status.add((String) map.get("status")); //상태값넣기
-                    temp_brd.add((String) map.get("temp_brd")); // 온도값넣기
-                    level.add((String) map.get("level")); //배출량값넣기
-                    batt_level.add((String) map.get("batt_level")); //배터리잔량값넣기
-                    solar_current.add((String) map.get("solar_current")); //전류값넣기
-                    solar_voltage.add((String) map.get("solar_voltage")); //전압값넣기
-                    gps_laDatas.add((String) map.get("gps_la")); //위도값넣기
-                    gps_loDatas.add((String) map.get("gps_lo")); //경도값넣기
                 }
+            } else {
+                devices.add("0");
+                status.add("0");
+                temp_brd.add("0");
+                level.add("0");
+                batt_level.add("0");
+                solar_current.add("0");
+                solar_voltage.add("0");
+                gps_laDatas.add("na");
+                gps_loDatas.add("na");
             }
         }
 
         //장비 온오프라인구분
         List<Boolean> deviceOnOffstatus = new ArrayList<>(); // 온라인인지,오프라인인지 넣는 리스트
         List<Object> deviceOnOffTime = new ArrayList<>(); // 마지막 온오프라인 타임스탬프
+
         for (int i = 0; i < devices.size(); i++) {
-            HashMap<String,HashMap<String,Object>> onOfflineData = aciawsLambdaService.getDeviceonlineCheck(devices.get(i));
-            deviceOnOffstatus.add(Boolean.parseBoolean(String.valueOf((onOfflineData.get("data").get("online")))));
-            deviceOnOffTime.add(onOfflineData.get("data").get("timestamp"));
+            if(!devices.get(i).equals("0")) {
+                HashMap<String, HashMap<String, Object>> onOfflineData = aciawsLambdaService.getDeviceonlineCheck(devices.get(i));
+                deviceOnOffstatus.add(Boolean.parseBoolean(String.valueOf((onOfflineData.get("data").get("online")))));
+                deviceOnOffTime.add(onOfflineData.get("data").get("timestamp"));
+            }else{
+                deviceOnOffstatus.add(false);
+                deviceOnOffTime.add(null);
+            }
         }
-//        log.info("deviceOnOffstatus : "+deviceOnOffstatus);
-//        log.info("deviceOnOffTime : "+deviceOnOffTime);
-
-
-        //지도상에 장비위치이동
-        for (int i = 0; i < number; i++) {
+//
+//        //지도상에 장비위치이동
+        for (int i = 0; i < deviceIdListSize; i++) {
             String gps_laData = gps_laDatas.get(i);
             String gps_loData = gps_loDatas.get(i);
-            if(gps_loData.equals("na") || gps_loData.equals(null) || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals(null) || gps_laData.equals("")) {
+            if(gps_loData.equals("na") || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals("")) {
                 String gps_laSubStirng = "0.0";
                 String gps_loSubStirng = "0.0";
 
@@ -251,6 +280,18 @@ public class DashboardRestController {
                 }
             }
         }
+
+//        log.info("devices : "+devices);
+//        log.info("status : "+status);
+//        log.info("temp_brd : "+temp_brd);
+//        log.info("level : "+level);
+//        log.info("batt_level : "+batt_level);
+//        log.info("solar_current : "+solar_current);
+//        log.info("solar_voltage : "+solar_voltage);
+//        log.info("gps_laDatas2 : "+gps_laDatas2);
+//        log.info("gps_loDatas2 : "+gps_loDatas2);
+//        log.info("deviceOnOffstatus : "+deviceOnOffstatus);
+//        log.info("deviceOnOffTime : "+deviceOnOffTime);
 
         data.put("deviceOnOffstatus",deviceOnOffstatus);
         data.put("deviceOnOffTime",deviceOnOffTime);

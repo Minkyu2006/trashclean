@@ -161,7 +161,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
     // 수거업무등록페이지 장비리스트쿼리
     @Override
-    public Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable) {
+    public List<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable) {
 
         QEquipment equipment = QEquipment.equipment;
 
@@ -178,9 +178,6 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                 ));
 
         // 검색조건필터
-//        if (emNumber != null && !emNumber.isEmpty()){
-//            query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
-//        }
         if (emTypeId != null ){
             query.where(equipment.emType.id.eq(emTypeId));
         }
@@ -193,8 +190,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
         query.orderBy(equipment.emNumber.asc());
 
-        final List<EquipmentCollectionListDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
-        return new PageImpl<>(equipments, pageable, query.fetchCount());
+        return query.fetch();
     }
 
     // 라우팅한 장비의 정보가져오기 위한 쿼리dsl

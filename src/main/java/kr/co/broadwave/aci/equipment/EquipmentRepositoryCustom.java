@@ -21,7 +21,7 @@ public interface EquipmentRepositoryCustom {
 
     List<EquipmentBaseDto> EquipmentBaseSettingQuerydsl(List<String> emNumbers);
 
-    Page<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable);
+    List<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable);
 
     List<EquipmentCollectionRegDto> findByRoutingEmNumberQuerydsl(List<String> streetRouting);
 

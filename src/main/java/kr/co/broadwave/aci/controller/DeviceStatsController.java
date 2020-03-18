@@ -109,7 +109,7 @@ public class DeviceStatsController {
 
         HashMap<String, HashMap<String,String>> deviceInfoMap = aciawsLambdaService.getDeviceInfo(emNumber);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceid);
-        Page<DashboardDeviceListViewDto> deviceInfoListDtos = dashboardService.findByDashboardListView(emNumber, null, null, null, pageable);
+        List<DashboardDeviceListViewDto> deviceInfoListDtos = dashboardService.findByDashboardListView(emNumber, null, null, null, pageable);
         HashMap<String,HashMap<String,Object>> onOfflineData = aciawsLambdaService.getDeviceonlineCheck(emNumber);
 //        deviceOnOffstatus.add(Boolean.parseBoolean(String.valueOf((onOfflineData.get("data").get("online")))));
 //        deviceOnOffTime.add(onOfflineData.get("data").get("timestamp"));
@@ -143,20 +143,20 @@ public class DeviceStatsController {
 
         // 장비이미지전송
         model.addAttribute("AWSS3URL", AWSS3URL);
-        model.addAttribute("filePath", deviceInfoListDtos.getContent().get(0).getFilePath());
-        model.addAttribute("saveFileName", deviceInfoListDtos.getContent().get(0).getSaveFileName());
+        model.addAttribute("filePath", deviceInfoListDtos.get(0).getFilePath());
+        model.addAttribute("saveFileName", deviceInfoListDtos.get(0).getSaveFileName());
 
         // 장비정보
         model.addAttribute("deviceid",deviceInfo.get("deviceid"));
-        model.addAttribute("emtype", deviceInfoListDtos.getContent().get(0).getEmType());
-        model.addAttribute("mdName", deviceInfoListDtos.getContent().get(0).getMdName());
-        model.addAttribute("mdMaxUnit", deviceInfoListDtos.getContent().get(0).getMdMaximumPayload()+" "+deviceInfoListDtos.getContent().get(0).getMdUnit());
-        model.addAttribute("company", deviceInfoListDtos.getContent().get(0).getCompany());
-        model.addAttribute("emCountryLoaction", deviceInfoListDtos.getContent().get(0).getEmCountry()+"/"+deviceInfoListDtos.getContent().get(0).getEmLocation());
-        model.addAttribute("instalDate", deviceInfoListDtos.getContent().get(0).getEmInstallDate().substring(0,4)+"년 "+deviceInfoListDtos.getContent().get(0).getEmInstallDate().substring(4,6)+"월 "+deviceInfoListDtos.getContent().get(0).getEmInstallDate().substring(6,8)+"일");
+        model.addAttribute("emtype", deviceInfoListDtos.get(0).getEmType());
+        model.addAttribute("mdName", deviceInfoListDtos.get(0).getMdName());
+        model.addAttribute("mdMaxUnit", deviceInfoListDtos.get(0).getMdMaximumPayload()+" "+deviceInfoListDtos.get(0).getMdUnit());
+        model.addAttribute("company", deviceInfoListDtos.get(0).getCompany());
+        model.addAttribute("emCountryLoaction", deviceInfoListDtos.get(0).getEmCountry()+"/"+deviceInfoListDtos.get(0).getEmLocation());
+        model.addAttribute("instalDate", deviceInfoListDtos.get(0).getEmInstallDate().substring(0,4)+"년 "+deviceInfoListDtos.get(0).getEmInstallDate().substring(4,6)+"월 "+deviceInfoListDtos.get(0).getEmInstallDate().substring(6,8)+"일");
 
         // 장비상태정보
-        model.addAttribute("devcieInstalDateBtw", deviceInfoListDtos.getContent().get(0).getEmInstallDate());
+        model.addAttribute("devcieInstalDateBtw", deviceInfoListDtos.get(0).getEmInstallDate());
         model.addAttribute("temp_brd",awsData.get("temp_brd")+"℃");
         model.addAttribute("level",awsData.get("level")+"%");
         model.addAttribute("batt_level",awsData.get("batt_level")+"%");

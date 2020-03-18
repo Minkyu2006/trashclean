@@ -57,9 +57,9 @@
 					},
 					success: function(res){
 						var pushValue = [];
-						$.each(res.data.datalist, function(key, value){
-							pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-						});
+						for(var i=0; i<res.data.deviceInfoListDtos.length; i++){
+							pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가"));
+						}
 						MapChartDeviceId(pushValue);
 					}
 				});
@@ -67,6 +67,7 @@
 
 			// 장비정보 보내기
 			function MapChartDeviceId(pushValue) {
+				console.log("pushValue : "+pushValue);
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
@@ -218,6 +219,8 @@
 								deviceOnOffSecond = "0" + deviceOnOffSecond
 							}
 							devicetime = deviceOnOffYear + '-' + deviceOnOffMonth + '-' + deviceOnOffDate + ' ' + deviceOnOffHour + ':' + deviceOnOffMinute + ':' + deviceOnOffSecond;
+						}else{
+							devicetime="";
 						}
 
 						var baseurl = res.data.awss3url; //aws경로 URL

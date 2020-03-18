@@ -55,7 +55,7 @@ public class DashboardService {
         return aciawsLambdaService.getDeviceHistory(deviceid,intervaltime);
     }
 
-    public Page<DashboardDeviceListViewDto> findByDashboardListView
+    public List<DashboardDeviceListViewDto> findByDashboardListView
             (String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable) {
         return dashboardRepositoryCustom.findByDashboardListView(emNumber,emTypeId,emCountryId,emLocationId,pageable);
     }

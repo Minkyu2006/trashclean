@@ -27,7 +27,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
     }
 
     @Override
-    public Page<DashboardDeviceListViewDto> findByDashboardListView
+    public List<DashboardDeviceListViewDto> findByDashboardListView
             (String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
@@ -67,7 +67,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
 
         query.orderBy(equipment.emNumber.asc());
 
-        final List<DashboardDeviceListViewDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
-        return new PageImpl<>(equipments, pageable, query.fetchCount());
+
+        return query.fetch();
     }
 }
