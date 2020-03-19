@@ -286,8 +286,8 @@
 							}
 							html += '</div>';
 						}else{
-							html += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
-							html += '<span class="equipment__connect off">'+'알수없음'+'</span>';
+							html += '<span class="equipment__stat unknowon">'+'없음'+'</span>';
+							html += '<span class="equipment__connect unknowon">'+'알수없음'+'</span>';
 							html += '<div class="equipment__img">';
 							html += '<img alt="이미지" src="'+baseurl+res.data.deviceDetailList.mdId.mdFileid.filePath+'/s_'+res.data.deviceDetailList.mdId.mdFileid.saveFileName+'" />';
 							if(res.data.deviceOnOffstatus===false && devicetime!==""){

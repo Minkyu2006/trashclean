@@ -657,15 +657,10 @@
 							}
 							html2 += '</div>';
 						}else{
-							html2 += '<span class="equipment__stat severe">'+'없음'+'</span>';
-							html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
+							html2 += '<span class="equipment__stat unknowon">'+'없음'+'</span>';
+							html2 += '<span class="equipment__connect unknowon">'+'알수없음'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
-							// if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
-							// 	html += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
-							// }else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
-							// 	html += '<span>'+'없는 장비'+'</span>';
-							// }
 							html2 += '</div>';
 						}
 						html2 += '</div>';
@@ -678,7 +673,7 @@
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(installDayDatas[idx],"확 인 불 가 ")+'일'+'</span>';
+						html += '<span class="equipment__info-value">'+installDayDatas[idx]+'일'+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
@@ -882,12 +877,8 @@
 							}
 							html2 += '</div>';
 						}else{
-							html2 += '<span class="equipment__stat severe">'+'알수없음'+'</span>';
-							if(res.data.deviceOnOffstatus[idx]===true){
-								html2 += '<span class="equipment__connect on">'+'온라인'+'</span>';
-							}else{
-								html2 += '<span class="equipment__connect off">'+'오프라인'+'</span>';
-							}
+							html2 += '<span class="equipment__stat unknowon">'+'없음'+'</span>';
+							html2 += '<span class="equipment__connect unknowon">'+'알수없음'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
 							// if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
@@ -905,7 +896,7 @@
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(installDayDatas[idx],"확 인 불 가 ")+'일'+'</span>';
+						html += '<span class="equipment__info-value">'+installDayDatas[idx]+'일'+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';

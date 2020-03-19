@@ -1464,10 +1464,18 @@ table {
 	border: 1px solid #c84f53;
 	background-color: #ff7f7f;
 }
+.equipment__stat.unknowon {
+	border: 1px solid #000000;
+	color: #000000;
+}
 .equipment__connect.off {
 	border: 1px solid #007e37;
 	background-color: #fff;
 	color: #007e37;
+}
+.equipment__connect.unknowon {
+	border: 1px solid #000000;
+	color: #000000;
 }
 .equipment__connect {
 	right: 10px;
@@ -2263,7 +2271,7 @@ h4.article__heading {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
-	background-color: #338b34;
+	background-color: #069E34;
 	background-image: url(/assets/images/icon__trash.png);
 	background-repeat: no-repeat;
 	-webkit-background-size: 80%;
@@ -2271,7 +2279,7 @@ h4.article__heading {
 	background-position: center center;
 }
 .routing__item-body ul li .tresh.can {
-	background-color: #b43b40;
+	background-color: #FF4A4A;
 	background-image: url(/assets/images/icon__can.png);
 }
 .routing__item-body ul li .tresh.plastic {
@@ -2279,7 +2287,7 @@ h4.article__heading {
 	background-image: url(/assets/images/icon__plastic.png);
 }
 .routing__item-body ul li .tresh.paper {
-	background-color: #cd883d;
+	background-color: #D8A314;
 	background-image: url(/assets/images/icon__paper.png);
 }
 

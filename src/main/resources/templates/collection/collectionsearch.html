@@ -304,11 +304,13 @@
 				success: function(res){
 					//화면 출력
 					totCnt = res.data.total_rows;
+					// console.log("totCnt : "+totCnt);
 					$("#paging").jqueryPager({pageSize: perPage,
 						pageBlock: perArea,
 						currentPage: page + 1,
 						pageTotal: totCnt,
-						clickEvent: 'collectionList'});
+						clickEvent: 'collectionList'
+					});
 
 					if (totCnt === 0) {
 						$schList.empty().append('<tr class="t-c"><td colspan="8" align="center">조회된 데이터가 없습니다.</td></tr>');
@@ -317,27 +319,25 @@
 
 					$totalCnt.text(totCnt);
 					var html = '';
-					var i=0;
-					$.each(res.data.datalist, function(key, value){
+					for(i=0; i<res.data.datalist.length; i++){
 						html += '<tr >';
-						html += '<td >' + nvl(value.ctCode, '확 인 불 가') + '</td>';
-						html += '<td >' + nvl(value.yyyymmdd, "확 인 불 가") + '</td>';
-						html += '<td >' + nvl(value.mdName, "확 인 불 가")+'/'+nvl(value.mdType, "확 인 불 가") + '</td>';
-						html += '<td >' + nvl(value.devicetype, "확 인 불 가") + '</td>';
-						html += '<td >' + nvl(value.accountName, "확 인 불 가") + '</td>';
-						html += '<td >' + nvl(value.vehicleNumber, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(res.data.datalist[i]["ctCode"], '확 인 불 가') + '</td>';
+						html += '<td >' + nvl(res.data.datalist[i]["yyyymmdd"], "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(res.data.datalist[i]["mdName"], "확 인 불 가")+'/'+nvl(res.data.datalist[i]["mdType"], "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(res.data.datalist[i]["devicetype"], "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(res.data.datalist[i]["accountName"], "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(res.data.datalist[i]["vehicleNumber"], "확 인 불 가") + '</td>';
 						if (res.data.percents[i] !== "100%") {
 							html += '<td >' + "미완료" + '</td>';
 						} else {
 							html += '<td >' + "완료" + '</td>';
 						}
-						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\'' + echoNull2Blank(value.ctCode) + '\');">보기</button></td>';
+						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\'' + echoNull2Blank(res.data.datalist[i]["ctCode"]) + '\');">보기</button></td>';
 						html += '</tr>';
-						i++;
-					});
+					}
 					$schList.html(html);
 				}
-			});
+			})
 		}
 
 		//수거업무 정보보기

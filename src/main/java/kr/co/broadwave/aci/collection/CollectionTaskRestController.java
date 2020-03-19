@@ -248,11 +248,18 @@ public class CollectionTaskRestController {
         Page<CollectionListDto> collectionListDtos = collectionTaskService.findByCollectionList(ctCode, fromDate, toDate, emTypeId, userName, vehicleNumber, pageable);
         if (collectionListDtos.getTotalElements() > 0) {
             List<String> percents = new ArrayList<>();
+//            log.info("datalist : "+collectionListDtos);
+//            log.info("getContent : "+collectionListDtos.getContent());
+//            log.info("getTotalPages : "+collectionListDtos.getTotalPages());
+//            log.info("getPageable : "+collectionListDtos.getPageable());
+//            log.info("getTotalElements : "+collectionListDtos.getTotalElements());
+//            log.info("getSize : "+collectionListDtos.getSize());
+//            System.out.println();
 
-            for (int i = 0; i < collectionListDtos.getTotalElements(); i++) {
+            for (int i = 0; i < collectionListDtos.getContent().size(); i++) {
                 int y = 0;
                 List<CollectionMoniteringListDto> moniteringListDtos = collectionTaskService.moniteringQuerydsl(collectionListDtos.getContent().get(i).getCtCode());
-//                log.info("moniter : "+moniteringListDtos);
+//                log.info("moniter : "+moniteringListDtos.size());
                 for(int j=0; j<moniteringListDtos.size(); j++){
                     if(moniteringListDtos.get(j).getCompleteDateTime()!=null){
                         y++;
@@ -267,7 +274,7 @@ public class CollectionTaskRestController {
             data.put("total_rows",collectionListDtos.getTotalElements());
             res.addResponse("data", data);
         } else {
-            data.put("total_rows", collectionListDtos.getTotalElements());
+            data.put("total_rows",0);
             res.addResponse("data", data);
         }
         return ResponseEntity.ok(res.success());
