@@ -21,6 +21,7 @@
 			var $layout1 = $("#layout1");
 			var $layout2 = $("#layout2");
 			var $layout3 = $("#layout3");
+
 			//console.log("사용자 layout 모드번호 : "+$layoutNumber.val());
 			var firstNum = 0;
 			$layout1.on('click',function(){
@@ -69,15 +70,16 @@
 				$("#monitoring").prop('checked',false);
 			}
 
-			if($('#refleshCount').val()==="1"){
+			var $refleshCount = $('#refleshCount');
+			if($refleshCount.val()==="1"){
 				$("#tensec").prop('checked',true);
-			}else if($('#refleshCount').val()==="2"){
+			}else if($refleshCount.val()==="2"){
 				$("#onemin").prop('checked',true);
-			}else if($('#refleshCount').val()==="3"){
+			}else if($refleshCount.val()==="3"){
 				$("#twomin").prop('checked',true);
-			}else if($('#refleshCount').val()==="4"){
+			}else if($refleshCount.val()==="4"){
 				$("#fivemin").prop('checked',true);
-			}else if($('#refleshCount').val()==="5"){
+			}else if($refleshCount.val()==="5"){
 				$("#ftmin").prop('checked',true);
 			}else{
 				$("#tensec").prop('checked',true);
@@ -104,9 +106,9 @@
 			// });
 
 			$("#refreshMaster").on('click',function() {
-				$("#mapChartLoading").show();
 				$("#pieChartLoading").show();
 				$("#barChartLoading").show();
+				$("#mapChartLoading").show();
 				masterReflesh()
 			});
 
@@ -282,9 +284,8 @@
 				},
 				success: function(){
 					// console.log("변경되었습니다 : "+layoutNum+"번모드");
-					// console.log("뻘스트넘 : "+firstNum);
-					if(firstNum!==0){
-						//console.log("그래프 새로고침됨");
+					//console.log("그래프 새로고침됨");
+					if(firstNum!==0) {
 						$("#pieChartLoading").show();
 						$("#barChartLoading").show();
 						refleshMapChart();
@@ -316,12 +317,13 @@
 				},
 				success: function(res){
 					var pushValue = [];
-					$.each(res.data.datalist, function(key, value){
-						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-					});
+					var len = res.data.deviceInfoListDtos.length;
+					for(i=0; i<len; i++){
+						pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가"));
+					}
 					MapChartDeviceId(pushValue);
 				}
-			});
+			})
 		}
 
 		// 원차트 새로고침
@@ -345,12 +347,13 @@
 				},
 				success: function(res){
 					var pushValue = [];
-					$.each(res.data.datalist, function(key, value){
-						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-					});
+					var len = res.data.deviceInfoListDtos.length;
+					for(i=0; i<len; i++){
+						pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가"));
+					}
 					CircleChartDeviceId(pushValue);
 				}
-			});
+			})
 		}
 
 		// 막대차트 새로고침
@@ -374,12 +377,13 @@
 				},
 				success: function(res){
 					var pushValue = [];
-					$.each(res.data.datalist, function(key, value){
-						pushValue.push(nvl(value.emNumber,"확 인 불 가"));
-					});
+					var len = res.data.deviceInfoListDtos.length;
+					for(i=0; i<len; i++){
+						pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가"));
+					}
 					BarChartDeviceId(pushValue);
 				}
-			});
+			})
 		}
 
 		// 장치리스트 출력
@@ -437,7 +441,7 @@
 						html2 += '</li>';
 
 						html += '<li class="c-list__item">';
-						html += '<div id='+'listTest'+idx+' class="equipment">';
+						html += '<div id='+'deviceInfoList'+idx+' class="equipment">';
 						html += '<div class="equipment__section">';
 						html += '<h4 class="equipment__section-title">장비 정보</h4>';
 						html += '<ul class="equipment__info">';
@@ -602,6 +606,10 @@
 						deviceOnOfftime.push(res.data.deviceOnOffTime[i]);
 					}
 
+					// console.log("devicetimeIdx : "+devicetimeIdx);
+					// console.log("deviceOnOffline : "+deviceOnOffline);
+					// console.log("deviceOnOfftime : "+deviceOnOfftime);
+
 					$.each(res.data.devices, function () {
 						var html = '';
 						var html2 = '';
@@ -621,7 +629,7 @@
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
 							if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
-								html2 += '<span>'+'최종종료일시 : '+deviceOnOfftime[idx]+'</span>';
+								html2 += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
 							}else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
 								html2 += '<span>'+'접속이력없음'+'</span>';
 							}
@@ -710,16 +718,16 @@
 						htmls.push(html);
 						htmls2.push(html2);
 						htmls3.push(html3);
-
-						$('#listTest'+idx).append(htmls[idx]);
-						$('#listTest'+idx).prepend(htmls2[idx]);
-						$('#listTest'+idx).append(htmls3[idx]);
+						var $deviceInfoList = $('#deviceInfoList'+idx);
+						$deviceInfoList.append(htmls[idx]);
+						$deviceInfoList.prepend(htmls2[idx]);
+						$deviceInfoList.append(htmls3[idx]);
 
 						timeStamp(nvl(res.data.devices[idx],"확 인 불 가"),idx);
 
 						idx++
 					});
-					console.log("출력완료");
+					// console.log("출력완료");
 				}
 			});
 		}
@@ -732,8 +740,7 @@
 
 			var deviceIds = [];
 			for(i=0; i<pushValue.length; i++){
-				deviceIds.push(pushValue[i]);
-				// console.log("emNumber["+i+"]" +":"+pushValue[i]);
+				deviceIds.push(pushValue[i])
 			}
 			// deviceIds.push("ISOL-KR-SEL-0004");
 			// console.log("장비배열 : "+deviceIds)
@@ -763,6 +770,7 @@
 
 			var params = {
 				deviceids:devicestr,
+				deviceIdList:pushValue
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -790,6 +798,7 @@
 					var deviceOnOffline = [];
 					var deviceOnOfftime = [];
 					var devicetimeIdx = [];
+					// console.log("deviceOnOffTime : "+res.data.deviceOnOffTime);
 					for(var i=0; i<devicetimeLength; i++){
 						if(res.data.deviceOnOffTime[i]!=="") {
 							var deviceOnOffTimeStamp = new Date(res.data.deviceOnOffTime[i]);
@@ -822,6 +831,8 @@
 						deviceOnOffline.push(res.data.deviceOnOffstatus[i]);
 						deviceOnOfftime.push(res.data.deviceOnOffTime[i]);
 					}
+					// console.log("devicetimeIdx : "+devicetimeIdx);
+					// console.log("deviceOnOfftime : "+deviceOnOfftime);
 
 					$.each(res.data.devices, function () {
 						var html = '';
@@ -881,11 +892,6 @@
 							html2 += '<span class="equipment__connect unknowon">'+'알수없음'+'</span>';
 							html2 += '<div class="equipment__img">';
 							html2 += '<img src="'+baseurl+files[idx]+'" alt="이미지" />';
-							// if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]!==""){
-							// 	html += '<span>'+'최종종료일시 : '+devicetimeIdx[idx]+'</span>';
-							// }else if(deviceOnOffline[idx]===false && deviceOnOfftime[idx]===""){
-							// 	html += '<span>'+'없는 장비'+'</span>';
-							// }
 							html2 += '</div>';
 						}
 
@@ -1382,10 +1388,8 @@
 					//쓰레기양 차트
 					barChart(res.data.averages,res.data.nowtimestamp,res.data.beforetimestamp,res.data.timestamps);
 					//맵에 장치보기
-					if(num===1){
-						mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
-						$("#mapChartLoading").hide();
-					}
+					mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
+					$("#mapChartLoading").hide();
 					$("#pieChartLoading").hide();
 					//console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
 				}
@@ -1726,8 +1730,8 @@
 							</div>
 						</div>
 						<div id="mapfold" class="panel__body">
-							<div class="c-loader">
-								<div id="mapChartLoading" class="c-loader__active c-loader__active--ring"></div>
+							<div class="c-loader" id="mapChartLoading" style="z-index: 1;display:none;">
+								<div class="c-loader__active c-loader__active--ring"></div>
 							</div>
 							<div class="map" id="map"></div>
 						</div>
@@ -1742,8 +1746,8 @@
 							</div>
 						</div>
 						<div id="circlefold" class="panel__body">
-							<div class="c-loader">
-								<div id="pieChartLoading" class="c-loader__active c-loader__active--ring"></div>
+							<div class="c-loader" id="pieChartLoading" style="z-index: 1;display:none;">
+								<div class="c-loader__active c-loader__active--ring"></div>
 							</div>
 							<div class="panel__stat" id="pie_chart"></div>
 						</div>

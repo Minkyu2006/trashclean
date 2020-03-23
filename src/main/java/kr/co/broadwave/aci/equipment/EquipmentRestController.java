@@ -182,16 +182,15 @@ public class EquipmentRestController {
         Equipment equipment = modelMapper.map(equipmentBaseMapperDto, Equipment.class);
 
         List<EquipmentBaseDto> equipmentBaseDto = equipmentService.EquipmentBaseSettingQuerydsl(equipmentBaseMapperDto.getEmNumbers());
-        log.info("equipmentBaseDto : "+equipmentBaseDto);
 
         CodeType codeType = CodeType.valueOf("C0013");
         List<MasterCodeDto> masterCodes= masterCodeService.findCodeList(codeType);
-        Double vInterval = Double.parseDouble(masterCodes.get(0).getName());
-        Double vPresstime = Double.parseDouble(masterCodes.get(1).getName());
-        Double vInputtime = Double.parseDouble(masterCodes.get(2).getName());
-        Double vSolenoidtime = Double.parseDouble(masterCodes.get(3).getName());
-        Double vYellowstart = Double.parseDouble(masterCodes.get(4).getName());
-        Double vRedstart = Double.parseDouble(masterCodes.get(5).getName());
+        Double vInterval = null;
+        Double vPresstime = null;
+        Double vInputtime = null;
+        Double vSolenoidtime = null;
+        Double vYellowstart = null;
+        Double vRedstart = null;
 
         for(int i=0; i<equipmentBaseDto.size(); i++){
             equipment.setId(equipmentBaseDto.get(i).getId());
@@ -212,21 +211,27 @@ public class EquipmentRestController {
             equipment.setEmCertificationNumber(equipmentBaseDto.get(i).getEmCertificationNumber());
 
             if(equipment.getVInterval()==null){
+                vInterval = Double.parseDouble(masterCodes.get(0).getName());
                 equipment.setVInterval(vInterval);
             }
             if(equipment.getVPresstime()==null){
+                vPresstime = Double.parseDouble(masterCodes.get(1).getName());
                 equipment.setVPresstime(vPresstime);
             }
             if(equipment.getVInputtime()==null){
+                vInputtime = Double.parseDouble(masterCodes.get(2).getName());
                 equipment.setVInputtime(vInputtime);
             }
             if(equipment.getVSolenoidtime()==null){
+                vSolenoidtime = Double.parseDouble(masterCodes.get(3).getName());
                 equipment.setVSolenoidtime(vSolenoidtime);
             }
             if(equipment.getVYellowstart()==null){
+                vYellowstart = Double.parseDouble(masterCodes.get(4).getName());
                 equipment.setVYellowstart(vYellowstart);
             }
             if(equipment.getVRedstart()==null){
+                vRedstart = Double.parseDouble(masterCodes.get(5).getName());
                 equipment.setVRedstart(vRedstart);
             }
 
@@ -247,6 +252,8 @@ public class EquipmentRestController {
                                                             @RequestParam (value="emCountry", defaultValue="")String emCountry,
                                                             @RequestParam (value="emLocation", defaultValue="")String emLocation,
                                                             @PageableDefault Pageable pageable){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         Long emTypeId = null;
         Long emCountryId = null;
@@ -265,10 +272,14 @@ public class EquipmentRestController {
             emLocationId = emLocations.map(MasterCode::getId).orElse(null);
         }
 
-        Page<EquipmentBaseListDto> equipmentListDtos =
+        List<EquipmentBaseListDto> equipmentListDtos =
                 equipmentService.findByBaseEquipmentSearch(emNumber,emLocationId,emTypeId,emCountryId,pageable);
+//        log.info("equipmentListDtos : "+equipmentListDtos);
 
-        return CommonUtils.ResponseEntityPage(equipmentListDtos);
+        data.put("equipmentListDtos",equipmentListDtos);
+        res.addResponse("data",data);
+
+        return ResponseEntity.ok(res.success());
     }
 
     // 장비 리스트

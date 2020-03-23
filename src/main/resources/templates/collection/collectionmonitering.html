@@ -88,6 +88,8 @@
 
         function monitering(ctCode,percent) {
 
+            $("#moniteringLoading").show();
+
             var params = {
                 ctCode:ctCode
             };
@@ -105,12 +107,13 @@
                     ajaxErrorMsg(request);
                 },
                 success: function(res){
+
                     // console.log("deviceid : "+res.data.deviceid);
                     // console.log("completeState : "+res.data.completeState);
                     // console.log("laList : "+res.data.monitering_gps_laList);
                     // console.log("loList : "+res.data.monitering_gps_loList);
                     // console.log("moniteringSize : "+res.data.deviceid.length);
-
+                    console.log("percent : "+percent);
                     var $processPercent = $("#processPercent");
                     var html2='';
                     html2 +='<span class="task-progress__num">'+percent+'</span>';
@@ -157,8 +160,8 @@
             var i;
             var iconSrc = [];
 
-            iconSrc['완료'] = "/assets/images/marker.png";
-            iconSrc['미완료'] = "/assets/images/marker--severe.png";
+            iconSrc['수거완료'] = "/assets/images/marker.png";
+            iconSrc['수거미완료'] = "/assets/images/marker--severe.png";
 
             var infowindow = new google.maps.InfoWindow();
 
@@ -197,6 +200,7 @@
                     }
                 })(marker, i));
             }map.fitBounds(bounds);
+            $("#moniteringLoading").hide();
         }
 
     </script>
@@ -289,6 +293,9 @@
                             </div>
                         </div>
                         <div class="panel__body panel__body--height-auto">
+                            <div class="c-loader" id="moniteringLoading" style="z-index: 1;display: none;">
+                                <div class="c-loader__active c-loader__active--ring"></div>
+                            </div>
                             <table id="deviceState" class="task-info__table">
 
                             </table>

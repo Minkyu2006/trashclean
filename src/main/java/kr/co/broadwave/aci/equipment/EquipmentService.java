@@ -55,11 +55,10 @@ public class EquipmentService {
         String p5 = Double.toString(equipment.getVYellowstart());
         String p6 = Double.toString(equipment.getVRedstart());
 
-
         aciawsIoTDeviceService.setDeviceBaseSetting(equipment.getEmNumber(),p1,p2,p3,p4,p5,p6);
 
         //장비코드 가공하기
-        if ( equipment.getEmNumber() == null || equipment.getEmNumber().isEmpty()){
+        if (equipment.getEmNumber() == null || equipment.getEmNumber().isEmpty()){
 
             String emTypeCode = equipment.getEmType().getCode();
             String emCountryCode = equipment.getEmCountry().getCode();
@@ -105,7 +104,7 @@ public class EquipmentService {
         return equipmentRepositoryCustom.queryDslDeviceEmNumber(emNumber,emTypeId,emCountryId,emLocationId);
     }
 
-    public Page<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable) {
+    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable) {
         return equipmentRepositoryCustom.findByBaseEquipmentSearch(emNumber,emLocationId,emTypeId,emCountryId,pageable);
     }
 

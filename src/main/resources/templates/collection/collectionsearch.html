@@ -342,6 +342,10 @@
 
 		//수거업무 정보보기
 		function callInfo(ctCode) {
+			var $directionLoader = $("#directionLoader");
+			$directionLoader.show();
+			$directionLoader.css("z-index",10);
+
 			$("#directionForm").show();
 			$("html").scrollTop($(document).height());
 
@@ -363,7 +367,6 @@
 				},
 				success: function (res) {
 
-
 					var $directionDeviceList = $("#directionDeviceList");
 					var streetdeviceLength = res.data.collection.length;
 					var html='';
@@ -376,7 +379,7 @@
 							html += '<div class="routing__item">';
 								html += '<div class="routing__item-header">';
 									html += '<h5 class="routing__id">' + res.data.collection[i].deviceid +'</h5>';
-									html += '<span class="routing__num">'+j+'</span>';
+									html += '<input type="text" value="'+j+'" class="routing__num" />';
 									html += '<div class="routing__drag"></div>';
 								html += '</div>';
 								html += '<div class="routing__item-body">';
@@ -420,6 +423,9 @@
 					var yyyymmdd2 = [yyyymmdd[0],yyyymmdd[1],yyyymmdd[2],yyyymmdd[3],"-",yyyymmdd[4],yyyymmdd[5],"-",yyyymmdd[6],yyyymmdd[7]];
 					var fromtoDate = yyyymmdd2.join('');
 					$("#yyyymmdd").val(fromtoDate);
+
+					$directionLoader.css("z-index",0);
+					$directionLoader.hide();
 				}
 			});
 		}
@@ -434,19 +440,17 @@
 
 			var $directionDeviceList = $("#directionDeviceList").text();
 			var len = $("#directionListLen").val();
-			// console.log("len : "+$("#directionListLen").val());
+			// console.log("len : "+len);
 			// console.log("$direction : "+$directionDeviceList);
 
 			var directionList = [];
 			var idx = 0;
 			for(v=0; v<len; v++){
-				if(v!==10) {
-					directionList.push($directionDeviceList.substring(idx, idx + 16));
-					idx = idx + 17;
-				}else{
-					directionList.push($directionDeviceList.substring(idx, idx + 17));
-					idx = idx + 18;
+				if(v>0 && v%15===0){
+					break;
 				}
+				directionList.push($directionDeviceList.substring(idx, idx + 16));
+				idx = idx + 16;
 			}
 			// console.log("directionList : "+directionList);
 
@@ -496,14 +500,14 @@
 		var marker;
 		//팝업지도그리기
 		function deviceDirectionMap(pathobj,htmlStart,htmlGoal,directionSize,direction_gps_laList,direction_gps_loList) {
-			console.log("htmlStart : " + htmlStart);
-			console.log("htmlGoal : " + htmlGoal);
+			// console.log("htmlStart : " + htmlStart);
+			// console.log("htmlGoal : " + htmlGoal);
 
 			//네이버맵
 			var startSp = htmlStart.split(",");
 			var goalSp = htmlGoal.split(",");
-			console.log("startSp : " + startSp);
-			console.log("goalSp : " + goalSp);
+			// console.log("startSp : " + startSp);
+			// console.log("goalSp : " + goalSp);
 
 			// 맵중앙좌표계산
 			var center_lagps = (Number(startSp[0])+Number(goalSp[0]))/2;
@@ -575,13 +579,11 @@
 			var directionList = [];
 			var idx = 0;
 			for(v=0; v<len; v++){
-				if(v!==10) {
-					directionList.push($directionDeviceList.substring(idx, idx + 16));
-					idx = idx + 17;
-				}else{
-					directionList.push($directionDeviceList.substring(idx, idx + 17));
-					idx = idx + 18;
+				if(v>0 && v%15===0){
+					break;
 				}
+				directionList.push($directionDeviceList.substring(idx, idx + 16));
+				idx = idx + 16;
 			}
 
 			var params = {
@@ -783,6 +785,9 @@
 
 		<article class="article" id="directionForm" style="display: none">
 			<div class="task">
+				<div class="c-loader" id="directionLoader">
+					<div class="c-loader__active c-loader__active--ring"></div>
+				</div>
 				<div class="routing">
 					<div class="routing__header">
 						<h4 class="routing__title">수거 경로 지정</h4>
@@ -803,7 +808,6 @@
 					<div class="place__header">
 						<h4 class="place__title">수거원 / 차량 배치 </h4>
 					</div>
-
 					<div class="place__body">
 						<ul class="place__list">
 							<li>

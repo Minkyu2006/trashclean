@@ -97,7 +97,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
     }
 
     @Override
-    public Page<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable){
+    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
 
@@ -132,8 +132,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
         query.orderBy(equipment.emNumber.asc());
 
-        final List<EquipmentBaseListDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
-        return new PageImpl<>(equipments, pageable, query.fetchCount());
+        return query.fetch();
     }
 
     // 장비기본값셋팅 리스트쿼리
@@ -200,7 +199,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         QEquipment equipment = QEquipment.equipment;
         QMasterCode masterCode = QMasterCode.masterCode;
         QIModel iModel = QIModel.iModel;
-
+        System.out.println("streetRouting : "+streetRouting);
         JPQLQuery<EquipmentCollectionRegDto> query = from(equipment)
                 .select(Projections.constructor(EquipmentCollectionRegDto.class,
                         equipment,equipment.emNumber,masterCode,iModel.mdSubname,iModel.mdType.name))
