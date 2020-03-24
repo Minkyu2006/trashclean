@@ -2072,6 +2072,48 @@ h4.article__heading {
 	font-size: 14px;
 	text-align: center;
 }
+.task-info__count {
+	overflow: hidden;
+	width: 100%;
+	height: 74px;
+	margin-bottom: 20px;
+}
+.task-info__count-item {
+	float: left;
+	min-width: 70px;
+	padding: 5px 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.task-info__count-title {
+	display: block;
+	margin-bottom: 10px;
+	color: #73879c;
+	font-size: 14px;
+	font-weight: 700;
+	text-align: center;
+}
+.task-info__count-num {
+	display: block;
+	color: #465a6e;
+	font-size: 40px;
+	font-weight: 700;
+	text-align: center;
+}
+.task-info__count-item + .task-info__count-item {
+	border-left: 1px solid #ddd;
+}
+.task-info__count-item.right {
+	float: right;
+	border-left: 0 none;
+}
+.task-info__count-num.complete {
+	color: #48ae63;
+}
+.task-info__count-num.fail {
+	color: #ff7f7f;
+}
 .task-progress {
 	position: absolute;
 	top: 17px;

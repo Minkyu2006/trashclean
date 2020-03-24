@@ -251,24 +251,27 @@
                                 </table>
                             </article>
                             <article class="article">
-                                <table class="c-table">
-                                    <colgroup>
-                                        <col />
-                                        <col />
-                                        <col style="width: 80px;" />
-                                        <col style="width: 50px;" />
-                                    </colgroup>
-                                    <thead>
-                                    <tr>
-                                        <th>수거관리코드</th>
-                                        <th>수거처리일</th>
-                                        <th>처리율</th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="schCollectionList">
-                                    </tbody>
-                                </table>
+                            	<div style="height: 388px;">
+                            		<table class="c-table">
+	                                    <colgroup>
+	                                        <col />
+	                                        <col />
+	                                        <col style="width: 80px;" />
+	                                        <col style="width: 50px;" />
+	                                    </colgroup>
+	                                    <thead>
+		                                    <tr>
+		                                        <th>수거관리코드</th>
+		                                        <th>수거처리일</th>
+		                                        <th>처리율</th>
+		                                        <th></th>
+		                                    </tr>
+	                                    </thead>
+	                                    <tbody id="schCollectionList">
+	                                    </tbody>
+	                                </table>
+                            	</div>
+                                
 
                                 <div class="c-pager">
                                     <div class="c-paging" id ="paging">
@@ -292,14 +295,32 @@
                             <div class="task-progress" id="processPercent">
                             </div>
                         </div>
-                        <div class="panel__body panel__body--height-auto">
+                        <div class="panel__body" style="height: 623px;">
                             <div class="c-loader" id="moniteringLoading" style="z-index: 1;display: none;">
                                 <div class="c-loader__active c-loader__active--ring"></div>
                             </div>
-                            <table id="deviceState" class="task-info__table">
+                            <div class="task-info__count">
+                            	<div class="task-info__count-item">
+	                            	<span class="task-info__count-title">전체</span>
+	                            	<span class="task-info__count-num">15</span>
+                            	</div>
+                            	<div class="task-info__count-item">
+	                            	<span class="task-info__count-title">완료</span>
+	                            	<span class="task-info__count-num complete">0</span>
+                            	</div>
+                            	<div class="task-info__count-item">
+	                            	<span class="task-info__count-title">미완료</span>
+	                            	<span class="task-info__count-num fail">15</span>
+                            	</div>
+                            	<div class="task-info__count-item right">
+	                            	<span class="task-info__count-title">위/경도 데이터 없음</span>
+	                            	<span class="task-info__count-num fail">0</span>
+                            	</div>
+                            </div>
+                            <!-- <table id="deviceState" class="task-info__table">
 
-                            </table>
-                            <div class="map" id="map" style="height: 541px;"></div>
+                            </table> -->
+                            <div class="map" id="map" style="height: 508px;"></div>
                         </div>
                     </div>
                 </div>
