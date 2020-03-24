@@ -63,7 +63,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
             query.where(equipment.emCountry.id.eq(emCountryId));
         }
 
-        query.orderBy(equipment.emNumber.asc());
+        query.orderBy(equipment.id.desc());
 
         final List<EquipmentListDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(equipments, pageable, query.fetchCount());

@@ -14,7 +14,7 @@
 
 			//자동실행
 			LocationSetting();
-			ModelChange();
+			ModelChange(null);
 
 			$('.pop__list').on('click', function(e) {
 				$('#pop__list').addClass('open');
@@ -83,8 +83,6 @@
 				},
 				success: function(){
 					alertSuccess("장비등록확인완료");
-					var pat=1;
-					// lightLoading(deviceid,0,null,pat);
 				}
 			});
 		}
@@ -290,7 +288,7 @@
 						html += '<td >'+ echoNull2Blank(value.emDesignation) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.emType) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.iModel) +'</td>';
-						html += '<td >'+ echoNull2Blank(value.emCountry)+'-'+echoNull2Blank(value.emLocation)+'</td>';
+						html += '<td >'+ echoNull2Blank(value.emCountry)+'/'+echoNull2Blank(value.emLocation)+'</td>';
 						html += '<td >'+ echoNull2Blank(value.emEmbeddedNumber) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.company) +'</td>';
 
@@ -361,7 +359,8 @@
 					$emLocationView.val(res.data.equipment.emLocationName);
 
 					$("#emType").val(res.data.equipment.emTypeId);
-					$("#mdId").val(res.data.equipment.mdId.id);
+					ModelChange(res.data.equipment.mdId.id);
+
 					$emCountry.val(res.data.equipment.emCountryId);
 					$("#addSell").val(res.data.equipment.emLocationId);
 
@@ -373,8 +372,9 @@
 		}
 
 		function selectBoxLocation(){
-			if($("#addSell").val() !== '') {
-				var addLocationSelect = $("#addSell").val();
+			var $addSell = $("#addSell");
+			if($addSell.val() !== '') {
+				var addLocationSelect = $addSell.val();
 				$("#emLocation").val(addLocationSelect);
 			}
 		}
@@ -487,12 +487,13 @@
 			});
 		}
 
-		function ModelChange() {
+		//셀렉트 모델선택시 변경
+		function ModelChange(mdId) {
 			var params = {
 				emType: $("#emType").val()
 			};
 
-			var $schList = $("#mdId");
+			var $mdId = $("#mdId");
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -512,15 +513,21 @@
 					}
 
 					var html = '';
+					var nullstr = "등록된 모델없음";
 
-					if(res.data.dataselect===""){
-						html += '<option value ="">' +"등록된 모델없음"+ '</option>';
+					if(res.data.dataselect===null){
+						html += '<option value ="">' + nullstr + '</option>';
 					}else{
 						$.each(res.data.dataselect, function (key, value) {
-							html += '<option value ="' + echoNull2Blank(value.id) + '">' + echoNull2Blank(value.mdSubname)+ '</option>';
+							html += '<option value ="'+echoNull2Blank(value.id)+'">'+echoNull2Blank(value.mdName)+"-"+echoNull2Blank(value.mdType)+'</option>';
 						});
 					}
-					$schList.html(html);
+					$mdId.html(html);
+
+					if(mdId!==null){
+						$mdId.val(mdId);
+					}
+
 				}
 			});
 		}
@@ -706,7 +713,7 @@
 							<ul class="c-input-list c-input-list--flex">
 								<li>
 									<div class="c-select">
-										<select name="emType" id="emType" class="c-select__input" onchange="ModelChange()">
+										<select name="emType" id="emType" class="c-select__input" onchange="ModelChange(null)">
 											<option th:each ="equipdType : ${equipdTypes}"
 													th:value="${equipdType.id}"
 													th:text="${equipdType.name}"

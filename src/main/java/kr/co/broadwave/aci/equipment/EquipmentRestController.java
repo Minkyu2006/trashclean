@@ -389,8 +389,13 @@ public class EquipmentRestController {
         Optional<MasterCode> optionalEmType= masterCodeService.findById(emType);
 
         if(optionalEmType.isPresent()){
-            List<IModelChangeDto> ref = iModelService.findByEmType(optionalEmType.get());
-            data.put("dataselect",ref);
+            List<IModelChangeDto> ref = iModelService.findByEmTypeQuerydsl(optionalEmType.get());
+//            log.info("ref : "+ref);
+            if(ref.size()==0){
+                data.put("dataselect",null);
+            }else{
+                data.put("dataselect",ref);
+            }
         }else{
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(), ResponseErrorCode.E021.getDesc()));
         }

@@ -6,6 +6,7 @@ import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.equipment.EquipmentCollectionRegDto;
 import kr.co.broadwave.aci.equipment.QEquipment;
 import kr.co.broadwave.aci.files.QFileUpload;
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.QMasterCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -75,4 +76,24 @@ public class IModelRepositoryCustomImpl extends QuerydslRepositorySupport implem
 
     }
 
+    @Override
+    public  List<IModelChangeDto> findByEmTypeQuerydsl(MasterCode masterCode){
+
+        QIModel iModel = QIModel.iModel;
+
+        JPQLQuery<IModelChangeDto> query = from(iModel)
+                .select(Projections.constructor(IModelChangeDto.class,
+                        iModel.id,
+                        iModel.mdName,
+                        iModel.mdType
+                ));
+
+        if (masterCode != null ){
+            query.where(iModel.emType.eq(masterCode));
+        }
+
+        query.orderBy(iModel.id.desc());
+
+        return query.fetch();
+    }
 }

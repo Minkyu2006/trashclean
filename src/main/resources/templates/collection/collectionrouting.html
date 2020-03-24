@@ -52,7 +52,7 @@
 			});
 
 			LocationSetting("");
-			// equipmentCallList();
+			equipmentCallList();
 
 			//라우팅계산버튼
 			$("#routingBtn").on('click',function(){
@@ -298,7 +298,11 @@
 							html += '<td>' + '<input name="checkemNumber" type="checkbox" value=' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + ' />' + '</td>';
 							html += '<td >' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + '</td>';
 							html += '<td >' + nvl(res.data.deviceLevel[i], "확 인 불 가") + '%' + '</td>';
-							html += '<td >' + nvl(res.data.deviceBattLevel[i], "확 인 불 가") + '%' + '</td>';
+							if($("#s_equipmentType").val()!=="ITAI") {
+								html += '<td >' + nvl(res.data.deviceBattLevel[i], "확 인 불 가") + '%' + '</td>';
+							}else{
+								html += '<td >' + "없음" + '</td>';
+							}
 							html += '<td >' + nvl(res.data.equipmentList[i]["iModel"], "확 인 불 가") + '</td>';
 							html += '<td >' + nvl(res.data.equipmentList[i]["emCountry"], "확 인 불 가") + '-' + nvl(res.data.equipmentList[i]["emLocation"], "확 인 불 가") + '</td>';
 							html += '</tr>';
@@ -363,7 +367,7 @@
 						var j=1;
 						if(i===0 || i%15===0){
 							y++;
-							html += '<article class="article">';
+							html += '<article id="article'+i+y+'" class="article">';
 
 								html += '<div class="task">';
 									html += '<div class="routing">';
@@ -493,6 +497,8 @@
 
 		//수거업무 저장
 		function collectionSave(i,y,len) {
+			var article = $("#article"+i+y);
+
 			var $direction = $("#sortable"+i+y).text();
 			var $yyyymmdd = $("#yyyymmdd"+y).val();
 			var $accountUserId = $("#accountUserId"+y).val();
@@ -555,6 +561,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
+					article.hide();
 					alertCollectionSuccess('업무가 등록되었습니다.');
 				}
 			});
@@ -1054,7 +1061,7 @@
 									<colgroup>
 										<col style="width: 40px;" />
 										<col style="width: 150px;" />
-										<col style="width: 100px;" />
+										<col style="width: 100px;"/>
 										<col style="width: 100px;" />
 										<col style="width: 180px;" />
 										<col style="width: 150px;" />
@@ -1075,7 +1082,7 @@
 							</div>
 							
 							<div class="c-scroll-table__body c-scroll-table__body--height-auto">
-								<table style="width: 720px;">
+								<table style="width: 720px">
 									<colgroup>
 										<col style="width: 40px;" />
 										<col style="width: 150px;" />

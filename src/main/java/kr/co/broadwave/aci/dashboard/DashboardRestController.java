@@ -141,20 +141,20 @@ public class DashboardRestController {
 
         if(!emType.equals("")){
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
-            emTypeId = emTypes.get().getId();
+            emTypeId = emTypes.map(MasterCode::getId).orElse(null);
         }
         if(!emCountry.equals("")){
             Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
-            emCountryId = emCountrys.get().getId();
+            emCountryId = emCountrys.map(MasterCode::getId).orElse(null);
         }
         if(!emLocation.equals("")){
             Optional<MasterCode> emLocations = masterCodeService.findByCode(emLocation);
-            emLocationId = emLocations.get().getId();
+            emLocationId = emLocations.map(MasterCode::getId).orElse(null);
         }
 
         List<DashboardDeviceListViewDto> deviceInfoListDtos =
                 dashboardService.findByDashboardListView(emNumber, emTypeId, emCountryId, emLocationId, pageable);
-//        log.info("deviceInfoListDtos : "+deviceInfoListDtos);
+//        log.info("deviceInfxoListDtos : "+deviceInfoListDtos);
 
         data.put("deviceInfoListDtos",deviceInfoListDtos);
         res.addResponse("data",data);

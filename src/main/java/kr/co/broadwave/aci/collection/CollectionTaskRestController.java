@@ -250,6 +250,7 @@ public class CollectionTaskRestController {
 
         Page<CollectionListDto> collectionListDtos = collectionTaskService.findByCollectionList(ctCode, fromDate, toDate, emTypeId, userName, vehicleNumber, pageable);
         if (collectionListDtos.getTotalElements() > 0) {
+
             List<String> percents = new ArrayList<>();
 //            log.info("datalist : "+collectionListDtos);
 //            log.info("getContent : "+collectionListDtos.getContent());
@@ -466,12 +467,12 @@ public class CollectionTaskRestController {
                 }
             }
 
-            log.info("deviceLevel : "+deviceLevel);
-            log.info("deviceTempBrd : "+deviceTempBrd);
-            log.info("deviceBattLevel : "+deviceBattLevel);
-            log.info("deviceSolarCurrent : "+deviceSolarCurrent);
-            log.info("deviceSolarVoltage : "+deviceSolarVoltage);
-            log.info("equipmentCollectionListDtos : "+equipmentCollectionListDtos);
+//            log.info("deviceLevel : "+deviceLevel);
+//            log.info("deviceTempBrd : "+deviceTempBrd);
+//            log.info("deviceBattLevel : "+deviceBattLevel);
+//            log.info("deviceSolarCurrent : "+deviceSolarCurrent);
+//            log.info("deviceSolarVoltage : "+deviceSolarVoltage);
+//            log.info("equipmentCollectionListDtos : "+equipmentCollectionListDtos);
 
             data.put("deviceLevel",deviceLevel);
             data.put("deviceTempBrd",deviceTempBrd);

@@ -203,20 +203,23 @@
 			var deviceinstall = $("#deviceInstalls").val().split(',');
 			var devicesubname = $("#deviceSubnames").val().split(',');
 			var devicefile = $("#devicefiles").val().split(',');
+			var deviceEmType = $("#emTyps").val().split(',');
 
 			var deviceidArr = [];
 			var deviceinstallArr = [];
 			var devicesubnameArr = [];
 			var devicefileArr = [];
+			var emTypes = [];
 
 			for (var i = 0; i < deviceid.length; i++) {
 				deviceidArr.push(deviceid[i]);
 				deviceinstallArr.push(deviceinstall[i]);
 				devicesubnameArr.push(devicesubname[i]);
 				devicefileArr.push(devicefile[i]);
+				emTypes.push(deviceEmType[i]);
 			}
 
-			deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr);
+			deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr,emTypes);
 			pushDeviceId(deviceidArr, devicesubnameArr,0);
 		}
 
@@ -426,7 +429,7 @@
 					var installDate = [];
 					var subname = [];
 					var files = [];
-
+					var emTypes = [];
 					var idx = 0;
 
 					var lengthList = res.data.deviceInfoListDtos.length;
@@ -479,7 +482,7 @@
 						html += '</li>';
 
 						idx++;
-
+						emTypes.push(res.data.deviceInfoListDtos[i]["emType"]);
 						pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가"));
 						installDate.push(nvl(res.data.deviceInfoListDtos[i]["emInstallDate"],"확 인 불 가"));
 						files.push(nvl(res.data.deviceInfoListDtos[i]["filePath"]+'/s_'+res.data.deviceInfoListDtos[i]["saveFileName"],"확 인 불 가"));
@@ -492,19 +495,20 @@
 							$("#loading"+i).removeClass("c-loader__active c-loader__active--ring");
 						}
 						$deviceList.html(html);
-						deviceAWSListView(pushValue,installDate,files);
+						deviceAWSListView(pushValue,installDate,files,emTypes);
 						pushDeviceId(pushValue,1);
 						$("#deviceIds").val(pushValue);
 						$("#deviceInstalls").val(installDate);
 						$("#deviceSubnames").val(subname);
 						$("#devicefiles").val(files);
+						$("#emTypes").val(emTypes);
 					},1000);
 				}
 			});
 		}
 
 		// ASW 장치 데이터리스트
-		function deviceAWSListView(pushValue,installDate,files) {
+		function deviceAWSListView(pushValue,installDate,files,emTypes) {
 			// console.log("장비리스트 뿌리기 시작");
 			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
@@ -691,17 +695,24 @@
 						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
 						html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>';
 						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.batt_level[idx],"확 인 불 가")+'%'+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.solar_current[idx],"확 인 불 가")+'A'+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>';
+						if(emTypes[idx]!=="iTainer") {
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '배터리잔량 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.batt_level[idx], "확 인 불 가") + '%' + '</span>';
+							html += '</li>';
+						}
+						if(emTypes[idx]!=="iTainer") {
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '태양광판넬 전류 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.solar_current[idx], "확 인 불 가") + 'A' + '</span>';
+							html += '</li>';
+						}
+						if(emTypes[idx]!=="iTainer") {
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '태양광판넬 전압 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.solar_voltage[idx], "확 인 불 가") + 'V' + '</span>';
+							html += '</li>';
+						}
 						html += '<li class="equipment__info-item">';
 						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
 						html += '</li>';
@@ -733,7 +744,7 @@
 		}
 
 		// ASW 장치 데이터리스트(새로고침)
-		function deviceAWSListViewReflesh(pushValue,installDate,files) {
+		function deviceAWSListViewReflesh(pushValue,installDate,files,emTypes) {
 			// console.log("새로고침 장비리스트 뿌리기 시작");
 			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
@@ -912,18 +923,24 @@
 						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
 						html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>';
 						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.batt_level[idx],"확 인 불 가")+'%'+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.solar_current[idx],"확 인 불 가")+'A'+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.solar_voltage[idx],"확 인 불 가")+'V'+'</span>';
-						html += '</li>';
+						if(emTypes[idx]!=="iTainer") {
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '배터리잔량 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.batt_level[idx], "확 인 불 가") + '%' + '</span>';
+							html += '</li>';
+						}
+						if(emTypes[idx]!=="iTainer") {
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '태양광판넬 전류 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.solar_current[idx], "확 인 불 가") + 'A' + '</span>';
+							html += '</li>';
+						}
+						if(emTypes[idx]!=="iTainer") {
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '태양광판넬 전압 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.solar_voltage[idx], "확 인 불 가") + 'V' + '</span>';
+							html += '</li>';
+						}
 						html += '<li class="equipment__info-item">';
 						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
 						html += '</li>';
@@ -1043,7 +1060,7 @@
 						var nowDate = new Date();
 						// 라벨 최대값 구하기 (현재날짜)
 						var max_milliseconds = nowDate.getTime();
-						// 라벨 최소값 구하기
+						// 라벨 최소값 구하기재
 						var min_milliseconds = nowDate.setHours(nowDate.getHours()-$("#intervaltime").val());
 						// console.log("현재날짜 : "+max_milliseconds);
 						// console.log("이전날짜 : "+min_milliseconds);
@@ -1794,6 +1811,7 @@
 										<input type="hidden" id="deviceInstalls" value ="" readonly="readonly" />
 										<input type="hidden" id="deviceSubnames" value ="" readonly="readonly" />
 										<input type="hidden" id="devicefiles" value ="" readonly="readonly" />
+										<input type="hidden" id="emTypes" value ="" readonly="readonly" />
 									</div>
 								</div>
 

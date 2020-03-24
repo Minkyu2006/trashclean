@@ -2,17 +2,15 @@ package kr.co.broadwave.aci.dashboard;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
+import javafx.beans.binding.BooleanExpression;
 import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.equipment.QEquipment;
 import kr.co.broadwave.aci.imodel.QIModel;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Minkyu
@@ -27,8 +25,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
     }
 
     @Override
-    public List<DashboardDeviceListViewDto> findByDashboardListView
-            (String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable){
+    public List<DashboardDeviceListViewDto> findByDashboardListView(String emNumber, Long emTypeId,Long emCountryId,Long emLocationId, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
         QIModel qiModel = QIModel.iModel;
@@ -66,7 +63,6 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
         }
 
         query.orderBy(equipment.emNumber.asc());
-
 
         return query.fetch();
     }

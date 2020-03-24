@@ -11,6 +11,23 @@
                 $("#header_collection").css('display', 'none');
             });
 
+            //날짜별검색 현재날짜셋팅
+            var $s_dateFrom = $("#s_dateFrom");
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth()+1;
+            var day = today.getDate();
+            if(month < 10){
+                month = "0"+month;
+            }
+            if(day < 10){
+                day = "0"+day;
+            }
+            var todayData = year+"-"+month+"-"+day;
+            $s_dateFrom.val(todayData);
+
+            $("#taskInfo").hide();
+
             //달력폼
             $("#s_dateFrom").datepicker({});
             $("#s_dateTo").datepicker({});
@@ -36,6 +53,7 @@
             var $totalCnt = $('#totalCnt');
 
             var params = {
+                s_percent:$('#s_percent').val(),
                 dateFrom:$('#s_dateFrom').val(),
                 dateTo:$('#s_dateTo').val(),
             };
@@ -113,7 +131,8 @@
                     // console.log("laList : "+res.data.monitering_gps_laList);
                     // console.log("loList : "+res.data.monitering_gps_loList);
                     // console.log("moniteringSize : "+res.data.deviceid.length);
-                    console.log("percent : "+percent);
+                    // console.log("percent : "+percent);
+
                     var $processPercent = $("#processPercent");
                     var html2='';
                     html2 +='<span class="task-progress__num">'+percent+'</span>';
@@ -122,22 +141,18 @@
                     html2 +='</div>';
                     $processPercent.html(html2);
 
-                    var $deviceState = $("#deviceState");
-                    var html='';
-                    html+='<tr>';
-                    html+='<th>수거업무에 등록된 장비 수</th>';
-                    html+='<th>수거처리 완료 장비 수</th>';
-                    html+='<th>수처처리 미완료 장비 수</th>';
-                    html+='<th>경도/위도의 데이터가 없는 장비 수</th>';
-                    html+='</tr>';
-                    html+='<tr>';
-                    html+='<td>'+res.data.deviceSize+'</td>';
-                    html+='<td>'+res.data.complete+'</td>';
-                    html+='<td>'+res.data.uncomplete+'</td>';
-                    html+='<td>'+res.data.noDataDeviceid+'</td>';
-                    html+='</tr>';
-                    $deviceState.html(html);
+                    $("#taskInfo").show();
+                    $("#allNum").text(res.data.deviceSize);
+                    $("#completeNum").text(res.data.complete);
+                    $("#uncompleteNum").text(res.data.uncomplete);
 
+                    if(res.data.noDataDeviceid!==0) {
+                        $("#unknowDataInfo").show();
+                        $("#unknowData").text(res.data.noDataDeviceid);
+                    }else{
+                        $("#unknowDataInfo").hide();
+                    }
+                    
                     deviceMoniteringMap(res.data.deviceid,res.data.completeState,res.data.deviceid.length,res.data.monitering_gps_laList,res.data.monitering_gps_loList);
 
                 }
@@ -203,6 +218,99 @@
             $("#moniteringLoading").hide();
         }
 
+        // 시작날짜가 끝난날짜보다 클수없음
+        function s_dateFromDate(date) {
+            var $s_dateTo = $("#s_dateTo").val();
+            if($s_dateTo!=="") {
+                var dateObj = new Date(date);
+
+                var year = dateObj.getFullYear();
+                var month = dateObj.getMonth()+1;
+                var day = dateObj.getDate();
+                if(month < 10){
+                    month = "0"+month;
+                }
+                if(day < 10){
+                    day = "0"+day;
+                }
+
+                var choseDate = year+"-"+month+"-"+day;
+
+                if ($s_dateTo < choseDate) {
+                    alertCaution("시작날짜가 마지막날짜보다<BR>클 수 없습니다.");
+                    $("#s_dateFrom").val("");
+                    return false;
+                }
+            }
+        }
+
+        // 끝난날짜보다 시작날짜보다 낮을수없음
+        function s_dateToDate(date) {
+            var $s_dateFrom = $("#s_dateFrom").val();
+            if($s_dateFrom!=="") {
+                var dateObj = new Date(date);
+
+                var year = dateObj.getFullYear();
+                var month = dateObj.getMonth()+1;
+                var day = dateObj.getDate();
+                if(month < 10){
+                    month = "0"+month;
+                }
+                if(day < 10){
+                    day = "0"+day;
+                }
+
+                var choseDate = year+"-"+month+"-"+day;
+
+                if ($s_dateFrom > choseDate) {
+                    alertCaution("마지막날짜가 시작날짜보다<BR>작을 수 없습니다.");
+                    $("#s_dateTo").val("");
+                    return false;
+                }
+            }
+        }
+
+        //한글을 지우는 함수
+        function delHangle(e){
+            var objTarget = e.srcElement || e.target;
+            var _value = event.srcElement.value;
+            if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
+                alertCaution("숫자만 입력가능합니다.");
+                objTarget.value = null;
+            }
+        }
+        // 소수점한개로 제한한 실수값입력할수있게하는 함수
+        function isNumberKey(e) {
+            var charCode = (e.which) ? e.which : event.keyCode;
+
+            var _value = event.srcElement.value;
+
+            if (event.keyCode < 48 || event.keyCode > 57) {
+                if (event.keyCode !== 46) {
+                    return false;
+                }
+            }
+            // 소수점(.)이 두번 이상 나오지 못하게
+            var _pattern0 = /^\d*[.]\d*$/;
+            if (_pattern0.test(_value)) {
+                if (charCode === 46) {
+                    return false;
+                }
+            }
+            // 소수점 둘째자리까지만 입력가능
+            var _pattern2 = /^\d*[.]\d{2}$/;
+            if (_pattern2.test(_value)) {
+                alertCaution("소수점 둘째자리까지만 입력가능합니다.");
+                return false;
+            }
+        }
+        // 쓰레기양 검색조건 길이제한
+        function numberMaxLength(e){
+            if(e.value.length > e.maxLength){
+                e.value = e.value.slice(0, e.maxLength);
+            }
+        }
+
     </script>
 </head>
 
@@ -235,11 +343,15 @@
                                             <div class="c-date-group">
                                                 <div class="c-date">
                                                     <label for="s_dateFrom" class="c-date__label">from</label>
-                                                    <input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일">
+                                                    <input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일" onchange="s_dateFromDate(this.value)" />
                                                 </div>
                                                 <div class="c-date">
                                                     <label for="s_dateTo" class="c-date__label">to</label>
-                                                    <input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일">
+                                                    <input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일" onchange="s_dateToDate(this.value)" />
+                                                </div>
+                                                <div style="display:none;">
+                                                    <label for="s_dateTo" class="c-date__label">처리율</label>
+                                                    <input type="text" class="c-text__input" id="s_percent" style="width: 61px;right: 93px;position: absolute;" maxlength="2" oninput="numberMaxLength(this);" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
                                                 </div>
                                             </div>
                                         </td>
@@ -299,27 +411,24 @@
                             <div class="c-loader" id="moniteringLoading" style="z-index: 1;display: none;">
                                 <div class="c-loader__active c-loader__active--ring"></div>
                             </div>
-                            <div class="task-info__count">
+                            <div id="taskInfo" class="task-info__count">
                             	<div class="task-info__count-item">
 	                            	<span class="task-info__count-title">전체</span>
-	                            	<span class="task-info__count-num">15</span>
+	                            	<span id="allNum" class="task-info__count-num">15</span>
                             	</div>
                             	<div class="task-info__count-item">
 	                            	<span class="task-info__count-title">완료</span>
-	                            	<span class="task-info__count-num complete">0</span>
+	                            	<span id="completeNum" class="task-info__count-num complete">0</span>
                             	</div>
                             	<div class="task-info__count-item">
 	                            	<span class="task-info__count-title">미완료</span>
-	                            	<span class="task-info__count-num fail">15</span>
+	                            	<span id="uncompleteNum" class="task-info__count-num fail">15</span>
                             	</div>
-                            	<div class="task-info__count-item right">
+                            	<div id="unknowDataInfo" class="task-info__count-item right" style="display:none;">
 	                            	<span class="task-info__count-title">위/경도 데이터 없음</span>
-	                            	<span class="task-info__count-num fail">0</span>
+	                            	<span id="unknowData" class="task-info__count-num fail">0</span>
                             	</div>
                             </div>
-                            <!-- <table id="deviceState" class="task-info__table">
-
-                            </table> -->
                             <div class="map" id="map" style="height: 508px;"></div>
                         </div>
                     </div>

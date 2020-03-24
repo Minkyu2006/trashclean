@@ -16,6 +16,21 @@
 				$("#header_collection").css('display','none');
 			});
 
+			//날짜별검색 현재날짜셋팅
+			var $s_dateFrom = $("#s_dateFrom");
+			var today = new Date();
+			var year = today.getFullYear();
+			var month = today.getMonth()+1;
+			var day = today.getDate();
+			if(month < 10){
+				month = "0"+month;
+			}
+			if(day < 10){
+				day = "0"+day;
+			}
+			var todayData = year+"-"+month+"-"+day;
+			$s_dateFrom.val(todayData);
+
 			//지도팝업닫기
 			$('.l-popup__close').on('click', function(e) {
 				$(this).parents('.l-popup').removeClass('open');
@@ -27,7 +42,7 @@
 				e.preventDefault();
 			});
 			//달력폼
-			$("#s_dateFrom").datepicker({});
+			$s_dateFrom.datepicker({});
 			$("#s_dateTo").datepicker({});
 			$("#yyyymmdd").datepicker({});
 
@@ -53,6 +68,7 @@
 				vehreset();
 				e.preventDefault();
 			});
+			collectionCallList(1);
 			//수거원조회
 			$("#collectionUserBtnSearch").on('click',function(){
 				collectionCallList(1);
@@ -667,6 +683,58 @@
 			})
 		}
 
+		// 시작날짜가 끝난날짜보다 클수없음
+		function s_dateFromDate(date) {
+			var $s_dateTo = $("#s_dateTo").val();
+			if($s_dateTo!=="") {
+				var dateObj = new Date(date);
+
+				var year = dateObj.getFullYear();
+				var month = dateObj.getMonth()+1;
+				var day = dateObj.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+
+				var choseDate = year+"-"+month+"-"+day;
+
+				if ($s_dateTo < choseDate) {
+					alertCaution("시작날짜가 마지막날짜보다<BR>클 수 없습니다.");
+					$("#s_dateFrom").val("");
+					return false;
+				}
+			}
+		}
+
+		// 끝난날짜보다 시작날짜보다 낮을수없음
+		function s_dateToDate(date) {
+			var $s_dateFrom = $("#s_dateFrom").val();
+			if($s_dateFrom!=="") {
+				var dateObj = new Date(date);
+
+				var year = dateObj.getFullYear();
+				var month = dateObj.getMonth()+1;
+				var day = dateObj.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+
+				var choseDate = year+"-"+month+"-"+day;
+
+				if ($s_dateFrom > choseDate) {
+					alertCaution("마지막날짜가 시작날짜보다<BR>작을 수 없습니다.");
+					$("#s_dateTo").val("");
+					return false;
+				}
+			}
+		}
+
 	</script>
 </head>
 
@@ -701,10 +769,10 @@
 					<td>
 						<div class="c-date-group" >
 							<div class="c-date">
-								<input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일" />
+								<input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일" onchange="s_dateFromDate(this.value)"/>
 							</div>
 							<div class="c-date">
-								<input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일" />
+								<input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일" onchange="s_dateToDate(this.value)"/>
 							</div>
 						</div>
 					</td>
