@@ -667,6 +667,7 @@ table {
 .profile-pop.active,
 .password-pop.active {
 	display: block;
+	z-index: 100;
 }
 .profile-pop__form,
 .password-pop__form {
@@ -2660,6 +2661,9 @@ h4.article__heading {
 
 
 
-
+/* bxslider */
+.bx-wrapper .bx-controls-direction a {
+	z-index: 10;
+}
 
 
