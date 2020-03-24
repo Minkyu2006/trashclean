@@ -63,6 +63,11 @@
 				refleshBarChart();
 			});
 
+			// console.log("userid : "+$('#userid').val());
+			// console.log("refleshCheck : "+$('#refleshCheck').val());
+			// console.log("refleshCheckNum : "+$('#refleshCount').val());
+			// console.log("layoutNumber : "+$('#layoutNumber').val());
+
 			// 자동 새로고침 유저 정보의따라 바뀌기 작업
 			if($('#refleshCheck').val()==="1"){
 				$("#monitoring").prop('checked',true);
@@ -112,10 +117,13 @@
 				masterReflesh()
 			});
 
-			$("#header_dashboard").css('display','block');
-			$("#default_wrap").on('click',function(){
+			if($("#headerMode").val()==="1"){
+				$("#default_wrap").addClass('wrap');
+				$("#header_dashboard").css('display','block');
+			}else{
+				$("#default_wrap").addClass('wrap nav--small');
 				$("#header_dashboard").css('display','none');
-			});
+			}
 		});
 
 		//자동새로고침시작 함수
@@ -1901,9 +1909,9 @@
 		</div>
 	</div>
 
-	<input type="hidden" id="userid" th:value="${userId}" readonly="readonly" />
-	<input type="hidden" id="refleshCheck" th:value="${refleshCheck}" readonly="readonly" />
-	<input type="hidden" id="refleshCount" th:value="${refleshCount}" readonly="readonly" />
-	<input type="hidden" id="layoutNumber" th:value="${layoutNumber}" readonly="readonly" />
+	<input type="hidden" id="userid" th:value="${session.userid}" readonly="readonly" />
+	<input type="hidden" id="refleshCheck" th:value="${session.refleshCheck}" readonly="readonly" />
+	<input type="hidden" id="refleshCount" th:value="${session.refleshCheckNum}" readonly="readonly" />
+	<input type="hidden" id="layoutNumber" th:value="${session.layoutNum}" readonly="readonly" />
 </div>
 </html>

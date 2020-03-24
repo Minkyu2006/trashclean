@@ -24,37 +24,14 @@ import java.util.Optional;
 @RequestMapping("/dashboard")
 public class DashboardController {
     private final MasterCodeService masterCodeService;
-    private final AccountService accountService;
 
     @Autowired
-    public DashboardController(MasterCodeService masterCodeService,
-                               AccountService accountService) {
-        this.accountService = accountService;
+    public DashboardController(MasterCodeService masterCodeService) {
         this.masterCodeService = masterCodeService;
     }
 
     @RequestMapping("dashboardall")
-    public String dashboard(Model model, HttpServletRequest request){
-
-        String currentuserid = CommonUtils.getCurrentuser(request);
-        Optional<Account> account = accountService.findByUserid(currentuserid);
-
-        String userId = null;
-        Integer refleshCheck = null;
-        Integer refleshCount = null;
-        Integer layoutNumber = null;
-
-        if(account.isPresent()){
-            userId = account.get().getUserid();
-            refleshCheck = account.get().getUserRefleshCheck();
-            refleshCount = account.get().getUserRefleshCount();
-            layoutNumber = account.get().getUserLayoutNumber();
-        }
-
-        model.addAttribute("userId", userId);
-        model.addAttribute("refleshCheck", refleshCheck);
-        model.addAttribute("refleshCount", refleshCount);
-        model.addAttribute("layoutNumber", layoutNumber);
+    public String dashboard(Model model){
 
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);

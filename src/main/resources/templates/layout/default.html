@@ -62,6 +62,10 @@
 					passSave();
 				});
 
+				$("#headerModeChange").on('click',function(){
+					headerModeChange($("#headerMode").val());
+				});
+
 				$("#profile").change(function() {
 					profileURL(this);
 				});
@@ -152,6 +156,34 @@
 							$('.profile-pop').removeClass('active');
 							e.preventDefault();
 						});
+					}
+				});
+			}
+
+			function headerModeChange(headerMode) {
+				var params = {
+					headerMode : headerMode
+				};
+
+				$.ajax({
+					url:'/api/account/headerMode',
+					data: params,
+					type:'post',
+					cache:false,
+					error:function(request){
+						ajaxErrorMsg(request);
+					},
+					success: function(res){
+						if(res.data.headerMode===2){
+							$("#headerMode").val(2);
+							$("#header_platform").css('display','none');
+							$("#header_collection").css('display','none');
+							$("#header_dashboard").css('display','none');
+							$("#header_device").css('display','none');
+							$("#header_account").css('display','none');
+						}else{
+							$("#headerMode").val(1);
+						}
 					}
 				});
 			}
@@ -274,13 +306,14 @@
 
     </head>
 
-	<div id="default_wrap" class="wrap">
+	<div id="default_wrap">
     		<header th:replace="fragments/header :: headerFragment"></header>
 			
 			<div class="contents">
 
 				<div class="contents-header">
-					<a href="#" class="nav-icon">
+					<input id="headerMode" th:value="${session.headerMode}" style="display: none" readonly="readonly" />
+					<a id="headerModeChange" href="#" class="nav-icon">
 						<span></span>
 						<span></span>
 						<span></span>

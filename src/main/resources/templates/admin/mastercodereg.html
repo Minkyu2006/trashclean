@@ -6,10 +6,13 @@
 <head>
 	<script>
 		$(function(){
-			$("#header_platform").css('display','block');
-			$("#default_wrap").on('click',function(){
+			if($("#headerMode").val()==="1"){
+				$("#default_wrap").addClass('wrap');
+				$("#header_platform").css('display','block');
+			}else{
+				$("#default_wrap").addClass('wrap nav--small');
 				$("#header_platform").css('display','none');
-			});
+			}
 
 			$("#btnSave").on('click',function(){
 				save();

@@ -24,6 +24,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -956,11 +958,12 @@ public class DashboardRestController {
     // 새로고침체크여부의기 따라 유저정보 저장하기
     @PostMapping("refleshcheck")
     public ResponseEntity<Map<String,Object>> refleshcheck(@ModelAttribute AccountMapperDto accountMapperDto,
-                                       @RequestParam(value="userid", defaultValue="") String userid,
-                                       @RequestParam(value="checknum", defaultValue="") Integer checknum,
-                                       @RequestParam(value="timenum", defaultValue="") Integer timenum) {
+                                                           @RequestParam(value="userid", defaultValue="") String userid,
+                                                           @RequestParam(value="checknum", defaultValue="") Integer checknum,
+                                                           @RequestParam(value="timenum", defaultValue="") Integer timenum,
+                                                           HttpServletRequest request) {
         AjaxResponse res = new AjaxResponse();
-
+        HttpSession session = request.getSession();
         Account account = modelMapper.map(accountMapperDto, Account.class);
         Optional<Account> optionalAccount = accountService.findByUserid(userid);
 
@@ -987,6 +990,9 @@ public class DashboardRestController {
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
             account.setModify_id(optionalAccount.get().getModify_id());
             account.setModifyDateTime(optionalAccount.get().getModifyDateTime());
+
+            session.setAttribute("refleshCheck",checknum);
+            session.setAttribute("refleshCheckNum",timenum);
         }
 
         accountService.modifyAccount(account);
@@ -998,9 +1004,10 @@ public class DashboardRestController {
     @PostMapping("layoutNumber")
     public ResponseEntity<Map<String,Object>> layoutNumber(@ModelAttribute AccountMapperDto accountMapperDto,
                                                            @RequestParam(value="userid", defaultValue="") String userid,
-                                                           @RequestParam(value="layoutNum", defaultValue="") Integer layoutNum) {
+                                                           @RequestParam(value="layoutNum", defaultValue="") Integer layoutNum,
+                                                           HttpServletRequest request) {
         AjaxResponse res = new AjaxResponse();
-
+        HttpSession session = request.getSession();
         Account account = modelMapper.map(accountMapperDto, Account.class);
         Optional<Account> optionalAccount = accountService.findByUserid(userid);
 
@@ -1027,6 +1034,9 @@ public class DashboardRestController {
             account.setInsertDateTime(optionalAccount.get().getInsertDateTime());
             account.setModify_id(optionalAccount.get().getModify_id());
             account.setModifyDateTime(optionalAccount.get().getModifyDateTime());
+
+            session.setAttribute("layoutNum",layoutNum);
+
         }
 
         accountService.modifyAccount(account);

@@ -6,10 +6,13 @@
     <script type="text/javascript">
 
         $(function() {
-            $("#header_device").css('display','block');
-            $("#default_wrap").on('click',function(){
+            if($("#headerMode").val()==="1"){
+                $("#default_wrap").addClass('wrap');
+                $("#header_device").css('display','block');
+            }else{
+                $("#default_wrap").addClass('wrap nav--small');
                 $("#header_device").css('display','none');
-            });
+            }
 
             //장비팝업열기
             $('#device').on('click', function(e) {

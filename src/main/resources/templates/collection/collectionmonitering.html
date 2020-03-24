@@ -6,10 +6,13 @@
     <script type="text/javascript">
 
         $(function() {
-            $("#header_collection").css('display', 'block');
-            $("#default_wrap").on('click', function () {
-                $("#header_collection").css('display', 'none');
-            });
+            if($("#headerMode").val()==="1"){
+                $("#default_wrap").addClass('wrap');
+                $("#header_collection").css('display','block');
+            }else{
+                $("#default_wrap").addClass('wrap nav--small');
+                $("#header_collection").css('display','none');
+            }
 
             //날짜별검색 현재날짜셋팅
             var $s_dateFrom = $("#s_dateFrom");

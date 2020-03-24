@@ -28,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -655,6 +656,27 @@ public class AccountRestController {
         log.info("사용자정보(패스워드)수정 성공 :  " + accountSave.toString() +"'" );
         return ResponseEntity.ok(res.success());
 
+    }
+
+    @RequestMapping("/headerMode")
+    public ResponseEntity<Map<String,Object>> headerMode(HttpServletRequest request,
+                                                         @RequestParam(value="headerMode", defaultValue="") Integer headerMode){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        HttpSession session = request.getSession();
+        if(headerMode==1){
+            log.info("headerMode : "+2);
+            session.setAttribute("headerMode", 2);
+            data.put("headerMode",2);
+            res.addResponse("data",data);
+        }else{
+            log.info("headerMode : "+1);
+            session.setAttribute("headerMode", 1);
+            data.put("headerMode",1);
+            res.addResponse("data",data);
+        }
+        return ResponseEntity.ok(res.success());
     }
 
 }

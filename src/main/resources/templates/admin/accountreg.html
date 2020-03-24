@@ -5,10 +5,13 @@
 <head>
 	<script>
 		$(function(){
-			$("#header_account").css('display','block');
-			$("#default_wrap").on('click',function(){
+			if($("#headerMode").val()==="1"){
+				$("#default_wrap").addClass('wrap');
+				$("#header_account").css('display','block');
+			}else{
+				$("#default_wrap").addClass('wrap nav--small');
 				$("#header_account").css('display','none');
-			});
+			}
 
 			$("#btnSearch").on('click',function(){
 				callList(1);

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko"
+	  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/loginlayout}">
+<head>
+	<script>
+
+	</script>
+</head>
+
+
+<div layout:fragment="content" class="content">
+	
+	<div class="contents contents--main">
+		<div class="contents-header">
+			<h1 class="contents-header__logo">
+				<a href="/">자연상점</a>
+			</h1>
+			<form th:action="@{/logout}" method="post" id="logout">
+				<ul class="contents-header__links">
+					<li><a href="#" onclick="document.getElementById('logout').submit();">Logout</a></li>
+				</ul>
+			</form>
+			
+		</div>
+		
+		<div class="contents-body">
+			<div class="main">
+				<div class="main__section">
+					<div class="main__image">
+						<div class="main__center">
+							<div class="main__txt">
+								<h2 class="main__txt-heading">자연상점 - NatureStore</h2>
+								<h3 class="main__sub-heading">IoT기반 자동압축컨테이너 및 수거운영시스템</h3>
+							</div>
+							<a href="/dashboard/dashboardall" class="main__center-btn">Home</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<footer class="contents-footer">
+    			© 2019 Broadwave Corporation. All rights Reserved.
+    		</footer>
+	</div>
+</div>
+</html>

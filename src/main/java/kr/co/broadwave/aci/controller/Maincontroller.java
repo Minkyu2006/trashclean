@@ -2,6 +2,7 @@ package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.accounts.*;
 import kr.co.broadwave.aci.bscodes.CodeType;
+import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.company.CompanyAccountDto;
 import kr.co.broadwave.aci.company.CompanyService;
@@ -11,13 +12,16 @@ import kr.co.broadwave.aci.teams.TeamDto;
 import kr.co.broadwave.aci.teams.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -50,10 +54,18 @@ public class Maincontroller {
     public String main(HttpServletRequest request){
         String userAgent = request.getHeader("User-Agent").toUpperCase();
         String IS_MOBILE = "MOBILE";
+        String currentuserid = CommonUtils.getCurrentuser(request);
+
+        System.out.println("currentuserid : "+currentuserid);
+
         if(userAgent.contains(IS_MOBILE)) {
             return "redirect:/mobile/mobileindex";
         }
-        return "index";
+        if(currentuserid.equals("system")){
+            return "index";
+        }else{
+            return "homeIndex";
+        }
     }
 
     @RequestMapping("/mypage")
@@ -82,6 +94,11 @@ public class Maincontroller {
             session.setAttribute("username", account.getUsername());
             session.setAttribute("teamname", account.getTeam().getTeamname());
             session.setAttribute("role", account.getRole().getCode());
+
+            session.setAttribute("refleshCheck", account.getUserRefleshCheck());
+            session.setAttribute("refleshCheckNum", account.getUserRefleshCount());
+            session.setAttribute("layoutNum", account.getUserLayoutNumber());
+            session.setAttribute("headerMode", 1);
 
             Loginlog loginlog = Loginlog.builder()
                     .loginAccount(account)
