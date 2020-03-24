@@ -472,7 +472,7 @@ public class CollectionTaskRestController {
 //            log.info("deviceBattLevel : "+deviceBattLevel);
 //            log.info("deviceSolarCurrent : "+deviceSolarCurrent);
 //            log.info("deviceSolarVoltage : "+deviceSolarVoltage);
-//            log.info("equipmentCollectionListDtos : "+equipmentCollectionListDtos);
+//            log.info("equipmentCollectionListDtos : "+equipmentCollectionListDtos.size());
 
             data.put("deviceLevel",deviceLevel);
             data.put("deviceTempBrd",deviceTempBrd);
@@ -480,6 +480,11 @@ public class CollectionTaskRestController {
             data.put("deviceSolarCurrent",deviceSolarCurrent);
             data.put("deviceSolarVoltage",deviceSolarVoltage);
             data.put("equipmentList",equipmentCollectionListDtos);
+            data.put("equipmentSize",equipmentCollectionListDtos.size());
+
+            res.addResponse("data",data);
+        }else{
+            data.put("equipmentSize",0);
 
             res.addResponse("data",data);
         }

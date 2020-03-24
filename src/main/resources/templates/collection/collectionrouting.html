@@ -290,25 +290,28 @@
 
 					//장비리스트 출력
 					var html = '';
-					var lengthList = res.data.equipmentList.length;
 
-					for(i=0; i<lengthList; i++){
-						if(res.data.deviceLevel[i]!=null) {
-							html += '<tr>';
-							html += '<td>' + '<input name="checkemNumber" type="checkbox" value=' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + ' />' + '</td>';
-							html += '<td >' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + '</td>';
-							html += '<td >' + nvl(res.data.deviceLevel[i], "확 인 불 가") + '%' + '</td>';
-							if($("#s_equipmentType").val()!=="ITAI") {
-								html += '<td >' + nvl(res.data.deviceBattLevel[i], "확 인 불 가") + '%' + '</td>';
-							}else{
-								html += '<td >' + "없음" + '</td>';
+					if (res.data.equipmentSize === 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="6" align="center">조회된 데이터가 없습니다.</td></tr>');
+					}else{
+						for(i=0; i<res.data.equipmentSize; i++){
+							if(res.data.deviceLevel[i]!=null) {
+								html += '<tr>';
+								html += '<td>' + '<input name="checkemNumber" type="checkbox" value=' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + ' />' + '</td>';
+								html += '<td >' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + '</td>';
+								html += '<td >' + nvl(res.data.deviceLevel[i], "확 인 불 가") + '%' + '</td>';
+								if($("#s_equipmentType").val()!=="ITAI") {
+									html += '<td >' + nvl(res.data.deviceBattLevel[i], "확 인 불 가") + '%' + '</td>';
+								}else{
+									html += '<td >' + "없음" + '</td>';
+								}
+								html += '<td >' + nvl(res.data.equipmentList[i]["iModel"], "확 인 불 가") + '</td>';
+								html += '<td >' + nvl(res.data.equipmentList[i]["emCountry"], "확 인 불 가") + '-' + nvl(res.data.equipmentList[i]["emLocation"], "확 인 불 가") + '</td>';
+								html += '</tr>';
 							}
-							html += '<td >' + nvl(res.data.equipmentList[i]["iModel"], "확 인 불 가") + '</td>';
-							html += '<td >' + nvl(res.data.equipmentList[i]["emCountry"], "확 인 불 가") + '-' + nvl(res.data.equipmentList[i]["emLocation"], "확 인 불 가") + '</td>';
-							html += '</tr>';
 						}
+						$schList.html(html);
 					}
-					$schList.html(html);
 				}
 			})
 		}
