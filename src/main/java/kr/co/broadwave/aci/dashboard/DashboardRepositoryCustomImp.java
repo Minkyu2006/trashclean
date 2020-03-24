@@ -2,7 +2,6 @@ package kr.co.broadwave.aci.dashboard;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import javafx.beans.binding.BooleanExpression;
 import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.equipment.QEquipment;
 import kr.co.broadwave.aci.imodel.QIModel;
