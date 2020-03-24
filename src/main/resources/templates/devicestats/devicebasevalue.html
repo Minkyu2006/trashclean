@@ -130,26 +130,26 @@
 
 					//화면 출력
 					var html = '';
-					$.each(res.data.datalist, function(key, value){
+					var len = res.data.equipmentListDtos.length;
+					for(i=0; i<len; i++){
 						html += '<tr >';
-						html += '<td >'+ '<input name="checkemNumber" type="checkbox" value='+nvl(value.emNumber,"확 인 불 가")+' />' +'</td>';
-						html += '<td class="align-left">'+ nvl(value.emNumber,"확 인 불 가") +'</td>';
-						html += '<td class="align-left" >'+ nvl(value.emType,"확 인 불 가") +'</td>';
-						html += '<td class="align-left" >'+ nvl(value.iModel,"확 인 불 가") +'</td>';
-						html += '<td class="align-left" >'+ nvl(value.emCountry,"확 인 불 가")+'-'+nvl(value.emLocation)+'</td>';
+						html += '<td >'+ '<input name="checkemNumber" type="checkbox" value='+nvl(res.data.equipmentListDtos[i]["emNumber"],"확 인 불 가")+' />' +'</td>';
+						html += '<td class="align-left">'+ nvl(res.data.equipmentListDtos[i]["emNumber"],"확 인 불 가") +'</td>';
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["emType"],"확 인 불 가") +'</td>';
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["iModel"],"확 인 불 가") +'</td>';
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["emCountry"],"확 인 불 가")+'-'+nvl(res.data.equipmentListDtos[i]["emLocation"],"확 인 불 가")+'</td>';
 
-						html += '<td class="align-left" >'+ nvl(value.vInterval,"확 인 불 가")+'분'+'</td>';
-						html += '<td class="align-left" >'+ nvl(value.vPresstime,"확 인 불 가")+'초'+'</td>';
-						html += '<td class="align-left" >'+ nvl(value.vInputtime,"확 인 불 가")+'초'+'</td>';
-						html += '<td class="align-left" >'+ nvl(value.vSolenoidtime,"확 인 불 가")+'초'+'</td>';
-						html += '<td class="align-left" >'+ nvl(value.vYellowstart,"확 인 불 가")+'%'+'</td>';
-						html += '<td class="align-left" >'+ nvl(value.vRedstart,"확 인 불 가")+'%'+'</td>';
-
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["vInterval"],"확 인 불 가")+'분'+'</td>';
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["vPresstime"],"확 인 불 가")+'초'+'</td>';
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["vInputtime"],"확 인 불 가")+'초'+'</td>';
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["vSolenoidtime"],"확 인 불 가")+'초'+'</td>';
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["vYellowstart"],"확 인 불 가")+'%'+'</td>';
+						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["vRedstart"],"확 인 불 가")+'%'+'</td>';
 						html += '</tr>';
-					});
+					}
 					$schList.html(html);
 				}
-			});
+			})
 		}
 
 		// 국가,지역검색

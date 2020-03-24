@@ -69,15 +69,11 @@ public class IModelService {
         iModelRepository.delete(iModel);
     }
 
-    public List<IModelChangeDto> findByEmType(MasterCode id) {
-        List<IModel> iModels = iModelRepository.findByEmType(id);
-        return iModels.stream()
-                .map(iModel -> modelMapper.map(iModel, IModelChangeDto.class)
-                ).collect(Collectors.toList());
-    }
-
-
     public Optional<IModel> findByModel(Long mdId) {
         return iModelRepository.findById(mdId);
+    }
+
+    public List<IModelChangeDto> findByEmTypeQuerydsl(MasterCode masterCode) {
+        return iModelRepositoryCustom.findByEmTypeQuerydsl(masterCode);
     }
 }

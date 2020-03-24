@@ -126,7 +126,7 @@
             var $schList = $('#schList');
             var $totalCnt = $('#totalCnt');
 
-            $schList.empty().append('<tr ><td colspan="6" align = "center">조회 중</td></tr>');
+            $schList.empty().append('<tr ><td colspan="5" align = "center">조회 중</td></tr>');
             $totalCnt.text('0');
 
             var token = $("meta[name='_csrf']").attr("content");
@@ -148,7 +148,7 @@
                         pageTotal: totCnt,
                         clickEvent: 'firmwareFileList'});
                     if (totCnt===0) {
-                        $schList.empty().append('<tr class="t-c"><td colspan="6" align="center">조회된 데이터가 없습니다.</td></tr>');
+                        $schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
                         return;
                     }
                     $totalCnt.text(totCnt);
@@ -164,7 +164,7 @@
                             '<span style="display:none;" name=' + nvl(value.efType+j, "확 인 불 가") + '>'+ baseurl + nvl(value.fileFullPath,"확 인 불 가")+'</span>';
                         html += '<td >'+ nvl(value.efType,"확 인 불 가") +'</td>';
                         html += '<td >'+ nvl(value.efVer,"확 인 불 가") +'</td>';
-                        html += '<td >'+ baseurl + nvl(value.fileFullPath,"확 인 불 가") +'</td>';
+                        // html += '<td >'+ baseurl + nvl(value.fileFullPath,"확 인 불 가") +'</td>';
                         html += '<td >'+ nvl(value.efRemark,"확 인 불 가") +'</td>';
                         html += '<td ><button class="c-button c-button--point c-button--small" onclick="checkDel(\''+nvl(value.id,"확 인 불 가")+'\');">삭제</button></td>';
                         html += '</tr>';
@@ -367,7 +367,6 @@
                         <col style="width: 80px;" />
                         <col style="width: 80px;" />
                         <col />
-                        <col style="width: 100px;" />
                         <col style="width: 50px;" />
                     </colgroup>
                     <thead>
@@ -375,7 +374,6 @@
                         <th style="text-align: center;">파일 선택</th>
                         <th>모델 타입</th>
                         <th>버전</th>
-                        <th>AWS 경로</th>
                         <th>비고</th>
                         <th></th>
                     </tr>

@@ -141,20 +141,20 @@ public class DashboardRestController {
 
         if(!emType.equals("")){
             Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
-            emTypeId = emTypes.get().getId();
+            emTypeId = emTypes.map(MasterCode::getId).orElse(null);
         }
         if(!emCountry.equals("")){
             Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
-            emCountryId = emCountrys.get().getId();
+            emCountryId = emCountrys.map(MasterCode::getId).orElse(null);
         }
         if(!emLocation.equals("")){
             Optional<MasterCode> emLocations = masterCodeService.findByCode(emLocation);
-            emLocationId = emLocations.get().getId();
+            emLocationId = emLocations.map(MasterCode::getId).orElse(null);
         }
 
         List<DashboardDeviceListViewDto> deviceInfoListDtos =
                 dashboardService.findByDashboardListView(emNumber, emTypeId, emCountryId, emLocationId, pageable);
-//        log.info("deviceInfoListDtos : "+deviceInfoListDtos);
+//        log.info("deviceInfxoListDtos : "+deviceInfoListDtos);
 
         data.put("deviceInfoListDtos",deviceInfoListDtos);
         res.addResponse("data",data);
@@ -180,6 +180,7 @@ public class DashboardRestController {
         List<String> gps_laDatas2 = new ArrayList<>();// 위도리스트
         List<String> gps_loDatas2 = new ArrayList<>();  // 경도리스트
 //        log.info("deviceids : " + deviceids);
+//        log.info("deviceIdList : " + deviceIdList);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
 //        log.info("resData : " + resData);
         List<String> sortDevice = new ArrayList<>();
@@ -194,11 +195,20 @@ public class DashboardRestController {
             sortDevice.add((String) map.get("deviceid"));
         }
         sortDevice.sort(Comparator.naturalOrder());
-
+//        log.info("sortDevice : " + sortDevice);
+//        log.info("sortDevice.size() : " + sortDevice.size());
         int x=0;
+        int y=0;
         for (int i=0; i<deviceIdListSize; i++) {
-            String deviceList = deviceIdList.get(i);
-            String deviceid = sortDevice.get(x);
+//            log.info("x : " + x);
+//            log.info("y : " + y);
+            String deviceList = deviceIdList.get(y);
+            String deviceid = "";
+            if(sortDevice.size()!=x){
+                deviceid = sortDevice.get(x);
+            }
+//            log.info("deviceList : " + deviceList);
+//            log.info("deviceid : " + deviceid);
             if (deviceid.equals(deviceList)) {
                 for (int j = 0; j < number; j++) {
                     HashMap map = (HashMap) resData.get("data").get(j);
@@ -223,6 +233,7 @@ public class DashboardRestController {
                         gps_loDatas.add((String) map.get("gps_lo")); //경도값넣기
 
                         x++;
+                        y++;
                     }
                 }
             } else {
@@ -235,6 +246,8 @@ public class DashboardRestController {
                 solar_voltage.add("0");
                 gps_laDatas.add("na");
                 gps_loDatas.add("na");
+
+                y++;
             }
         }
 

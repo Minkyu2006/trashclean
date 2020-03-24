@@ -117,6 +117,9 @@ public class CollectionTaskRestController {
         List<Equipment> equipmentId = new ArrayList<>();
         List<String> equipmentEmNumber = new ArrayList<>();
         List<MasterCode> equipmentEmType = new ArrayList<>();
+//        log.info("equipment : "+equipment);
+//        log.info("equipment : "+equipment.size());
+
         for(int i=0; i<deviceListlen; i++){
             for(int j=0; j<deviceListlen; j++) {
                 if (deviceList.get(i).contains(equipment.get(j).getEmNumber())) {
@@ -139,7 +142,7 @@ public class CollectionTaskRestController {
 
         int z = 0;
         if(!ctCodeNum.equals("")) {
-            log.info("수정작성");
+//            log.info("수정작성");
             List<CollectionDto> optionalCollectionTask = collectionTaskService.findByCtCodeSeqQuerydsl(ctCodeNum);
             //log.info("optionalCollectionTask : "+optionalCollectionTask);
             for (int i = 1; i < deviceListlen+1; i++) {
@@ -175,7 +178,7 @@ public class CollectionTaskRestController {
             }
 
         }else{
-            log.info("신규작성");
+//            log.info("신규작성");
             SimpleDateFormat todayFormat = new SimpleDateFormat("yyMMdd");
             Date time = new Date();
             String today = todayFormat.format(time);
@@ -247,6 +250,7 @@ public class CollectionTaskRestController {
 
         Page<CollectionListDto> collectionListDtos = collectionTaskService.findByCollectionList(ctCode, fromDate, toDate, emTypeId, userName, vehicleNumber, pageable);
         if (collectionListDtos.getTotalElements() > 0) {
+
             List<String> percents = new ArrayList<>();
 //            log.info("datalist : "+collectionListDtos);
 //            log.info("getContent : "+collectionListDtos.getContent());
@@ -399,13 +403,18 @@ public class CollectionTaskRestController {
 
             //equipmentCollectionListDtos.get(i).getEmNumber()
             int x=0;
+            int y=0;
             for (int j=0; j<equipmentCollectionListDtos.size(); j++) {
-                String deviceList = emNumber.get(j);
-                String deviceid = sortDevice.get(x);
+                String deviceList = emNumber.get(y);
+                String deviceid = "";
+                if(sortDevice.size()!=x){
+                    deviceid = sortDevice.get(x);
+                }
                 if(deviceid.equals(deviceList)) {
                     for (int i = 0; i < number; i++) {
                         HashMap map = (HashMap) resData.get("data").get(i);
-                        if (map.get("deviceid") == deviceid) {
+                        String resDeviceid = (String) map.get("deviceid");
+                        if (resDeviceid.equals(deviceid)) {
                             if (!map.get("gps_la").equals("na") || !map.get("gps_lo").equals("na")) {
                                 if (emLevel != null) {
                                     if (emLevel <= Double.parseDouble(String.valueOf(map.get("level")))) {
@@ -416,6 +425,7 @@ public class CollectionTaskRestController {
                                         deviceSolarCurrent.add((String) map.get("solar_current"));
                                         deviceSolarVoltage.add((String) map.get("solar_voltage"));
                                         x++;
+                                        y++;
                                     } else {
                                         //log.info("emLevel : " + emLevel + "이하인 장비");
                                         deviceLevel.add(null);
@@ -424,6 +434,7 @@ public class CollectionTaskRestController {
                                         deviceSolarCurrent.add(null);
                                         deviceSolarVoltage.add(null);
                                         x++;
+                                        y++;
                                     }
                                 } else {
                                     //log.info("emLevel : " + emLevel + "없음");
@@ -433,6 +444,7 @@ public class CollectionTaskRestController {
                                     deviceSolarCurrent.add((String) map.get("solar_current"));
                                     deviceSolarVoltage.add((String) map.get("solar_voltage"));
                                     x++;
+                                    y++;
                                 }
                             } else {
                                 deviceLevel.add(null);
@@ -441,6 +453,7 @@ public class CollectionTaskRestController {
                                 deviceSolarCurrent.add(null);
                                 deviceSolarVoltage.add(null);
                                 x++;
+                                y++;
                             }
                         }
                     }
@@ -450,6 +463,7 @@ public class CollectionTaskRestController {
                     deviceBattLevel.add(null);
                     deviceSolarCurrent.add(null);
                     deviceSolarVoltage.add(null);
+                    y++;
                 }
             }
 
@@ -458,7 +472,7 @@ public class CollectionTaskRestController {
 //            log.info("deviceBattLevel : "+deviceBattLevel);
 //            log.info("deviceSolarCurrent : "+deviceSolarCurrent);
 //            log.info("deviceSolarVoltage : "+deviceSolarVoltage);
-//            log.info("equipmentCollectionListDtos : "+equipmentCollectionListDtos);
+//            log.info("equipmentCollectionListDtos : "+equipmentCollectionListDtos.size());
 
             data.put("deviceLevel",deviceLevel);
             data.put("deviceTempBrd",deviceTempBrd);
@@ -466,6 +480,11 @@ public class CollectionTaskRestController {
             data.put("deviceSolarCurrent",deviceSolarCurrent);
             data.put("deviceSolarVoltage",deviceSolarVoltage);
             data.put("equipmentList",equipmentCollectionListDtos);
+            data.put("equipmentSize",equipmentCollectionListDtos.size());
+
+            res.addResponse("data",data);
+        }else{
+            data.put("equipmentSize",0);
 
             res.addResponse("data",data);
         }
@@ -983,10 +1002,10 @@ public class CollectionTaskRestController {
                     monitering_gps_loList.add(gps_loSubStirng);
                 }
                 if(moniteringListDtos.get(i).getCompleteDateTime()!=null){
-                    completeState.add("완료");
+                    completeState.add("수거완료");
                     complete++;
                 }else{
-                    completeState.add("미완료");
+                    completeState.add("수거미완료");
                     uncomplete++;
                 }
                 deviceid.add((String) map.get("deviceid"));

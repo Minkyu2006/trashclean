@@ -2072,6 +2072,48 @@ h4.article__heading {
 	font-size: 14px;
 	text-align: center;
 }
+.task-info__count {
+	overflow: hidden;
+	width: 100%;
+	height: 74px;
+	margin-bottom: 20px;
+}
+.task-info__count-item {
+	float: left;
+	min-width: 70px;
+	padding: 5px 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.task-info__count-title {
+	display: block;
+	margin-bottom: 10px;
+	color: #73879c;
+	font-size: 14px;
+	font-weight: 700;
+	text-align: center;
+}
+.task-info__count-num {
+	display: block;
+	color: #465a6e;
+	font-size: 40px;
+	font-weight: 700;
+	text-align: center;
+}
+.task-info__count-item + .task-info__count-item {
+	border-left: 1px solid #ddd;
+}
+.task-info__count-item.right {
+	float: right;
+	border-left: 0 none;
+}
+.task-info__count-num.complete {
+	color: #48ae63;
+}
+.task-info__count-num.fail {
+	color: #ff7f7f;
+}
 .task-progress {
 	position: absolute;
 	top: 17px;
@@ -2177,8 +2219,8 @@ h4.article__heading {
 }
 .routing__body > ul > li {
 	float: left;
-	min-width: 200px;
-	width: 20%;
+	min-width: 192px;
+	width: 19.99%;
 	padding: 10px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -2188,6 +2230,7 @@ h4.article__heading {
 	position: relative;
 	width: 100%;
 	border: 1px solid #dfdfdf;
+	background-color: #fff;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -2305,7 +2348,30 @@ h4.article__heading {
 	text-align: right;
 }
 
-
+/* description */
+.description {
+	position: relative;
+	width: 100%;
+}
+.description__heading {
+	margin-bottom: 20px;
+	font-size: 16px;
+	font-weight: 700;
+}
+.description li img {
+	width: 100%;
+}
+.description li p {
+	margin-top: 10px;
+	font-size: 14px;
+	line-height: 1.4;
+}
+.bx-wrapper {
+	border: 0 none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+}
 
 /* 수거원/차량 배치 */
 .place {
