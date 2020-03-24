@@ -123,6 +123,12 @@ public class ACIAWSIoTDeviceService {
         aciIoTService.shadowNonblockingSend(deviceid,"firmwareupdate",str);
 
     }
+    // 장비등록 완료 명령
+    public void setRegComplete(String deviceid) throws Exception {
+        log.info("장비 Shadow 장비 등록확인 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"devicereg","complete");
 
+    }
 
 }
