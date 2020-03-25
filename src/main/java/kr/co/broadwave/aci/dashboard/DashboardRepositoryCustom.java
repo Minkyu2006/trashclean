@@ -11,4 +11,6 @@ import java.util.List;
  */
 public interface DashboardRepositoryCustom {
     List<DashboardDeviceListViewDto> findByDashboardListView(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId, Pageable pageable);
+
+    DashboardDeviceListViewDto findByDashboardListViewDeviceInfo(String emNumber);
 }

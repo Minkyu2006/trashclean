@@ -51,6 +51,11 @@
 		<script>
 
 			$(function(){
+				var $headerMode = $("#headerMode");
+				if($headerMode.val()===null){
+					console.log("세션날라감 해더모드값 1 등록");
+					$headerMode.val(1);
+				}
 
 				teamAndposition();
 
@@ -63,7 +68,7 @@
 				});
 
 				$("#headerModeChange").on('click',function(){
-					headerModeChange($("#headerMode").val());
+					headerModeChange($headerMode.val());
 				});
 
 				$("#profile").change(function() {
@@ -121,9 +126,10 @@
 
 			//프로필 변경
 			function profileSave() {
-				if ($("#prousername").val().trim() === '') {
+				var $prousername = $("#prousername");
+				if ($prousername.val().trim() === '') {
 					alertCaution("이름을 입력하세요.");
-					$("#prousername").trigger('focus');
+					$prousername.trigger('focus');
 					return false;
 				}
 

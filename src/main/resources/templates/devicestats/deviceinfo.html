@@ -36,23 +36,26 @@
 	<script type="text/javascript">
 
          $(function(){
-         	if($("#efVer").val()!=="" && $("#efFilePath").val()!=="" ){
-				console.log("있음");
-				versionCheck();
-			}else{
-				console.log("없음");
-			}
+         	 if($("#efVer").val()!=="" && $("#efFilePath").val()!=="" ){
+				 versionCheck();
+			 }
 
-			timeStampfnc($("#updateTime").text(),"#updateTime",null); // 업데이트 시간계산실행
+			 var $updateTime = $("#updateTime").text();
+			 if($updateTime!=="") {
+				 timeStampfnc($updateTime, "#updateTime", null); // 업데이트 시간계산실행
+			 }
 
 			 var $onlineTime = $("#onlineTime");
-			if($onlineTime.val()!==""){
-				//console.log("오프라인");
-				//console.log("onlineTime : "+$("#onlineTime").val());
-				timeStampfnc($onlineTime.val(),"#offlineTimeName","최종종료일시 : "); // 최종종료 시간계산실행
-			}
+		 	 if($onlineTime.val()!==""){
+		   		 //console.log("오프라인");
+				 //console.log("onlineTime : "+$("#onlineTime").val());
+				 timeStampfnc($onlineTime.val(),"#offlineTimeName","최종종료일시 : "); // 최종종료 시간계산실행
+			 }
 
-			 deviceinstallDate($("#devcieInstalDateBtw").text());
+		 	 var $devcieInstalDateBtw = $("#devcieInstalDateBtw").text();
+			 if($devcieInstalDateBtw !== "") {
+			 	deviceinstallDate($devcieInstalDateBtw);
+			 }
 
 			 $("#upDateRequest").on('click',function(){
 				 upDateRequest();
@@ -71,8 +74,10 @@
 				 $statusName.text("정상");
 			 }else if($statusName.text()==="caution"){
 				 $statusName.text("주의");
-			 }else{
+			 }else if($statusName.text()==="severe"){
 				 $statusName.text("심각");
+			 }else{
+				 $statusName.text("없음");
 			 }
 
 			 $("#firmUpdateBtn").on('click',function(){
@@ -214,13 +219,13 @@
 <div layout:fragment="content" class="winpop">
     <section class="section" style="padding: 10px">
         <article class="article" style="padding: 13px">
-		<h2 id="header_deviceid" th:text="${header_deviceid}" class="article__heading"></h2>
+		<h2 id="header_deviceid" th:text="'장비코드 : '+${header_deviceid}" class="article__heading"></h2>
 		<div class="winpop__layout--flex">
 			<div class="winpop__section">
 				<div class="equipment__img">
 					<span id="statusName" th:class="${status}" th:text="${stausName}"></span>
 					<span th:class="${onoffline}" th:text="${offlineName}"></span>
-					<img th:src="${AWSS3URL}+${filePath}+'/s_'+${saveFileName}" />
+					<img th:src="${filePath}+${saveFileName}" />
 					<span id="offlineTimeName"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">
 				</div>
 			</div>
@@ -230,7 +235,7 @@
 				<ul class="equipment__info">
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">장비 ID : </span>
-						<span class="equipment__info-value" id="deviceid" th:text="${deviceid}"></span>
+						<span class="equipment__info-value" id="deviceid" th:text="${header_deviceid}"></span>
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">모델타입 : </span>

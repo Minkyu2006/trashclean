@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.equipment.QEquipment;
+import kr.co.broadwave.aci.files.QFileUpload;
 import kr.co.broadwave.aci.imodel.QIModel;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -28,9 +29,11 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
 
         QEquipment equipment = QEquipment.equipment;
         QIModel qiModel = QIModel.iModel;
+        QFileUpload fileUpload = QFileUpload.fileUpload;
 
         JPQLQuery<DashboardDeviceListViewDto> query = from(equipment)
                 .innerJoin(equipment.mdId,qiModel)
+                .leftJoin(equipment.mdId.mdFileid,fileUpload)
                 .select(Projections.constructor(DashboardDeviceListViewDto.class,
                         equipment.id,
                         equipment.emNumber,
@@ -43,8 +46,8 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
                         equipment.emCountry,
                         equipment.emInstallDate,
                         equipment.emSubName,
-                        qiModel.mdFileid.filePath,
-                        qiModel.mdFileid.saveFileName
+                        fileUpload.filePath,
+                        fileUpload.saveFileName
                 ));
 
         // 검색조건필터
@@ -65,4 +68,39 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
 
         return query.fetch();
     }
+
+    @Override
+    public DashboardDeviceListViewDto findByDashboardListViewDeviceInfo(String emNumber){
+
+        QEquipment equipment = QEquipment.equipment;
+        QIModel qiModel = QIModel.iModel;
+        QFileUpload fileUpload = QFileUpload.fileUpload;
+
+        JPQLQuery<DashboardDeviceListViewDto> query = from(equipment)
+                .innerJoin(equipment.mdId,qiModel)
+                .leftJoin(equipment.mdId.mdFileid,fileUpload)
+                .select(Projections.constructor(DashboardDeviceListViewDto.class,
+                        equipment.id,
+                        equipment.emNumber,
+                        equipment.emType,
+                        qiModel.mdName,
+                        qiModel.mdMaximumPayload,
+                        qiModel.mdUnit.name,
+                        equipment.company,
+                        equipment.emLocation,
+                        equipment.emCountry,
+                        equipment.emInstallDate,
+                        equipment.emSubName,
+                        fileUpload.filePath,
+                        fileUpload.saveFileName
+                ));
+
+        // 검색조건필터
+        if (emNumber != null){
+            query.where(equipment.emNumber.eq(emNumber));
+        }
+
+        return query.fetchOne();
+    }
+
 }

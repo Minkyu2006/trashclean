@@ -109,68 +109,99 @@ public class DeviceStatsController {
 
         HashMap<String, HashMap<String,String>> deviceInfoMap = aciawsLambdaService.getDeviceInfo(emNumber);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceid);
-        List<DashboardDeviceListViewDto> deviceInfoListDtos = dashboardService.findByDashboardListView(emNumber, null, null, null, pageable);
+        DashboardDeviceListViewDto deviceInfoListDtos = dashboardService.findByDashboardListViewDeviceInfo(emNumber);
         HashMap<String,HashMap<String,Object>> onOfflineData = aciawsLambdaService.getDeviceonlineCheck(emNumber);
 //        deviceOnOffstatus.add(Boolean.parseBoolean(String.valueOf((onOfflineData.get("data").get("online")))));
 //        deviceOnOffTime.add(onOfflineData.get("data").get("timestamp"));
 
         HashMap<String,String> deviceInfo = deviceInfoMap.get("data");
         HashMap<String,Object> onOffline = onOfflineData.get("data");
-        HashMap awsData = (HashMap)resData.get("data").get(0);
+
+        boolean onoffline = Boolean.parseBoolean(String.valueOf(onOfflineData.get("online")));
+//        System.out.println("onoffline : "+onoffline);
+
+        HashMap awsData = null;
+        if(resData.get("data").size()!=0) {
+            awsData = (HashMap) resData.get("data").get(0);
+
+//            System.out.println("awsData데이터 존재 : "+awsData);
+
+            // 장비상태정보(정상,주의,심각)
+            model.addAttribute("status","equipment__stat "+awsData.get("status"));
+            model.addAttribute("stausName",awsData.get("status"));
+
+            // 장비상태정보
+            model.addAttribute("devcieInstalDateBtw", deviceInfoListDtos.getEmInstallDate());
+            model.addAttribute("temp_brd",awsData.get("temp_brd")+"℃");
+            model.addAttribute("level",awsData.get("level")+"%");
+            model.addAttribute("batt_level",awsData.get("batt_level")+"%");
+            model.addAttribute("solar_current",awsData.get("solar_current")+"A");
+            model.addAttribute("solar_voltage",awsData.get("solar_voltage")+"V");
+
+            if(onoffline){
+                model.addAttribute("offlineName","온라인");
+                model.addAttribute("onoffline","equipment__connect on");
+            }else{
+                model.addAttribute("offlineName","오프라인");
+                model.addAttribute("onoffline","equipment__connect off");
+                model.addAttribute("offlineTime",onOffline.get("timestamp"));
+            }
+        }else {
+            // 장비상태정보없음
+            model.addAttribute("status","equipment__stat unknowon");
+            model.addAttribute("stausName","unknowon");
+
+            model.addAttribute("offlineName","알수없음");
+            model.addAttribute("onoffline","equipment__connect unknowon");
+//            System.out.println("awsData데이터 존재하지 않음");
+        }
 
 //        System.out.println("emNumber : "+emNumber);
-//        System.out.println("deviceInfoListDtos : "+deviceInfoListDtos.getContent());
-//        System.out.println("awsData : "+awsData);
+//        System.out.println("deviceInfoListDtos : "+deviceInfoListDtos);
 //        System.out.println("deviceInfo : "+deviceInfo);
 //        System.out.println("onOffline : "+onOffline);
 
-        boolean onoffline = Boolean.parseBoolean(String.valueOf(onOfflineData.get("online")));
-        //System.out.println("onoffline : "+onoffline);
-        if(onoffline){
-            model.addAttribute("offlineName","온라인");
-            model.addAttribute("onoffline","equipment__connect on");
-        }else{
-            model.addAttribute("offlineName","오프라인");
-            model.addAttribute("onoffline","equipment__connect off");
-            model.addAttribute("offlineTime",onOffline.get("timestamp"));
-        }
-
-        model.addAttribute("header_deviceid","장비코드 : "+deviceInfo.get("deviceid"));
-
-        // 장비온오프라인정보
-        model.addAttribute("status","equipment__stat "+awsData.get("status"));
-        model.addAttribute("stausName",awsData.get("status"));
+        model.addAttribute("header_deviceid",deviceInfo.get("deviceid"));
 
         // 장비이미지전송
-        model.addAttribute("AWSS3URL", AWSS3URL);
-        model.addAttribute("filePath", deviceInfoListDtos.get(0).getFilePath());
-        model.addAttribute("saveFileName", deviceInfoListDtos.get(0).getSaveFileName());
+        if(!deviceInfoListDtos.getFilePath().equals("/defaultimage")) {
+            model.addAttribute("filePath", AWSS3URL + deviceInfoListDtos.getFilePath());
+            model.addAttribute("saveFileName", "/s_"+deviceInfoListDtos.getSaveFileName());
+        }else{
+            model.addAttribute("filePath", AWSS3URL + deviceInfoListDtos.getFilePath());
+            model.addAttribute("saveFileName", deviceInfoListDtos.getSaveFileName());
+        }
 
         // 장비정보
-        model.addAttribute("deviceid",deviceInfo.get("deviceid"));
-        model.addAttribute("emtype", deviceInfoListDtos.get(0).getEmType());
-        model.addAttribute("mdName", deviceInfoListDtos.get(0).getMdName());
-        model.addAttribute("mdMaxUnit", deviceInfoListDtos.get(0).getMdMaximumPayload()+" "+deviceInfoListDtos.get(0).getMdUnit());
-        model.addAttribute("company", deviceInfoListDtos.get(0).getCompany());
-        model.addAttribute("emCountryLoaction", deviceInfoListDtos.get(0).getEmCountry()+"/"+deviceInfoListDtos.get(0).getEmLocation());
-        model.addAttribute("instalDate", deviceInfoListDtos.get(0).getEmInstallDate().substring(0,4)+"년 "+deviceInfoListDtos.get(0).getEmInstallDate().substring(4,6)+"월 "+deviceInfoListDtos.get(0).getEmInstallDate().substring(6,8)+"일");
-
-        // 장비상태정보
-        model.addAttribute("devcieInstalDateBtw", deviceInfoListDtos.get(0).getEmInstallDate());
-        model.addAttribute("temp_brd",awsData.get("temp_brd")+"℃");
-        model.addAttribute("level",awsData.get("level")+"%");
-        model.addAttribute("batt_level",awsData.get("batt_level")+"%");
-        model.addAttribute("solar_current",awsData.get("solar_current")+"A");
-        model.addAttribute("solar_voltage",awsData.get("solar_voltage")+"V");
+        model.addAttribute("emtype", deviceInfoListDtos.getEmType());
+        model.addAttribute("mdName", deviceInfoListDtos.getMdName());
+        model.addAttribute("mdMaxUnit", deviceInfoListDtos.getMdMaximumPayload()+" "+deviceInfoListDtos.getMdUnit());
+        model.addAttribute("company", deviceInfoListDtos.getCompany());
+        model.addAttribute("emCountryLoaction", deviceInfoListDtos.getEmCountry()+"/"+deviceInfoListDtos.getEmLocation());
+        model.addAttribute("instalDate", deviceInfoListDtos.getEmInstallDate().substring(0,4)+"년 "+deviceInfoListDtos.getEmInstallDate().substring(4,6)+"월 "+deviceInfoListDtos.getEmInstallDate().substring(6,8)+"일");
 
         // 장비상세정보
-        model.addAttribute("updateTime",deviceInfo.get("timestamp"));
-        model.addAttribute("firmware","v"+deviceInfo.get("firmware"));
-        model.addAttribute("serialno",deviceInfo.get("serialno"));
-        model.addAttribute("carrier",deviceInfo.get("carrier"));
-        model.addAttribute("phonenumber",deviceInfo.get("phonenumber"));
-        model.addAttribute("blemacaddr",deviceInfo.get("blemacaddr"));
-        model.addAttribute("loraid",deviceInfo.get("loraid"));
+        if(!deviceInfo.get("timestamp").equals("")) {
+            model.addAttribute("updateTime", deviceInfo.get("timestamp"));
+        }
+        if(!deviceInfo.get("firmware").equals("")) {
+            model.addAttribute("firmware", "v" + deviceInfo.get("firmware"));
+        }
+        if(!deviceInfo.get("serialno").equals("")) {
+            model.addAttribute("serialno", deviceInfo.get("serialno"));
+        }
+        if(!deviceInfo.get("carrier").equals("")) {
+            model.addAttribute("carrier", deviceInfo.get("carrier"));
+        }
+        if(!deviceInfo.get("phonenumber").equals("")) {
+            model.addAttribute("phonenumber", deviceInfo.get("phonenumber"));
+        }
+        if(!deviceInfo.get("blemacaddr").equals("")) {
+            model.addAttribute("blemacaddr", deviceInfo.get("blemacaddr"));
+        }
+        if(!deviceInfo.get("loraid").equals("")) {
+            model.addAttribute("loraid", deviceInfo.get("loraid"));
+        }
 
         if(efVer!=null &&  filePath!=null){
             model.addAttribute("efVer",efVer);

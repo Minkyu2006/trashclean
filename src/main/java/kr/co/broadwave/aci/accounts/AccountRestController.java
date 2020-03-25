@@ -666,12 +666,12 @@ public class AccountRestController {
 
         HttpSession session = request.getSession();
         if(headerMode==1){
-            log.info("headerMode : "+2);
+//            log.info("headerMode : "+2);
             session.setAttribute("headerMode", 2);
             data.put("headerMode",2);
             res.addResponse("data",data);
         }else{
-            log.info("headerMode : "+1);
+//            log.info("headerMode : "+1);
             session.setAttribute("headerMode", 1);
             data.put("headerMode",1);
             res.addResponse("data",data);

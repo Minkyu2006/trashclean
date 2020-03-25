@@ -48,12 +48,13 @@
 		// 파일초기화
 		function fileReset() {
 			var agent = navigator.userAgent.toLowerCase();
-			if ( (navigator.appName == 'Netscape' && navigator.userAgent.search('Trident') != -1) || (agent.indexOf("msie") != -1) ){
+			var $file = $("#file");
+			if ( (navigator.appName === 'Netscape' && navigator.userAgent.search('Trident') !== -1) || (agent.indexOf("msie") !== -1) ){
 				// IE 일때 input[type=file] init.
-				$("#file").replaceWith( $("#file").clone(true) );
+				$file.replaceWith($file.clone(true) );
 			} else {
 				//other browser 일때 input[type=file] init.
-				$("#file").val("");
+				$file.val("");
 			}
 		}
 		// 모델신규작성
@@ -65,14 +66,16 @@
 			$("#mdRemark").val('');
 			$("#mdMaximumPayload").val('');
 			$("#defaultfile").show();
-			$("#modelfile").hide();
+			var $modelfile = $("#modelfile");
+			$modelfile.hide();
 			$("#filename").val('');
-			$("#modelfile").attr("src","");
+			$modelfile.attr("src","");
 		}
 
 		// 모델 등록
 		function save() {
-			if ($("#mdName").val().trim() == '') {
+			var $mdName = $("#mdName");
+			if ($mdName.val().trim() === '') {
 				alertCaution("모델명을 작성해주세요.");
 				return false;
 			}
@@ -81,7 +84,7 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr,) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/model/reg',
@@ -109,7 +112,7 @@
 		function modelList(page){
 
 			page = page - 1;
-			if (page < 0) page = 0
+			if (page < 0) page = 0;
 
 			var perPage = 10;
 			var perArea = 5;
@@ -130,14 +133,14 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr,) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/model/list?size='+ perPage + '&page=' + page,
 				type : 'post',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res) {
@@ -179,23 +182,25 @@
 			fileReset();
 			var params = {
 				id:id
-			}
+			};
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url: '/api/model/info',
 				type: 'post',
 				data: params,
 				cache: false,
-				error: function (request, status, error) {
+				error: function (request) {
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
 					var baseurl = res.data.awss3url;
+					var $modelfile = $("#modelfile");
+
 					$("#defaultfile").hide();
-					$("#modelfile").show();
+					$modelfile.show();
 					$("#mdNumber").val(res.data.iModel.mdNumber);
 					$("#mdName").val(res.data.iModel.mdName);
 					$("#emType").val(res.data.iModel.emTypeId);
@@ -205,7 +210,7 @@
 					$("#mdUnit").val(res.data.iModel.mdUnitId);
 					$("#mdRemark").val(res.data.iModel.mdRemark);
 					$("#filename").val(res.data.filerealname);
-					$("#modelfile").attr("src",baseurl+res.data.filepath+res.data.filename);
+					$modelfile.attr("src",baseurl+res.data.filepath+res.data.filename);
 				}
 			});
 		}
@@ -275,14 +280,14 @@
 			var _value = event.srcElement.value;
 
 			if (event.keyCode < 48 || event.keyCode > 57) {
-				if (event.keyCode != 46) {
+				if (event.keyCode !== 46) {
 					return false;
 				}
 			}
 			// 소수점(.)이 두번 이상 나오지 못하게
 			var _pattern0 = /^\d*[.]\d*$/;
 			if (_pattern0.test(_value)) {
-				if (charCode == 46) {
+				if (charCode === 46) {
 					return false;
 				}
 			}

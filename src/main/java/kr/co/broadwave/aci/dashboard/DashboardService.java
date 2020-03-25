@@ -64,6 +64,10 @@ public class DashboardService {
         return equipmentRepository.findAll();
     }
 
+    public DashboardDeviceListViewDto findByDashboardListViewDeviceInfo(String emNumber) {
+        return dashboardRepositoryCustom.findByDashboardListViewDeviceInfo(emNumber);
+    }
+
     public EquipmentDto findByEmNumber(String pushValue) {
         Optional<Equipment> optionalEquipment = equipmentRepository.findByEmNumber(pushValue);
         return optionalEquipment.map(equipment -> modelMapper.map(equipment, EquipmentDto.class)).orElse(null);

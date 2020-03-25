@@ -493,7 +493,11 @@
 						emTypes.push(res.data.deviceInfoListDtos[i]["emType"]);
 						pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가"));
 						installDate.push(nvl(res.data.deviceInfoListDtos[i]["emInstallDate"],"확 인 불 가"));
-						files.push(nvl(res.data.deviceInfoListDtos[i]["filePath"]+'/s_'+res.data.deviceInfoListDtos[i]["saveFileName"],"확 인 불 가"));
+						if(res.data.deviceInfoListDtos[i]["filePath"]!=="/defaultimage") {
+							files.push(nvl(res.data.deviceInfoListDtos[i]["filePath"] + '/s_' + res.data.deviceInfoListDtos[i]["saveFileName"], "확 인 불 가"));
+						}else{
+							files.push(nvl(res.data.deviceInfoListDtos[i]["filePath"] + res.data.deviceInfoListDtos[i]["saveFileName"], "확 인 불 가"));
+						}
 					}
 					// console.log("보내는 장비번호 : "+pushValue+" 보내는 설치날짜 : "+installDate);
 					$deviceList.html(html2);

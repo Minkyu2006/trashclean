@@ -31,11 +31,23 @@ public class DashboardDeviceListViewDto {
     private String saveFileName; // 저장된경로
 
     public String getFilePath() {
-        return filePath;
+//        System.out.println("filePath : "+filePath);
+        if(filePath==null){
+            filePath = "/defaultimage";
+            return filePath;
+        }else{
+            return filePath;
+        }
     }
 
     public String getSaveFileName() {
-        return saveFileName;
+//        System.out.println("saveFileName : "+saveFileName);
+        if(saveFileName==null){
+            saveFileName = "/s_model.jpg";
+            return saveFileName;
+        }else{
+            return saveFileName;
+        }
     }
 
     public String getMdName() {
