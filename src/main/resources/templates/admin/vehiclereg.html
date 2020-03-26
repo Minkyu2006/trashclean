@@ -58,9 +58,10 @@
 		}
 		// 신규작성
 		function init(){
+			var $vcNumber = $("#vcNumber");
 			$("#vcId").val('');
-			$("#vcNumber").val('');
-			$("#vcNumber").attr("readonly",false);
+			$vcNumber.val('');
+			$vcNumber.attr("readonly",false);
 			$("#vcName").val('');
 			$("#vcStartDate").val('');
 			$("#vcEndDate").val('');
@@ -146,14 +147,14 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/vehicle/list?size='+ perPage + '&page=' + page,
 				type : 'post',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
@@ -197,7 +198,7 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url: '/api/vehicle/info',
@@ -208,9 +209,10 @@
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
+					var $vcNumber = $("#vcNumber");
 					$("#vcId").val(res.data.vehicle.id);
-					$("#vcNumber").val(res.data.vehicle.vcNumber);
-					$("#vcNumber").attr("readonly",true);
+					$vcNumber.val(res.data.vehicle.vcNumber);
+					$vcNumber.attr("readonly",true);
 					$("#vcName").val(res.data.vehicle.vcName);
 					$("#vcShape").val(res.data.vehicle.vcShape);
 					$("#vcUsage").val(res.data.vehicle.vcUsage);
@@ -297,19 +299,19 @@
 				csOperator:$('#s_csoperator').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="5" align="center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="3" align="center">조회 중</td></tr>');
 			$agencyTotalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/equipment/agencyList?size='+ perPage + '&page=' + page,
 				type : 'post',
 				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
@@ -321,7 +323,7 @@
 						pageTotal: totCnt,
 						clickEvent: 'agencyCallList'});
 					if (totCnt === 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
+						$schList.empty().append('<tr class="t-c"><td colspan="3" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 					$agencyTotalCnt.text(totCnt);
@@ -345,14 +347,14 @@
 			};
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url: '/api/equipment/agencyInfo',
 				type: 'post',
 				data: params,
 				cache: false,
-				error: function (request, status, error) {
+				error: function (request) {
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
@@ -361,6 +363,60 @@
 					$('.l-popup__close').click();
 				}
 			});
+		}
+
+		// 시작날짜가 끝난날짜보다 클수없음
+		function startDateCheck(date) {
+			var $vcEndDate = $("#vcEndDate");
+
+			if($vcEndDate.val()!=="") {
+				var dateObj = new Date(date);
+
+				var year = dateObj.getFullYear();
+				var month = dateObj.getMonth()+1;
+				var day = dateObj.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+
+				var choseDate = year+"-"+month+"-"+day;
+
+				if ($vcEndDate.val() < choseDate) {
+					alertCaution("운행시작일이 운행종료일보다<BR>클 수 없습니다.");
+					$("#vcStartDate").val("");
+					return false;
+				}
+			}
+		}
+
+		// 끝난날짜보다 시작날짜보다 낮을수없음
+		function endDateCheck(date) {
+			var $vcStartDate = $("#vcStartDate");
+
+			if($vcStartDate.val()!=="") {
+				var dateObj = new Date(date);
+
+				var year = dateObj.getFullYear();
+				var month = dateObj.getMonth()+1;
+				var day = dateObj.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+
+				var choseDate = year+"-"+month+"-"+day;
+
+				if ($vcStartDate.val() > choseDate) {
+					alertCaution("운행종료일이 운행시작일보다<BR>작을 수 없습니다.");
+					$("#vcEndDate").val("");
+					return false;
+				}
+			}
 		}
 
 	</script>
@@ -542,7 +598,7 @@
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">
-									<input type="text" class="c-text__input" name="vcStartDate" id="vcStartDate" placeholder="연 - 월 - 일" />
+									<input type="text" class="c-text__input" name="vcStartDate" id="vcStartDate" placeholder="연 - 월 - 일" onchange="startDateCheck(this.value)" />
 								</div>
 							</div>
 						</td>
@@ -550,7 +606,7 @@
 						<td>
 							<div class="c-calendar-layout">
 								<div class="c-date" style="width: 100%;">
-									<input type="text" class="c-text__input" name="vcEndDate" id="vcEndDate" placeholder="연 - 월 - 일" />
+									<input type="text" class="c-text__input" name="vcEndDate" id="vcEndDate" placeholder="연 - 월 - 일" onchange="endDateCheck(this.value)" />
 								</div>
 							</div>
 						</td>

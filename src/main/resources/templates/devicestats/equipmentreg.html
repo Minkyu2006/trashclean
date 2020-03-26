@@ -74,7 +74,7 @@
 			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
-				url:'/api/collection/collectionCheck',
+				url:'/api/collection/deviceCheck',
 				data : params,
 				type : 'post',
 				cache:false,
@@ -190,7 +190,7 @@
 				csOperator:$('#s_csoperator').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="5" align = "center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="3" align = "center">조회 중</td></tr>');
 			$totalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -214,7 +214,7 @@
 						pageTotal: totCnt,
 						clickEvent: 'agencyCallList'});
 					if (totCnt === 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
+						$schList.empty().append('<tr class="t-c"><td colspan="3" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 					$totalCnt.text(totCnt);

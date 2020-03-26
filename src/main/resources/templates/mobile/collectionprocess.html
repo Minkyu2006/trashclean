@@ -55,7 +55,7 @@
 				},
 				success: function(){
 					var pat=1;
-					lightLoading(deviceid,0,null,pat);
+					deviceLoading(deviceid,0,null,pat);
 				}
 			});
 		}
@@ -84,7 +84,7 @@
 				},
 				success: function(){
 					var pat=2;
-					lightLoading(deviceid,0,null,pat);
+					deviceLoading(deviceid,0,null,pat);
 				}
 			});
 		}
@@ -113,12 +113,12 @@
 				},
 				success: function(){
 					var pat=3;
-					lightLoading(deviceid,0,null,pat);
+					deviceLoading(deviceid,0,null,pat);
 				}
 			});
 		}
 
-		function lightLoading(deviceid,count,setIn,pat) {
+		function deviceLoading(deviceid,count,setIn,pat) {
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -154,7 +154,7 @@
 										//console.log("처리중...");
 										count++;
 										setIn = setTimeout(function () {
-											lightLoading(deviceid, count, setIn, 1);
+											deviceLoading(deviceid, count, setIn, 1);
 										}, 2000);
 									}
 								} else {
@@ -172,7 +172,7 @@
 										//console.log("처리중...");
 										count++;
 										setIn = setTimeout(function () {
-											lightLoading(deviceid, count, setIn, 2);
+											deviceLoading(deviceid, count, setIn, 2);
 										}, 2000);
 									}
 								} else {
@@ -190,7 +190,7 @@
 										//console.log("처리중...");
 										count++;
 										setIn = setTimeout(function () {
-											lightLoading(deviceid, count, setIn, 3);
+											deviceLoading(deviceid, count, setIn, 3);
 										}, 2000);
 									}
 								} else {
@@ -208,7 +208,7 @@
 										//console.log("처리중...");
 										count++;
 										setIn = setTimeout(function () {
-											lightLoading(deviceid, count, setIn, 4);
+											deviceLoading(deviceid, count, setIn, 4);
 										}, 2000);
 									}
 								} else {

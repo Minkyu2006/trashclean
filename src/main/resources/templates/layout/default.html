@@ -52,9 +52,9 @@
 
 			$(function(){
 				var $headerMode = $("#headerMode");
-				if($headerMode.val()===null){
-					console.log("세션날라감 해더모드값 1 등록");
-					$headerMode.val(1);
+				if($headerMode.val()===""){
+					// console.log("세션날라감 해더모드값 1로 셋팅");
+					$headerMode.val("1");
 				}
 
 				teamAndposition();

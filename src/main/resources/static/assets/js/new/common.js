@@ -345,7 +345,7 @@ $(document).ready(function() {
 		checkLogin : function(data) {
 			if (!data.result && data.rescode == 'login') {
 				if (globalAjaxLoginStatus) {
-					alertCaution('로그인을 하지 않았거나 세션이 종료되었습니다.');
+					alertCaution('로그인을 하지 않았거나 세션이 종료되었습니다.',1);
 					var redirect = globalConfig['login_url'];
 					if (data['is_admin']) redirect = globalConfig['admin_login_url'];
 					top.document.location.href = redirect;
