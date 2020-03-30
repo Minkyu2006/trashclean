@@ -43,7 +43,7 @@ public class DashboardDeviceListViewDto {
     public String getSaveFileName() {
 //        System.out.println("saveFileName : "+saveFileName);
         if(saveFileName==null){
-            saveFileName = "/s_model.jpg";
+            saveFileName = "/s_model.png";
             return saveFileName;
         }else{
             return saveFileName;
