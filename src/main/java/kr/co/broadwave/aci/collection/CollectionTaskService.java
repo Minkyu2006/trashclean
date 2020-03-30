@@ -53,8 +53,8 @@ public class CollectionTaskService {
     }
 
 
-    public Page<CollectionTaskListDateDto> findByCollectionsTaskDateList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable) {
-        return collectionTaskRepositoryCustom.findByCollectionsTaskDateList(currentuserid,role,procStatsType,pageable);
+    public List<CollectionTaskListDateDto> findByCollectionsTaskDateList(String currentuserid, AccountRole role, ProcStatsType procStatsType) {
+        return collectionTaskRepositoryCustom.findByCollectionsTaskDateList(currentuserid,role,procStatsType);
     }
 
     public List<CollectionTaskListDeviceDto> findByCollectionsTaskDeviceList(String ctCode,String currentuserid, AccountRole role){

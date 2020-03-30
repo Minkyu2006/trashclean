@@ -67,14 +67,14 @@
 				success: function(res){
 					var html = '';
 					var idx = 0;
-					$.each(res.data.datalist, function(key, value){
+					for(i=0; i<res.data.ctCode.length; i++){
 						html += '<li>';
-							html += '<a onclick="collectionTaskListDevice('+"'"+nvl(value.ctCode,null)+"'"+','+idx+')" href="#" class="m-collectionlist__heading">'+'수거예정일 :' + nvl(value.yyyymmdd,"확 인 불 가") +'</a>';
+							html += '<a onclick="collectionTaskListDevice('+"'"+nvl(res.data.ctCode[i],"확 인 불 가")+"'"+','+idx+')" href="#" class="m-collectionlist__heading">'+'수거예정일 :' + nvl(res.data.yyyymmdd[i],"확 인 불 가") +'</a>';
 							html += '<ul id="collectionTaskList'+idx+'" class="m-collectionlist__detail">';
 							html += '</ul>';
 						html += '</li>';
 						idx++;
-					});
+					}
 					$schList.html(html);
 					listhide();
 				}

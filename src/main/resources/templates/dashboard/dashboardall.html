@@ -114,7 +114,7 @@
 				$("#pieChartLoading").show();
 				$("#barChartLoading").show();
 				$("#mapChartLoading").show();
-				masterReflesh()
+				masterReflesh();
 			});
 
 			if($("#headerMode").val()==="1"){
@@ -209,26 +209,23 @@
 
 			var deviceid = $("#deviceIds").val().split(',');
 			var deviceinstall = $("#deviceInstalls").val().split(',');
-			var devicesubname = $("#deviceSubnames").val().split(',');
 			var devicefile = $("#devicefiles").val().split(',');
-			var deviceEmType = $("#emTyps").val().split(',');
+			var deviceEmType = $("#emTypes").val().split(',');
 
 			var deviceidArr = [];
 			var deviceinstallArr = [];
-			var devicesubnameArr = [];
 			var devicefileArr = [];
 			var emTypes = [];
 
 			for (var i = 0; i < deviceid.length; i++) {
 				deviceidArr.push(deviceid[i]);
 				deviceinstallArr.push(deviceinstall[i]);
-				devicesubnameArr.push(devicesubname[i]);
 				devicefileArr.push(devicefile[i]);
 				emTypes.push(deviceEmType[i]);
 			}
 
 			deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr,emTypes);
-			pushDeviceId(deviceidArr, devicesubnameArr,0);
+			pushDeviceId(deviceidArr,0);
 		}
 
 		// 자동새로고침 함수 호출
@@ -236,34 +233,33 @@
 
 			var deviceid = $("#deviceIds").val().split(',');
 			var deviceinstall = $("#deviceInstalls").val().split(',');
-			var devicesubname = $("#deviceSubnames").val().split(',');
 			var devicefile = $("#devicefiles").val().split(',');
+			var deviceEmType = $("#emTypes").val().split(',');
 
 			var deviceidArr = [];
 			var deviceinstallArr = [];
-			var devicesubnameArr = [];
 			var devicefileArr = [];
+			var emTypes = [];
 
 			for (var i = 0; i < deviceid.length; i++) {
 				deviceidArr.push(deviceid[i]);
 				deviceinstallArr.push(deviceinstall[i]);
-				devicesubnameArr.push(devicesubname[i]);
 				devicefileArr.push(devicefile[i]);
+				emTypes.push(deviceEmType[i]);
 			}
 
 			timeprogress += 1;
 
 			if (timeprogress * 100 >= timeInterval) {
 				timeprogress = 0;
-				deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr);
-				pushDeviceId(deviceidArr, devicesubnameArr,0);
+				deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr,emTypes);
+				pushDeviceId(deviceidArr,0);
 				$("#mapChartLoading").show();
 				$("#pieChartLoading").show();
 				$("#barChartLoading").show();
 			}
 			var progressrate = timeprogress * 10000 / timeInterval;
 			$('#progressbar').css("width", progressrate + "%")
-			// $('#progress').html(timeprogress);
 		}
 
 		// 자동새로고침종료
@@ -760,6 +756,7 @@
 			// console.log("새로고침 장비리스트 뿌리기 시작");
 			// console.log("받은 장비번호 : "+pushValue);
 			// console.log("받은 설치날짜 : "+installDate);
+			// console.log("emTypes : "+emTypes);
 
 			var deviceIds = [];
 			for(i=0; i<pushValue.length; i++){
@@ -1046,24 +1043,34 @@
 							level.push(value.level);
 							batt_level.push(value.batt_level);
 						});
+						// console.log("온도 : "+temp_brd);
+
 						var days = $("#intervaltime").val(); // 기간선택 시간
 
 						// 온도최대값,최소값 계산(y축그래프)
 						temp_brd_Max = Math.max.apply(0, temp_brd); // 온도최대값
 						temp_brd_Min = Math.min.apply(0, temp_brd); // 온도최소값
-						tempMap = (temp_brd_Max+15).toFixed(0);
+						// console.log("최대값 : "+temp_brd_Max);
+						// console.log("최소값 : "+temp_brd_Min);
+						tempMax = (temp_brd_Max+15).toFixed(0);
 						tempMin = (temp_brd_Min-15).toFixed(0);
-						if(tempMap/5!==0){
-							tempMaxsub = tempMap.substring(1,2);
-							tempBrdMax = parseInt(tempMap)-parseInt(tempMaxsub);
+						// console.log("최대값의 15 더한값 : "+tempMax);
+						// console.log("최소값의 15 뺀값 : "+tempMin);
+						if(tempMax/5!==0){
+							tempMaxsub = tempMax.substring(1,2);
+							tempBrdMax = parseInt(tempMax)-parseInt(tempMaxsub);
+							// console.log("tempMaxsub : "+tempMaxsub);
+							// console.log("tempBrdMax : "+tempBrdMax);
 						}else{
 							tempBrdMax = tempMap;
 						}
-						if(tempMin/5!==0){
+						if(tempMin/5!==0  && tempMin>10){
 							tempMinsub = tempMin.substring(1,2);
 							tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
+							// console.log("tempMinsub : "+tempMinsub);
+							// console.log("tempBrdMin : "+tempBrdMin);
 						}else{
-							tempBrdMin = tempMin;
+							tempBrdMin = 0;
 						}
 
 						//var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
@@ -1821,7 +1828,6 @@
 										<input type="hidden" id="intervaltime" value ="" readonly="readonly" />
 										<input type="hidden" id="deviceIds" value ="" readonly="readonly" />
 										<input type="hidden" id="deviceInstalls" value ="" readonly="readonly" />
-										<input type="hidden" id="deviceSubnames" value ="" readonly="readonly" />
 										<input type="hidden" id="devicefiles" value ="" readonly="readonly" />
 										<input type="hidden" id="emTypes" value ="" readonly="readonly" />
 									</div>

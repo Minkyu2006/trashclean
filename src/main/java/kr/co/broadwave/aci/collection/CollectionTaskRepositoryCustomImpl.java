@@ -119,7 +119,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
 
     // 모바일 - 수거업무리스트 수거예정일 Querydsl
     @Override
-    public Page<CollectionTaskListDateDto> findByCollectionsTaskDateList(String currentuserid, AccountRole role, ProcStatsType procStatsType, Pageable pageable){
+    public List<CollectionTaskListDateDto> findByCollectionsTaskDateList(String currentuserid, AccountRole role, ProcStatsType procStatsType){
 
         AccountRole admin = AccountRole.valueOf("ROLE_ADMIN");
         AccountRole subadmin = AccountRole.valueOf("ROLE_SUBADMIN");
@@ -140,22 +140,14 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
             }
         }
 
-//        if(role != subadmin){
-//            if (role != null && currentuserid != null ){
-//                query.where(collectionTask.accountId.role.eq(role));
-//                query.where(collectionTask.accountId.userid.eq(currentuserid));
-//            }
-//        }
-
         if (procStatsType != null ){
             query.where(collectionTask.procStats.eq(procStatsType));
         }
 
-        query.orderBy(collectionTask.id.desc());
+        query.orderBy(collectionTask.yyyymmdd.desc());
         query.groupBy(collectionTask.ctCode);
 
-        final List<CollectionTaskListDateDto> collections = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
-        return new PageImpl<>(collections, pageable, query.fetchCount());
+        return query.fetch();
     }
 
     // 모바일 - 수거업무리스트 장비코드 Querydsl

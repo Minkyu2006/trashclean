@@ -1047,8 +1047,7 @@ public class CollectionTaskRestController {
 
     // 모바일 - 수거업무 리스트 : 수거예정일
     @PostMapping("collectionTaskListDate")
-    public ResponseEntity<Map<String,Object>> collectionTaskListDate(@PageableDefault Pageable pageable,
-                                                                 HttpServletRequest request){
+    public ResponseEntity<Map<String,Object>> collectionTaskListDate(HttpServletRequest request){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -1056,18 +1055,25 @@ public class CollectionTaskRestController {
         String currentuserid = CommonUtils.getCurrentuser(request);
 
         Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
-        Page<CollectionTaskListDateDto> collection;
+        List<CollectionTaskListDateDto> collection;
         //로그인한 사람 아이디가존재하지않으면 에러처리
         if (!optionalAccount.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(), ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
         }else{
-            collection = collectionTaskService.findByCollectionsTaskDateList(currentuserid,optionalAccount.get().getRole(),procStatsType,pageable);
+            collection = collectionTaskService.findByCollectionsTaskDateList(currentuserid,optionalAccount.get().getRole(),procStatsType);
         }
 //        log.info("collection : "+collection.getTotalElements());
 //        log.info("collection : "+collection.getContent());
+        List<String> ctCode = new ArrayList<>();
+        List<StringBuffer> yyyymmdd = new ArrayList<>();
 
-        if(collection.getTotalElements()> 0 ){
-            data.put("datalist",collection.getContent());
+        if(collection.size()> 0 ){
+            for(int i=0; i<collection.size(); i++){
+                ctCode.add(collection.get(i).getCtCode());
+                yyyymmdd.add(collection.get(i).getYyyymmdd());
+            }
+            data.put("ctCode",ctCode);
+            data.put("yyyymmdd",yyyymmdd);
             res.addResponse("data",data);
         }else{
             res.addResponse("data",data);
