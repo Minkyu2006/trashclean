@@ -22,9 +22,40 @@ public class ACIIoTServiceTest {
     @Test
     @Ignore
     public void shadowNonblockingSend(){
-        aciIoTService.shadowNonblockingSend("ISOL-KR-SEL-0004","doorsol","close");
+        try{
+            for(int i = 0; i<100;i++) {
+                if (i % 2 == 0 ) {
+                    aciIoTService.shadowNonblockingSend("ISOL-KR-SEL-0001", "doorsol", "close" + i);
+                }else{
+                    aciIoTService.shadowNonblockingSend("ISOL-KR-SEL-0005", "doorsol", "close" + i);
+                }
+                //Thread.sleep(1000);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
+    @Test
+    @Ignore
+    public void shadowNonblockingMessageParamSend(){
+        try{
+            for(int i = 0; i<20;i++) {
+                String message = "{\"state\":{\"desired\":{\"check\":\"" + i + "\"}}}";
+                if (i % 2 == 0 ) {
+
+                    aciIoTService.shadowNonblockingMessageParamSend("ISOL-KR-SEL-0001", message);
+                }else{
+                    aciIoTService.shadowNonblockingMessageParamSend("ISOL-KR-SEL-0005", message);
+                }
+                //Thread.sleep(1000);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
     @Test
     @Ignore
     public void shadowDeviceGet(){

@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.awsiot;
 
+import com.amazonaws.services.iot.client.AWSIotDevice;
 import com.amazonaws.services.iot.client.AWSIotMqttClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,49 +15,58 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ACIIoTService {
 
-    @Value("${aci.aws.iot.access.endpoint}")
-    private String ACIIOTACCESSENDPOINT;
-
-    @Value("${aci.aws.iot.access.id}")
-    private String ACIIOTACCESSID;
-
-    @Value("${aci.aws.iot.access.key}")
-    private String ACIIOTACCESSKEY;
 
     private String clientId = "iEcoProc-WEB"; // 웹어플리케이션 이름
+
+
+    private final String aciIotAccessEndPoint;
+    private final String aciIotAccessId;
+    private final String aciIotAccessKey;
+
+    private final AWSIotMqttClient client;
+
+
+
+    public ACIIoTService(@Value("${aci.aws.iot.access.endpoint}") String aciIotAccessEndPoint
+            , @Value("${aci.aws.iot.access.id}") String aciIotAccessId
+            , @Value("${aci.aws.iot.access.key}") String aciIotAccessKey) {
+        this.aciIotAccessEndPoint = aciIotAccessEndPoint;
+        this.aciIotAccessId = aciIotAccessId;
+        this.aciIotAccessKey = aciIotAccessKey;
+
+        this.client = new AWSIotMqttClient(this.aciIotAccessEndPoint, clientId
+                , this.aciIotAccessId
+                , this.aciIotAccessKey);
+
+        try {
+            this.client.connect();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
 
 
     //shadow 메세지 보내기
     public void shadowNonblockingSend(String thingName,String keyString, String valueString) {
 
-        AWSIotMqttClient client = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
-        ACIIoTDevice device = new ACIIoTDevice(thingName);;
-
+        AWSIotDevice device = new AWSIotDevice(thingName);
         try {
-
-
-            //shadow
+            //shadow blocking send
             client.attach(device);
-            long reportInterval = 0;            // milliseconds. Default interval is 3000.
-            device.setReportInterval(reportInterval);
-            client.connect();
-
-            //System.out.println("Shadow Nonblocking connect");
-
-            // Update shadow document
-            String message = "{\"state\":{\"desired\":{\"" + keyString.toLowerCase() + "\":\"" + valueString.toLowerCase() + "\"}}}";
-            device.update(message,3000);
-
-            //System.out.println("shadow nonBlocking update");
-
-            client.disconnect();
+            String message = "{\"state\":{\"desired\":{\"" + keyString.toLowerCase() + "\":\"" + valueString + "\"}}}";
+            device.update(message);
+            client.detach(device);
 
         }catch (Exception e){
             e.printStackTrace();
             try{
-                client.disconnect();
+                client.detach(device);
+
             }catch (Exception e1){
                 e1.printStackTrace();
+
 
             }
 
@@ -68,34 +78,24 @@ public class ACIIoTService {
     //shadow  메세지 보내기
     public void shadowNonblockingMessageParamSend(String thingName,String message) {
 
-        AWSIotMqttClient clientMulti = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
-        ACIIoTDevice deviceMulti = new ACIIoTDevice(thingName);;
+        //AWSIotMqttClient clientMulti = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
+        //ACIIoTDevice deviceMulti = new ACIIoTDevice(thingName);;
+        AWSIotDevice deviceMulti = new AWSIotDevice(thingName);;
 
         try {
 
+            //shadow blocking send
+            client.attach(deviceMulti);
+            deviceMulti.update(message);
+            client.detach(deviceMulti);
 
-            //shadow
-            clientMulti.attach(deviceMulti);
-            long reportInterval = 0;            // milliseconds. Default interval is 3000.
-            deviceMulti.setReportInterval(reportInterval);
-            clientMulti.connect();
-
-            //System.out.println("Shadow Nonblocking connect");
-
-            // Update shadow document
-            deviceMulti.update(message,3000);
-
-            //System.out.println("shadow nonBlocking update");
-
-            clientMulti.disconnect();
 
         }catch (Exception e){
             e.printStackTrace();
             try{
-                clientMulti.disconnect();
+                client.detach(deviceMulti);
             }catch (Exception e1){
                 e1.printStackTrace();
-
             }
 
         }
@@ -105,7 +105,7 @@ public class ACIIoTService {
 
     //shadow 정보 가져오기
     public String shadowDeviceGet(String thingName) {
-        AWSIotMqttClient client = new AWSIotMqttClient(ACIIOTACCESSENDPOINT, clientId, ACIIOTACCESSID, ACIIOTACCESSKEY);
+        AWSIotMqttClient client = new AWSIotMqttClient(this.aciIotAccessEndPoint, clientId, this.aciIotAccessId, this.aciIotAccessKey);
         ACIIoTDevice device = new ACIIoTDevice(thingName);
         try {
 
