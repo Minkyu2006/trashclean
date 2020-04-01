@@ -1479,15 +1479,25 @@ table {
 	color: #000000;
 }
 .equipment__connect {
-	right: 10px;
-	left: auto;
+	/*right: 10px;*/
+	left: 86px;
 }
+.equipment__signal {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+.equipment__signal img {
+	width: 24px;
+}
+
 .equipment__img {
 	width: 100%;
+	padding-top: 20px;
 	text-align: center;
 }
 .equipment__img img {
-	height: 195px;
+	height: 175px;
 }
 .equipment__img span {
 	display: block;
