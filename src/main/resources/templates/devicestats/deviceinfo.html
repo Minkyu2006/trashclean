@@ -226,6 +226,7 @@
 					<span id="statusName" th:class="${status}" th:text="${stausName}"></span>
 					<span th:class="${onoffline}" th:text="${offlineName}"></span>
 					<img th:src="${filePath}+${saveFileName}" />
+					<img id="iconWifi" th:src="${rsrp}" />
 					<span id="offlineTimeName"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">
 				</div>
 			</div>
@@ -297,6 +298,14 @@
 						<li class="equipment__info-item">
 							<span class="equipment__info-title">태양광판넬 전압 : </span>
 							<span class="equipment__info-value" th:text="${solar_voltage}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">위도 : </span>
+							<span class="equipment__info-value" th:text="${gps_la}"></span>
+						</li>
+						<li class="equipment__info-item">
+							<span class="equipment__info-title">경도 : </span>
+							<span class="equipment__info-value" th:text="${gps_lo}"></span>
 						</li>
 					</ul>
 				</div>

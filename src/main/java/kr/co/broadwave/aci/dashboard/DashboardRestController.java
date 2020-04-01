@@ -179,12 +179,15 @@ public class DashboardRestController {
         List<String> solar_voltage = new ArrayList<>(); // 전압리스트
         List<String> gps_laDatas = new ArrayList<>();// 위도리스트
         List<String> gps_loDatas = new ArrayList<>();  // 경도리스트
-        List<String> gps_laDatas2 = new ArrayList<>();// 위도리스트
+        List<String> gps_laDatas2 = new ArrayList<>(); // 위도리스트
         List<String> gps_loDatas2 = new ArrayList<>();  // 경도리스트
+
+        List<Integer> rsrp = new ArrayList<>(); // 안테나
+
 //        log.info("deviceids : " + deviceids);
 //        log.info("deviceIdList : " + deviceIdList);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
-//        log.info("resData : " + resData);
+        log.info("resData : " + resData);
         List<String> sortDevice = new ArrayList<>();
 
         Object datacounts = resData.get("datacounts");
@@ -234,6 +237,12 @@ public class DashboardRestController {
                         gps_laDatas.add((String) map.get("gps_la")); //위도값넣기
                         gps_loDatas.add((String) map.get("gps_lo")); //경도값넣기
 
+                        if(!String.valueOf(map.get("rsrp")).equals("")) {
+                            rsrp.add(Integer.parseInt(String.valueOf(map.get("rsrp"))));
+                        }else{
+                            rsrp.add(null);
+                        }
+
                         x++;
                         y++;
                     }
@@ -248,6 +257,7 @@ public class DashboardRestController {
                 solar_voltage.add("0");
                 gps_laDatas.add("na");
                 gps_loDatas.add("na");
+                rsrp.add(null);
 
                 y++;
             }
@@ -320,6 +330,7 @@ public class DashboardRestController {
         data.put("solar_voltage",solar_voltage);
         data.put("gps_laDatas",gps_laDatas2);
         data.put("gps_loDatas",gps_loDatas2);
+        data.put("rsrp",rsrp);
 
         res.addResponse("data",data);
 

@@ -503,10 +503,10 @@ function nvl(str, defaultStr){
 
 //Ajax 호출시 에러가났을경우의 메세지 함수
 function ajaxErrorMsg(request) {
-	if (request.status == "403") {
+	if (request.status === "403") {
 		alertCancel("로그인 정보가 만료되었거나, <BR>권한이 없습니다. <BR>다시 로그인 하세요.",1);
 	} else {
-		alertCancel("데이터 문제가 생겼습니다.",1);
+		alertCancel("데이터 문제가 생겼습니다.",0);
 	}
 }
 

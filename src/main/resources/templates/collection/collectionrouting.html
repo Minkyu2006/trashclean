@@ -10,6 +10,7 @@
 	<script type="text/javascript">
 
 		$(function() {
+
 			//수거업무등록사용법 - 슬라이드
 			$('.bxslider').bxSlider({
 				mode: 'fade'
@@ -665,6 +666,7 @@
 
 		var map;
 		var marker;
+
 		//팝업지도그리기
 		function deviceDirectionMap(pathobj,htmlStart,htmlGoal,directionSize,direction_gps_laList,direction_gps_loList) {
 			// console.log("htmlStart : " + htmlStart);
@@ -682,13 +684,18 @@
 			// console.log("center_lagps : " + center_lagps);
 			// console.log("center_logps : " + center_logps);
 
+			if(window.map && window.map !== null){
+				map.destroy();
+			}
+
 			mapDiv = document.getElementById('naverMap');
-			var center = new naver.maps.LatLng(center_lagps,center_logps),
-					map = new naver.maps.Map(mapDiv, {
-						center: center,
-						useStyleMap: true,
-						zoom: 11,
-					});
+			var center = new naver.maps.LatLng(center_lagps,center_logps);
+
+			map = new naver.maps.Map(mapDiv, {
+				center: center,
+				useStyleMap: true,
+				zoom: 11,
+			});
 
 			new naver.maps.Polyline({
 				map: map,

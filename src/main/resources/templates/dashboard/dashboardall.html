@@ -205,7 +205,7 @@
 		}
 
 		// 그냥새로고침
-		function masterReflesh() {
+		function masterReflesh(){
 
 			var deviceid = $("#deviceIds").val().split(',');
 			var deviceinstall = $("#deviceInstalls").val().split(',');
@@ -622,12 +622,53 @@
 					// console.log("deviceOnOffline : "+deviceOnOffline);
 					// console.log("deviceOnOfftime : "+deviceOnOfftime);
 
+					// console.log("rssi : "+res.data.rssi);
+					// console.log("rsrp : "+res.data.rsrp);
+					// console.log("rsrq : "+res.data.rsrq);
+
 					$.each(res.data.devices, function () {
 						var html = '';
 						var html2 = '';
 						var html3 = '';
 
-						html2 += '<div id='+'states'+idx+' class="equipment__section">';
+						html2 += '<div id=' + 'states' + idx + ' class="equipment__section">';
+
+						// "/assets/images/icon_wifi-.png";
+						if(emTypes[idx]!=="iTainer") {
+							if (res.data.rsrp[idx] !== null) {
+								if(res.data.rsrp[idx] < -120) {
+									html2 += '<img src="/assets/images/icon__wifi-0.png" style="position: absolute;top: 50px;left:180px;" />';
+								}else if(-120 <= res.data.rsrp[idx] < -115){
+									html2 += '<img src="/assets/images/icon__wifi-1.png" style="position: absolute;top: 50px;left:180px;" />';
+								}else if(-115 <= res.data.rsrp[idx] < -109){
+									html2 += '<img src="/assets/images/icon__wifi-2.png" style="position: absolute;top: 50px;left:180px;" />';
+								}else if(-109 <= res.data.rsrp[idx] < -103){
+									html2 += '<img src="/assets/images/icon__wifi-3.png" style="position: absolute;top: 50px;left:180px;" />';
+								}else if(-103 <= res.data.rsrp[idx]){
+									html2 += '<img src="/assets/images/icon__wifi-4.png" style="position: absolute;top: 50px;left:180px;" />';
+								}
+							}else{
+								html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 50px;left:180px;" />';
+							}
+						}else{
+							if (res.data.rsrp[idx] !== null) {
+								if(res.data.rsrp[idx] < -120) {
+									html2 += '<img src="/assets/images/icon__wifi-0.png" style="position: absolute;top: 0px;left:85px;" />';
+								}else if(-120 <= res.data.rsrp[idx] < -115){
+									html2 += '<img src="/assets/images/icon__wifi-1.png" style="position: absolute;top: 0px;left:85px;" />';
+								}else if(-115 <= res.data.rsrp[idx] < -109){
+									html2 += '<img src="/assets/images/icon__wifi-2.png" style="position: absolute;top: 0px;left:85px;" />';
+								}else if(-109 <= res.data.rsrp[idx] < -103){
+									html2 += '<img src="/assets/images/icon__wifi-3.png" style="position: absolute;top: 0px;left:85px;" />';
+								}else if(-103 <= res.data.rsrp[idx]){
+									html2 += '<img src="/assets/images/icon__wifi-4.png" style="position: absolute;top: 0px;left:85px;" />';
+								}
+							}else{
+								html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 0px;left:85px;" />';
+							}
+						}
+
+
 						html2 += '<div id='+'stateLoading'+idx+' class="c-loader">';
 						html2 += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html2 += '</div>';
@@ -722,7 +763,12 @@
 							html += '</li>';
 						}
 						html += '<li class="equipment__info-item">';
-						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+
+						if(res.data.gps_laDatas[idx]==="0.0" || res.data.gps_loDatas[idx]==="0.0"){
+							html += '<input type="button" class="c-button c-button--point" value="GPS정보 없음" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						}else{
+							html += '<input type="button" class="c-button c-button--point" value="'+res.data.gps_laDatas[idx]+','+res.data.gps_loDatas[idx]+'" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						}
 						html += '</li>';
 						html += '</ul>';
 						html += '</div>';
@@ -859,6 +905,49 @@
 						var html2 = '';
 						var html3 = '';
 
+						//	var iconWifi = "/assets/images/icon_wifi-0.png";
+						if(emTypes[idx]!=="iTainer") {
+							if(res.data.deviceOnOffstatus[idx]===true) {
+								if (res.data.rsrp[idx] !== null) {
+									if (res.data.rsrp[idx] < -120) {
+										html2 += '<img src="/assets/images/icon__wifi-0.png" style="position: absolute;top: 50px;left:180px;" />';
+									} else if (-120 <= res.data.rsrp[idx] < -115) {
+										html2 += '<img src="/assets/images/icon__wifi-1.png" style="position: absolute;top: 50px;left:180px;" />';
+									} else if (-115 <= res.data.rsrp[idx] < -109) {
+										html2 += '<img src="/assets/images/icon__wifi-2.png" style="position: absolute;top: 50px;left:180px;" />';
+									} else if (-109 <= res.data.rsrp[idx] < -103) {
+										html2 += '<img src="/assets/images/icon__wifi-3.png" style="position: absolute;top: 50px;left:180px;" />';
+									} else if (-103 <= res.data.rsrp[idx]) {
+										html2 += '<img src="/assets/images/icon__wifi-4.png" style="position: absolute;top: 50px;left:180px;" />';
+									}
+								} else {
+									html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 50px;left:180px;" />';
+								}
+							}else{
+								html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 50px;left:180px;" />';
+							}
+						}else{
+							if(res.data.deviceOnOffstatus[idx]===true) {
+								if (res.data.rsrp[idx] !== null) {
+									if (res.data.rsrp[idx] < -120) {
+										html2 += '<img src="/assets/images/icon__wifi-0.png" style="position: absolute;top: 0px;left:85px;" />';
+									} else if (-120 <= res.data.rsrp[idx] < -115) {
+										html2 += '<img src="/assets/images/icon__wifi-1.png" style="position: absolute;top: 0px;left:85px;" />';
+									} else if (-115 <= res.data.rsrp[idx] < -109) {
+										html2 += '<img src="/assets/images/icon__wifi-2.png" style="position: absolute;top: 0px;left:85px;" />';
+									} else if (-109 <= res.data.rsrp[idx] < -103) {
+										html2 += '<img src="/assets/images/icon__wifi-3.png" style="position: absolute;top: 0px;left:85px;" />';
+									} else if (-103 <= res.data.rsrp[idx]) {
+										html2 += '<img src="/assets/images/icon__wifi-4.png" style="position: absolute;top: 0px;left:85px;" />';
+									}
+								} else {
+									html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 0px;left:85px;" />';
+								}
+							}else{
+								html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 0px;left:85px;" />';
+							}
+						}
+
 						html2 += '<div id='+'stateLoading'+idx+' class="c-loader">';
 						html2 += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html2 += '</div>';
@@ -951,7 +1040,11 @@
 							html += '</li>';
 						}
 						html += '<li class="equipment__info-item">';
-						html += '<input type="button" class="c-button c-button--point" value="장비위치 이동" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						if(res.data.gps_laDatas[idx]==="0.0" || res.data.gps_loDatas[idx]==="0.0"){
+							html += '<input type="button" class="c-button c-button--point" value="GPS정보 없음" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						}else{
+							html += '<input type="button" class="c-button c-button--point" value="'+res.data.gps_laDatas[idx]+','+res.data.gps_loDatas[idx]+'" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						}
 						html += '</li>';
 						html += '</ul>';
 
@@ -1006,7 +1099,7 @@
 					if (statuscode ===200) {
 						// console.log("타임스탬프 그래프그리기 시작")
 
-						var timeStamp = []; //타임스탬프
+						// var timeStamp = []; //타임스탬프
 						var temp_brd = []; //온도
 						var level = []; //배출량
 						var batt_level = []; //배터리잔량
@@ -1018,34 +1111,34 @@
 							// console.log("배출량 : "+value.level);
 							// console.log("배터리잔량 : "+value.batt_level);
 
-							var timestamp = parseInt(value.timestamp); // value.timestamp(밀리세컨드)는 문자열로 받아오기때문에 정수형으로 변환해준다.
-							var date = new Date(timestamp);
-							var month = date.getMonth()+1; // 1월을 0월로 보기때문에 월에 +1을 해준다.
-							var day = date.getDate();
-							var minutes = date.getMinutes();
-							var seconds = date.getSeconds();
-							if(day < 10){
-								day = "0"+day;
-							}
-							if(minutes < 10){
-								minutes = "0"+minutes;
-							}
-							if(seconds < 10){
-								seconds = "0"+seconds;
-							}
-							var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds;
+							// var timestamp = parseInt(value.timestamp); // value.timestamp(밀리세컨드)는 문자열로 받아오기때문에 정수형으로 변환해준다.
+							// var date = new Date(timestamp);
+							// var month = date.getMonth()+1; // 1월을 0월로 보기때문에 월에 +1을 해준다.
+							// var day = date.getDate();
+							// var minutes = date.getMinutes();
+							// var seconds = date.getSeconds();
+							// if(day < 10){
+							// 	day = "0"+day;
+							// }
+							// if(minutes < 10){
+							// 	minutes = "0"+minutes;
+							// }
+							// if(seconds < 10){
+							// 	seconds = "0"+seconds;
+							// }
+							// var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds;
 
 							// console.log("날짜 : "+time)
 							// console.log("")
 							testTimeStamp.push(parseInt(value.timestamp));
-							timeStamp.push(time);
+							// timeStamp.push(time);
 							temp_brd.push(value.temp_brd);
 							level.push(value.level);
 							batt_level.push(value.batt_level);
 						});
 						// console.log("온도 : "+temp_brd);
 
-						var days = $("#intervaltime").val(); // 기간선택 시간
+						var $days = $("#intervaltime").val(); // 기간선택 시간
 
 						// 온도최대값,최소값 계산(y축그래프)
 						temp_brd_Max = Math.max.apply(0, temp_brd); // 온도최대값
@@ -1064,7 +1157,7 @@
 						}else{
 							tempBrdMax = tempMap;
 						}
-						if(tempMin/5!==0  && tempMin>10){
+						if(tempMin/5!==0 && tempMin>10){
 							tempMinsub = tempMin.substring(1,2);
 							tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
 							// console.log("tempMinsub : "+tempMinsub);
@@ -1080,7 +1173,7 @@
 						// 라벨 최대값 구하기 (현재날짜)
 						var max_milliseconds = nowDate.getTime();
 						// 라벨 최소값 구하기재
-						var min_milliseconds = nowDate.setHours(nowDate.getHours()-$("#intervaltime").val());
+						var min_milliseconds = nowDate.setHours(nowDate.getHours()-$days);
 						// console.log("현재날짜 : "+max_milliseconds);
 						// console.log("이전날짜 : "+min_milliseconds);
 						var barChartData = {
