@@ -98,14 +98,14 @@
 							return;
 						}
 						// 맵에 장치보기
-						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,res.data.temp_brd,res.data.batt_level,res.data.solar_current,res.data.solar_voltage);
+						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,res.data.temp_brd,res.data.batt_level,res.data.solar_current,res.data.solar_voltage,res.data.rsrp);
 						$("#mapLoaging").hide();
 					}
 				});
 			}
 
 			// 장비상세정보 리스트 보내기
-			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_level,solar_current,solar_voltage) {
+			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_level,solar_current,solar_voltage,rsrp) {
 
 				var locations = mapGps;
 
@@ -153,7 +153,7 @@
 							infowindow.setContent(content);
 							infowindow.open(map, marker);
 							$("#deviceDetail").show();
-							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_level[i],solar_current[i],solar_voltage[i]);
+							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_level[i],solar_current[i],solar_voltage[i],rsrp[i],mapGps[i][1],mapGps[i][2]);
 
 							if (marker.getAnimation() != null) {
 								marker.setAnimation(null);
@@ -171,7 +171,7 @@
 			}
 
 			// 장치리스트 출력
-			function deviceDetail(pushValue,level,state,temp_brd,batt_level,solar_current,solar_voltage) {
+			function deviceDetail(pushValue,level,state,temp_brd,batt_level,solar_current,solar_voltage,rsrp,gps_la,gps_lo) {
 
 				var $deviceDetail = $('#deviceDetail');
 
@@ -240,6 +240,29 @@
 						var operationDay = timeDifferenceInHours  / 24; // 운영일 가공
 
 						html += '<div class="equipment__section">';
+
+						html += '<div class="equipment__signal">';
+						if(res.data.deviceOnOffstatus===true){
+							if (rsrp !== null) {
+								if (rsrp < -120) {
+									html += '<img src="/assets/images/icon__wifi-0.png" alt="신호강도" />';
+								} else if (-120 <= rsrp < -115) {
+									html += '<img src="/assets/images/icon__wifi-1.png" alt="신호강도" />';
+								} else if (-115 <= rsrp < -109) {
+									html += '<img src="/assets/images/icon__wifi-2.png" alt="신호강도" />';
+								} else if (-109 <= rsrp < -103) {
+									html += '<img src="/assets/images/icon__wifi-3.png" alt="신호강도" />';
+								} else if (-103 <= rsrp) {
+									html += '<img src="/assets/images/icon__wifi-4.png" alt="신호강도" />';
+								}
+							}else{
+								html += '<img src="/assets/images/icon__wifi-off.png" alt="신호강도" />';
+							}
+						}else{
+							html += '<img src="/assets/images/icon__wifi-off.png" alt="신호강도" />';
+						}
+						html += '</div>';
+
 						html += '<div id="stateLoading" class="c-loader">';
 						html += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html += '</div>';
@@ -361,13 +384,19 @@
 						html += '<span class="equipment__info-title">'+'배터리잔량 : '+'</span>';
 						html += '<span class="equipment__info-value">'+batt_level+'%'+'</span>';
 						html += '</li>';
+						if(res.data.deviceDetailList.emType!=="iTainer") {
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '태양광판넬 전류 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + solar_current + 'A' + '</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '태양광판넬 전압 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + solar_voltage + 'V' + '</span>';
+							html += '</li>';
+						}
 						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'태양광판넬 전류 : '+'</span>';
-						html += '<span class="equipment__info-value">'+solar_current+'A'+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'태양광판넬 전압 : '+'</span>';
-						html += '<span class="equipment__info-value">'+solar_voltage+'V'+'</span>';
+						html += '<span class="equipment__info-title">'+'GPS : '+'</span>';
+						html += '<span class="equipment__info-value">'+gps_la+'/'+gps_lo+'</span>';
 						html += '</li>';
 						html += '</ul>';
 						html += '</div>';
@@ -409,55 +438,35 @@
 					success: function(res) {
 						statuscode= res.data.statusCode;
 						if (statuscode ===200) {
-							var timeStamp = []; //타임스탬프
 							var temp_brd = []; //온도
 							var level = []; //배출량
 							var batt_level = []; //배터리잔량
 							var testTimeStamp = [];
 							$.each(res.data.datarow1, function (key, value) {
-								var timestamp = parseInt(value.timestamp); // value.timestamp(밀리세컨드)는 문자열로 받아오기때문에 정수형으로 변환해준다.
-								var date = new Date(timestamp);
-								var month = date.getMonth()+1; // 1월을 0월로 보기때문에 월에 +1을 해준다.
-								var day = date.getDate();
-								var minutes = date.getMinutes();
-								var seconds = date.getSeconds();
-								if(day < 10){
-									day = "0"+day;
-								}
-								if(minutes < 10){
-									minutes = "0"+minutes;
-								}
-								if(seconds < 10){
-									seconds = "0"+seconds;
-								}
-								var time =month+"월"+day+"일 "+date.getHours()+":"+minutes+":"+seconds;
-
-								// console.log("날짜 : "+time)
-								// console.log("")
 								testTimeStamp.push(parseInt(value.timestamp));
-								timeStamp.push(time);
 								temp_brd.push(value.temp_brd);
 								level.push(value.level);
 								batt_level.push(value.batt_level);
 							});
-							var days = $("#intervaltime").val(); // 기간선택 시간
+							var $days = $("#intervaltime").val(); // 기간선택 시간
 
 							// 온도최대값,최소값 계산(y축그래프)
 							temp_brd_Max = Math.max.apply(0, temp_brd); // 온도최대값
 							temp_brd_Min = Math.min.apply(0, temp_brd); // 온도최소값
-							tempMap = (temp_brd_Max+15).toFixed(0);
+
+							tempMax = (temp_brd_Max+15).toFixed(0);
 							tempMin = (temp_brd_Min-15).toFixed(0);
-							if(tempMap/5!==0){
-								tempMaxsub = tempMap.substring(1,2);
-								tempBrdMax = parseInt(tempMap)-parseInt(tempMaxsub);
+							if(tempMax/5!==0){
+								tempMaxsub = tempMax.substring(1,2);
+								tempBrdMax = parseInt(tempMax)-parseInt(tempMaxsub);
 							}else{
 								tempBrdMax = tempMap;
 							}
-							if(tempMin/5!==0){
+							if(tempMin/5!==0 && tempMin>10){
 								tempMinsub = tempMin.substring(1,2);
 								tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
 							}else{
-								tempBrdMin = tempMin;
+								tempBrdMin = 0;
 							}
 
 							//var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
@@ -467,7 +476,7 @@
 							// 라벨 최대값 구하기 (현재날짜)
 							var max_milliseconds = nowDate.getTime();
 							// 라벨 최소값 구하기
-							var min_milliseconds = nowDate.setHours(nowDate.getHours()-$("#intervaltime").val());
+							var min_milliseconds = nowDate.setHours(nowDate.getHours()-$days);
 							// console.log("현재날짜 : "+max_milliseconds);
 							// console.log("이전날짜 : "+min_milliseconds);
 

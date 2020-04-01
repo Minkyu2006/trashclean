@@ -227,7 +227,7 @@
 					<span th:class="${onoffline}" th:text="${offlineName}"></span>
 					<img th:src="${filePath}+${saveFileName}" />
 					<div class="equipment__signal">
-						<img id="iconWifi" th:src="${rsrp}" />
+						<img th:src="${rsrp}" alt="신호강도" />
 					</div>
 					<span id="offlineTimeName"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">
 				</div>

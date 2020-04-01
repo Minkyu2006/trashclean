@@ -116,8 +116,7 @@ public class DeviceStatsController {
         HashMap<String,String> deviceInfo = deviceInfoMap.get("data");
         HashMap<String,Object> onOffline = onOfflineData.get("data");
 
-        boolean onoffline = Boolean.parseBoolean(String.valueOf(onOfflineData.get("online")));
-//        System.out.println("onoffline : "+onoffline);
+        boolean onoffline = Boolean.parseBoolean(String.valueOf(onOffline.get("online")));
 
         HashMap awsData = null;
         if(resData.get("data").size()!=0) {
@@ -152,33 +151,32 @@ public class DeviceStatsController {
                 model.addAttribute("gps_lo", awsData.get("gps_lo"));
             }
 
-            if(!awsData.get("rsrp").equals("")) {
-                int rsrp = Integer.parseInt(String.valueOf(awsData.get("rsrp")));
-
-                if(rsrp < -120) {
-                    model.addAttribute("rsrp", "");
-                }else if(rsrp < -115){
-                    model.addAttribute("rsrp", "/assets/images/icon__wifi-0.png");
-                }else if(rsrp < -109){
-                    model.addAttribute("rsrp", "/assets/images/icon__wifi-1.png");
-                }else if(rsrp < -103){
-                    model.addAttribute("rsrp", "/assets/images/icon__wifi-2.png");
-                }else{
-                    model.addAttribute("rsrp", "/assets/images/icon__wifi.png");
-                }
-            }else{
-                model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
-            }
-
-
-
             if(onoffline){
                 model.addAttribute("offlineName","온라인");
                 model.addAttribute("onoffline","equipment__connect on");
+
+                if (!awsData.get("rsrp").equals("")) {
+                    int rsrp = Integer.parseInt(String.valueOf(awsData.get("rsrp")));
+
+                    if (rsrp < -120) {
+                        model.addAttribute("rsrp", "/assets/images/icon__wifi-0.png");
+                    } else if (rsrp < -115) {
+                        model.addAttribute("rsrp", "/assets/images/icon__wifi-1.png");
+                    } else if (rsrp < -109) {
+                        model.addAttribute("rsrp", "/assets/images/icon__wifi-2.png");
+                    } else if (rsrp < -103) {
+                        model.addAttribute("rsrp", "/assets/images/icon__wifi-3.png");
+                    } else {
+                        model.addAttribute("rsrp", "/assets/images/icon__wifi-4.png");
+                    }
+                } else {
+                    model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
+                }
             }else{
                 model.addAttribute("offlineName","오프라인");
                 model.addAttribute("onoffline","equipment__connect off");
                 model.addAttribute("offlineTime",onOffline.get("timestamp"));
+                model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
             }
 
         }else {
