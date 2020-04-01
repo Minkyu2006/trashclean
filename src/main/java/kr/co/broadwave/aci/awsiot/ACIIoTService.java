@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 /**
  * @author InSeok
  * Date : 2019-10-29
@@ -16,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class ACIIoTService {
 
 
-    private String clientId = "iEcoProc-WEB"; // 웹어플리케이션 이름
+    private String clientId = "iEcoProc-WEB-" + UUID.randomUUID(); // 웹어플리케이션 이름
 
 
     private final String aciIotAccessEndPoint;
@@ -40,9 +42,11 @@ public class ACIIoTService {
 
         try {
             AWSIotDevice initdevice = new AWSIotDevice("ISOL-SEL-KR-0001");
+
             this.client.attach(initdevice);
             this.client.connect();
-            client.detach(initdevice);
+
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -58,14 +62,17 @@ public class ACIIoTService {
         try {
             //shadow blocking send
             client.attach(device);
+
             String message = "{\"state\":{\"desired\":{\"" + keyString.toLowerCase() + "\":\"" + valueString + "\"}}}";
             device.update(message);
             client.detach(device);
+
 
         }catch (Exception e){
             e.printStackTrace();
             try{
                 client.detach(device);
+
 
             }catch (Exception e1){
                 e1.printStackTrace();
@@ -88,15 +95,18 @@ public class ACIIoTService {
         try {
 
             //shadow blocking send
+
             client.attach(deviceMulti);
             deviceMulti.update(message);
             client.detach(deviceMulti);
+
 
 
         }catch (Exception e){
             e.printStackTrace();
             try{
                 client.detach(deviceMulti);
+
             }catch (Exception e1){
                 e1.printStackTrace();
             }
@@ -113,6 +123,7 @@ public class ACIIoTService {
         try {
 
             //shadow
+
             client.attach(device);
 
             // Get shadow document.
@@ -124,6 +135,7 @@ public class ACIIoTService {
             }
 
             client.detach(device);
+
 
 
             return resultStr;
