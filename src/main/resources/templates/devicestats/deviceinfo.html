@@ -225,10 +225,8 @@
 				<div class="equipment__img">
 					<span id="statusName" th:class="${status}" th:text="${stausName}"></span>
 					<span th:class="${onoffline}" th:text="${offlineName}"></span>
-					<div class="equipment__signal">
-						<img th:src="${rsrp}" alt="신호강도" />
-					</div>
-					<img th:src="${filePath}+${saveFileName}" alt="모델이미지" />
+					<img th:src="${filePath}+${saveFileName}" />
+					<img id="iconWifi" th:src="${rsrp}" />
 					<span id="offlineTimeName"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">
 				</div>
 			</div>
