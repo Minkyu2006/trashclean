@@ -859,7 +859,6 @@ public class DashboardRestController {
         //log.info("deviceids : "+deviceids);
 
         List<String> statusDatas = new ArrayList<>(); // AWS 장비 status값 리스트
-        List<String> deviceidDatas = new ArrayList<>(); // AWS 장비 ID값 리스트
         List<String> barDataColumns = new ArrayList<>(); //쓰레기양
         List<List<Object>> mapDataColumns = new ArrayList<>(); // 맵데이터 담는 리스트
         List<String> deviceIdNames = new ArrayList<>(); // AWS 장비 device값 이름
@@ -871,6 +870,7 @@ public class DashboardRestController {
         List<String> batt_level = new ArrayList<>(); //배터리잔량리스트
         List<String> solar_current = new ArrayList<>(); //전류 리스트
         List<String> solar_voltage = new ArrayList<>(); //전압리스트
+        List<Integer> rsrp = new ArrayList<>(); // 안테나
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
         //log.info("AWS 장치 data : "+resData.get("data"));
@@ -897,6 +897,12 @@ public class DashboardRestController {
             batt_level.add((String) map.get("batt_level")); //배터리잔량 리스트
             solar_current.add((String) map.get("solar_current")); //전류 리스트
             solar_voltage.add((String) map.get("solar_voltage")); //전압 리스트
+
+            if(!String.valueOf(map.get("rsrp")).equals("")) {
+                rsrp.add(Integer.parseInt(String.valueOf(map.get("rsrp"))));
+            }else{
+                rsrp.add(null);
+            }
         }
 
 //        log.info("위도 : " + gps_laDatas);
@@ -930,6 +936,7 @@ public class DashboardRestController {
             }
         }
 
+        data.put("rsrp",rsrp);
         data.put("temp_brd",temp_brd);
         data.put("batt_level",batt_level);
         data.put("solar_current",solar_current);

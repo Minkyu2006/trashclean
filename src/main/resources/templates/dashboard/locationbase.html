@@ -98,14 +98,14 @@
 							return;
 						}
 						// 맵에 장치보기
-						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,res.data.temp_brd,res.data.batt_level,res.data.solar_current,res.data.solar_voltage);
+						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,res.data.temp_brd,res.data.batt_level,res.data.solar_current,res.data.solar_voltage,res.data.rsrp);
 						$("#mapLoaging").hide();
 					}
 				});
 			}
 
 			// 장비상세정보 리스트 보내기
-			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_level,solar_current,solar_voltage) {
+			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_level,solar_current,solar_voltage,rsrp) {
 
 				var locations = mapGps;
 
@@ -153,7 +153,7 @@
 							infowindow.setContent(content);
 							infowindow.open(map, marker);
 							$("#deviceDetail").show();
-							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_level[i],solar_current[i],solar_voltage[i]);
+							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_level[i],solar_current[i],solar_voltage[i],rsrp[i]);
 
 							if (marker.getAnimation() != null) {
 								marker.setAnimation(null);
@@ -171,7 +171,7 @@
 			}
 
 			// 장치리스트 출력
-			function deviceDetail(pushValue,level,state,temp_brd,batt_level,solar_current,solar_voltage) {
+			function deviceDetail(pushValue,level,state,temp_brd,batt_level,solar_current,solar_voltage,rsrp) {
 
 				var $deviceDetail = $('#deviceDetail');
 
@@ -240,6 +240,29 @@
 						var operationDay = timeDifferenceInHours  / 24; // 운영일 가공
 
 						html += '<div class="equipment__section">';
+
+						html += '<div class="equipment__signal">';
+						if(res.data.deviceOnOffstatus===true){
+							if (rsrp !== null) {
+								if (rsrp < -120) {
+									html += '<img src="/assets/images/icon__wifi-0.png" alt="신호강도" />';
+								} else if (-120 <= rsrp < -115) {
+									html += '<img src="/assets/images/icon__wifi-1.png" alt="신호강도" />';
+								} else if (-115 <= rsrp < -109) {
+									html += '<img src="/assets/images/icon__wifi-2.png" alt="신호강도" />';
+								} else if (-109 <= rsrp < -103) {
+									html += '<img src="/assets/images/icon__wifi-3.png" alt="신호강도" />';
+								} else if (-103 <= rsrp) {
+									html += '<img src="/assets/images/icon__wifi-4.png" alt="신호강도" />';
+								}
+							}else{
+								html += '<img src="/assets/images/icon__wifi-off.png" alt="신호강도" />';
+							}
+						}else{
+							html += '<img src="/assets/images/icon__wifi-off.png" alt="신호강도" />';
+						}
+						html += '</div>';
+
 						html += '<div id="stateLoading" class="c-loader">';
 						html += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html += '</div>';

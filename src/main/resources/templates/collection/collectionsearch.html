@@ -534,13 +534,18 @@
 			// console.log("center_lagps : " + center_lagps);
 			// console.log("center_logps : " + center_logps);
 
+			if(window.map && window.map !== null){
+				map.destroy();
+			}
+
 			mapDiv = document.getElementById('naverMap');
-			var center = new naver.maps.LatLng(center_lagps,center_logps),
-					map = new naver.maps.Map(mapDiv, {
-						center: center,
-						useStyleMap: true,
-						zoom: 11,
-					});
+			var center = new naver.maps.LatLng(center_lagps,center_logps);
+
+			map = new naver.maps.Map(mapDiv, {
+				center: center,
+				useStyleMap: true,
+				zoom: 11,
+			});
 
 			new naver.maps.Polyline({
 				map: map,
