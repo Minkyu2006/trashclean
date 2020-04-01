@@ -67,6 +67,8 @@
 				return false;
 			}
 
+			$("#valueLoding").show();
+
 			var $form = $('form[name="basereg"]');
 			var params = $form.serialize();
 
@@ -90,6 +92,7 @@
 					checkfalse();
 					savereset();
 					callList(1);
+					$("#valueLoding").hide();
 				}
 			});
 		}
@@ -300,6 +303,9 @@
 					<div class="panel__inner">
 						<div class="panel__header">장비 리스트</div>
 						<div class="panel__body panel__body--height-auto">
+							<div class="c-loader">
+								<div id="valueLoding" class="c-loader__active c-loader__active--ring" style="z-index: 10;display: none"></div>
+							</div>
 							<div class="panel__table">
 								<div class="c-scroll-table">
 									<div class="c-scroll-table__header">
