@@ -906,47 +906,26 @@
 						var html3 = '';
 
 						//	var iconWifi = "/assets/images/icon_wifi-0.png";
-						if(emTypes[idx]!=="iTainer") {
-							if(res.data.deviceOnOffstatus[idx]===true) {
-								if (res.data.rsrp[idx] !== null) {
-									if (res.data.rsrp[idx] < -120) {
-										html2 += '<img src="/assets/images/icon__wifi-0.png" style="position: absolute;top: 50px;left:180px;" />';
-									} else if (-120 <= res.data.rsrp[idx] < -115) {
-										html2 += '<img src="/assets/images/icon__wifi-1.png" style="position: absolute;top: 50px;left:180px;" />';
-									} else if (-115 <= res.data.rsrp[idx] < -109) {
-										html2 += '<img src="/assets/images/icon__wifi-2.png" style="position: absolute;top: 50px;left:180px;" />';
-									} else if (-109 <= res.data.rsrp[idx] < -103) {
-										html2 += '<img src="/assets/images/icon__wifi-3.png" style="position: absolute;top: 50px;left:180px;" />';
-									} else if (-103 <= res.data.rsrp[idx]) {
-										html2 += '<img src="/assets/images/icon__wifi-4.png" style="position: absolute;top: 50px;left:180px;" />';
-									}
-								} else {
-									html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 50px;left:180px;" />';
+						if(res.data.deviceOnOffstatus[idx]===true) {
+							if (res.data.rsrp[idx] !== null) {
+								if (res.data.rsrp[idx] < -120) {
+									html2 += '<img src="/assets/images/icon__wifi-0.png" style="position: absolute;top: 50px;left:180px;" />';
+								} else if (-120 <= res.data.rsrp[idx] < -115) {
+									html2 += '<img src="/assets/images/icon__wifi-1.png" style="position: absolute;top: 50px;left:180px;" />';
+								} else if (-115 <= res.data.rsrp[idx] < -109) {
+									html2 += '<img src="/assets/images/icon__wifi-2.png" style="position: absolute;top: 50px;left:180px;" />';
+								} else if (-109 <= res.data.rsrp[idx] < -103) {
+									html2 += '<img src="/assets/images/icon__wifi-3.png" style="position: absolute;top: 50px;left:180px;" />';
+								} else if (-103 <= res.data.rsrp[idx]) {
+									html2 += '<img src="/assets/images/icon__wifi-4.png" style="position: absolute;top: 50px;left:180px;" />';
 								}
-							}else{
+							} else {
 								html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 50px;left:180px;" />';
 							}
 						}else{
-							if(res.data.deviceOnOffstatus[idx]===true) {
-								if (res.data.rsrp[idx] !== null) {
-									if (res.data.rsrp[idx] < -120) {
-										html2 += '<img src="/assets/images/icon__wifi-0.png" style="position: absolute;top: 0px;left:85px;" />';
-									} else if (-120 <= res.data.rsrp[idx] < -115) {
-										html2 += '<img src="/assets/images/icon__wifi-1.png" style="position: absolute;top: 0px;left:85px;" />';
-									} else if (-115 <= res.data.rsrp[idx] < -109) {
-										html2 += '<img src="/assets/images/icon__wifi-2.png" style="position: absolute;top: 0px;left:85px;" />';
-									} else if (-109 <= res.data.rsrp[idx] < -103) {
-										html2 += '<img src="/assets/images/icon__wifi-3.png" style="position: absolute;top: 0px;left:85px;" />';
-									} else if (-103 <= res.data.rsrp[idx]) {
-										html2 += '<img src="/assets/images/icon__wifi-4.png" style="position: absolute;top: 0px;left:85px;" />';
-									}
-								} else {
-									html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 0px;left:85px;" />';
-								}
-							}else{
-								html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 0px;left:85px;" />';
-							}
+							html2 += '<img src="/assets/images/icon__wifi-off.png" style="position: absolute;top: 50px;left:180px;" />';
 						}
+
 
 						html2 += '<div id='+'stateLoading'+idx+' class="c-loader">';
 						html2 += '<div class="c-loader__active c-loader__active--ring"></div>';
