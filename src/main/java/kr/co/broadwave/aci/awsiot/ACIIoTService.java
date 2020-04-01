@@ -39,7 +39,10 @@ public class ACIIoTService {
                 , this.aciIotAccessKey);
 
         try {
+            AWSIotDevice initdevice = new AWSIotDevice("ISOL-SEL-KR-0001");
+            this.client.attach(initdevice);
             this.client.connect();
+            client.detach(initdevice);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -105,28 +108,30 @@ public class ACIIoTService {
 
     //shadow 정보 가져오기
     public String shadowDeviceGet(String thingName) {
-        AWSIotMqttClient client = new AWSIotMqttClient(this.aciIotAccessEndPoint, clientId, this.aciIotAccessId, this.aciIotAccessKey);
+        //AWSIotMqttClient client = new AWSIotMqttClient(this.aciIotAccessEndPoint, clientId, this.aciIotAccessId, this.aciIotAccessKey);
         ACIIoTDevice device = new ACIIoTDevice(thingName);
         try {
 
             //shadow
             client.attach(device);
-            long reportInterval = 3000;            // milliseconds. Default interval is 3000.
-            device.setReportInterval(reportInterval);
-            client.setMaxConnectionRetries(2);
-            client.connect();
-
 
             // Get shadow document.
-            String resultStr = device.get();
-            client.disconnect();
+            String resultStr = "";
+            try {
+                resultStr = device.get();
+            }catch (Exception e){
+                resultStr = "{\"state\":\"none\"}";
+            }
+
+            client.detach(device);
+
 
             return resultStr;
 
         }catch (Exception e){
             e.printStackTrace();
             try{
-                client.disconnect();
+                client.detach(device);
             }catch (Exception e1){
                 e1.printStackTrace();
                 return null;
