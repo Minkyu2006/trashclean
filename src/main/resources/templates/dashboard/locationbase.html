@@ -246,13 +246,13 @@
 							if (rsrp !== null) {
 								if (rsrp < -120) {
 									html += '<img src="/assets/images/icon__wifi-0.png" alt="신호강도" />';
-								} else if (-120 <= rsrp < -115) {
+								} else if (rsrp < -115) {
 									html += '<img src="/assets/images/icon__wifi-1.png" alt="신호강도" />';
-								} else if (-115 <= rsrp < -109) {
+								} else if (rsrp < -109) {
 									html += '<img src="/assets/images/icon__wifi-2.png" alt="신호강도" />';
-								} else if (-109 <= rsrp < -103) {
+								} else if (rsrp < -103) {
 									html += '<img src="/assets/images/icon__wifi-3.png" alt="신호강도" />';
-								} else if (-103 <= rsrp) {
+								} else {
 									html += '<img src="/assets/images/icon__wifi-4.png" alt="신호강도" />';
 								}
 							}else{

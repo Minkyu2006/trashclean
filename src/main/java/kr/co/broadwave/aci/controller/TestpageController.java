@@ -118,4 +118,8 @@ public class TestpageController {
         return "testpage/firmwaretest";
     }
 
+    @RequestMapping("logintest")
+    public String logintest(){
+        return "testpage/logintest";
+    }
 }
