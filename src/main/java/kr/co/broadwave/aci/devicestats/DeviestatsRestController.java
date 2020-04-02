@@ -572,12 +572,13 @@ public class DeviestatsRestController {
     @PostMapping("firmUpdate")
     public ResponseEntity<Map<String,Object>> firmUpdate(@RequestParam(value="deviceid", defaultValue="") String deviceid,
                                                          @RequestParam(value="efVer", defaultValue="") String efVer,
-                                                         @RequestParam(value="efFilePath", defaultValue="") String efFilePath) {
+                                                         @RequestParam(value="efFilePath", defaultValue="") String efFilePath,
+                                                         @RequestParam(value="timestamp", defaultValue="") String timestamp) {
         AjaxResponse res = new AjaxResponse();
 //        log.info("deviceid : "+deviceid);
 //        log.info("efVer : "+efVer);
 //        log.info("efFilePath : "+efFilePath);
-        String str = efVer+"$@"+efFilePath;
+        String str = timestamp+"$@"+efVer+"$@"+efFilePath;
 //        log.info("str : "+str);
 
         try{

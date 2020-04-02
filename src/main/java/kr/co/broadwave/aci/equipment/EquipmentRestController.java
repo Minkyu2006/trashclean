@@ -536,4 +536,18 @@ public class EquipmentRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 장비확인 버튼(devicereg : 타임스탬프)
+    @PostMapping("deviceCheck")
+    public ResponseEntity<Map<String,Object>> deviceCheck(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                          @RequestParam(value="timestamp", defaultValue="") String timestamp) throws Exception {
+        AjaxResponse res = new AjaxResponse();
+
+//        log.info("장비코드 : "+deviceid);
+//        log.info("timestamp : "+timestamp);
+        //Shadow Isolarbin LED 점멸 (IoT) -> param :  디바이스 아이디, 타임스탬프
+        aciawsIoTDeviceService.setRegComplete(deviceid,timestamp);
+
+        return ResponseEntity.ok(res.success());
+    }
+
 }

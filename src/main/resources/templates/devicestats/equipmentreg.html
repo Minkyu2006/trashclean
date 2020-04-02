@@ -64,9 +64,11 @@
 			}
 
 			var deviceid = $emNumber.val();
+			timestamp = + new Date();
 
 			var params = {
 				deviceid:deviceid,
+				timestamp:timestamp,
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -74,7 +76,7 @@
 			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
-				url:'/api/collection/deviceCheck',
+				url:'/api/equipment/deviceCheck',
 				data : params,
 				type : 'post',
 				cache:false,

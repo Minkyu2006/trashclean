@@ -124,10 +124,10 @@ public class ACIAWSIoTDeviceService {
 
     }
     // 장비등록 완료 명령
-    public void setRegComplete(String deviceid) throws Exception {
+    public void setRegComplete(String deviceid,String timestamp) throws Exception {
         log.info("장비 Shadow 장비 등록확인 요청 :'" + deviceid +"'");
         //device 상태가져오기
-        aciIoTService.shadowNonblockingSend(deviceid,"devicereg","complete");
+        aciIoTService.shadowNonblockingSend(deviceid,"devicereg",timestamp);
 
     }
 

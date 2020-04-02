@@ -104,10 +104,13 @@
 			 var header = $("meta[name='_csrf_header']").attr("content");
 			 $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
+			 var timestamp =+ new Date(); //현재날짜 타임스탬프 밀리세컨드
+
 			 var params = {
 				 deviceid:$("#deviceid").text(),
 				 efVer:$("#efVer").val(),
-				 efFilePath:$("#efFilePath").val()
+				 efFilePath:$("#efFilePath").val(),
+				 timestamp:timestamp
 			 };
 
 			 $.ajax({

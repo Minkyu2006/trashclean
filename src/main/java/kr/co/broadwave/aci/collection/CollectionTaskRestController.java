@@ -1030,19 +1030,6 @@ public class CollectionTaskRestController {
         return ResponseEntity.ok(res.success());
     }
 
-    // 모바일 - 장비확인 버튼(devicereg : complete)
-    @PostMapping("deviceCheck")
-    public ResponseEntity<Map<String,Object>> deviceCheck(@RequestParam(value="deviceid", defaultValue="") String deviceid) throws Exception {
-        AjaxResponse res = new AjaxResponse();
-
-//        log.info("장비코드 : "+deviceid);
-//        log.info("timestamp : "+timestamp);
-        //Shadow Isolarbin LED 점멸 (IoT) -> param :  디바이스 아이디, 타임스탬프
-        aciawsIoTDeviceService.setRegComplete(deviceid);
-
-        return ResponseEntity.ok(res.success());
-    }
-
     //////////////////////// 여기서부턴 모바일 ////////////////////////
 
     // 모바일 - 수거업무 리스트 : 수거예정일
