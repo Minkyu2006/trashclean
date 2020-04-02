@@ -5,183 +5,101 @@
 
 	
 	<head>
-		<!-- <style>
-			.box {
-				padding: 0.5em;
-				width: 100%;
-				margin:0.5em;
-			}
-			
-			.box-2 {
-				padding: 0.5em;
-				width: calc(100%/2 - 1em);
-			}
-			
-			.options label,
-			.options input{
-				width:4em;
-				padding:0.5em 1em;
-			}
-			.btn{
-				background:white;
-				color:black;
-				border:1px solid black;
-				padding: 0.5em 1em;
-				text-decoration:none;
-				margin:0.8em 0.3em;
-				display:inline-block;
-				cursor:pointer;
-			}
-			
-			.hide {
-				display: none;
-			}
-			
-			img {
-				max-width: 100% !important;
-			}
-		</style> -->
-		
 		<style>
-			.box {
-				padding: 0.5em;
-				width: 100%;
-				margin:0.5em;
-			}
-			
-			.box-2 {
-				padding: 0.5em;
-				width: calc(100%/2 - 1em);
-			}
-			
-			.options label,
-			.options input{
-				width:4em;
-				padding:0.5em 1em;
-			}
-			.btn{
-				background:white;
-				color:black;
-				border:1px solid black;
-				padding: 0.5em 1em;
-				text-decoration:none;
-				margin:0.8em 0.3em;
-				display:inline-block;
-				cursor:pointer;
-			}
-			
-			.hide {
-				display: none;
-			}
-			
-			img {
-				max-width: 100%;
-			}
+			.img-container {
+                max-width: 320px;
+            }
+            .img-container img {
+                width: 100%;
+            }
+
+            .cropper-crop-box, .cropper-view-box {
+                border-radius: 50%;
+            }
+
+            .cropper-view-box {
+                box-shadow: 0 0 0 1px #39f;
+                outline: 0;
+            }
+
+            .cropper-face {
+                background-color:inherit !important;
+            }
+
+            .cropper-dashed, .cropper-point.point-se, .cropper-point.point-sw, .cropper-point.point-nw,   .cropper-point.point-ne, .cropper-line {
+                display:none !important;
+            }
+
+            .cropper-view-box {
+                outline:inherit !important;
+            }
 		</style>
 		
 		<script>
-			// vars
-			let result = document.querySelector('.result'),
-			img_result = document.querySelector('.img-result'),
-			img_w = document.querySelector('.img-w'),
-			img_h = document.querySelector('.img-h'),
-			options = document.querySelector('.options'),
-			save = document.querySelector('.save'),
-			cropped = document.querySelector('.cropped'),
-			dwn = document.querySelector('.download'),
-			upload = document.querySelector('#file-input'),
-			cropper = '';
-		
-			// on change show image with crop options
-			upload.addEventListener('change', (e) => {
-			  if (e.target.files.length) {
-					// start file reader
-			    const reader = new FileReader();
-			    reader.onload = (e)=> {
-			      if(e.target.result){
-							// create new image
-							let img = document.createElement('img');
-							img.id = 'image';
-							img.src = e.target.result
-							// clean result before
-							result.innerHTML = '';
-							// append new image
-			        result.appendChild(img);
-							// show save btn and options
-							save.classList.remove('hide');
-							options.classList.remove('hide');
-							// init cropper
-							cropper = new Cropper(img);
-			      }
-			    };
-			    reader.readAsDataURL(e.target.files[0]);
-			  }
-			});
-		
-			// save on click
-			save.addEventListener('click',(e)=>{
-			  e.preventDefault();
-			  // get result to data uri
-			  let imgSrc = cropper.getCroppedCanvas({
-					width: img_w.value // input value
-				}).toDataURL();
-			  // remove hide class of img
-			  cropped.classList.remove('hide');
-				img_result.classList.remove('hide');
-				// show image cropped
-			  cropped.src = imgSrc;
-			  dwn.classList.remove('hide');
-			  dwn.download = 'imagename.png';
-			  dwn.setAttribute('href',imgSrc);
-			});
-		
-
-	</script>
+			function getRoundedCanvas(sourceCanvas) {
+	            var canvas = document.createElement('canvas');
+	            var context = canvas.getContext('2d');
+	            var width = sourceCanvas.width;
+	            var height = sourceCanvas.height;
+	
+	            canvas.width = width;
+	            canvas.height = height;
+	            context.imageSmoothingEnabled = true;
+	            context.drawImage(sourceCanvas, 0, 0, width, height);
+	            context.globalCompositeOperation = 'destination-in';
+	            context.beginPath();
+	            context.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, 2 * Math.PI, true);
+	            context.fill();
+	            return canvas;
+	        }
+	
+	        window.addEventListener('DOMContentLoaded', function () {
+	            var image = document.getElementById('image');
+	            var button = document.getElementById('button');
+	            var result = document.getElementById('result');
+	            var croppable = false;
+	            var cropper = new Cropper(image, {
+	                moveable: false,
+	                zoomable: false,
+	                rotatable: false,
+	                scalable: false,
+	                aspectRatio: 1,
+	                viewMode: 1,
+	                ready: function () {
+	                    croppable = true;
+	                }
+	            });
+	
+	            button.onclick = function () {
+	                var croppedCanvas;
+	                var roundedCanvas;
+	                var roundedImage;
+	
+	                if(!croppable) {
+	                    return;
+	                }
+	
+	                croppedCanvas = cropper.getCroppedCanvas();
+	
+	                roundedCanvas = getRoundedCanvas(croppedCanvas);
+	
+	                roundedImage = document.createElement('img');
+	                roundedImage = roundedCanvas.toDataURL();
+	                result.innerHTML = '';
+	                result.appendChild(roundedImage);
+	            };
+	        });
+		</script>
 	</head>
 
 	<div layout:fragment="content" class="contents-body">
+		<div class="img-container">
+            <img src="/assets/images/dummy/testimg.jpg" alt="Picture" id="image">
+        </div>
 
-			<!--<div class="profile-pop__picture" style="position: relative; width: 88px;">
-				<div class="profile-pop__picture-img">
-					<img id="defaultPhoto" src="" alt="" />
-					<img id="cropPhoto" src="" alt="" />
-				</div>
+        <button id="button">crop</button>
 
-				<div class="profile-pop__picture-upload" style="left: auto; right: -5px;">
-					<label for="profile"></label>
-					<input type="file" id="profile" name="profile" />
-				</div>
-				
-				<button id="savePhoto">저장</button>
-
-			</div>-->
-			
-			<!-- <div><img src="/assets/images/dummy/testimg.jpg" alt="" id="image" /></div> -->
-			
-			<!-- input file -->
-			<div class="box">
-				<input type="file" id="file-input">
-			</div>
-			<!-- leftbox -->
-			<div class="box-2">
-				<div class="result"></div>
-			</div>
-			<!--rightbox-->
-			<div class="box-2 img-result hide">
-				<!-- result of crop -->
-				<img class="cropped" src="" alt="">
-			</div>
-			<!-- input file -->
-			<div class="box">
-				<div class="options hide">
-					<label> Width</label>
-					<input type="number" class="img-w" value="300" min="100" max="1200" />
-				</div>
-				<!-- save btn -->
-				<button class="btn save hide">Save</button>
-				<!-- download btn -->
-				<a href="" class="btn download hide">Download</a>
-			</div>
+        <div id="result"></div>
 	</div>
 	
 	
