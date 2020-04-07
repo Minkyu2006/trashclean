@@ -464,9 +464,19 @@
 							}else{
 								tempBrdMax = tempMap;
 							}
-							if(tempMin/5!==0 && tempMin>10){
-								tempMinsub = tempMin.substring(1,2);
-								tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
+							if(tempMin/5!==0) {
+								if(-10<tempMin<0){
+									tempMinsub = tempMin.substring(1,2);
+									tempBrdMin = parseInt(tempMin) + parseInt(tempMinsub);
+								}else if(tempMin<-10) {
+									tempMinsub = tempMin.substring(2,3);
+									tempBrdMin = parseInt(tempMin) + parseInt(tempMinsub);
+								}else if(tempMin>10){
+									tempMinsub = tempMin.substring(1,2);
+									tempBrdMin = parseInt(tempMin) - parseInt(tempMinsub);
+								}else{
+									tempBrdMin = 0;
+								}
 							}else{
 								tempBrdMin = 0;
 							}

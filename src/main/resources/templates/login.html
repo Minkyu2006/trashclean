@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate ="~{layout/loginlayout}">
 
 <head>
@@ -16,30 +16,35 @@
 
 <div layout:fragment="content" class="login-wrap">
 
-	<div class="login">
-		<h1 class="login__logo">
-			<a href="/"><img src="/assets/images/logo.png" alt="자연상점"></a>
-		</h1>
-		<div class="login__form-box">
-			<form th:action="@{/login}" method="post">
-		        <div>
-		        	<label><input type="text" class="login__input" name="username" placeholder="아이디를 입력하세요." required ></label>
-	        	</div>
-		        <div>
-		        	<label><input type="password" class="login__input" name="password" placeholder="패스워드를 입력하세요." required></label>
-	        	</div>
-		        <div><input type="submit" class="login__btn" value="로그인"/></div>
-		        <div th:if="${param.error}" class="login__message">
-			        아이디 또는 비밀번호가 잘못되었습니다.
-			    </div>
-		    </form>
-		
-		    
+	<div class="ic-login mobile">
+		<div class="ic-login__contents">
+			<div class="ic-login__head">
+				<h1 class="ic-login__logo"><a href="/"><img src="/assets/images/logo--kr-w.png" alt="자연상점" /></a></h1>
+				<h2 class="ic-login__title">SMART 폐기물 수거시스템</h2>
+			</div>
+			<div class="ic-login__box">
+				<h3 class="ic-login__box-logo"><img src="/assets/images/logo__ieco.png" alt="iEcoproC" /></h3>
+				<form class="ic-login__form" th:action="@{/login}" method="post">
+					<ul>
+						<li><input type="text" id="loginId" class="ic-login__input" name="username" placeholder="ID" /></li>
+						<li><input type="password" class="ic-login__input" name="password" placeholder="Password" /></li>
+						<li>
+							<div class="ic-login__check">
+								<input type="checkbox" class="ic-login__checkbox" id="checkId" />
+								<label for="checkId" class="ic-login__label">아이디저장</label>
+							</div>
+						</li>
+					</ul>
+					<input type="submit" class="ic-login__button" style="font-size:18px;" value="로그인" />
+					<div th:if="${param.error}" class="login__message">
+						아이디 또는 비밀번호가 잘못되었습니다.
+					</div>
+				</form>
+				<p class="ic-login__comment">We Recommanded using Chrome instead of Internet Explore</p>
+			</div>
 		</div>
+		<div class="ic-login__bear"></div>
 	</div>
-
-    
-
 
 </div>
 </html>

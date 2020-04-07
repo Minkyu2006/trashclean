@@ -187,7 +187,7 @@ public class DashboardRestController {
 //        log.info("deviceids : " + deviceids);
 //        log.info("deviceIdList : " + deviceIdList);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
-        log.info("resData : " + resData);
+//        log.info("resData : " + resData);
         List<String> sortDevice = new ArrayList<>();
 
         Object datacounts = resData.get("datacounts");

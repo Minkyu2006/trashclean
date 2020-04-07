@@ -8,7 +8,6 @@
 	<script type="text/javascript">
 		var map; // 멥
 		var marker; // 마커
-		var polyline; // 맵에 길찾기그려주는 라인
 
 		$(function() {
 			$("#dateFrom").datepicker({});
@@ -36,12 +35,15 @@
 				layoutMode(3,firstNum);
 				firstNum = 1;
 			});
+			// console.log("$layoutNumber.val() : "+$layoutNumber.val());
 			if($layoutNumber.val()==="1"){
 				$layout1.click();
 			}else if($layoutNumber.val()==="2"){
 				$layout2.click();
-			}else{
+			}else if($layoutNumber.val()==="3"){
 				$layout3.click();
+			}else{
+				return location.href='/login';
 			}
 
 			deviceListView(1);
@@ -60,6 +62,7 @@
 			});
 			$("#barChart").on('click',function(){
 				$("#barChartLoading").show();
+				$("#bar_chart").hide();
 				refleshBarChart();
 			});
 
@@ -130,6 +133,7 @@
 		var checknum;
 		var timenum;
 		function refleshAutomatic(timevalue) {
+
 			var check = $("#monitoring").is(":checked");
 			var tensec = $('#tensec').is(":checked");
 			var onemin = $('#onemin').is(":checked");
@@ -206,7 +210,7 @@
 
 		// 그냥새로고침
 		function masterReflesh(){
-
+			$("#bar_chart").hide();
 			var deviceid = $("#deviceIds").val().split(',');
 			var deviceinstall = $("#deviceInstalls").val().split(',');
 			var devicefile = $("#devicefiles").val().split(',');
@@ -225,7 +229,7 @@
 			}
 
 			deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr,emTypes);
-			pushDeviceId(deviceidArr,0);
+			pushDeviceId(deviceidArr);
 		}
 
 		// 자동새로고침 함수 호출
@@ -251,9 +255,10 @@
 			timeprogress += 1;
 
 			if (timeprogress * 100 >= timeInterval) {
+				$("#bar_chart").hide();
 				timeprogress = 0;
 				deviceAWSListViewReflesh(deviceidArr, deviceinstallArr,devicefileArr,emTypes);
-				pushDeviceId(deviceidArr,0);
+				pushDeviceId(deviceidArr);
 				$("#mapChartLoading").show();
 				$("#pieChartLoading").show();
 				$("#barChartLoading").show();
@@ -295,6 +300,7 @@
 					if(firstNum!==0) {
 						$("#pieChartLoading").show();
 						$("#barChartLoading").show();
+						$("#bar_chart").hide();
 						refleshMapChart();
 						refleshBarChart();
 						refleshCircleChart();
@@ -399,6 +405,7 @@
 				alertCaution("조회할 날짜를 선택해주세요");
 				return false;
 			}
+			$("#bar_chart").hide();
 			$("#mapChartLoading").show();
 			$("#pieChartLoading").show();
 			$("#barChartLoading").show();
@@ -504,7 +511,7 @@
 						}
 						$deviceList.html(html);
 						deviceAWSListView(pushValue,installDate,files,emTypes);
-						pushDeviceId(pushValue,1);
+						pushDeviceId(pushValue);
 						$("#deviceIds").val(pushValue);
 						$("#deviceInstalls").val(installDate);
 						$("#deviceSubnames").val(subname);
@@ -622,7 +629,7 @@
 					// console.log("deviceOnOffline : "+deviceOnOffline);
 					// console.log("deviceOnOfftime : "+deviceOnOfftime);
 
-					console.log("rsrp : "+res.data.rsrp);
+					// console.log("rsrp : "+res.data.rsrp);
 
 					$.each(res.data.devices, function () {
 						var html = '';
@@ -1121,14 +1128,26 @@
 						}else{
 							tempBrdMax = tempMap;
 						}
-						if(tempMin/5!==0 && tempMin>10){
-							tempMinsub = tempMin.substring(1,2);
-							tempBrdMin = parseInt(tempMin)-parseInt(tempMinsub);
-							// console.log("tempMinsub : "+tempMinsub);
-							// console.log("tempBrdMin : "+tempBrdMin);
+
+						if(tempMin/5!==0) {
+							if(-10<tempMin<0){
+								tempMinsub = tempMin.substring(1,2);
+								tempBrdMin = parseInt(tempMin) + parseInt(tempMinsub);
+						    }else if(tempMin<-10) {
+								tempMinsub = tempMin.substring(2,3);
+								tempBrdMin = parseInt(tempMin) + parseInt(tempMinsub);
+							}else if(tempMin>10){
+								tempMinsub = tempMin.substring(1,2);
+								tempBrdMin = parseInt(tempMin) - parseInt(tempMinsub);
+							}else{
+								tempBrdMin = 0;
+							}
 						}else{
 							tempBrdMin = 0;
 						}
+
+						// console.log("최종 최대 : "+tempBrdMax);
+						// console.log("최종 최소 : "+tempBrdMin);
 
 						//var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
 						var ctx = document.getElementById('timeStampChart'+idx);
@@ -1434,12 +1453,13 @@
 					}
 					//쓰레기양 차트
 					barChart(res.data.averages,res.data.nowtimestamp,res.data.beforetimestamp,res.data.timestamps);
+					$("#bar_chart").show();
 				}
 			});
 		}
 
 		// aws deviceID값 push하는 함수 next -> 차트만들기
-		function pushDeviceId(pushValue,num) {
+		function pushDeviceId(pushValue) {
 			// console.log("pushValue : "+pushValue)
 			// console.log("subname : "+subname)
 			// console.log("차트그래프 그리기 시작")
@@ -1484,6 +1504,7 @@
 					mapDeviceId(res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas);
 					$("#mapChartLoading").hide();
 					$("#pieChartLoading").hide();
+					$("#bar_chart").show();
 					//console.log("차트그래프 그리기 완료, 맵 장비 출력완료")
 				}
 			});

@@ -9,6 +9,7 @@
 	<script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=f5am0m1e6z&callback=CALLBACK_FUNCTION"></script>
 
 	<script type="text/javascript">
+		var todayData;
 		$(function() {
 			//해더고정
 			if($("#headerMode").val()==="1"){
@@ -31,7 +32,7 @@
 			if(day < 10){
 				day = "0"+day;
 			}
-			var todayData = year+"-"+month+"-"+day;
+			todayData = year+"-"+month+"-"+day;
 			$s_dateFrom.val(todayData);
 
 			//지도팝업닫기
@@ -95,7 +96,21 @@
 			$("#btnUpdate").on('click',function(){
 				collectionUpdate();
 			});
+
+			$("#collectionbtnReset").on('click',function(){
+				collectionSearchReset();
+			});
+
 		});
+
+		function collectionSearchReset() {
+			$("#s_ctCode").val('');
+			$("#s_dateFrom").val(todayData);
+			$("#s_dateTo").val('');
+			$("#s_modelType").val('');
+			$("#s_userName").val('');
+			$("#s_vehicleNumber").val('');
+		}
 
 		// 수거원 조건초기화
 		function colreset() {

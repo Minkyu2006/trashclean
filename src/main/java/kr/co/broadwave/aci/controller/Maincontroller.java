@@ -56,13 +56,13 @@ public class Maincontroller {
         String IS_MOBILE = "MOBILE";
         String currentuserid = CommonUtils.getCurrentuser(request);
 
-        System.out.println("currentuserid : "+currentuserid);
+//        System.out.println("currentuserid : "+currentuserid);
 
         if(userAgent.contains(IS_MOBILE)) {
             return "redirect:/mobile/mobileindex";
         }
         if(currentuserid.equals("system")){
-            return "index";
+            return "login";
         }else{
             return "homeIndex";
         }
@@ -139,7 +139,7 @@ public class Maincontroller {
         List<MasterCodeDto> positions = masterCodeService.findCodeList(CodeType.C0001); // 직급코드가져오기
         List<TeamDto> teams = teamService.findTeamList();
         List<CompanyAccountDto> companys = companyService.findCompanyList();
-        System.out.println("companys : "+companys);
+//        System.out.println("companys : "+companys);
 
         model.addAttribute("companys", companys);
         model.addAttribute("roles", AccountRole.values());

@@ -968,9 +968,9 @@ table {
 }
 .login__message {
 	position: absolute;
-	bottom: 25px;
+	bottom: -22px;
 	left: 40px;
-	color: #fff;
+	/*color: #fff;*/
 	font-size: 14px;
 }
 

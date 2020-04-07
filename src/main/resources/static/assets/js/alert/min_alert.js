@@ -23,6 +23,10 @@ $(function() {
         $('#popupId').remove();
         return location.href = "/login";
     });
+    $(document).on("click","#successBtn3",function(){
+        $('#popupId').remove();
+        return  window.location.reload();
+    });
 });
 
 
@@ -57,8 +61,10 @@ function alertCancel(text,num) { //에러창(로그인만료),오류
                 html +='<div class="popup__text">'+text+'</div>';
            html +='</div>';
             html +='<div class="popup__buttons">';
-                if(num==1){
+                if(num===1){
                     html +='<button id="successBtn2" class="popup__btn popup__btn--success">확인</button>';
+                }else if(num===2) {
+                    html +='<button id="successBtn3" class="popup__btn popup__btn--success">확인</button>';
                 }else{
                     html +='<button id="successBtn" class="popup__btn popup__btn--success">확인</button>';
                 }
