@@ -995,12 +995,13 @@ table {
 	width: 100%;
 	padding-top: 50px;
 }
-.ic-login__logo a {
+.ic-login__logo {
 	display: block;
 	width: 100%;
+	text-align: center;
 }
-.ic-login__logo a img {
-	width: 100%;
+.ic-login__logo img {
+	width: 50%;
 }
 .ic-login__title {
 	position: absolute;
