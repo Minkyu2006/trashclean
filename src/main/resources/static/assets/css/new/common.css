@@ -1180,7 +1180,7 @@ table {
 	.ic-login__head {
 		padding-top: 40px; 
 	}
-	..ic-login__logo img {
+	.ic-login__logo img {
 		width: 80%;
 	}
 	.ic-login__title {
