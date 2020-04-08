@@ -33,21 +33,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/mobile/**").hasAnyRole("ADMIN","SUBADMIN","COLLECTOR")
                 .antMatchers("/testpage/**").hasAnyRole("ADMIN")
                 .antMatchers("/","/assets/**","/login","/logout","/favicon.ico").permitAll()
-                .anyRequest().permitAll()
+                .anyRequest()
+                .permitAll()
 
                 .and()
                 .formLogin()
-                    .loginPage("/login")
-                    .successHandler(successHandler())
-                    .failureHandler(failureHandler())
-                    .permitAll()
+                .loginPage("/login")
+                .successHandler(successHandler())
+                .failureHandler(failureHandler())
+                .permitAll()
+
                 .and()
                 .logout()
                 .logoutSuccessUrl("/")
-                .permitAll()
-                ;
-
+                .permitAll();
     }
+
 
     @Bean
     public AuthenticationSuccessHandler successHandler() {

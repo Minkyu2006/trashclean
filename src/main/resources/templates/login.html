@@ -7,8 +7,61 @@
 	<title>NatureStore</title>
 	<script>
 		$(function() {
-			mobile();
+			// 저장된 쿠키값을 가져와서 ID 칸에 넣어준다. 없으면 공백으로 들어감.
+			var key = getCookie("key");
+			var $userId = $("#userId");
+			var $idSaveCheck = $("#idSaveCheck");
+
+			$userId.val(key);
+
+			if($userId.val() !== ""){ // 그 전에 ID를 저장해서 처음 페이지 로딩 시, 입력 칸에 저장된 ID가 표시된 상태라면,
+				$idSaveCheck.attr("checked", true); // ID 저장하기를 체크 상태로 두기.
+			}
+
+			$idSaveCheck.change(function(){ // 체크박스에 변화가 있다면,
+				if($("#idSaveCheck").is(":checked")){ // ID 저장하기 체크했을 때,
+					setCookie("key", $("#userId").val(), 7); // 7일 동안 쿠키 보관
+				}else{
+					// ID 저장하기 체크 해제 시,
+					deleteCookie("key");
+				}
+			});
+
+			// ID 저장하기를 체크한 상태에서 ID를 입력하는 경우, 이럴 때도 쿠키 저장.
+			$userId.keyup(function(){ // ID 입력 칸에 ID를 입력할 때,
+				if($idSaveCheck.is(":checked")){ // ID 저장하기를 체크한 상태라면,
+					setCookie("key", $("#userId").val(), 7); // 7일 동안 쿠키 보관
+				}
+			});
 		});
+
+		function setCookie(cookieName, value, exdays){
+			var exdate = new Date();
+			exdate.setDate(exdate.getDate() + exdays);
+			var cookieValue = escape(value) + ((exdays==null) ? "" : "; expires=" + exdate.toGMTString());
+			document.cookie = cookieName + "=" + cookieValue;
+		}
+
+		function deleteCookie(cookieName){
+			var expireDate = new Date();
+			expireDate.setDate(expireDate.getDate() - 1);
+			document.cookie = cookieName + "= " + "; expires=" + expireDate.toGMTString();
+		}
+
+		function getCookie(cookieName) {
+			cookieName = cookieName + '=';
+			var cookieData = document.cookie;
+			var start = cookieData.indexOf(cookieName);
+			var cookieValue = '';
+			if(start !== -1){
+				start += cookieName.length;
+				var end = cookieData.indexOf(';', start);
+				if(end === -1)end = cookieData.length;
+				cookieValue = cookieData.substring(start, end);
+			}
+			return unescape(cookieValue);
+		}
+
 	</script>
 </head>
 
@@ -16,7 +69,7 @@
 
 <div layout:fragment="content" class="login-wrap">
 
-	<div class="ic-login mobile">
+	<div class="ic-login">
 		<div class="ic-login__contents">
 			<div class="ic-login__head">
 				<h1 class="ic-login__logo"><a href="/"><img src="/assets/images/logo--kr-w.png" alt="자연상점" /></a></h1>
@@ -26,17 +79,18 @@
 				<h3 class="ic-login__box-logo"><img src="/assets/images/logo__ieco.png" alt="iEcoproC" /></h3>
 				<form class="ic-login__form" th:action="@{/login}" method="post">
 					<ul>
-						<li><input type="text" id="loginId" class="ic-login__input" name="username" placeholder="ID" /></li>
+						<li><input type="text" class="ic-login__input" id="userId" name="username" placeholder="ID" /></li>
 						<li><input type="password" class="ic-login__input" name="password" placeholder="Password" /></li>
 						<li>
 							<div class="ic-login__check">
-								<input type="checkbox" class="ic-login__checkbox" id="checkId" />
-								<label for="checkId" class="ic-login__label">아이디저장</label>
+								<input type="checkbox" class="ic-login__checkbox" id="idSaveCheck" />
+								<label for="idSaveCheck" class="ic-login__label">아이디저장</label>
 							</div>
 						</li>
 					</ul>
-					<input type="submit" class="ic-login__button" style="font-size:18px;" value="로그인" />
-					<div th:if="${param.error}" class="login__message">
+					<input type="submit" id="loginBtn" class="ic-login__button" style="font-size:18px;" value="로그인" />
+					<div id="loginCheck" th:if="${param.error}" class="login__message">
+						<span id="loginCheck2" th:text="${param.error}" style="display: none"></span>
 						아이디 또는 비밀번호가 잘못되었습니다.
 					</div>
 				</form>

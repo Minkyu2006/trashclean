@@ -2,7 +2,6 @@ package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.accounts.*;
 import kr.co.broadwave.aci.bscodes.CodeType;
-import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.company.CompanyAccountDto;
 import kr.co.broadwave.aci.company.CompanyService;
@@ -12,16 +11,13 @@ import kr.co.broadwave.aci.teams.TeamDto;
 import kr.co.broadwave.aci.teams.TeamService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -64,7 +60,7 @@ public class Maincontroller {
         if(currentuserid.equals("system")){
             return "login";
         }else{
-            return "homeIndex";
+            return "redirect:/dashboard/dashboardall";
         }
     }
 
@@ -122,12 +118,10 @@ public class Maincontroller {
             return "redirect:/mobile/mobileindex";
         }
         return "redirect:/dashboard/dashboardall";
-
     }
 
     @RequestMapping("/login")
     public String login(HttpServletRequest request){
-
         String referrer = request.getHeader("Referer");
         request.getSession().setAttribute("prevPage", referrer);
 
