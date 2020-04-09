@@ -983,9 +983,14 @@ public class CollectionTaskRestController {
             String gps_laData = (String) map.get("gps_la");
             String gps_loData = (String) map.get("gps_lo");
             if (gps_loData.equals("na") || gps_loData.equals("") || gps_laData.equals("na") || gps_laData.equals("")) {
-                uncomplete++;
                 noDataDeviceid.add((String) map.get("deviceid"));
-                continue;
+                if(moniteringListDtos.get(i).getCompleteDateTime()!=null){
+                    completeState.add("수거완료");
+                    complete++;
+                }else{
+                    completeState.add("수거미완료");
+                    uncomplete++;
+                }
             }else {
                 if (gps_laData.substring(0, 1).equals("N")) {
                     String gps_laSubStirng = gps_laData.replace("N", "");

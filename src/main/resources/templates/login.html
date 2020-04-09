@@ -88,9 +88,8 @@
 							</div>
 						</li>
 					</ul>
-					<input type="submit" id="loginBtn" class="ic-login__button" style="font-size:18px;" value="로그인" />
+					<input type="submit" class="ic-login__button" style="font-size:18px;" value="로그인" />
 					<div id="loginCheck" th:if="${param.error}" class="login__message">
-						<span id="loginCheck2" th:text="${param.error}" style="display: none"></span>
 						아이디 또는 비밀번호가 잘못되었습니다.
 					</div>
 				</form>
