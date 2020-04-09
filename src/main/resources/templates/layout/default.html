@@ -117,9 +117,6 @@
 
 				$("#profile").change(function() {
 					profileURL(this);
-					setTimeout(function() {
-						photoUpdate();
-					},50)
 				});
 
 			});
@@ -353,15 +350,26 @@
 
 			// 파일업로드시 미리보기 함
 			function profileURL(input) {
-				console.log("사진팝업띄움");
-				$('#profilePhotoChange').addClass('open');
-				if (input.files && input.files[0]) {
-					var reader = new FileReader();
-					reader.onload = function(e) {
-						// console.log("e.target.result : "+e.target.result);
-						$("#profileImage").attr('src', e.target.result);
-					};
-					reader.readAsDataURL(input.files[0]);
+
+				var profile = input.files;
+
+				if(!/\.(jpg|jpeg|png)$/i.test(profile[0].name)){
+					alertCaution('jpeg, jpg, png 파일만 선택해 주세요.\n\n현재 파일 : ' + profile[0].name);
+				}else{
+					// console.log("사진팝업띄움");
+					$('#profilePhotoChange').addClass('open');
+					if (profile && profile[0]) {
+						var reader = new FileReader();
+						reader.onload = function(e) {
+							// console.log("e.target.result : "+e.target.result);
+							$("#profileImage").attr('src', e.target.result);
+						};
+						reader.readAsDataURL(profile[0]);
+					}
+
+					setTimeout(function() {
+						photoUpdate();
+					},50)
 				}
 			}
 
@@ -369,7 +377,7 @@
 			var croppable;
 			//프로필사진 - 수정버튼
 			function photoUpdate() {
-				console.log("자르기시작");
+				// console.log("자르기시작");
 				var profileImage = document.getElementById('profileImage');
 				cropper = new Cropper(profileImage, {
 					moveable: false,
@@ -498,7 +506,7 @@
 							</div>
 							<div class="profile-pop__picture-upload">
 								<label for="profile"></label>
-								<input type="file" id="profile" name="profile" accept=".jpg,.jpeg,.png,image/*" />
+								<input type="file" id="profile" name="profile" accept="image/*" />
 							</div>
 						</div>
 						<div class="profile-pop__list">
