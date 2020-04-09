@@ -534,7 +534,7 @@ public class AccountRestController {
             String files = profilePhoto.getName();
             MultipartFile mFile = multi.getFile(files);
 
-        // 저장할 파일이 존재할때만 실행
+            // 저장할 파일이 존재할때만 실행
             assert mFile != null;
             FileUpload fileUpload = fileUploadService.save(mFile);
             account.setUserPhoto(fileUpload);
