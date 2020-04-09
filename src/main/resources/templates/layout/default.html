@@ -87,7 +87,6 @@
 				// $('#profilePhotoChange').addClass('open');
 				$('.l-popup__close').on('click', function(e) {
 					profileReset();
-					$("#successPhoto").hide();
 					$('.l-popup').removeClass('open');
 					if(window.cropper) {
 						cropper.destroy();
@@ -404,11 +403,12 @@
 
 				roundedImage = document.createElement('img');
 				roundedImage.id = "profileTest";
-				// roundedImage.style.cssText = 'position:absolute;top:70px;left:243px;';
+				roundedImage.style.cssText = 'display:none;';
 				roundedImage.src = roundedCanvas.toDataURL();
 				resultImg.innerHTML = '';
 				resultImg.appendChild(roundedImage);
-				$("#successPhoto").show();
+
+				successPhoto();
 			}
 
 			// 사진자르기실행
@@ -434,7 +434,6 @@
 			function successPhoto() {
 				if(window.cropper) {
 					profileReset();
-					$("#successPhoto").hide();
 					var $profileTest = $('#profileTest');
 					$('#profilePhoto').attr('src',$profileTest.attr("src"));
 					$profileTest.attr('src','');
@@ -604,8 +603,7 @@
 
 					</div>
 				</div>
-				<button onclick="cropBtn()">자르기</button>
-				<button id="successPhoto" style="display:none" onclick="successPhoto()">완료</button>
+				<button onclick="cropBtn()">완료</button>
 			</div>
 
 			<a href="#" class="l-popup__close" id="profilepopClose">팝업닫기</a>
