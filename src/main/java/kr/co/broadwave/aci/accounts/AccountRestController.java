@@ -480,8 +480,8 @@ public class AccountRestController {
     // 프로필변경
     @PostMapping("profilereg")
     public ResponseEntity<Map<String,Object>> profilereg(@ModelAttribute AccountMapperDtoProfile accountMapperDtoProfile,
-                                                    MultipartHttpServletRequest multi,
-                                                    HttpServletRequest request) throws Exception{
+                                                    MultipartHttpServletRequest multi,@RequestParam(value="profilePhoto") MultipartFile profilePhoto,
+                                                    HttpServletRequest request){
 
         Account account = modelMapper.map(accountMapperDtoProfile, Account.class);
         Optional<Team> optionalTeam = teamService.findByTeamcode(accountMapperDtoProfile.getTeam());
@@ -523,23 +523,22 @@ public class AccountRestController {
             account.setApprovalDateTime(optionalAccount.get().getApprovalDateTime());
             account.setApproval_id(optionalAccount.get().getApproval_id());
         }else{
-            //log.info("사용자정보 수정실패 : 사용자아이디: '" + account.getUserid() + "'");
+            log.info("사용자정보 수정실패 : 사용자아이디: '" + account.getUserid() + "'");
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
         }
         account.setModify_id(currentuserid);
         account.setModifyDateTime(LocalDateTime.now());
 
         //프로필사진 저장
-        Iterator<String> files = multi.getFileNames();
-        String uploadFile = files.next();
-        MultipartFile mFile = multi.getFile(uploadFile);
+        if(!profilePhoto.isEmpty()) {
+            String files = profilePhoto.getName();
+            MultipartFile mFile = multi.getFile(files);
 
         // 저장할 파일이 존재할때만 실행
-        assert mFile != null;
-        if(!mFile.isEmpty()) {
+            assert mFile != null;
             FileUpload fileUpload = fileUploadService.save(mFile);
             account.setUserPhoto(fileUpload);
-        }else{
+        }else {
             //파일은 존재하지않으나, 기존파일이 존재할경우
             account.setUserPhoto(optionalAccount.get().getUserPhoto());
         }
@@ -547,7 +546,7 @@ public class AccountRestController {
         accountService.updateAccount(account);
 
         //파일수정일때 실행
-        if(!mFile.isEmpty()) {
+        if(!profilePhoto.isEmpty()) {
             if (optionalAccount.get().getUserPhoto() != null) {
                 fileUploadService.del(optionalAccount.get().getUserPhoto().getId());
             }

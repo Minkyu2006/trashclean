@@ -47,12 +47,55 @@
 		<link rel="stylesheet" href="/assets/js/cropper/cropper.css"/>
 		<script src="/assets/js/cropper/cropper.min.js"></script>
 
-        <!--		구글지도-->
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBekmp9O5HTiXRP0ETJn-_qAeCgwcKOHC4" async defer></script>
+        <!--구글지도-->
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD8iOdkgwuxzjMqcI_STFPFzQrgjcpNKos" async defer></script>
+
+		<style>
+
+			.img-container {
+				max-width: 320px;
+			}
+			.img-container img {
+				width: 100%;
+			}
+
+			.cropper-crop-box, .cropper-view-box {
+				border-radius: 50%;
+			}
+
+			.cropper-view-box {
+				box-shadow: 0 0 0 1px #39f;
+				outline: 0;
+			}
+
+			.cropper-face {
+				background-color:inherit !important;
+			}
+
+			.cropper-dashed, .cropper-point.point-se, .cropper-point.point-sw, .cropper-point.point-nw,   .cropper-point.point-ne, .cropper-line {
+				display:none !important;
+			}
+
+			.cropper-view-box {
+				outline:inherit !important;
+			}
+
+		</style>
 
 		<script>
-
 			$(function(){
+				// $('#profilePhotoChange').addClass('open');
+				$('.l-popup__close').on('click', function(e) {
+					profileReset();
+					$("#successPhoto").hide();
+					$('.l-popup').removeClass('open');
+					if(window.cropper) {
+						cropper.destroy();
+						$('#profileTest').attr('src','');
+					}
+					e.preventDefault();
+				});
+
 				var $headerMode = $("#headerMode");
 				if($headerMode.val()===""){
 					// console.log("세션날라감 해더모드값 1로 셋팅");
@@ -137,6 +180,21 @@
 
 				var formData = new FormData(document.getElementById('proreg'));
 
+				var profilePhoto;
+				var array = [];
+				if(roundedCanvas!==undefined) {
+					var imgDataUrl = roundedCanvas.toDataURL();
+					var blobBin = atob(imgDataUrl.split(',')[1]);	// base64 데이터 디코딩
+					for (var i = 0; i < blobBin.length; i++) {
+						array.push(blobBin.charCodeAt(i));
+					}
+					profilePhoto = new Blob([new Uint8Array(array)], {type: 'image/png'});	// Blob 생성
+					formData.append("profilePhoto", profilePhoto);	// file data 추가
+				}else{
+					profilePhoto = new Blob([new Uint8Array(array)], {type: 'image/png'});	// Blob 생성
+					formData.append("profilePhoto", profilePhoto);
+				}
+
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
 				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
@@ -220,6 +278,8 @@
 							return;
 						}
 						var AWSS3URL = res.data.AWSS3URL;
+						// console.log("프로필사진넣음");
+						// $("#profileImage").attr("src",AWSS3URL+res.data.profilefilepath+res.data.profilefilename);
 
 						$("#baseprofilename").html(res.data.accountProfile.username);
 						$("#baseprofilePhoto").attr("src",AWSS3URL+res.data.profilefilepath+res.data.profilefilename);
@@ -260,7 +320,7 @@
 
 				var token = $("meta[name='_csrf']").attr("content");
 				var header = $("meta[name='_csrf_header']").attr("content");
-				$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 				$.ajax({
 					url:'/api/account/modifypassword',
@@ -291,22 +351,106 @@
 
 			// 파일업로드시 미리보기 함
 			function profileURL(input) {
+				// console.log("사진팝업띄움");
+				$('#profilePhotoChange').addClass('open');
 				if (input.files && input.files[0]) {
 					var reader = new FileReader();
 					reader.onload = function(e) {
-						$('#profilePhoto').attr('src', e.target.result);
+						// console.log("e.target.result : "+e.target.result);
+						$("#profileImage").attr('src', e.target.result);
 					};
 					reader.readAsDataURL(input.files[0]);
 				}
+				setTimeout(function() {
+					photoUpdate();
+				},10)
+			}
+
+			var cropper;
+			var croppable;
+			//프로필사진 - 수정버튼
+			function photoUpdate() {
+				// console.log("자르기시작");
+				var profileImage = document.getElementById('profileImage');
+				cropper = new Cropper(profileImage, {
+					moveable: false,
+					zoomable: false,
+					rotatable: false,
+					scalable: false,
+					aspectRatio: 1,
+					viewMode: 1,
+					ready: function () {
+						croppable = true;
+					}
+				});
+			}
+
+			var croppedCanvas;
+			var roundedCanvas;
+			var roundedImage;
+			var resultImg;
+			//프로필사진 - 크롭버튼
+			function cropBtn() {
+				// console.log("크롭버튼 실행");
+				resultImg = document.getElementById('resultImg');
+
+				if(!croppable) {
+					return;
+				}
+
+				croppedCanvas = cropper.getCroppedCanvas();
+
+				roundedCanvas = getRoundedCanvas(croppedCanvas);
+
+				roundedImage = document.createElement('img');
+				roundedImage.id = "profileTest";
+				// roundedImage.style.cssText = 'position:absolute;top:70px;left:243px;';
+				roundedImage.src = roundedCanvas.toDataURL();
+				resultImg.innerHTML = '';
+				resultImg.appendChild(roundedImage);
+				$("#successPhoto").show();
+			}
+
+			// 사진자르기실행
+			function getRoundedCanvas(sourceCanvas) {
+				var canvas = document.createElement('canvas');
+				var context = canvas.getContext('2d');
+				var width = sourceCanvas.width;
+				var height = sourceCanvas.height;
+
+				canvas.width = width;
+				canvas.height = height;
+
+				context.imageSmoothingEnabled = true;
+				context.drawImage(sourceCanvas, 0, 0, width, height);
+				context.globalCompositeOperation = 'destination-in';
+				context.beginPath();
+				context.arc(width / 2, height / 2, Math.min(width, height) / 2, 0, 2 * Math.PI, true);
+				context.fill();
+				return canvas;
+			}
+
+			// 자르기완료버튼
+			function successPhoto() {
+				if(window.cropper) {
+					profileReset();
+					$("#successPhoto").hide();
+					var $profileTest = $('#profileTest');
+					$('#profilePhoto').attr('src',$profileTest.attr("src"));
+					$profileTest.attr('src','');
+					cropper.destroy();
+				}
+				$('.l-popup').removeClass('open');
 			}
 
 			// 파일초기화
 			function profileReset() {
 				var agent = navigator.userAgent.toLowerCase();
+				var $profile = $("#profile");
 				if ( (navigator.appName === 'Netscape' && navigator.userAgent.search('Trident') !== -1) || (agent.indexOf("msie") !== -1) ){
-					$("#profile").replaceWith( $("#profile").clone(true) );
+					$profile.replaceWith($profile.clone(true));
 				} else {
-					$("#profile").val("");
+					$profile.val("");
 				}
 			}
 
@@ -353,12 +497,10 @@
 							<div class="profile-pop__picture-img">
 								<img id="profilePhoto" src="" />
 							</div>
-
 							<div class="profile-pop__picture-upload">
 								<label for="profile"></label>
-								<input type="file" id="profile" name="profile" />
+								<input type="file" id="profile" name="profile" accept=".jpg,.jpeg,.png" />
 							</div>
-
 						</div>
 						<div class="profile-pop__list">
 							<div class="profile-pop__item">
@@ -443,6 +585,32 @@
 			</div>
 
     </div>
+
+	<div class="l-popup" id="profilePhotoChange">
+		<div class="l-popup__container">
+			<div class="l-popup__head">
+				<h3 class="l-popup__heading">프로필 사진변경</h3>
+			</div>
+			<div class="l-popup__content">
+
+				<div class="l-popup__section">
+					<div class="img-container">
+						<img src="" alt="Picture" id="profileImage">
+					</div>
+				</div>
+
+				<div class="l-popup__section">
+					<div id="resultImg">
+
+					</div>
+				</div>
+				<button onclick="cropBtn()">자르기</button>
+				<button id="successPhoto" style="display:none" onclick="successPhoto()">완료</button>
+			</div>
+
+			<a href="#" class="l-popup__close" id="profilepopClose">팝업닫기</a>
+		</div>
+	</div>
 
 	<div id='alertpop'>
 	</div>

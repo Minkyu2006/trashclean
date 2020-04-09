@@ -90,9 +90,9 @@ public class FileUploadService {
         // 파일 중복명 처리
         String genId = UUID.randomUUID().toString();
         genId = genId.replace("-", "");
-        String originalfileName = file.getOriginalFilename();
+        String originalfileName = file.getName();
         String fileExtension = getExtension(originalfileName);
-        String storedFileName = genId + "." + fileExtension;
+        String storedFileName = genId + "." + fileExtension+"png";
         try {
             //AWS S3저장후
             awss3Service.uploadObject(file, storedFileName, filePath);
@@ -105,8 +105,7 @@ public class FileUploadService {
             newfile.setFileFullPath(filePath +'/' + storedFileName);
             newfile.setSize(file.getSize());
             newfile.setInsertDateTime(LocalDateTime.now());
-            FileUpload saveFile = fileUploadRepository.save(newfile);
-            return saveFile;
+            return fileUploadRepository.save(newfile);
 
         }catch (Exception e){
             log.error(" FileUpload Error! :"+e.toString());
