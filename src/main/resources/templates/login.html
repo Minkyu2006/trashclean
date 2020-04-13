@@ -80,7 +80,7 @@
 				<form class="ic-login__form" th:action="@{/login}" method="post">
 					<ul>
 						<li><input type="text" class="ic-login__input" id="userId" name="username" placeholder="ID" /></li>
-						<li><input type="password" class="ic-login__input" name="password" placeholder="Password" /></li>
+						<li><input type="password" class="ic-login__input" autocomplete="off" name="password" placeholder="Password" /></li>
 						<li>
 							<div class="ic-login__check">
 								<input type="checkbox" class="ic-login__checkbox" id="idSaveCheck" />

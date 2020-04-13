@@ -296,21 +296,25 @@
 
 			//비밀번호 변경
 			function passSave() {
-				if ($("#oldpassword").val().trim() === '') {
+				var $oldpassword = $("#oldpassword");
+				var $newpassword = $("#newpassword")
+				var $passwordconfirm = $("#passwordconfirm");
+
+				if ($oldpassword.val().trim() === '') {
 					alertCaution("현재비밀번호를 입력하세요..");
-					$("#oldpassword").trigger('focus');
+					$oldpassword.trigger('focus');
 					return false;
 				}
 
-				if ($("#newpassword").val().trim() === '') {
+				if ($newpassword.val().trim() === '') {
 					alertCaution("신규비밀번호를 입력하세요.");
-					$("#newpassword").trigger('focus');
+					$newpassword.trigger('focus');
 					return false;
 				}
 
-				if ($("#passwordconfirm").val().trim() === '') {
+				if ($passwordconfirm.val().trim() === '') {
 					alertCaution("비밀번호 확인을 주세요.");
-					$("#passwordconfirm").trigger('focus');
+					$passwordconfirm.trigger('focus');
 					return false;
 				}
 
@@ -481,7 +485,7 @@
 					<div class="contents-profile">
 		    			<a href="#" class="contents-profile__btn">
 			    			<span class="contents-profile__pic">
-			    				<img id="baseprofilePhoto" src="" />
+			    				<img id="baseprofilePhoto" src="" alt="프로필사진" />
 			    			</span>
 			    			<span id="baseprofilename" class="contents-profile__info"></span>
 		    			</a>
@@ -502,7 +506,7 @@
 					<form class="profile-pop__form" id ="proreg" enctype="multipart/form-data">
 						<div class="profile-pop__picture">
 							<div class="profile-pop__picture-img">
-								<img id="profilePhoto" src="" />
+								<img id="profilePhoto" src="" alt="프로필사진미리보기" />
 							</div>
 							<div class="profile-pop__picture-upload">
 								<label for="profile"></label>
