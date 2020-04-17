@@ -122,4 +122,15 @@ public class TestpageController {
     public String logintest(){
         return "testpage/logintest";
     }
+
+    @RequestMapping("collectionroutingtest1")
+    public String collectionroutingtest1(){
+        return "testpage/collectionroutingtest1";
+    }
+
+    @RequestMapping("collectionroutingtest2")
+    public String collectionroutingtest2(){
+        return "testpage/collectionroutingtest2";
+    }
+
 }
