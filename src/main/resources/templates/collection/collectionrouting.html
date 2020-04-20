@@ -688,7 +688,7 @@
 				map.destroy();
 			}
 
-			mapDiv = document.getElementById('naverMap');
+			var mapDiv = document.getElementById('naverMap');
 			var center = new naver.maps.LatLng(center_lagps,center_logps);
 
 			map = new naver.maps.Map(mapDiv, {
@@ -708,19 +708,49 @@
 			// console.log("direction_gps_loList : " + direction_gps_loList);
 			var marker_latlngs = [];
 			marker_latlngs.push(new naver.maps.LatLng(startSp[0], startSp[1]));
-			marker_latlngs.push(new naver.maps.LatLng(goalSp[0], goalSp[1]));
 			for(var i=0; i<directionSize; i++){
 				marker_latlngs.push(new naver.maps.LatLng(direction_gps_laList[i],direction_gps_loList[i]));
 			}
+			marker_latlngs.push(new naver.maps.LatLng(goalSp[0], goalSp[1]));
 			//console.log("marker_latlngs : " + marker_latlngs);
 
 			//네이버마커
 			for(i=0; i<marker_latlngs.length; i++) {
-				marker = new naver.maps.Marker({
-					position: marker_latlngs[i],
-					map: map,
-					// clickable: true
-				});
+				if(i===0) {
+					var contentString = [
+						'<h3>출발</h3>',
+					].join('');
+					var infowindow = new naver.maps.InfoWindow({
+						content: contentString
+					});
+					infowindow.open(map, marker);
+
+					marker = new naver.maps.Marker({
+						icon: {
+							url: "/assets/images/marker.png"
+						},
+						position: marker_latlngs[i],
+						map: map,
+						// clickable: true
+					});
+
+				}else if(i===marker_latlngs.length-1){
+					marker = new naver.maps.Marker({
+						icon: {
+							url: "/assets/images/marker--severe.png"
+						},
+						position: marker_latlngs[i],
+						map: map,
+					});
+				}else{
+					marker = new naver.maps.Marker({
+						icon: {
+							url: "/assets/images/marker--caution.png"
+						},
+						position: marker_latlngs[i],
+						map: map,
+					});
+				}
 			}
 		}
 
