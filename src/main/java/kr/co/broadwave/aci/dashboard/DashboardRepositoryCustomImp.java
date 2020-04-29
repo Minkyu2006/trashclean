@@ -6,6 +6,7 @@ import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.equipment.QEquipment;
 import kr.co.broadwave.aci.files.QFileUpload;
 import kr.co.broadwave.aci.imodel.QIModel;
+import kr.co.broadwave.aci.mastercode.QMasterCode;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
@@ -30,9 +31,11 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
         QEquipment equipment = QEquipment.equipment;
         QIModel qiModel = QIModel.iModel;
         QFileUpload fileUpload = QFileUpload.fileUpload;
+        QMasterCode masterCode = QMasterCode.masterCode;
 
         JPQLQuery<DashboardDeviceListViewDto> query = from(equipment)
                 .innerJoin(equipment.mdId,qiModel)
+                .leftJoin(equipment.emState,masterCode)
                 .leftJoin(equipment.mdId.mdFileid,fileUpload)
                 .select(Projections.constructor(DashboardDeviceListViewDto.class,
                         equipment.id,
@@ -47,7 +50,8 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
                         equipment.emInstallDate,
                         equipment.emSubName,
                         fileUpload.filePath,
-                        fileUpload.saveFileName
+                        fileUpload.saveFileName,
+                        equipment.emState
                 ));
 
         // 검색조건필터

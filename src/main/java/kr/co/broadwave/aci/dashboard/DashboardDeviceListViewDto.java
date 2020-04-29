@@ -29,6 +29,17 @@ public class DashboardDeviceListViewDto {
     private String emSubName; // 약칭
     private String filePath; // 파일경로Path
     private String saveFileName; // 저장된경로
+    private MasterCode emState; // 설비상태
+
+    public String getEmState() {
+        if(emState==null){
+            return null;
+        }else if(!emState.getName().equals("운영")){
+            return "없음";
+        }else{
+            return emState.getName();
+        }
+    }
 
     public String getFilePath() {
 //        System.out.println("filePath : "+filePath);
