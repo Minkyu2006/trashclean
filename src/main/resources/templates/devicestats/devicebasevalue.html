@@ -36,7 +36,6 @@
 
 		// 조건초기화
 		function reset() {
-			$("#s_emType").val('');
 			$("#s_emCountry").val('');
 			$("#s_emLocation").val('');
 			$("#s_emNumber").val('');
@@ -106,13 +105,13 @@
 			var $schList = $('#schList');
 
 			var params = {
-				emType:$('#s_emType').val(),
+				emType:$('#s_equipmentType').val(),
 				emCountry:$('#s_emCountry').val(),
 				emLocation:$('#s_emLocation').val(),
 				emNumber:$('#s_emNumber').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="12" align = "center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="11" align = "center">조회 중</td></tr>');
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
@@ -127,21 +126,20 @@
 					ajaxErrorMsg(request);
 				},
 				success: function(res){
-					totCnt = res.data.total_rows;
-
-					if (totCnt === 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="12" align="center">조회된 데이터가 없습니다.</td></tr>');
-						return;
-					}
-
 					//화면 출력
 					var html = '';
 					var len = res.data.equipmentListDtos.length;
+
+					if (len === 0 || len === undefined) {
+						$schList.empty().append('<tr class="t-c"><td colspan="11" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+
 					for(i=0; i<len; i++){
 						html += '<tr >';
 						html += '<td >'+ '<input name="checkemNumber" type="checkbox" value='+nvl(res.data.equipmentListDtos[i]["emNumber"],"확 인 불 가")+' />' +'</td>';
 						html += '<td class="align-left">'+ nvl(res.data.equipmentListDtos[i]["emNumber"],"확 인 불 가") +'</td>';
-						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["emType"],"확 인 불 가") +'</td>';
+						// html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["emType"],"확 인 불 가") +'</td>';
 						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["iModel"],"확 인 불 가") +'</td>';
 						html += '<td class="align-left" >'+ nvl(res.data.equipmentListDtos[i]["emCountry"],"확 인 불 가")+'-'+nvl(res.data.equipmentListDtos[i]["emLocation"],"확 인 불 가")+'</td>';
 
@@ -255,15 +253,7 @@
 								<tr>
 									<th>모델 타입</th>
 									<td>
-										<div class="c-select">
-											<select id="s_emType" class="c-select__input">
-												<option value="">전체</option>
-												<option th:each ="equipdType : ${equipdTypes}"
-													th:value="${equipdType.code}"
-														th:text="${equipdType.name}"
-												></option>
-											</select>
-										</div>
+										<input type="text" id="s_equipmentType" value="iSolarbin" class="c-text__input" readonly="readonly"/>
 									</td>
 									<th>국가</th>
 									<td>
@@ -313,7 +303,7 @@
 											<colgroup>
 												<col style="width: 40px;" />
 												<col style="width: 140px;" />
-												<col style="width: 100px;" />
+<!--												<col style="width: 100px;" />-->
 												<col style="width: 210px;" />
 												<col style="width: 140px;" />
 
@@ -330,7 +320,7 @@
 											<tr>
 												<th><input type="checkbox" id="th_checkAll" onclick="checkAll();" /></th>
 												<th>장비번호</th>
-												<th>모델타입</th>
+<!--												<th>모델타입</th>-->
 												<th>모델명/종류</th>
 												<th>국가/지역</th>
 												<th>센서데이터 송신시간</th>
@@ -349,7 +339,7 @@
 											<colgroup>
 												<col style="width: 40px;" />
 												<col style="width: 140px;" />
-												<col style="width: 100px;" />
+<!--												<col style="width: 100px;" />-->
 												<col style="width: 210px;" />
 												<col style="width: 140px;" />
 

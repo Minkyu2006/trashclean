@@ -2,6 +2,7 @@ package kr.co.broadwave.aci.collection;
 
 import kr.co.broadwave.aci.accounts.*;
 import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
+import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
@@ -10,6 +11,7 @@ import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.equipment.*;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import kr.co.broadwave.aci.vehicle.Vehicle;
 import kr.co.broadwave.aci.vehicle.VehicleDto;
@@ -83,9 +85,9 @@ public class CollectionTaskRestController {
         this.keyGenerateService = keyGenerateService;
     }
 
-    // 수거관리 저장
-    @PostMapping ("reg")
-    public ResponseEntity<Map<String,Object>> collectionTaskReg(@RequestParam(value="deviceList[]", defaultValue="") List<String> deviceList,
+    // iSolarbin 수거업무 저장
+    @PostMapping("iSolarbinReg")
+    public ResponseEntity<Map<String,Object>> iSolarbinReg(@RequestParam(value="deviceList[]", defaultValue="") List<String> deviceList,
                                                                 @RequestParam(value="deviceListlen", defaultValue="") Integer deviceListlen,
                                                                 @RequestParam(value="ctCode", defaultValue="") String ctCodeNum,
                                                                 @RequestParam(value="yyyymmddNum", defaultValue="") String yyyymmddNum,
@@ -219,6 +221,252 @@ public class CollectionTaskRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // iTainar 수거업무 저장
+    @PostMapping ("iTainarReg")
+    public ResponseEntity<Map<String,Object>> iTainarReg(@RequestParam(value="ctCodeNum", defaultValue="") String ctCodeNum,
+                                                         @RequestParam(value="choseDeviceNumber", defaultValue="") String choseDeviceNumber,
+                                                         @RequestParam(value="waitingDeviceNumber", defaultValue="") String waitingDeviceNumber,
+                                                         @RequestParam(value="yyyymmddNum", defaultValue="") String yyyymmddNum,
+                                                         @RequestParam(value="accountNum", defaultValue="") String accountNum,
+                                                         @RequestParam(value="vehicleNum", defaultValue="") String vehicleNum,
+                                                         @RequestParam(value="changeWaitingDeviceNumber", defaultValue="") String changeWaitingDeviceNumber,
+                                                         HttpServletRequest request) throws Exception {
+        AjaxResponse res = new AjaxResponse();
+        String currentuserid = CommonUtils.getCurrentuser(request);
+        Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
+        String yyyymmdd = yyyymmddNum.replaceAll("-", "");
+
+//        log.info("iTainar 저장시작");
+//        log.info("ctCode : "+ctCode);
+//        log.info("yyyymmdd : "+yyyymmdd);
+//        log.info("accountNum : "+accountNum);
+//        log.info("vehicleNum : "+vehicleNum);
+//        log.info("choseDeviceNumber : "+choseDeviceNumber);
+//        log.info("waitingDeviceNumber : "+waitingDeviceNumber);
+
+        //로그인한 사람 아이디가존재하지않으면 에러처리
+        if (!optionalAccount.isPresent()) {
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E014.getCode(), ResponseErrorCode.E014.getDesc() + "'" + currentuserid + "'" ));
+        }
+
+        List<String> deviceList = new ArrayList<>();
+        if(ctCodeNum.equals("")) {
+            deviceList.add(waitingDeviceNumber);
+        }else if(!changeWaitingDeviceNumber.equals(waitingDeviceNumber)){
+            deviceList.add(changeWaitingDeviceNumber);
+        }else{
+            deviceList.add(waitingDeviceNumber);
+        }
+        deviceList.add(choseDeviceNumber);
+
+        CodeType codeType = CodeType.valueOf("C0015");
+
+        if(ctCodeNum.equals("")) {
+            for (int i = 0; i < deviceList.size(); i++) {
+                Equipment equipment = new Equipment();
+                Optional<MasterCode> masterCodes;
+                Optional<Equipment> optionalEquipment;
+
+                if (i == 0) {
+                    optionalEquipment = equipmentService.findByEmNumber(deviceList.get(i));
+                    masterCodes = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS06");
+                }else {
+                    optionalEquipment = equipmentService.findByEmNumber(deviceList.get(i));
+                    masterCodes = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS05");
+                }
+
+                if (!optionalEquipment.isPresent()) {
+                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E028.getCode(), ResponseErrorCode.E028.getDesc()));
+                } else {
+                    equipment.setId(optionalEquipment.get().getId());
+                    equipment.setEmNumber(optionalEquipment.get().getEmNumber());
+                    equipment.setEmCerealNumber(optionalEquipment.get().getEmCerealNumber());
+                    equipment.setEmDesignation(optionalEquipment.get().getEmDesignation());
+                    equipment.setEmType(optionalEquipment.get().getEmType());
+                    equipment.setEmAwsNumber(optionalEquipment.get().getEmAwsNumber());
+                    equipment.setEmCountry(optionalEquipment.get().getEmCountry());
+                    equipment.setEmLocation(optionalEquipment.get().getEmLocation());
+                    equipment.setEmEmbeddedNumber(optionalEquipment.get().getEmEmbeddedNumber());
+                    equipment.setCompany(optionalEquipment.get().getCompany());
+                    equipment.setEmInstallDate(optionalEquipment.get().getEmInstallDate());
+                    equipment.setEmSubName(optionalEquipment.get().getEmSubName());
+                    equipment.setMdId(optionalEquipment.get().getMdId());
+                    equipment.setEmLatitude(optionalEquipment.get().getEmLatitude());
+                    equipment.setEmHardness(optionalEquipment.get().getEmHardness());
+                    equipment.setInsert_id(optionalEquipment.get().getInsert_id());
+                    equipment.setInsertDateTime(optionalEquipment.get().getInsertDateTime());
+                    equipment.setModify_id(optionalEquipment.get().getModify_id());
+                    equipment.setModifyDateTime(optionalEquipment.get().getModifyDateTime());
+                    equipment.setVInputtime(optionalEquipment.get().getVInputtime());
+                    equipment.setVInterval(optionalEquipment.get().getVInterval());
+                    equipment.setVPresstime(optionalEquipment.get().getVPresstime());
+                    equipment.setVRedstart(optionalEquipment.get().getVRedstart());
+                    equipment.setVSolenoidtime(optionalEquipment.get().getVSolenoidtime());
+                    equipment.setVYellowstart(optionalEquipment.get().getVYellowstart());
+                    equipment.setEmCertificationNumber(optionalEquipment.get().getEmCertificationNumber());
+                    if (!masterCodes.isPresent()) {
+                        return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+                    } else {
+                        equipment.setEmState(masterCodes.get());
+                    }
+                }
+            }
+        }else if(!changeWaitingDeviceNumber.equals(waitingDeviceNumber)){
+            for (int i = 0; i < deviceList.size(); i++) {
+                Equipment equipment = new Equipment();
+                Optional<MasterCode> masterCodes;
+                Optional<Equipment> optionalEquipment;
+
+                if (i == 0) {
+                    optionalEquipment = equipmentService.findByEmNumber(changeWaitingDeviceNumber);
+                    masterCodes = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS05");
+                }else {
+                    optionalEquipment = equipmentService.findByEmNumber(waitingDeviceNumber);
+                    masterCodes = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS02");
+                }
+
+                if (!optionalEquipment.isPresent()) {
+                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E028.getCode(), ResponseErrorCode.E028.getDesc()));
+                } else {
+                    equipment.setId(optionalEquipment.get().getId());
+                    equipment.setEmNumber(optionalEquipment.get().getEmNumber());
+                    equipment.setEmCerealNumber(optionalEquipment.get().getEmCerealNumber());
+                    equipment.setEmDesignation(optionalEquipment.get().getEmDesignation());
+                    equipment.setEmType(optionalEquipment.get().getEmType());
+                    equipment.setEmAwsNumber(optionalEquipment.get().getEmAwsNumber());
+                    equipment.setEmCountry(optionalEquipment.get().getEmCountry());
+                    equipment.setEmLocation(optionalEquipment.get().getEmLocation());
+                    equipment.setEmEmbeddedNumber(optionalEquipment.get().getEmEmbeddedNumber());
+                    equipment.setCompany(optionalEquipment.get().getCompany());
+                    equipment.setEmInstallDate(optionalEquipment.get().getEmInstallDate());
+                    equipment.setEmSubName(optionalEquipment.get().getEmSubName());
+                    equipment.setMdId(optionalEquipment.get().getMdId());
+                    equipment.setEmLatitude(optionalEquipment.get().getEmLatitude());
+                    equipment.setEmHardness(optionalEquipment.get().getEmHardness());
+                    equipment.setInsert_id(optionalEquipment.get().getInsert_id());
+                    equipment.setInsertDateTime(optionalEquipment.get().getInsertDateTime());
+                    equipment.setModify_id(optionalEquipment.get().getModify_id());
+                    equipment.setModifyDateTime(optionalEquipment.get().getModifyDateTime());
+                    equipment.setVInputtime(optionalEquipment.get().getVInputtime());
+                    equipment.setVInterval(optionalEquipment.get().getVInterval());
+                    equipment.setVPresstime(optionalEquipment.get().getVPresstime());
+                    equipment.setVRedstart(optionalEquipment.get().getVRedstart());
+                    equipment.setVSolenoidtime(optionalEquipment.get().getVSolenoidtime());
+                    equipment.setVYellowstart(optionalEquipment.get().getVYellowstart());
+                    equipment.setEmCertificationNumber(optionalEquipment.get().getEmCertificationNumber());
+                    if (!masterCodes.isPresent()) {
+                        return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+                    } else {
+                        equipment.setEmState(masterCodes.get());
+                    }
+                    equipmentService.save(equipment);
+                }
+            }
+        }
+
+        //장비아이디,장비코드,모델타입 리스트에 넣기
+        List<EquipmentCollectionRegDto> equipment = equipmentService.findByRoutingEmNumberQuerydsl(deviceList);
+        List<Equipment> equipmentId = new ArrayList<>();
+        List<String> equipmentEmNumber = new ArrayList<>();
+        List<MasterCode> equipmentEmType = new ArrayList<>();
+
+        for(int i=0; i<2; i++){
+            for(int j=0; j<2; j++) {
+                if (deviceList.get(i).contains(equipment.get(j).getEmNumber())) {
+                    equipmentId.add(equipment.get(j).getId());
+                    equipmentEmNumber.add(equipment.get(j).getEmNumber());
+                    equipmentEmType.add(equipment.get(j).getEmType());
+                }
+            }
+        }
+//        log.info("equipment : "+equipment);
+//        log.info("equipmentId : "+equipmentId);
+//        log.info("equipmentEmNumber : "+equipmentEmNumber);
+//        log.info("equipmentEmType : "+equipmentEmType);
+
+        //기본값넣기 수거처리단계(확정)
+        ProcStatsType cl02 = ProcStatsType.valueOf("CL02");
+        // 유저아이디/배차차량 가져오기
+        Optional<Account> optionalUserId = accountService.findByUserid(accountNum);
+        Optional<Vehicle> optionalVehicleNumber = vehicleService.findByVcNumber(vehicleNum);
+
+        int z = 0;
+        if(!ctCodeNum.equals("")) {
+//            log.info("수정작성");
+            List<CollectionDto> optionalCollectionTask = collectionTaskService.findByCtCodeSeqQuerydsl(ctCodeNum);
+//            log.info("optionalCollectionTask : "+optionalCollectionTask);
+            for (int i = 1; i < 3; i++) {
+                CollectionTask collectionTask = new CollectionTask();
+
+                //유저아이디/배차차량이 존재하지않으면
+                if (!optionalUserId.isPresent() || !optionalVehicleNumber.isPresent()) {
+                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E024.getCode(),ResponseErrorCode.E024.getDesc()));
+                } else {
+                    collectionTask.setAccountId(optionalUserId.get());
+                    collectionTask.setVehicleId(optionalVehicleNumber.get());
+                }
+                collectionTask.setId(optionalCollectionTask.get(z).getId());
+                collectionTask.setCtCode(ctCodeNum);
+                collectionTask.setYyyymmdd(yyyymmdd);
+                collectionTask.setEmId(equipmentId.get(z));
+                collectionTask.setDeviceid(equipmentEmNumber.get(z));
+                collectionTask.setDevicetype(equipmentEmType.get(z));
+
+                //완료시간은 Null 처리함.
+                collectionTask.setProcStats(cl02);
+                collectionTask.setCtSeq(i);
+
+                collectionTask.setInsert_id(optionalCollectionTask.get(z).getInsert_id());
+                collectionTask.setInsertDateTime(optionalCollectionTask.get(z).getInsertDateTime());
+                collectionTask.setModify_id(currentuserid);
+                collectionTask.setModifyDateTime(LocalDateTime.now());
+
+                collectionTaskService.save(collectionTask);
+
+                z++;
+            }
+
+        }else{
+//            log.info("신규작성");
+            SimpleDateFormat todayFormat = new SimpleDateFormat("yyMMdd");
+            Date time = new Date();
+            String today = todayFormat.format(time);
+            String ctCode = keyGenerateService.keyGenerate("bs_collection", "TS"+today, currentuserid);
+
+            for (int i = 1; i < 3; i++) {
+                CollectionTask collectionTask = new CollectionTask();
+
+                //유저아이디/배차차량이 존재하지않으면
+                if (!optionalUserId.isPresent() || !optionalVehicleNumber.isPresent()) {
+                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E024.getCode(),
+                            ResponseErrorCode.E024.getDesc()));
+                } else {
+                    collectionTask.setAccountId(optionalUserId.get());
+                    collectionTask.setVehicleId(optionalVehicleNumber.get());
+                }
+                collectionTask.setCtCode(ctCode);
+                collectionTask.setYyyymmdd(yyyymmdd);
+                collectionTask.setEmId(equipmentId.get(z));
+                collectionTask.setDeviceid(equipmentEmNumber.get(z));
+                collectionTask.setDevicetype(equipmentEmType.get(z));
+
+                //완료시간은 Null 처리함.
+                collectionTask.setProcStats(cl02);
+                collectionTask.setCtSeq(i);
+
+                collectionTask.setInsert_id(currentuserid);
+                collectionTask.setInsertDateTime(LocalDateTime.now());
+                collectionTask.setModify_id(currentuserid);
+                collectionTask.setModifyDateTime(LocalDateTime.now());
+
+                collectionTaskService.save(collectionTask);
+
+                z++;
+            }
+        }
+        return ResponseEntity.ok(res.success());
+    }
+
     // 수거업무 리스트
     @PostMapping("list")
     public ResponseEntity<Map<String,Object>> collectionList(@RequestParam (value="ctCode", defaultValue="") String ctCode,
@@ -304,9 +552,14 @@ public class CollectionTaskRestController {
             deviceids.put('"' + "deviceids" + '"', emNumbers);
             String aswDeviceids = deviceids.toString().replace("=", ":").replace(" ", "");
             HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceids);
+
             emNumbers.remove(0);
-            HashMap map = (HashMap) resData.get("data").get(0);
-            deviceLevels.add((String) map.get("level"));
+            if(resData.get("data").size()==0){
+                deviceLevels.add("null");
+            }else{
+                HashMap map = (HashMap) resData.get("data").get(0);
+                deviceLevels.add((String) map.get("level"));
+            }
         }
 
         data.put("collection",collectionInfo);
@@ -319,28 +572,88 @@ public class CollectionTaskRestController {
     // 수거업무 삭제
     @PostMapping("del")
     public ResponseEntity<Map<String,Object>> collectionDel(@RequestParam(value="ctCode", defaultValue="") String ctCode,
-                                                            @RequestParam(value="collectionSeq", defaultValue="") Integer collectionSeq){
+                                                            @RequestParam(value="collectionSeq", defaultValue="") Integer collectionSeq,
+                                                            @RequestParam(value="num", defaultValue="")Integer num) throws Exception {
         AjaxResponse res = new AjaxResponse();
+//        log.info("num : "+num);
 //        log.info("삭제할 관리번호 : "+ctCode);
 //        log.info("해당 시퀀스 : "+collectionSeq);
         List<CollectionDto> listCollectionTask = collectionTaskService.findByCtCodeSeqQuerydsl(ctCode);
 //        log.info("listCollectionTask : "+listCollectionTask);
-        for(int i=0; i<collectionSeq; i++){
-            Optional<CollectionTask> optionalCollectionTask = collectionTaskService.findById2(listCollectionTask.get(i).getId());
-            if (!optionalCollectionTask.isPresent()){
-                return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+        if(num==1){
+            CodeType codeType = CodeType.valueOf("C0015");
+            Optional<MasterCode> masterCodes;
+            for (int i = 0; i < 2; i++) {
+                if(i==0){
+                    masterCodes = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS02");
+                }else{
+                    masterCodes = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS01");
+                }
+                Equipment equipment = new Equipment();
+                Optional<Equipment> optionalEquipment = equipmentService.findByEmNumber(listCollectionTask.get(i).getDeviceid());
+                if (!optionalEquipment.isPresent()) {
+                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E028.getCode(), ResponseErrorCode.E028.getDesc()));
+                } else {
+                    equipment.setId(optionalEquipment.get().getId());
+                    equipment.setEmNumber(optionalEquipment.get().getEmNumber());
+                    equipment.setEmCerealNumber(optionalEquipment.get().getEmCerealNumber());
+                    equipment.setEmDesignation(optionalEquipment.get().getEmDesignation());
+                    equipment.setEmType(optionalEquipment.get().getEmType());
+                    equipment.setEmAwsNumber(optionalEquipment.get().getEmAwsNumber());
+                    equipment.setEmCountry(optionalEquipment.get().getEmCountry());
+                    equipment.setEmLocation(optionalEquipment.get().getEmLocation());
+                    equipment.setEmEmbeddedNumber(optionalEquipment.get().getEmEmbeddedNumber());
+                    equipment.setCompany(optionalEquipment.get().getCompany());
+                    equipment.setEmInstallDate(optionalEquipment.get().getEmInstallDate());
+                    equipment.setEmSubName(optionalEquipment.get().getEmSubName());
+                    equipment.setMdId(optionalEquipment.get().getMdId());
+                    equipment.setEmLatitude(optionalEquipment.get().getEmLatitude());
+                    equipment.setEmHardness(optionalEquipment.get().getEmHardness());
+                    equipment.setInsert_id(optionalEquipment.get().getInsert_id());
+                    equipment.setInsertDateTime(optionalEquipment.get().getInsertDateTime());
+                    equipment.setModify_id(optionalEquipment.get().getModify_id());
+                    equipment.setModifyDateTime(optionalEquipment.get().getModifyDateTime());
+                    equipment.setVInputtime(optionalEquipment.get().getVInputtime());
+                    equipment.setVInterval(optionalEquipment.get().getVInterval());
+                    equipment.setVPresstime(optionalEquipment.get().getVPresstime());
+                    equipment.setVRedstart(optionalEquipment.get().getVRedstart());
+                    equipment.setVSolenoidtime(optionalEquipment.get().getVSolenoidtime());
+                    equipment.setVYellowstart(optionalEquipment.get().getVYellowstart());
+                    equipment.setEmCertificationNumber(optionalEquipment.get().getEmCertificationNumber());
+                    if (!masterCodes.isPresent()) {
+                        return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
+                    } else {
+                        equipment.setEmState(masterCodes.get());
+                    }
+                }
+                equipmentService.save(equipment);
+
+                Optional<CollectionTask> optionalCollectionTask = collectionTaskService.findById2(listCollectionTask.get(i).getId());
+                if (!optionalCollectionTask.isPresent()) {
+                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+                }
+                collectionTaskService.delete(optionalCollectionTask.get());
+
             }
-            collectionTaskService.delete(optionalCollectionTask.get());
+        }else {
+            for (int i = 0; i < collectionSeq; i++) {
+                Optional<CollectionTask> optionalCollectionTask = collectionTaskService.findById2(listCollectionTask.get(i).getId());
+                if (!optionalCollectionTask.isPresent()) {
+                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+                }
+                collectionTaskService.delete(optionalCollectionTask.get());
+            }
         }
+
         return ResponseEntity.ok(res.success());
     }
 
     // 수거업무에 등록할 장비리스트
     @PostMapping("equipmentList")
     public ResponseEntity<Map<String,Object>> equipmentList(@RequestParam (value="emLevel", defaultValue="") Double emLevel,
-                                                       @RequestParam (value="emType", defaultValue="")String emType,
-                                                       @RequestParam (value="emCountry", defaultValue="")String emCountry,
-                                                       @RequestParam (value="emLocation", defaultValue="")String emLocation,
+                                                            @RequestParam (value="emType", defaultValue="")String emType,
+                                                            @RequestParam (value="emCountry", defaultValue="")String emCountry,
+                                                            @RequestParam (value="emLocation", defaultValue="")String emLocation,
                                                             @PageableDefault Pageable pageable){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -492,10 +805,39 @@ public class CollectionTaskRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 수거업무에 등록할 대기장비리스트
+    @PostMapping("waitingDevcieList")
+    public ResponseEntity<Map<String,Object>> waitingDevcieList(@RequestParam (value="emType", defaultValue="")String emType,
+                                                                @RequestParam (value="emCountry", defaultValue="")String emCountry,
+                                                                @RequestParam (value="emLocation", defaultValue="")String emLocation,
+                                                                @RequestParam (value="emNumber", defaultValue="")String emNumber,
+                                                                @RequestParam (value="emState", defaultValue="")String emState,
+                                                                @PageableDefault Pageable pageable) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        Long emCountryId = null;
+        Long emLocationId = null;
+
+        if (!emCountry.equals("")) {
+            Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
+            emCountryId = emCountrys.map(MasterCode::getId).orElse(null);
+        }
+        if (!emLocation.equals("")) {
+            Optional<MasterCode> emLocations = masterCodeService.findByCode(emLocation);
+            emLocationId = emLocations.map(MasterCode::getId).orElse(null);
+        }
+
+        Page<EquipmentWaitingCollectionListDto> equipmentCollectionListDtos =
+                equipmentService.findByWaitingEquipmentCollectionQuerydsl(emType, emCountryId, emLocationId,emNumber,emState, pageable);
+
+        return CommonUtils.ResponseEntityPage(equipmentCollectionListDtos);
+    }
+
     // 거리 라우팅계산
     @PostMapping("streetRouting")
     public ResponseEntity<Map<String,Object>> streetRouting(@RequestParam(value="deviceids", defaultValue="") String deviceids,
-                                                            HttpServletRequest request) throws IOException {
+                                                            HttpServletRequest request) {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -549,17 +891,17 @@ public class CollectionTaskRestController {
 
                 streetdevicenameList.add((String)datamap.get("deviceid"));
                 street_level.add((String)datamap.get("level"));
-                if (gps_laData.substring(0, 1).equals("N")) {
+                if (gps_laData.startsWith("N")) {
                     gps_laSubStirng = gps_laData.replace("N", "+");
                     street_gps_laList.add(gps_laSubStirng);
-                } else if (gps_laData.substring(0, 1).equals("S")) {
+                } else if (gps_laData.startsWith("S")) {
                     gps_laSubStirng = gps_laData.replace("S", "-");
                     street_gps_laList.add(gps_laSubStirng);
                 }
-                if (gps_loData.substring(0, 1).equals("E")) {
+                if (gps_loData.startsWith("E")) {
                     gps_loSubStirng = gps_loData.replace("E", "+");
                     street_gps_loList.add(gps_loSubStirng);
-                } else if (gps_loData.substring(0, 1).equals("W")) {
+                } else if (gps_loData.startsWith("W")) {
                     gps_loSubStirng = gps_loData.replace("W", "-");
                     street_gps_loList.add(gps_loSubStirng);
                 }
@@ -672,6 +1014,7 @@ public class CollectionTaskRestController {
     @PostMapping("collectionDirection")
     public ResponseEntity<Map<String,Object>> collectionDirection(@RequestParam(value="deviceids", defaultValue="") String deviceids,
                                                                   @RequestParam(value="deviceArray[]", defaultValue="") List<String> deviceArray,
+                                                                  @RequestParam(value="num", defaultValue="")Integer num,
                                                                   HttpServletRequest request){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
@@ -680,7 +1023,6 @@ public class CollectionTaskRestController {
 //
 //        log.info("NAVERCLIENTID : "+NAVERCLIENTID);
 //        log.info("NAVERCLIENTSECRET : "+NAVERCLIENTSECRET);
-
         List<String> street_gps_laList = new ArrayList<>();
         List<String> street_gps_loList = new ArrayList<>();
 
@@ -690,13 +1032,30 @@ public class CollectionTaskRestController {
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
 //        log.info("resData : "+resData);
         int streetSize = Integer.parseInt(String.valueOf(resData.get("datacounts")));
+//        log.info("streetSize : "+streetSize);
 
-        for (String deviceid : deviceArray){
-            for (int i = 0; i < streetSize; i++) {
-                HashMap map = (HashMap) resData.get("data").get(i);
-                if (map.get("deviceid").equals(deviceid)) {
-                    street_gps_laList.add((String) map.get("gps_la")); //맵 데이터 차트
-                    street_gps_loList.add((String) map.get("gps_lo")); //맵 데이터 차트
+        if(num!=2) {
+            if (streetSize != 2) {
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E031.getCode(), ResponseErrorCode.E031.getDesc()));
+            } else {
+                for (String deviceid : deviceArray) {
+                    for (int i = 0; i < streetSize; i++) {
+                        HashMap map = (HashMap) resData.get("data").get(i);
+                        if (map.get("deviceid").equals(deviceid)) {
+                            street_gps_laList.add((String) map.get("gps_la")); //맵 데이터 차트
+                            street_gps_loList.add((String) map.get("gps_lo")); //맵 데이터 차트
+                        }
+                    }
+                }
+            }
+        }else{
+            for (String deviceid : deviceArray) {
+                for (int i = 0; i < streetSize; i++) {
+                    HashMap map = (HashMap) resData.get("data").get(i);
+                    if (map.get("deviceid").equals(deviceid)) {
+                        street_gps_laList.add((String) map.get("gps_la")); //맵 데이터 차트
+                        street_gps_loList.add((String) map.get("gps_lo")); //맵 데이터 차트
+                    }
                 }
             }
         }
@@ -758,14 +1117,19 @@ public class CollectionTaskRestController {
 
         int directionSize = direction_gps_devicename.size();
 
-        if(collectionAccount.getCompanyLatitude() != null || collectionAccount.getCompanyHardness() != null){
-            startName = collectionAccount.getOperator();
-            start = collectionAccount.getCompanyHardness()+","+collectionAccount.getCompanyLatitude(); //출발점
-            htmlStart = collectionAccount.getCompanyLatitude()+","+collectionAccount.getCompanyHardness(); //자바스크립트용 출발점
+        if(num==2) {
+            if (collectionAccount.getCompanyLatitude() != null || collectionAccount.getCompanyHardness() != null) {
+                startName = collectionAccount.getOperator();
+                start = collectionAccount.getCompanyHardness() + "," + collectionAccount.getCompanyLatitude(); //출발점
+                htmlStart = collectionAccount.getCompanyLatitude() + "," + collectionAccount.getCompanyHardness(); //자바스크립트용 출발점
+            } else {
+                startName = "경도위도없음";
+                start = "126.82752,37.568666";
+                htmlStart = "37.568666,126.82752";
+            }
         }else{
-            startName = "경도위도없음";
-            start = "126.82752,37.568666";
-            htmlStart = "37.568666,126.82752";
+            start = direction_gps_loList.get(0) + "," + direction_gps_laList.get(0); //출발점
+            htmlStart = direction_gps_laList.get(0) + "," + direction_gps_loList.get(0); //자바스크립트용 출발점
         }
 
 //        log.info("start : "+start);
@@ -782,33 +1146,34 @@ public class CollectionTaskRestController {
 //        //traoptimal 실시간 최적
 //        //traavoidtoll 무료 우선
 //        //traavoidcaronly 자동차 전용도로 회피 우선
-        if(directionSize > 0 && directionSize < 16) {
+        if(num==2) {
+            if (directionSize > 0 && directionSize < 16) {
 //            log.info("경유지점있음");
-            if(directionSize<=6){
-                url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
-                for (int i = 0; i < directionSize; i++) {
-                    if(i!=directionSize-1) {
-                        url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i)).append("|");
-                    }else{
-                        url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i));
+                if (directionSize <= 6) {
+                    url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
+                    for (int i = 0; i < directionSize; i++) {
+                        if (i != directionSize - 1) {
+                            url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i)).append("|");
+                        } else {
+                            url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i));
+                        }
+                    }
+                } else {
+                    url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
+                    for (int i = 0; i < directionSize; i++) {
+                        if (i != directionSize - 1) {
+                            url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i)).append("|");
+                        } else {
+                            url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i));
+                        }
                     }
                 }
-            }else{
-                url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
-                for (int i = 0; i < directionSize; i++) {
-                    if(i!=directionSize-1) {
-                        url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i)).append("|");
-                    }else{
-                        url.append(direction_gps_loList.get(i)).append(",").append(direction_gps_laList.get(i));
-                    }
-                }
-            }
 
-            //Rest URL (Open Api Test)
-            String clientId = NAVERCLIENTID;//애플리케이션 클라이언트 아이디값";
-            String clientSecret = NAVERCLIENTSECRET;//애플리케이션 클라이언트 시크릿값";
+                //Rest URL (Open Api Test)
+                String clientId = NAVERCLIENTID;//애플리케이션 클라이언트 아이디값";
+                String clientSecret = NAVERCLIENTSECRET;//애플리케이션 클라이언트 시크릿값";
 
-            //ex
+                //ex
 //            String via = "127.050374,37.546808"; //경유지 1번장치
 //            String via2 = "127.028192,37.558203"; //경유지2 대림아파트
 //            String via3 = "127.063791,37.557296"; //경유지3 장한평역
@@ -819,33 +1184,68 @@ public class CollectionTaskRestController {
 //            // Direction 15적용
 //            final String test = "https://naveropenapi.apigw.ntruss.com/map-direction-15/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptimal&waypoints=" + via2 + "|" + via3 + "|" + via4 + "|" + via5 + "|" + via6 + "|" + via + "";
 
-            RestTemplate restTemplate = new RestTemplate();
+                RestTemplate restTemplate = new RestTemplate();
 
-            //header
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
-            headers.add("X-NCP-APIGW-API-KEY", clientSecret);
+                //header
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
+                headers.add("X-NCP-APIGW-API-KEY", clientSecret);
 
-            HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
-            URI uri = UriComponentsBuilder.fromUriString(String.valueOf(url)).build().toUri();
-            ResponseEntity<String> apiResult = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+                HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
+                URI uri = UriComponentsBuilder.fromUriString(String.valueOf(url)).build().toUri();
+                ResponseEntity<String> apiResult = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
 //            log.info("유알엘 : "+url);
 //            log.info("유알엘 : "+test);
 //            log.info("apiResult : " + apiResult);
 //            log.info("direction_gps_laList : " + direction_gps_laList);
 //            log.info("direction_gps_loList : " + direction_gps_loList);
 
-            data.put("direction_gps_laList",direction_gps_laList);
-            data.put("direction_gps_loList",direction_gps_loList);
-            data.put("directionSize", directionSize);
-            data.put("htmlStart", htmlStart);
-            data.put("htmlGoal", htmlGoal);
-            data.put("apiResultBody", apiResult.getBody());
+                data.put("direction_gps_laList", direction_gps_laList);
+                data.put("direction_gps_loList", direction_gps_loList);
+                data.put("directionSize", directionSize);
+                data.put("htmlStart", htmlStart);
+                data.put("htmlGoal", htmlGoal);
+                data.put("apiResultBody", apiResult.getBody());
+                data.put("num", num);
 
-        }else if(goal!=null){
+            } else if (goal != null) {
 //            log.info("골인지점만있음");
-            url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima");
+                url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima");
+
+                String clientId = NAVERCLIENTID;//애플리케이션 클라이언트 아이디값";
+                String clientSecret = NAVERCLIENTSECRET;//애플리케이션 클라이언트 시크릿값";
+
+                RestTemplate restTemplate = new RestTemplate();
+
+                //header
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
+                headers.add("X-NCP-APIGW-API-KEY", clientSecret);
+
+                HttpEntity<Map<String, String>> entity = new HttpEntity<>(headers);
+                URI uri = UriComponentsBuilder.fromUriString(String.valueOf(url)).build().toUri();
+                ResponseEntity<String> apiResult = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+//            log.info("유알엘 : "+url);
+//            log.info("apiResult : " + apiResult);
+
+                data.put("direction_gps_laList", direction_gps_laList);
+                data.put("direction_gps_loList", direction_gps_loList);
+                data.put("directionSize", directionSize);
+                data.put("htmlStart", htmlStart);
+                data.put("htmlGoal", htmlGoal);
+                data.put("apiResultBody", apiResult.getBody());
+                data.put("num", num);
+
+            } else {
+//            log.info("도착점이 없습니다(에러)");
+//            log.info("유알엘 : "+url);
+                data.put("apiResultBody", null);
+            }
+        }else{
+
+            url = new StringBuilder("https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=" + start + "&goal=" + goal + "&option=traoptima&waypoints=");
 
             String clientId = NAVERCLIENTID;//애플리케이션 클라이언트 아이디값";
             String clientSecret = NAVERCLIENTSECRET;//애플리케이션 클라이언트 시크릿값";
@@ -864,16 +1264,14 @@ public class CollectionTaskRestController {
 //            log.info("유알엘 : "+url);
 //            log.info("apiResult : " + apiResult);
 
-            data.put("direction_gps_laList",direction_gps_laList);
-            data.put("direction_gps_loList",direction_gps_loList);
+            data.put("direction_gps_laList", direction_gps_laList);
+            data.put("direction_gps_loList", direction_gps_loList);
             data.put("directionSize", directionSize);
             data.put("htmlStart", htmlStart);
             data.put("htmlGoal", htmlGoal);
             data.put("apiResultBody", apiResult.getBody());
-        }else {
-//            log.info("도착점이 없습니다(에러)");
-//            log.info("유알엘 : "+url);
-            data.put("apiResultBody", null);
+            data.put("num", num);
+
         }
 //        log.info("htmlStart : "+htmlStart);
 //        log.info("htmlGoal : "+htmlGoal);
@@ -948,7 +1346,6 @@ public class CollectionTaskRestController {
 
         return ResponseEntity.ok(res.success());
     }
-
 
     // 모니터링 맵
     @PostMapping("moniteringMap")

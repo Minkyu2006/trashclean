@@ -98,6 +98,10 @@ public class Equipment {
     @Column(name="em_certification_number")
     private String emCertificationNumber; // AWS보안인증서코드
 
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
+    @JoinColumn(name="em_state")
+    private MasterCode emState; // 설비상태(iTainer만 해당)
+
     @Column(name="insert_date")
     private LocalDateTime insertDateTime;
 

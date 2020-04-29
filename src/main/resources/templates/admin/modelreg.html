@@ -85,7 +85,7 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr,) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/model/reg',
@@ -134,7 +134,7 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr,) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
 				url:'/api/model/list?size='+ perPage + '&page=' + page,
@@ -241,9 +241,7 @@
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function (e, xhr) {
-				xhr.setRequestHeader(header, token);
-			});
+			$(document).ajaxSend(function (e, xhr) {xhr.setRequestHeader(header, token);});
 
 			$.ajax({
 				url: '/api/model/del',

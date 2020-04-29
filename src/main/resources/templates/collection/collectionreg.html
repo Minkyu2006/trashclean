@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate ="~{layout/default}">
+<head>
+    <script>
+
+    </script>
+</head>
+
+<div layout:fragment="content" class="contents-body">
+    <div class="page">
+        <section class="section">
+            <h2 class="section__heading">수거 업무 등록</h2>
+            <div class="task-device">
+                <ul>
+                    <li>
+                        <div class="device">
+                            <a href="/collection/collectionitainer" class="device__link">
+                                <span class="device__img"><img src="/assets/images/device/iTainer_e_b.png" alt="" /></span>
+                                <span class="device__name">iTainer</span>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="device">
+                            <a href="/collection/collectionisolarbin" class="device__link">
+                                <span class="device__img"><img src="/assets/images/device/metal.png" alt="" /></span>
+                                <span class="device__name">iSolarbin</span>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="device">
+                            <a href="#" class="device__link">
+                                <span class="device__img"><img src="" alt="" /></span>
+                                <span class="device__name">iNetbin</span>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+                <p class="task-device__comment">수거업무를 등록 할 장비를 선택해주세요.</p>
+            </div>
+        </section>
+    </div>
+</div>
+</html>

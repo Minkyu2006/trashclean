@@ -255,7 +255,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
 
         return queryFactory.select(Projections.constructor(CollectionDto.class,
-                collectionTask.id,collectionTask.ctCode,collectionTask.yyyymmdd,
+                collectionTask.id,collectionTask.ctCode,collectionTask.deviceid,collectionTask.yyyymmdd,
                 collectionTask.ctSeq,collectionTask.procStats,
                 collectionTask.insert_id,collectionTask.insertDateTime))
                 .from(collectionTask)

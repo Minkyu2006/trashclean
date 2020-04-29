@@ -97,14 +97,14 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
     }
 
     @Override
-    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable){
+    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, String emTypeId, Long emCountryId, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
 
         JPQLQuery<EquipmentBaseListDto> query = from(equipment)
                 .select(Projections.constructor(EquipmentBaseListDto.class,
                         equipment.emNumber,
-                        equipment.emType,
+//                        equipment.emType,
                         equipment.emCountry,
                         equipment.emLocation,
                         equipment.mdId,
@@ -121,7 +121,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
             query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
         }
         if (emTypeId != null ){
-            query.where(equipment.emType.id.eq(emTypeId));
+            query.where(equipment.emType.name.eq(emTypeId));
         }
         if (emCountryId != null ){
             query.where(equipment.emCountry.id.eq(emCountryId));
@@ -163,17 +163,21 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
     public List<EquipmentCollectionListDto> findByEquipmentCollectionQuerydsl(Long emTypeId, Long emCountryId,Long emLocationId,Pageable pageable) {
 
         QEquipment equipment = QEquipment.equipment;
+        QMasterCode masterCode = QMasterCode.masterCode;
 
         JPQLQuery<EquipmentCollectionListDto> query = from(equipment)
+                .leftJoin(equipment.emState,masterCode)
                 .select(Projections.constructor(EquipmentCollectionListDto.class,
+                        equipment.id,
                         equipment.emNumber,
                         equipment.emType,
                         equipment.emCountry,
                         equipment.emLocation,
                         equipment.mdId,
-                        equipment.company,
-                        equipment.mdId.mdMaximumPayload,
-                        equipment.mdId.mdUnit
+                        equipment.emState
+//                        equipment.company,
+//                        equipment.mdId.mdMaximumPayload,
+//                        equipment.mdId.mdUnit
                 ));
 
         // 검색조건필터
@@ -192,6 +196,48 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         return query.fetch();
     }
 
+    // 수거업무등록페이지 대기장비리스트
+    @Override
+    public Page<EquipmentWaitingCollectionListDto> findByWaitingEquipmentCollectionQuerydsl(String emType, Long emCountryId, Long emLocationId, String emNumber, String emState, Pageable pageable) {
+
+        QEquipment equipment = QEquipment.equipment;
+        QMasterCode masterCode = QMasterCode.masterCode;
+
+        JPQLQuery<EquipmentWaitingCollectionListDto> query = from(equipment)
+                .leftJoin(equipment.emState,masterCode)
+                .select(Projections.constructor(EquipmentWaitingCollectionListDto.class,
+                        equipment.id,
+                        equipment.emNumber,
+                        equipment.emType,
+                        equipment.emCountry,
+                        equipment.emLocation,
+                        equipment.mdId,
+                        equipment.emState
+                ));
+
+        // 검색조건필터
+        if (emNumber != null && !emNumber.isEmpty()){
+            query.where(equipment.emNumber.likeIgnoreCase(emNumber.concat("%")));
+        }
+        if (emType != null ){
+            query.where(equipment.emType.code.eq(emType));
+        }
+        if (emType != null ){
+            query.where(equipment.emState.name.eq(emState));
+        }
+        if (emCountryId != null ){
+            query.where(equipment.emCountry.id.eq(emCountryId));
+        }
+        if (emLocationId != null ){
+            query.where(equipment.emLocation.id.eq(emLocationId));
+        }
+
+        query.orderBy(equipment.emNumber.asc());
+
+        final List<EquipmentWaitingCollectionListDto> equipments = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
+        return new PageImpl<>(equipments, pageable, query.fetchCount());
+    }
+
     // 라우팅한 장비의 정보가져오기 위한 쿼리dsl
     @Override
     public List<EquipmentCollectionRegDto> findByRoutingEmNumberQuerydsl(List<String> streetRouting) {
@@ -199,7 +245,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         QEquipment equipment = QEquipment.equipment;
         QMasterCode masterCode = QMasterCode.masterCode;
         QIModel iModel = QIModel.iModel;
-        System.out.println("streetRouting : "+streetRouting);
+//        System.out.println("streetRouting : "+streetRouting);
         JPQLQuery<EquipmentCollectionRegDto> query = from(equipment)
                 .select(Projections.constructor(EquipmentCollectionRegDto.class,
                         equipment,equipment.emNumber,masterCode,iModel.mdSubname,iModel.mdType.name))

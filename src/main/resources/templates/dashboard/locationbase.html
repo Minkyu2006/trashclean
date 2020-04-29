@@ -61,7 +61,9 @@
 					success: function(res){
 						var pushValue = [];
 						for(var i=0; i<res.data.deviceInfoListDtos.length; i++){
-							pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"],"확 인 불 가"));
+							if(res.data.deviceInfoListDtos[i]["emState"]!=="없음") {
+								pushValue.push(nvl(res.data.deviceInfoListDtos[i]["emNumber"], "확 인 불 가"));
+							}
 						}
 						MapChartDeviceId(pushValue);
 					}
@@ -98,14 +100,14 @@
 							return;
 						}
 						// 맵에 장치보기
-						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,res.data.temp_brd,res.data.batt_level,res.data.solar_current,res.data.solar_voltage,res.data.rsrp);
+						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,res.data.temp_brd,res.data.batt_level,res.data.solar_current,res.data.solar_voltage,res.data.rsrp,res.data.frontDoor_sol,res.data.inputDoor);
 						$("#mapLoaging").hide();
 					}
 				});
 			}
 
 			// 장비상세정보 리스트 보내기
-			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_level,solar_current,solar_voltage,rsrp) {
+			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_level,solar_current,solar_voltage,rsrp,frontDoor_sol,inputDoor) {
 
 				var locations = mapGps;
 
@@ -153,7 +155,7 @@
 							infowindow.setContent(content);
 							infowindow.open(map, marker);
 							$("#deviceDetail").show();
-							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_level[i],solar_current[i],solar_voltage[i],rsrp[i],mapGps[i][1],mapGps[i][2]);
+							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_level[i],solar_current[i],solar_voltage[i],rsrp[i],mapGps[i][1],mapGps[i][2],frontDoor_sol[i],inputDoor[i]);
 
 							if (marker.getAnimation() != null) {
 								marker.setAnimation(null);
@@ -171,7 +173,7 @@
 			}
 
 			// 장치리스트 출력
-			function deviceDetail(pushValue,level,state,temp_brd,batt_level,solar_current,solar_voltage,rsrp,gps_la,gps_lo) {
+			function deviceDetail(pushValue,level,state,temp_brd,batt_level,solar_current,solar_voltage,rsrp,gps_la,gps_lo,frontDoor_sol,inputDoor) {
 
 				var $deviceDetail = $('#deviceDetail');
 
@@ -359,6 +361,10 @@
 						html += '<span class="equipment__info-title">'+'설치일자 : '+'</span>';
 						html += '<span class="equipment__info-value">'+installdate+'</span>';
 						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
+						html += '<span class="equipment__info-value">'+parseInt(operationDay)+'일'+'</span>';
+						html += '</li>';
 						html += '</ul>';
 						html += '</div>';
 
@@ -368,10 +374,6 @@
 						html += '</div>';
 						html += '<h4 class="equipment__section-title">상태 상세 정보</h4>';
 						html += '<ul class="equipment__info">';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
-						html += '<span class="equipment__info-value">'+parseInt(operationDay)+'일'+'</span>';
-						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
 						html += '<span class="equipment__info-value">'+temp_brd+'℃'+'</span>';
@@ -394,6 +396,14 @@
 							html += '<span class="equipment__info-value">' + solar_voltage + 'V' + '</span>';
 							html += '</li>';
 						}
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">' + '전면도어 : ' + '</span>';
+						html += '<span class="equipment__info-value">' + frontDoor_sol +'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						html += '<span class="equipment__info-title">' + '투입구 : ' + '</span>';
+						html += '<span class="equipment__info-value">' + inputDoor +'</span>';
+						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'GPS : '+'</span>';
 						html += '<span class="equipment__info-value">'+gps_la+'/'+gps_lo+'</span>';
@@ -530,11 +540,18 @@
 											radius: 0
 										}
 									},
+									legend:{
+										posiont:'top'
+									},
 									maintainAspectRatio: false,
 									stacked : true,
 									tooltips: { //팁(모드설정)
+										borderWidth:3,
+										borderColor : 'rgb(118,172,255)',
+										caretPadding: 65,
 										mode: 'index',
-										intersect: false
+										intersect: false,
+										caretSize:0
 									},
 									hover: { //점 나오기
 										mode: 'index',
@@ -623,8 +640,8 @@
 					$("#fromTo").hide();
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
-				} else if (text === "1Year") {
-					$("#intervaltime").val("8760");
+				} else if (text === "6Month") {
+					$("#intervaltime").val("4380");
 					$("#fromTo").hide();
 					$("#dateFrom").val("");
 					$("#dateTo").val("");
@@ -731,7 +748,7 @@
 											<button onclick="intervaltimeChange(this.value)" value="24Hours" class="c-btn-group__button">24Hours</button>
 											<button onclick="intervaltimeChange(this.value)" value="7Days" class="c-btn-group__button">7Days</button>
 											<button onclick="intervaltimeChange(this.value)" value="1Month" class="c-btn-group__button">1Month</button>
-											<button onclick="intervaltimeChange(this.value)" value="1Year" class="c-btn-group__button">1Year</button>
+											<button onclick="intervaltimeChange(this.value)" value="6Month" class="c-btn-group__button">1Year</button>
 											<button onclick="intervaltimeChange(this.value)" value="FromTo" class="c-btn-group__button">FromTo</button>
 										</div>
 										<input type="hidden" id="intervaltime" value ="" readonly="readonly" />

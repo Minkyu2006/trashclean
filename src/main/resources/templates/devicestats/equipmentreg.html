@@ -129,7 +129,7 @@
 
 			$("#devcieCheckBtn").hide();
 
-			ModelChange();
+			ModelChange(null);
 		}
 
 		// 장비저장
@@ -169,6 +169,7 @@
 						return;
 					}
 					alertSuccess('저장되었습니다.');
+					ModelChange(null);
 					init();
 					LocationSetting();
 					callList(1);
@@ -448,6 +449,7 @@
 						return;
 					}
 					alertSuccess('장비가 삭제 되었습니다.');
+					ModelChange(null);
 					init();
 					callList(1);
 				}
@@ -563,9 +565,9 @@
 				}
 			}
 			// 소수점 둘째자리까지만 입력가능
-			var _pattern2 = /^\d*[.]\d{2}$/;
+			var _pattern2 = /^\d*[.]\d{6}$/;
 			if (_pattern2.test(_value)) {
-				alertCaution("소수점 둘째자리까지만 입력가능합니다.");
+				alertCaution("소수점 여섯자리까지만 입력가능합니다.");
 				return false;
 			}
 		}

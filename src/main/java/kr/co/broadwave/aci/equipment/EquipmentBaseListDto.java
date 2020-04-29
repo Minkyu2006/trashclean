@@ -21,7 +21,7 @@ import javax.persistence.Column;
 public class EquipmentBaseListDto {
 
     private String emNumber; // 장비 번호
-    private MasterCode emType; // 장비타입
+//    private MasterCode emType; // 장비타입
     private MasterCode emCountry; // 국가
     private MasterCode emLocation; // 지역
     private IModel iModel; // 모델명,종류
@@ -37,9 +37,9 @@ public class EquipmentBaseListDto {
         return emNumber;
     }
 
-    public String getEmType() {
-        return emType.getName();
-    }
+//    public String getEmType() {
+//        return emType.getName();
+//    }
 
     public String getEmCountry() {
         return emCountry.getName();

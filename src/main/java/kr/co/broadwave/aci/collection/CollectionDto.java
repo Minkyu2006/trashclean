@@ -19,11 +19,16 @@ import java.time.LocalDateTime;
 public class CollectionDto {
     private Long id;
     private String ctCode;
+    private String deviceid;
     private String yyyymmdd;
     private Integer seq;
     private ProcStatsType procStatsType;
     private String insert_id;
     private LocalDateTime insertDateTime;
+
+    public String getDeviceid() {
+        return deviceid;
+    }
 
     public String getYyyymmdd() {
         return yyyymmdd;

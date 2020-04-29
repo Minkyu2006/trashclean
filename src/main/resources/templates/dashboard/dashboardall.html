@@ -747,23 +747,19 @@
 							html += '<span class="equipment__info-title">' + '태양광판넬 전류 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + nvl(res.data.solar_current[idx], "확 인 불 가") + 'A' + '</span>';
 							html += '</li>';
-						}
-						if(emTypes[idx]!=="iTainer") {
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '태양광판넬 전압 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + nvl(res.data.solar_voltage[idx], "확 인 불 가") + 'V' + '</span>';
 							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '전면도어 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.frontDoor_sol[idx], "확 인 불 가") + '</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '투입구 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.inputDoor[idx], "확 인 불 가") + '</span>';
+							html += '</li>';
 						}
-
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">' + '전면도어 : ' + '</span>';
-						html += '<span class="equipment__info-value">' + nvl(null, "확 인 불 가")+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">' + '투입구 : ' + '</span>';
-						html += '<span class="equipment__info-value">' + nvl(null, "확 인 불 가")+'</span>';
-						html += '</li>';
-
 						html += '<li class="equipment__info-item">';
 						if(res.data.gps_laDatas[idx]==="0.0" || res.data.gps_loDatas[idx]==="0.0"){
 							html += '<input type="button" class="c-button c-button--point" value="GPS정보 없음" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
@@ -984,17 +980,21 @@
 							html += '<span class="equipment__info-title">' + '배터리잔량 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + nvl(res.data.batt_level[idx], "확 인 불 가") + '%' + '</span>';
 							html += '</li>';
-						}
-						if(emTypes[idx]!=="iTainer") {
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '태양광판넬 전류 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + nvl(res.data.solar_current[idx], "확 인 불 가") + 'A' + '</span>';
 							html += '</li>';
-						}
-						if(emTypes[idx]!=="iTainer") {
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '태양광판넬 전압 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + nvl(res.data.solar_voltage[idx], "확 인 불 가") + 'V' + '</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '전면도어 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.frontDoor_sol[idx])+'</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '투입구 : ' + '</span>';
+							html += '<span class="equipment__info-value">' + nvl(res.data.inputDoor[idx])+'</span>';
 							html += '</li>';
 						}
 						html += '<li class="equipment__info-item">';
@@ -1003,14 +1003,6 @@
 						}else{
 							html += '<input type="button" class="c-button c-button--point" value="'+res.data.gps_laDatas[idx]+','+res.data.gps_loDatas[idx]+'" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
 						}
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">' + '전면도어 : ' + '</span>';
-						html += '<span class="equipment__info-value">' + nvl(null, "확 인 불 가")+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">' + '투입구 : ' + '</span>';
-						html += '<span class="equipment__info-value">' + nvl(null, "확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '</ul>';
 

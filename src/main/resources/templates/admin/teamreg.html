@@ -32,7 +32,9 @@
 			$("#btnExcelDown").on('click',function(){
 				exceldown();
 			});
-
+			$("#s_teamReset").on('click',function(){
+				s_teamReset();
+			});
 
 		});
 
@@ -43,13 +45,18 @@
 			document.location.href = '/admin/teamlist.xls?teamcode=' + teamcode +"&teamname=" + teamname;
 		}
 
+		function s_teamReset() {
+			$("#s_teamcode").val('');
+			$("#s_teamname").val('');
+		}
+
 		function teamDelCheck(){
-			if ($("#teamcode").attr("readonly") != "readonly"){
+			if ($("#teamcode").attr("readonly") !== "readonly"){
 
 				alertCaution("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
 				return false;
 			}
-			if ($("#teamcode").val().trim() == '') {
+			if ($("#teamcode").val().trim() === '') {
 				alertCaution("삭제하고자하는 부서를 하단에서 선택 후 삭제하세요.");
 				$("#teamcode").trigger('focus');
 				return false;
@@ -306,7 +313,7 @@
 				<div class="l-float-heading--left">
 					<h4 class="article__heading">검색조건<span class="article__head-caption">(수정하려면 조회후 해당라인을 클릭하세요)</span></h4>
 				</div>
-				<div class="l-float-heading--right"><button class="c-button c-button--small">조건 초기화</button></div>
+				<div class="l-float-heading--right"><button class="c-button c-button--small" id="s_teamReset">조건 초기화</button></div>
 			</div>
 			<table class="c-table c-table--non-border">
 				<colgroup>

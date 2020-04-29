@@ -110,13 +110,23 @@ public class EquipmentRestController {
 
         //장비타입/국가/지역코드가 존재하지않으면
         if (!optionalEmType.isPresent() || !optionalEmCountry.isPresent() || !optionalEmLocation.isPresent()) {
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E016.getCode(),
-                    ResponseErrorCode.E016.getDesc()));
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E016.getCode(),ResponseErrorCode.E016.getDesc()));
         }else{
-            // 장비타입/국가/지역 저장
+            // 장비타입/국가/지역 저장/설비상태
             equipment.setEmType(optionalEmType.get());
             equipment.setEmCountry(optionalEmCountry.get());
             equipment.setEmLocation(optionalEmLocation.get());
+            if(optionalEmType.get().getName().equals("iTainer")){
+                CodeType codeType = CodeType.valueOf("C0015");
+                Optional<MasterCode> tainerState = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS02");
+                if(!tainerState.isPresent()){
+                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E030.getCode(),ResponseErrorCode.E030.getDesc()));
+                }else{
+                    equipment.setEmState(tainerState.get());
+                }
+            }else{
+                equipment.setEmState(null);
+            }
         }
 
         // 장비번호 가져오기(고유값)
@@ -191,108 +201,55 @@ public class EquipmentRestController {
         Double vSolenoidtime = null;
         Double vYellowstart = null;
         Double vRedstart = null;
-//        int i=0;
-//        int j=1;
+
         for(int i=0; i<equipmentBaseDto.size(); i++) {
-//            if (x%2==0) {
-                equipment.setId(equipmentBaseDto.get(i).getId());
-                equipment.setEmNumber(equipmentBaseDto.get(i).getEmNumber());
-                equipment.setEmCerealNumber(equipmentBaseDto.get(i).getEmCerealNumber());
-                equipment.setEmDesignation(equipmentBaseDto.get(i).getEmDesignation());
-                equipment.setEmType(equipmentBaseDto.get(i).getEmTypeId());
-                equipment.setEmAwsNumber(equipmentBaseDto.get(i).getEmAwsNumber());
-                equipment.setEmInstallDate(equipmentBaseDto.get(i).getEmInstallDate());
-                equipment.setEmCountry(equipmentBaseDto.get(i).getEmCountryId());
-                equipment.setEmLocation(equipmentBaseDto.get(i).getEmLocationId());
-                equipment.setEmEmbeddedNumber(equipmentBaseDto.get(i).getEmEmbeddedNumber());
-                equipment.setCompany(equipmentBaseDto.get(i).getCompany());
-                equipment.setEmSubName(equipmentBaseDto.get(i).getEmSubName());
-                equipment.setMdId(equipmentBaseDto.get(i).getMdId());
-                equipment.setEmLatitude(equipmentBaseDto.get(i).getEmLatitude());
-                equipment.setEmHardness(equipmentBaseDto.get(i).getEmHardness());
-                equipment.setEmCertificationNumber(equipmentBaseDto.get(i).getEmCertificationNumber());
+            equipment.setId(equipmentBaseDto.get(i).getId());
+            equipment.setEmNumber(equipmentBaseDto.get(i).getEmNumber());
+            equipment.setEmCerealNumber(equipmentBaseDto.get(i).getEmCerealNumber());
+            equipment.setEmDesignation(equipmentBaseDto.get(i).getEmDesignation());
+            equipment.setEmType(equipmentBaseDto.get(i).getEmTypeId());
+            equipment.setEmAwsNumber(equipmentBaseDto.get(i).getEmAwsNumber());
+            equipment.setEmInstallDate(equipmentBaseDto.get(i).getEmInstallDate());
+            equipment.setEmCountry(equipmentBaseDto.get(i).getEmCountryId());
+            equipment.setEmLocation(equipmentBaseDto.get(i).getEmLocationId());
+            equipment.setEmEmbeddedNumber(equipmentBaseDto.get(i).getEmEmbeddedNumber());
+            equipment.setCompany(equipmentBaseDto.get(i).getCompany());
+            equipment.setEmSubName(equipmentBaseDto.get(i).getEmSubName());
+            equipment.setMdId(equipmentBaseDto.get(i).getMdId());
+            equipment.setEmLatitude(equipmentBaseDto.get(i).getEmLatitude());
+            equipment.setEmHardness(equipmentBaseDto.get(i).getEmHardness());
+            equipment.setEmCertificationNumber(equipmentBaseDto.get(i).getEmCertificationNumber());
 
-                if (equipment.getVInterval() == null) {
-                    vInterval = Double.parseDouble(masterCodes.get(0).getName());
-                    equipment.setVInterval(vInterval);
-                }
-                if (equipment.getVPresstime() == null) {
-                    vPresstime = Double.parseDouble(masterCodes.get(1).getName());
-                    equipment.setVPresstime(vPresstime);
-                }
-                if (equipment.getVInputtime() == null) {
-                    vInputtime = Double.parseDouble(masterCodes.get(2).getName());
-                    equipment.setVInputtime(vInputtime);
-                }
-                if (equipment.getVSolenoidtime() == null) {
-                    vSolenoidtime = Double.parseDouble(masterCodes.get(3).getName());
-                    equipment.setVSolenoidtime(vSolenoidtime);
-                }
-                if (equipment.getVYellowstart() == null) {
-                    vYellowstart = Double.parseDouble(masterCodes.get(4).getName());
-                    equipment.setVYellowstart(vYellowstart);
-                }
-                if (equipment.getVRedstart() == null) {
-                    vRedstart = Double.parseDouble(masterCodes.get(5).getName());
-                    equipment.setVRedstart(vRedstart);
-                }
+            if (equipment.getVInterval() == null) {
+                vInterval = Double.parseDouble(masterCodes.get(0).getName());
+                equipment.setVInterval(vInterval);
+            }
+            if (equipment.getVPresstime() == null) {
+                vPresstime = Double.parseDouble(masterCodes.get(1).getName());
+                equipment.setVPresstime(vPresstime);
+            }
+            if (equipment.getVInputtime() == null) {
+                vInputtime = Double.parseDouble(masterCodes.get(2).getName());
+                equipment.setVInputtime(vInputtime);
+            }
+            if (equipment.getVSolenoidtime() == null) {
+                vSolenoidtime = Double.parseDouble(masterCodes.get(3).getName());
+                equipment.setVSolenoidtime(vSolenoidtime);
+            }
+            if (equipment.getVYellowstart() == null) {
+                vYellowstart = Double.parseDouble(masterCodes.get(4).getName());
+                equipment.setVYellowstart(vYellowstart);
+            }
+            if (equipment.getVRedstart() == null) {
+                vRedstart = Double.parseDouble(masterCodes.get(5).getName());
+                equipment.setVRedstart(vRedstart);
+            }
 
-                equipment.setInsert_id(equipmentBaseDto.get(i).getInsert_id());
-                equipment.setInsertDateTime(equipmentBaseDto.get(i).getInsertDateTime());
-                equipment.setModify_id(currentuserid);
-                equipment.setModifyDateTime(LocalDateTime.now());
-//                System.out.println(" i 반복");
-                equipmentService.save(equipment);
-//            } else {
-//                equipment.setId(equipmentBaseDto.get(j).getId());
-//                equipment.setEmNumber(equipmentBaseDto.get(j).getEmNumber());
-//                equipment.setEmCerealNumber(equipmentBaseDto.get(j).getEmCerealNumber());
-//                equipment.setEmDesignation(equipmentBaseDto.get(j).getEmDesignation());
-//                equipment.setEmType(equipmentBaseDto.get(j).getEmTypeId());
-//                equipment.setEmAwsNumber(equipmentBaseDto.get(j).getEmAwsNumber());
-//                equipment.setEmInstallDate(equipmentBaseDto.get(j).getEmInstallDate());
-//                equipment.setEmCountry(equipmentBaseDto.get(j).getEmCountryId());
-//                equipment.setEmLocation(equipmentBaseDto.get(j).getEmLocationId());
-//                equipment.setEmEmbeddedNumber(equipmentBaseDto.get(j).getEmEmbeddedNumber());
-//                equipment.setCompany(equipmentBaseDto.get(j).getCompany());
-//                equipment.setEmSubName(equipmentBaseDto.get(j).getEmSubName());
-//                equipment.setMdId(equipmentBaseDto.get(j).getMdId());
-//                equipment.setEmLatitude(equipmentBaseDto.get(j).getEmLatitude());
-//                equipment.setEmHardness(equipmentBaseDto.get(j).getEmHardness());
-//                equipment.setEmCertificationNumber(equipmentBaseDto.get(j).getEmCertificationNumber());
-//
-//                if (equipment.getVInterval() == null) {
-//                    vInterval = Double.parseDouble(masterCodes.get(0).getName());
-//                    equipment.setVInterval(vInterval);
-//                }
-//                if (equipment.getVPresstime() == null) {
-//                    vPresstime = Double.parseDouble(masterCodes.get(1).getName());
-//                    equipment.setVPresstime(vPresstime);
-//                }
-//                if (equipment.getVInputtime() == null) {
-//                    vInputtime = Double.parseDouble(masterCodes.get(2).getName());
-//                    equipment.setVInputtime(vInputtime);
-//                }
-//                if (equipment.getVSolenoidtime() == null) {
-//                    vSolenoidtime = Double.parseDouble(masterCodes.get(3).getName());
-//                    equipment.setVSolenoidtime(vSolenoidtime);
-//                }
-//                if (equipment.getVYellowstart() == null) {
-//                    vYellowstart = Double.parseDouble(masterCodes.get(4).getName());
-//                    equipment.setVYellowstart(vYellowstart);
-//                }
-//                if (equipment.getVRedstart() == null) {
-//                    vRedstart = Double.parseDouble(masterCodes.get(5).getName());
-//                    equipment.setVRedstart(vRedstart);
-//                }
-//
-//                equipment.setInsert_id(equipmentBaseDto.get(j).getInsert_id());
-//                equipment.setInsertDateTime(equipmentBaseDto.get(j).getInsertDateTime());
-//                equipment.setModify_id(currentuserid);
-//                equipment.setModifyDateTime(LocalDateTime.now());
-//                System.out.println(" j 반복");
-//                equipmentService.save(equipment);
-//            }
+            equipment.setInsert_id(equipmentBaseDto.get(i).getInsert_id());
+            equipment.setInsertDateTime(equipmentBaseDto.get(i).getInsertDateTime());
+            equipment.setModify_id(currentuserid);
+            equipment.setModifyDateTime(LocalDateTime.now());
+            equipmentService.save(equipment);
         }
         return ResponseEntity.ok(res.success());
     }
@@ -307,14 +264,14 @@ public class EquipmentRestController {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
-        Long emTypeId = null;
+//        Long emTypeId = null;
         Long emCountryId = null;
         Long emLocationId = null;
 
-        if(!emType.equals("")){
-            Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
-            emTypeId = emTypes.map(MasterCode::getId).orElse(null);
-        }
+//        if(!emType.equals("")){
+//            Optional<MasterCode> emTypes = masterCodeService.findByCode(emType);
+//            emTypeId = emTypes.map(MasterCode::getId).orElse(null);
+//        }
         if(!emCountry.equals("")){
             Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
             emCountryId = emCountrys.map(MasterCode::getId).orElse(null);
@@ -325,8 +282,8 @@ public class EquipmentRestController {
         }
 
         List<EquipmentBaseListDto> equipmentListDtos =
-                equipmentService.findByBaseEquipmentSearch(emNumber,emLocationId,emTypeId,emCountryId,pageable);
-//        log.info("equipmentListDtos : "+equipmentListDtos);
+                equipmentService.findByBaseEquipmentSearch(emNumber,emLocationId,emType,emCountryId,pageable);
+        log.info("equipmentListDtos : "+equipmentListDtos);
 
         data.put("equipmentListDtos",equipmentListDtos);
         res.addResponse("data",data);

@@ -247,14 +247,44 @@ public class DashboardRestController {
                         }
 
                         if(!String.valueOf(map.get("frontdoor_sol")).equals("")||!String.valueOf(map.get("frontdoor_sol")).equals("na")) {
-                            frontDoor_sol.add((String) map.get("frontdoor_sol"));
+                            String front = (String) map.get("frontdoor_sol");
+                            switch (front) {
+                                case "close":
+                                    frontDoor_sol.add("닫힘");
+                                    break;
+                                case "open":
+                                    frontDoor_sol.add("열림");
+                                    break;
+                                case "jamming":
+                                    frontDoor_sol.add("걸림");
+                                    break;
+                                default:
+                                    frontDoor_sol.add("미확인");
+                                    break;
+                            }
                         }else{
-                            frontDoor_sol.add("na");
+                            frontDoor_sol.add("미확인");
                         }
+
+
                         if(!String.valueOf(map.get("inputdoor")).equals("")||!String.valueOf(map.get("inputdoor")).equals("na")) {
-                            inputDoor.add((String) map.get("inputdoor"));
+                            String inputdoor = (String) map.get("inputdoor");
+                            switch (inputdoor) {
+                                case "close":
+                                    inputDoor.add("닫힘");
+                                    break;
+                                case "open":
+                                    inputDoor.add("열림");
+                                    break;
+                                case "jamming":
+                                    inputDoor.add("걸림");
+                                    break;
+                                default:
+                                    inputDoor.add("미확인");
+                                    break;
+                            }
                         }else{
-                            inputDoor.add("na");
+                            inputDoor.add("미확인");
                         }
 
                         x++;
@@ -272,8 +302,8 @@ public class DashboardRestController {
                 gps_laDatas.add("na");
                 gps_loDatas.add("na");
                 rsrp.add(null);
-                frontDoor_sol.add("na");
-                inputDoor.add("na");
+                frontDoor_sol.add("미확인");
+                inputDoor.add("미확인");
 
                 y++;
             }
@@ -305,17 +335,17 @@ public class DashboardRestController {
                 gps_laDatas2.add(gps_laSubStirng);
                 gps_loDatas2.add(gps_loSubStirng);
             }else{
-                if(gps_laData.substring(0,1).equals("N")){
+                if(gps_laData.startsWith("N")){
                     String gps_laSubStirng = gps_laData.replace("N","+");
                     gps_laDatas2.add(gps_laSubStirng);
-                }else if(gps_laData.substring(0,1).equals("S")){
+                }else if(gps_laData.startsWith("S")){
                     String gps_laSubStirng = gps_laData.replace("S","-");
                     gps_laDatas2.add(gps_laSubStirng);
                 }
-                if(gps_loData.substring(0,1).equals("E")){
+                if(gps_loData.startsWith("E")){
                     String gps_loSubStirng = gps_loData.replace("E","+");
                     gps_loDatas2.add(gps_loSubStirng);
-                }else if(gps_loData.substring(0,1).equals("W")){
+                }else if(gps_loData.startsWith("W")){
                     String gps_loSubStirng = gps_loData.replace("W","-");
                     gps_loDatas2.add(gps_loSubStirng);
                 }
@@ -349,6 +379,7 @@ public class DashboardRestController {
         data.put("rsrp",rsrp);
         data.put("frontDoor_sol",frontDoor_sol);
         data.put("inputDoor",inputDoor);
+
         res.addResponse("data",data);
 
         return ResponseEntity.ok(res.success());
@@ -575,7 +606,7 @@ public class DashboardRestController {
                     String gps_loSubStirng = gps_loData.replace("E","+");
                     gps_loDatas2.add(gps_loSubStirng);
                     gps_loStreet.add(gps_loSubStirng);
-                }else if(gps_loData.substring(0,1).equals("W")){
+                }else if(gps_loData.startsWith("W")){
                     String gps_loSubStirng = gps_loData.replace("W","-");
                     gps_loDatas2.add(gps_loSubStirng);
                     gps_loStreet.add(gps_loSubStirng);
@@ -885,6 +916,8 @@ public class DashboardRestController {
         List<String> solar_current = new ArrayList<>(); //전류 리스트
         List<String> solar_voltage = new ArrayList<>(); //전압리스트
         List<Integer> rsrp = new ArrayList<>(); // 안테나
+        List<String> frontDoor_sol = new ArrayList<>(); // 전면도어
+        List<String> inputDoor = new ArrayList<>();  // 투입구
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
         //log.info("AWS 장치 data : "+resData.get("data"));
@@ -916,6 +949,47 @@ public class DashboardRestController {
                 rsrp.add(Integer.parseInt(String.valueOf(map.get("rsrp"))));
             }else{
                 rsrp.add(null);
+            }
+
+            if(!String.valueOf(map.get("frontdoor_sol")).equals("")||!String.valueOf(map.get("frontdoor_sol")).equals("na")) {
+                String front = (String) map.get("frontdoor_sol");
+                switch (front) {
+                    case "close":
+                        frontDoor_sol.add("닫힘");
+                        break;
+                    case "open":
+                        frontDoor_sol.add("열림");
+                        break;
+                    case "jamming":
+                        frontDoor_sol.add("걸림");
+                        break;
+                    default:
+                        frontDoor_sol.add("미확인");
+                        break;
+                }
+            }else{
+                frontDoor_sol.add("미확인");
+            }
+
+
+            if(!String.valueOf(map.get("inputdoor")).equals("")||!String.valueOf(map.get("inputdoor")).equals("na")) {
+                String inputdoor = (String) map.get("inputdoor");
+                switch (inputdoor) {
+                    case "close":
+                        inputDoor.add("닫힘");
+                        break;
+                    case "open":
+                        inputDoor.add("열림");
+                        break;
+                    case "jamming":
+                        inputDoor.add("걸림");
+                        break;
+                    default:
+                        inputDoor.add("미확인");
+                        break;
+                }
+            }else{
+                inputDoor.add("미확인");
             }
         }
 
@@ -959,6 +1033,8 @@ public class DashboardRestController {
         data.put("statusDatas",statusDatas);
         data.put("map_data_columns",mapDataColumns);
         data.put("bar_data_columns",barDataColumns);
+        data.put("frontDoor_sol",frontDoor_sol);
+        data.put("inputDoor",inputDoor);
 
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());

@@ -17,7 +17,7 @@ public interface EquipmentRepositoryCustom {
 
     List<EquipmentEmnumberDto> queryDslDeviceEmNumber(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId);
 
-    List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable);
+    List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, String emTypeId, Long emCountryId, Pageable pageable);
 
     List<EquipmentBaseDto> EquipmentBaseSettingQuerydsl(List<String> emNumbers);
 
@@ -26,4 +26,6 @@ public interface EquipmentRepositoryCustom {
     List<EquipmentCollectionRegDto> findByRoutingEmNumberQuerydsl(List<String> streetRouting);
 
     EquipmentCollectionTypeDto findByRoutingEmTypeQuerydsl(String streetdevice);
+
+    Page<EquipmentWaitingCollectionListDto> findByWaitingEquipmentCollectionQuerydsl(String emType, Long emCountryId, Long emLocationId, String emNumber, String emState, Pageable pageable);
 }

@@ -48,15 +48,6 @@ public class EquipmentService {
 
     public Equipment save(Equipment equipment) throws Exception {
 
-        String p1 = Double.toString(equipment.getVInterval());
-        String p2 = Double.toString(equipment.getVPresstime());
-        String p3 = Double.toString(equipment.getVInputtime());
-        String p4 = Double.toString(equipment.getVSolenoidtime());
-        String p5 = Double.toString(equipment.getVYellowstart());
-        String p6 = Double.toString(equipment.getVRedstart());
-
-        aciawsIoTDeviceService.setDeviceBaseSetting(equipment.getEmNumber(),p1,p2,p3,p4,p5,p6);
-
         //장비코드 가공하기
         if (equipment.getEmNumber() == null || equipment.getEmNumber().isEmpty()){
 
@@ -66,9 +57,19 @@ public class EquipmentService {
 
             String emNumber = keyGenerateService.keyGenerate("bs_equipment",emTypeCode+'-'+emCountryCode+'-'+emLocationCode+'-',equipment.getModify_id());
 
-             //고유 장비번호 저장이름 바꾸기 : 장비타입-국가-지역-순번
+            //고유 장비번호 저장이름 바꾸기 : 장비타입-국가-지역-순번
             equipment.setEmNumber(emNumber);
         }
+
+        String p1 = Double.toString(equipment.getVInterval());
+        String p2 = Double.toString(equipment.getVPresstime());
+        String p3 = Double.toString(equipment.getVInputtime());
+        String p4 = Double.toString(equipment.getVSolenoidtime());
+        String p5 = Double.toString(equipment.getVYellowstart());
+        String p6 = Double.toString(equipment.getVRedstart());
+
+        aciawsIoTDeviceService.setDeviceBaseSetting(equipment.getEmNumber(),p1,p2,p3,p4,p5,p6);
+
         return equipmentRepository.save(equipment);
     }
 
@@ -104,7 +105,7 @@ public class EquipmentService {
         return equipmentRepositoryCustom.queryDslDeviceEmNumber(emNumber,emTypeId,emCountryId,emLocationId);
     }
 
-    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, Long emTypeId, Long emCountryId, Pageable pageable) {
+    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, String emTypeId, Long emCountryId, Pageable pageable) {
         return equipmentRepositoryCustom.findByBaseEquipmentSearch(emNumber,emLocationId,emTypeId,emCountryId,pageable);
     }
 
@@ -122,5 +123,9 @@ public class EquipmentService {
 
     public EquipmentCollectionTypeDto findByRoutingEmTypeQuerydsl(String streetdevice) {
         return equipmentRepositoryCustom.findByRoutingEmTypeQuerydsl(streetdevice);
+    }
+
+    public Page<EquipmentWaitingCollectionListDto> findByWaitingEquipmentCollectionQuerydsl(String emType, Long emCountryId, Long emLocationId, String emNumber, String emState, Pageable pageable) {
+        return equipmentRepositoryCustom.findByWaitingEquipmentCollectionQuerydsl(emType,emCountryId,emLocationId,emNumber,emState,pageable);
     }
 }

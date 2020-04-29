@@ -71,6 +71,22 @@
 				return false;
 			}
 
+			if ($("#companyname").val().trim() === '') {
+				alertCaution("소속을 선택해주세요.");
+				$("#companyname").trigger('focus');
+				return false;
+			}
+
+			// 이메일 체크 정규식
+			var $email = $("#email");
+			if($email.val()!=="") {
+				if (!isEmail($email.val())) {
+					alertCaution("이메일 형식에 맞지 않습니다.");
+					$email.trigger('focus');
+					return false;
+				}
+			}
+
 			var $form = $('form[name="frmreg"]');
 			var params = $form.serialize();
 
@@ -94,6 +110,11 @@
 					init();
 				}
 			});
+		}
+
+		function isEmail(asValue) {
+			var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+			return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
 		}
 
 		// 운영사 리스트보기
