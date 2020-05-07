@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate ="~{layout/default}">
+<head>
+    <script>
+        $(function() {
+            if($("#headerMode").val()==="1"){
+                $("#default_wrap").addClass('wrap');
+                $("#header_device").css('display','block');
+            }else{
+                $("#default_wrap").addClass('wrap nav--small');
+                $("#header_device").css('display','none');
+            }
+
+            $("#btnSearch").on('click',function(){
+                beaconData();
+            });
+
+            $("#s_yyyymmdd").datepicker({});
+
+            beaconData();
+
+        });
+
+
+
+        function beaconData() {
+            // console.log("비콘센서데이터가져오기")
+
+            var $dateTo = $("#s_yyyymmdd");
+            if($dateTo.val()==="") {
+                var today = new Date();
+                var year = today.getFullYear();
+                var month = today.getMonth() + 1;
+                var day = today.getDate();
+                if (month < 10) {
+                    month = "0" + month;
+                }
+                if (day < 10) {
+                    day = "0" + day;
+                }
+                var todayData = year + "-" + month + "-" + day;
+                $dateTo.val(todayData);
+            }
+
+            var params = {
+                yyyymmdd:$dateTo.val()
+            };
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url:'/testpage/beaconData',
+                type : 'post',
+                data : params,
+                cache:false,
+                error:function(request){
+                    ajaxErrorMsg(request);
+                },
+                success: function(res){
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+                    // console.log("가져오기 성공")
+
+                    statuscode= res.data.statusCode;
+                    // console.log("statuscode : "+statuscode)
+
+                    if (statuscode ===200) {
+                        // console.log("타임스탬프 그래프 그리기 시작")
+
+                        var beaconTimeStamp_arr = []; //타임스탬프
+                        var temperature_arr = []; // 온도
+                        var nh3_arr = []; // 암모니아
+                        var humidity_arr = []; // 습도
+                        var tvoc_arr = []; // TVOC
+
+                        $.each(res.data.datarow1, function (key, value) {
+                            beaconTimeStamp_arr.push(parseInt(value.inserttimestamp));
+                            temperature_arr.push(value.temperature);
+                            if (value.nh3 === "na") {
+                                nh3_arr.push("0");
+                            } else {
+                                nh3_arr.push(value.nh3);
+                            }
+
+                            humidity_arr.push(value.humidity);
+                            tvoc_arr.push(value.tvoc);
+                        })
+
+                        if (window.chart && window.chart !== null) {
+                            window.chart.destroy();
+                        }
+
+                        // console.log("beaconTimeStamp_arr : " + beaconTimeStamp_arr)
+                        // console.log("temperature_arr : " + temperature_arr)
+                        // console.log("nh3_arr : " + nh3_arr)
+                        // console.log("humidity_arr : " + humidity_arr)
+                        // console.log("tvoc_arr : " + tvoc_arr)
+
+                        var chartData;
+                        var ctx;
+
+                        for (var i = 0; i < 4; i++) {
+                            if(i===0){
+                                ctx = document.getElementById('beaconTemperature');
+                                chartData = {
+                                    labels: beaconTimeStamp_arr,
+                                    datasets: [{
+                                        type: 'line',
+                                        label: '온도',
+                                        yAxisID: 'x',
+                                        backgroundColor: "#e35f5f",
+                                        borderWidth: 2,
+                                        borderColor: "#e35f5f",
+                                        data: temperature_arr,
+                                        fill: false
+                                    }]
+                                };
+                            }else if(i===1){
+                                ctx = document.getElementById('beaconNh3');
+                                chartData = {
+                                    labels: beaconTimeStamp_arr,
+                                    datasets: [{
+                                        type: 'line',
+                                        label: '암모니아',
+                                        yAxisID: 'x',
+                                        backgroundColor: "#29ff11",
+                                        borderWidth: 2,
+                                        borderColor: "#29ff11",
+                                        data: nh3_arr,
+                                        fill: false
+                                    }]
+                                };
+                            }else if(i===2){
+                                ctx = document.getElementById('beaconHumidity');
+                                chartData = {
+                                    labels: beaconTimeStamp_arr,
+                                    datasets: [{
+                                        type: 'line',
+                                        label: '습도',
+                                        yAxisID: 'x',
+                                        backgroundColor: "#f1ad07",
+                                        borderWidth: 2,
+                                        borderColor: "#f1ad07",
+                                        data: humidity_arr,
+                                        fill: false
+                                    }]
+                                };
+                            }else{
+                                ctx = document.getElementById('beaconTvoc');
+                                chartData = {
+                                    labels: beaconTimeStamp_arr,
+                                    datasets: [{
+                                        type: 'line',
+                                        label: 'TVOC',
+                                        yAxisID: 'x',
+                                        backgroundColor: "#8361fc",
+                                        borderWidth: 2,
+                                        borderColor: "#8361fc",
+                                        data: tvoc_arr,
+                                        fill: false
+                                    }]
+                                };
+                            }
+
+                            window.chart = new Chart(ctx, {
+                                data: chartData,
+                                options: {
+                                    elements: {
+                                        point: {
+                                            radius: 0
+                                        }
+                                    },
+                                    legend: {
+                                        posiont: 'top'
+                                    },
+                                    maintainAspectRatio: false,
+                                    stacked: true,
+                                    tooltips: { //팁(모드설정)
+                                        borderWidth: 3,
+                                        borderColor: 'rgb(118,172,255)',
+                                        caretPadding: 65,
+                                        mode: 'index',
+                                        intersect: false,
+                                        caretSize: 0
+                                    },
+                                    hover: { //점 나오기
+                                        mode: 'index',
+                                        intersect: false
+                                    },
+                                    scales: {
+                                        xAxes: [{
+                                            gridLines: {
+                                                drawOnChartArea: false
+                                            },
+                                            display: false,
+                                            type: 'time',
+                                            time: {
+                                                tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                            }
+                                        }],
+                                        yAxes: [{
+                                            ticks: {
+                                                max: 100,
+                                                min: 0,
+                                            },
+                                            id: 'x',
+                                            type: 'linear',
+                                            display: true,
+                                            position: 'left'
+                                        }],
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+</head>
+
+<div layout:fragment="content" class="contents-body">
+    <section class="section">
+        <article class="article">
+            <h2 class="article__heading">비콘센서 데이터 그래프</h2>
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 80px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>날짜검색</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="s_yyyymmdd" class="c-text__input" placeholder="연 - 월 - 일" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" id="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+
+            <div><canvas id='beaconTemperature' width="400" height="400"></canvas></div>
+            <div><canvas id='beaconNh3' width="400" height="400"></canvas></div>
+            <div><canvas id='beaconHumidity' width="400" height="400"></canvas></div>
+            <div><canvas id='beaconTvoc' width="400" height="400"></canvas></div>
+
+        </article>
+    </section>
+</div>
+</html>

@@ -1,16 +1,19 @@
 package kr.co.broadwave.aci.controller;
 
+import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
+import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.files.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author InSeok
@@ -20,11 +23,16 @@ import java.net.URLEncoder;
 @Controller
 @RequestMapping("/testpage")
 public class TestpageController {
+
     private final FileUploadService fileUploadService;
+    private final ACIAWSLambdaService aciawsLambdaService;
+
+
 
     @Autowired
-    public TestpageController(FileUploadService fileUploadService) {
+    public TestpageController(FileUploadService fileUploadService, ACIAWSLambdaService aciawsLambdaService) {
         this.fileUploadService = fileUploadService;
+        this.aciawsLambdaService = aciawsLambdaService;
     }
 
     @RequestMapping("dashboardfront")
@@ -131,6 +139,34 @@ public class TestpageController {
     @RequestMapping("collectionroutingtest2")
     public String collectionroutingtest2(){
         return "testpage/collectionroutingtest2";
+    }
+
+    @RequestMapping("beacongraph")
+    public String beacongraph(){
+        return "testpage/beacongraph";
+    }
+
+    // 비콘센서데이터가져오기
+    @PostMapping("beaconData")
+    public ResponseEntity<Map<String,Object>> beaconData(@RequestParam(value="yyyymmdd", defaultValue="") String yyyymmdd) throws Exception {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        String searchDate = null;
+//        System.out.println("yyyymmdd : "+yyyymmdd);
+        if (!yyyymmdd.equals("")) {
+            searchDate = yyyymmdd.substring(0, 10).replace("-", "");
+        }
+//        System.out.println("searchDate : "+searchDate);
+
+        HashMap<String,Object> resData = aciawsLambdaService.getDeviceBeacon(searchDate);
+        System.out.println("resData : "+resData);
+
+        data.put("statusCode",resData.get("statusCode"));
+        data.put("datarow1",resData.get("data"));
+        res.addResponse("data",data);
+
+        return ResponseEntity.ok(res.success());
     }
 
 }
