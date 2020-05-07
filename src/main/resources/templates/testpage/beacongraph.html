@@ -103,10 +103,13 @@
 
                         var chartData;
                         var ctx;
-
+                        var maxVal;
+                        var minVal;
                         for (var i = 0; i < 4; i++) {
                             if(i===0){
                                 ctx = document.getElementById('beaconTemperature');
+                                maxVal = Math.max.apply(0, temperature_arr);
+                                minVal = Math.min.apply(0, temperature_arr);
                                 chartData = {
                                     labels: beaconTimeStamp_arr,
                                     datasets: [{
@@ -122,6 +125,8 @@
                                 };
                             }else if(i===1){
                                 ctx = document.getElementById('beaconNh3');
+                                maxVal = Math.max.apply(0, nh3_arr);
+                                minVal = Math.min.apply(0, nh3_arr);
                                 chartData = {
                                     labels: beaconTimeStamp_arr,
                                     datasets: [{
@@ -137,6 +142,8 @@
                                 };
                             }else if(i===2){
                                 ctx = document.getElementById('beaconHumidity');
+                                maxVal = Math.max.apply(0, humidity_arr);
+                                minVal = Math.min.apply(0, humidity_arr);
                                 chartData = {
                                     labels: beaconTimeStamp_arr,
                                     datasets: [{
@@ -152,6 +159,8 @@
                                 };
                             }else{
                                 ctx = document.getElementById('beaconTvoc');
+                                maxVal = Math.max.apply(0, tvoc_arr);
+                                minVal = Math.min.apply(0, tvoc_arr);
                                 chartData = {
                                     labels: beaconTimeStamp_arr,
                                     datasets: [{
@@ -166,6 +175,9 @@
                                     }]
                                 };
                             }
+
+                            maxVal = maxVal+15;
+                            minVal = minVal-15;
 
                             window.chart = new Chart(ctx, {
                                 data: chartData,
@@ -205,8 +217,8 @@
                                         }],
                                         yAxes: [{
                                             ticks: {
-                                                max: 100,
-                                                min: 0,
+                                                max: maxVal,
+                                                min: minVal,
                                             },
                                             id: 'x',
                                             type: 'linear',
