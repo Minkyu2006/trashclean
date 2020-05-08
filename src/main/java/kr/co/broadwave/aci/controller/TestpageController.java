@@ -160,7 +160,7 @@ public class TestpageController {
 //        System.out.println("searchDate : "+searchDate);
 
         HashMap<String,Object> resData = aciawsLambdaService.getDeviceBeacon(searchDate);
-        System.out.println("resData : "+resData);
+//        System.out.println("resData : "+resData);
 
         data.put("statusCode",resData.get("statusCode"));
         data.put("datarow1",resData.get("data"));

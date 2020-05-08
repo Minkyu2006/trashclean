@@ -4,16 +4,21 @@
       layout:decorate ="~{layout/default}">
 <head>
     <script>
+        var myChart1;
+        var myChart2;
+        var myChart3;
         $(function() {
             if($("#headerMode").val()==="1"){
                 $("#default_wrap").addClass('wrap');
-                $("#header_device").css('display','block');
             }else{
                 $("#default_wrap").addClass('wrap nav--small');
-                $("#header_device").css('display','none');
             }
 
             $("#btnSearch").on('click',function(){
+                myChart1.destroy();
+                myChart2.destroy();
+                myChart3.destroy();
+
                 beaconData();
             });
 
@@ -91,10 +96,6 @@
                             tvoc_arr.push(value.tvoc);
                         })
 
-                        if (window.chart && window.chart !== null) {
-                            window.chart.destroy();
-                        }
-
                         // console.log("beaconTimeStamp_arr : " + beaconTimeStamp_arr)
                         // console.log("temperature_arr : " + temperature_arr)
                         // console.log("nh3_arr : " + nh3_arr)
@@ -102,133 +103,270 @@
                         // console.log("tvoc_arr : " + tvoc_arr)
 
                         var chartData;
-                        var ctx;
-                        var maxVal;
-                        var minVal;
-                        for (var i = 0; i < 4; i++) {
-                            if(i===0){
-                                ctx = document.getElementById('beaconTemperature');
-                                maxVal = Math.max.apply(0, temperature_arr);
-                                minVal = Math.min.apply(0, temperature_arr);
-                                chartData = {
-                                    labels: beaconTimeStamp_arr,
-                                    datasets: [{
-                                        type: 'line',
-                                        label: '온도',
-                                        yAxisID: 'x',
-                                        backgroundColor: "#e35f5f",
-                                        borderWidth: 2,
-                                        borderColor: "#e35f5f",
-                                        data: temperature_arr,
-                                        fill: false
-                                    }]
-                                };
-                            }else if(i===1){
-                                ctx = document.getElementById('beaconNh3');
-                                maxVal = Math.max.apply(0, nh3_arr);
-                                minVal = Math.min.apply(0, nh3_arr);
-                                chartData = {
-                                    labels: beaconTimeStamp_arr,
-                                    datasets: [{
-                                        type: 'line',
-                                        label: '암모니아',
-                                        yAxisID: 'x',
-                                        backgroundColor: "#29ff11",
-                                        borderWidth: 2,
-                                        borderColor: "#29ff11",
-                                        data: nh3_arr,
-                                        fill: false
-                                    }]
-                                };
-                            }else if(i===2){
-                                ctx = document.getElementById('beaconHumidity');
-                                maxVal = Math.max.apply(0, humidity_arr);
-                                minVal = Math.min.apply(0, humidity_arr);
-                                chartData = {
-                                    labels: beaconTimeStamp_arr,
-                                    datasets: [{
-                                        type: 'line',
-                                        label: '습도',
-                                        yAxisID: 'x',
-                                        backgroundColor: "#f1ad07",
-                                        borderWidth: 2,
-                                        borderColor: "#f1ad07",
-                                        data: humidity_arr,
-                                        fill: false
-                                    }]
-                                };
-                            }else{
-                                ctx = document.getElementById('beaconTvoc');
-                                maxVal = Math.max.apply(0, tvoc_arr);
-                                minVal = Math.min.apply(0, tvoc_arr);
-                                chartData = {
-                                    labels: beaconTimeStamp_arr,
-                                    datasets: [{
-                                        type: 'line',
-                                        label: 'TVOC',
-                                        yAxisID: 'x',
-                                        backgroundColor: "#8361fc",
-                                        borderWidth: 2,
-                                        borderColor: "#8361fc",
-                                        data: tvoc_arr,
-                                        fill: false
-                                    }]
-                                };
-                            }
 
-                            maxVal = maxVal+15;
-                            minVal = minVal-15;
+                        var ctx1 = document.getElementById('beaconTemperature').getContext("2d");;
+                        var ctx2 = document.getElementById('beaconNh3').getContext("2d");;
+                        var ctx3 = document.getElementById('beaconTvoc').getContext("2d");;
+                        // temMaxVal = Math.max.apply(0, temperature_arr)+15;
+                        // temMinVal = 0;
+                        var humMaxVal = Math.max.apply(0, humidity_arr)+15;
+                        var humMinVal = 0;
+                        var nh3MaxVal = Math.max.apply(0, nh3_arr)+15;
+                        var nh3MinVal = 0;
+                        var tvocMaxVal = Math.max.apply(0, tvoc_arr)+15;
+                        var tvocMinVal = 0;
 
-                            window.chart = new Chart(ctx, {
-                                data: chartData,
-                                options: {
-                                    elements: {
-                                        point: {
-                                            radius: 0
-                                        }
-                                    },
-                                    legend: {
-                                        posiont: 'top'
-                                    },
-                                    maintainAspectRatio: false,
-                                    stacked: true,
-                                    tooltips: { //팁(모드설정)
-                                        borderWidth: 3,
-                                        borderColor: 'rgb(118,172,255)',
-                                        caretPadding: 65,
-                                        mode: 'index',
-                                        intersect: false,
-                                        caretSize: 0
-                                    },
-                                    hover: { //점 나오기
-                                        mode: 'index',
-                                        intersect: false
-                                    },
-                                    scales: {
-                                        xAxes: [{
-                                            gridLines: {
-                                                drawOnChartArea: false
-                                            },
-                                            display: false,
-                                            type: 'time',
-                                            time: {
-                                                tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
-                                            }
-                                        }],
-                                        yAxes: [{
-                                            ticks: {
-                                                max: maxVal,
-                                                min: minVal,
-                                            },
-                                            id: 'x',
-                                            type: 'linear',
-                                            display: true,
-                                            position: 'left'
-                                        }],
-                                    }
-                                }
-                            });
+                        // 온도최대값,최소값 계산(y축그래프)
+                        var temp_brd_Max = Math.max.apply(0, temperature_arr); // 온도최대값
+                        var temp_brd_Min = Math.min.apply(0, temperature_arr); // 온도최소값
+                        var tempMax = (temp_brd_Max+15).toFixed(0);
+                        var tempMin = (temp_brd_Min-15).toFixed(0);
+                        var tempBrdMax;
+                        var tempBrdMin;
+
+                        if(tempMax/5!==0){
+                            tempMaxsub = tempMax.substring(1,2);
+                            tempBrdMax = parseInt(tempMax)-parseInt(tempMaxsub);
+                        }else{
+                            tempBrdMax = tempMap;
                         }
+
+                        if(tempMin/5!==0) {
+                            if(-10<tempMin<0){
+                                tempMinsub = tempMin.substring(1,2);
+                                tempBrdMin = parseInt(tempMin) + parseInt(tempMinsub);
+                            }else if(tempMin<-10) {
+                                tempMinsub = tempMin.substring(2,3);
+                                tempBrdMin = parseInt(tempMin) + parseInt(tempMinsub);
+                            }else if(tempMin>10){
+                                tempMinsub = tempMin.substring(1,2);
+                                tempBrdMin = parseInt(tempMin) - parseInt(tempMinsub);
+                            }else{
+                                tempBrdMin = 0;
+                            }
+                        }else{
+                            tempBrdMin = 0;
+                        }
+
+                        chartData1 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: '온도',
+                                yAxisID: 'x',
+                                backgroundColor: "#e35f5f",
+                                borderWidth: 2,
+                                borderColor: "#e35f5f",
+                                data: temperature_arr,
+                                fill: false
+                            }, {
+                                type: 'line',
+                                label: '습도',
+                                yAxisID: 'y',
+                                backgroundColor: "#f1ad07",
+                                borderWidth: 2,
+                                borderColor: "#f1ad07",
+                                data: humidity_arr,
+                                fill: false
+                            }]
+                        };
+
+                        myChart1 = new Chart(ctx1, {
+                            data: chartData1,
+                            options: {
+                                elements: {
+                                    point:{
+                                        radius: 0
+                                    }
+                                },
+                                legend:{
+                                    posiont:'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked : true,
+                                tooltips: { //팁(모드설정)
+                                    borderWidth:3,
+                                    borderColor : 'rgb(118,172,255)',
+                                    caretPadding: 65,
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize:0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY'+'년'+'MM'+'월'+'DD'+'일 '+'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            callback: function(value) {
+                                                return value+'℃';
+                                            },
+                                            max: tempBrdMax,
+                                            min: tempBrdMin
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    },{
+                                        ticks: {
+                                            callback: function(value) {
+                                                return value+'%';
+                                            },
+                                            max: humMaxVal,
+                                            min: humMinVal
+                                        },
+                                        id: 'y',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right',
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+
+                        chartData2 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: '암모니아',
+                                yAxisID: 'x',
+                                backgroundColor: "#29ff11",
+                                borderWidth: 2,
+                                borderColor: "#29ff11",
+                                data: nh3_arr,
+                                fill: false
+                            }]
+                        };
+
+                        myChart2 = new Chart(ctx2, {
+                            data: chartData2,
+                            options: {
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legend: {
+                                    posiont: 'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked: true,
+                                tooltips: { //팁(모드설정)
+                                    borderWidth: 3,
+                                    borderColor: 'rgb(118,172,255)',
+                                    caretPadding: 65,
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize: 0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            max: nh3MaxVal,
+                                            min: nh3MinVal,
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    }]
+                                }
+                            }
+                        });
+
+
+                        chartData3 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: 'TVOC',
+                                yAxisID: 'x',
+                                backgroundColor: "#8361fc",
+                                borderWidth: 2,
+                                borderColor: "#8361fc",
+                                data: tvoc_arr,
+                                fill: false
+                            }]
+                        };
+
+                        myChart3 = new Chart(ctx3, {
+                            data: chartData3,
+                            options: {
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legend: {
+                                    posiont: 'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked: true,
+                                tooltips: { //팁(모드설정)
+                                    borderWidth: 3,
+                                    borderColor: 'rgb(118,172,255)',
+                                    caretPadding: 65,
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize: 0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            max: tvocMaxVal,
+                                            min: tvocMinVal,
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    }]
+                                }
+                            }
+                        });
                     }
                 }
             });
@@ -260,10 +398,9 @@
                 </tr>
             </table>
 
-            <div><canvas id='beaconTemperature' width="400" height="400"></canvas></div>
-            <div><canvas id='beaconNh3' width="400" height="400"></canvas></div>
-            <div><canvas id='beaconHumidity' width="400" height="400"></canvas></div>
-            <div><canvas id='beaconTvoc' width="400" height="400"></canvas></div>
+            <div><canvas id='beaconTemperature' width="250" height="250"></canvas></div>
+            <div><canvas id='beaconNh3' width="250" height="250"></canvas></div>
+            <div><canvas id='beaconTvoc' width="250" height="250"></canvas></div>
 
         </article>
     </section>
