@@ -7,6 +7,7 @@
         var myChart1;
         var myChart2;
         var myChart3;
+
         $(function() {
             if($("#headerMode").val()==="1"){
                 $("#default_wrap").addClass('wrap');
@@ -18,7 +19,6 @@
                 myChart1.destroy();
                 myChart2.destroy();
                 myChart3.destroy();
-
                 beaconData();
             });
 
@@ -28,10 +28,9 @@
 
         });
 
-
-
         function beaconData() {
             // console.log("비콘센서데이터가져오기")
+            $("#beaconChartLoading").css('display','block');
 
             var $dateTo = $("#s_yyyymmdd");
             if($dateTo.val()==="") {
@@ -83,17 +82,58 @@
                         var humidity_arr = []; // 습도
                         var tvoc_arr = []; // TVOC
 
+                        var tem = "0";
+                        var hum = "0";
+                        var nh = "0";
+                        var tv = "0";
+
                         $.each(res.data.datarow1, function (key, value) {
                             beaconTimeStamp_arr.push(parseInt(value.inserttimestamp));
-                            temperature_arr.push(value.temperature);
+
+                            if (value.temperature === "na") {
+                                if(tem!=="na"){
+                                    temperature_arr.push(tem);
+                                }else{
+                                    temperature_arr.push("0");
+                                }
+                            } else {
+                                temperature_arr.push(value.temperature);
+                            }
+                            tem = value.temperature
+
+                            if (value.humidity === "na") {
+                                if(hum!=="na"){
+                                    humidity_arr.push(hum);
+                                }else{
+                                    humidity_arr.push("0");
+                                }
+                            } else {
+                                humidity_arr.push(value.humidity);
+                            }
+                            hum = value.humidity
+
                             if (value.nh3 === "na") {
-                                nh3_arr.push("0");
+                                if(nh!=="na"){
+                                    nh3_arr.push(nh);
+                                }else{
+                                    nh3_arr.push("0");
+                                }
                             } else {
                                 nh3_arr.push(value.nh3);
                             }
+                            nh = value.nh3
 
-                            humidity_arr.push(value.humidity);
-                            tvoc_arr.push(value.tvoc);
+                            if (value.tvoc === "na") {
+                                if(tv!=="na"){
+                                    tvoc_arr.push(tv);
+                                }else{
+                                    tvoc_arr.push("0");
+                                }
+                            } else {
+                                tvoc_arr.push(value.tvoc);
+                            }
+                            tv = value.tvoc
+
                         })
 
                         // console.log("beaconTimeStamp_arr : " + beaconTimeStamp_arr)
@@ -102,18 +142,17 @@
                         // console.log("humidity_arr : " + humidity_arr)
                         // console.log("tvoc_arr : " + tvoc_arr)
 
-                        var chartData;
+                        var ctx1 = document.getElementById('beaconTemperature').getContext("2d");
+                        var ctx2 = document.getElementById('beaconNh3').getContext("2d");
+                        var ctx3 = document.getElementById('beaconTvoc').getContext("2d");
 
-                        var ctx1 = document.getElementById('beaconTemperature').getContext("2d");;
-                        var ctx2 = document.getElementById('beaconNh3').getContext("2d");;
-                        var ctx3 = document.getElementById('beaconTvoc').getContext("2d");;
                         // temMaxVal = Math.max.apply(0, temperature_arr)+15;
                         // temMinVal = 0;
                         var humMaxVal = Math.max.apply(0, humidity_arr)+15;
                         var humMinVal = 0;
                         var nh3MaxVal = Math.max.apply(0, nh3_arr)+15;
                         var nh3MinVal = 0;
-                        var tvocMaxVal = Math.max.apply(0, tvoc_arr)+15;
+                        var tvocMaxVal = Math.max.apply(0, tvoc_arr)+200;
                         var tvocMinVal = 0;
 
                         // 온도최대값,최소값 계산(y축그래프)
@@ -148,7 +187,7 @@
                             tempBrdMin = 0;
                         }
 
-                        chartData1 = {
+                        var chartData1 = {
                             labels: beaconTimeStamp_arr,
                             datasets: [{
                                 type: 'line',
@@ -239,7 +278,7 @@
                             }
                         });
 
-                        chartData2 = {
+                        var chartData2 = {
                             labels: beaconTimeStamp_arr,
                             datasets: [{
                                 type: 'line',
@@ -304,7 +343,7 @@
                         });
 
 
-                        chartData3 = {
+                        var chartData3 = {
                             labels: beaconTimeStamp_arr,
                             datasets: [{
                                 type: 'line',
@@ -368,6 +407,7 @@
                             }
                         });
                     }
+                    $("#beaconChartLoading").css('display','none');
                 }
             });
         }
@@ -398,9 +438,14 @@
                 </tr>
             </table>
 
-            <div><canvas id='beaconTemperature' width="250" height="250"></canvas></div>
-            <div><canvas id='beaconNh3' width="250" height="250"></canvas></div>
-            <div><canvas id='beaconTvoc' width="250" height="250"></canvas></div>
+            <div>
+                <div id="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <div><canvas id='beaconTemperature' width="250" height="250"></canvas></div>
+                <div><canvas id='beaconNh3' width="250" height="250"></canvas></div>
+                <div><canvas id='beaconTvoc' width="250" height="250"></canvas></div>
+            </div>
 
         </article>
     </section>
