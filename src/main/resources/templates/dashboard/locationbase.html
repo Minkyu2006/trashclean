@@ -468,12 +468,12 @@
 							tempMax = (temp_brd_Max+15).toFixed(0);
 							tempMin = (temp_brd_Min-15).toFixed(0);
 
-							if(tempMax/5!==0){
-								tempMaxsub = tempMax.substring(1,2);
-								tempBrdMax = parseInt(tempMax)-parseInt(tempMaxsub);
-							}else{
-								tempBrdMax = tempMap;
-							}
+							// if(tempMax/5!==0){
+							// 	tempMaxsub = tempMax.substring(1,2);
+							// 	tempBrdMax = parseInt(tempMax)-parseInt(tempMaxsub);
+							// }else{
+							// 	tempBrdMax = tempMap;
+							// }
 							if(tempMin/5!==0) {
 								if(-10<tempMin<0){
 									tempMinsub = tempMin.substring(1,2);
@@ -504,7 +504,7 @@
 								labels: testTimeStamp,
 								datasets: [{
 									type: 'line',
-									label: '온도',
+									label: '온도(℃)',
 									yAxisID: 'y',
 									backgroundColor: "#e35f5f",
 									borderWidth: 2,
@@ -513,7 +513,7 @@
 									fill: false
 								}, {
 									type: 'line',
-									label: '배출량',
+									label: '배출량(%)',
 									yAxisID: 'x',
 									backgroundColor: "#48ae63",
 									borderWidth: 2,
@@ -522,7 +522,7 @@
 									fill: false
 								},{
 									type: 'line',
-									label: '배터리잔량',
+									label: '배터리전압(V)',
 									yAxisID: 'x',
 									backgroundColor: "#ffc600",
 									borderWidth: 2,
@@ -572,9 +572,9 @@
 										}],
 										yAxes: [{
 											ticks: {
-												callback: function(value) {
-													return value+'%';
-												},
+												// callback: function(value) {
+												// 	return value+'%';
+												// },
 												max: 100,
 												min: 0,
 												stepSize: 20
@@ -585,10 +585,10 @@
 											position: 'left'
 										},{
 											ticks: {
-												callback: function(value) {
-													return value+'℃';
-												},
-												max: tempBrdMax,
+												// callback: function(value) {
+												// 	return value+'℃';
+												// },
+												max: temp_brd_Max,
 												min: tempBrdMin
 											},
 											id: 'y',
