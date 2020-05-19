@@ -174,7 +174,7 @@ public class DashboardRestController {
         List<String> status = new ArrayList<>(); // 상태값리스트
         List<String> temp_brd = new ArrayList<>(); // 온도리스트
         List<String> level = new ArrayList<>(); // 배출량리스트
-        List<String> batt_level = new ArrayList<>(); // 배터리잔량리스트
+        List<String> batt_voltage = new ArrayList<>(); // 배터리잔량리스트
         List<String> solar_current = new ArrayList<>(); // 전류리스트
         List<String> solar_voltage = new ArrayList<>(); // 전압리스트
         List<String> gps_laDatas = new ArrayList<>();// 위도리스트
@@ -234,7 +234,7 @@ public class DashboardRestController {
                         status.add((String) map.get("status")); //상태값넣기
                         temp_brd.add((String) map.get("temp_brd")); // 온도값넣기
                         level.add((String) map.get("level")); //배출량값넣기
-                        batt_level.add((String) map.get("batt_level")); //배터리잔량값넣기
+                        batt_voltage.add((String) map.get("batt_voltage")); //배터리잔량값넣기
                         solar_current.add((String) map.get("solar_current")); //전류값넣기
                         solar_voltage.add((String) map.get("solar_voltage")); //전압값넣기
                         gps_laDatas.add((String) map.get("gps_la")); //위도값넣기
@@ -296,7 +296,7 @@ public class DashboardRestController {
                 status.add("0");
                 temp_brd.add("0");
                 level.add("0");
-                batt_level.add("0");
+                batt_voltage.add("0");
                 solar_current.add("0");
                 solar_voltage.add("0");
                 gps_laDatas.add("na");
@@ -371,7 +371,7 @@ public class DashboardRestController {
         data.put("status",status);
         data.put("temp_brd",temp_brd);
         data.put("level",level);
-        data.put("batt_level",batt_level);
+        data.put("batt_voltage",batt_voltage);
         data.put("solar_current",solar_current);
         data.put("solar_voltage",solar_voltage);
         data.put("gps_laDatas",gps_laDatas2);
@@ -912,7 +912,7 @@ public class DashboardRestController {
         List<String> gps_laDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
         List<String> gps_loDatas2 = new ArrayList<>(); // AWS 장비 gps_la값 리스트 변환
         List<String> temp_brd = new ArrayList<>(); //온도리스트
-        List<String> batt_level = new ArrayList<>(); //배터리잔량리스트
+        List<String> batt_voltage = new ArrayList<>(); //배터리잔량리스트
         List<String> solar_current = new ArrayList<>(); //전류 리스트
         List<String> solar_voltage = new ArrayList<>(); //전압리스트
         List<Integer> rsrp = new ArrayList<>(); // 안테나
@@ -941,7 +941,7 @@ public class DashboardRestController {
             gps_laDatas.add((String) map.get("gps_la")); // gps1 리스트
             gps_loDatas.add((String) map.get("gps_lo")); //gps2 리스트
             temp_brd.add((String) map.get("temp_brd")); //온도 리스트
-            batt_level.add((String) map.get("batt_level")); //배터리잔량 리스트
+            batt_voltage.add((String) map.get("batt_voltage")); //배터리잔량 리스트
             solar_current.add((String) map.get("solar_current")); //전류 리스트
             solar_voltage.add((String) map.get("solar_voltage")); //전압 리스트
 
@@ -1026,7 +1026,7 @@ public class DashboardRestController {
 
         data.put("rsrp",rsrp);
         data.put("temp_brd",temp_brd);
-        data.put("batt_level",batt_level);
+        data.put("batt_voltage",batt_voltage);
         data.put("solar_current",solar_current);
         data.put("solar_voltage",solar_voltage);
         data.put("deviceIdNames",deviceIdNames);

@@ -737,12 +737,17 @@
 						html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>';
 						html += '</li>';
 						if(emTypes[idx]!=="iTainer") {
-							html += '<li class="equipment__info-item">';
-							html += '<span class="equipment__info-title">' + '배터리전압 : ' + '</span>';
-							html += '<span class="equipment__info-value">' + nvl(res.data.batt_level[idx], "확 인 불 가") + '%' + '</span>';
-							html += '</li>';
-						}
-						if(emTypes[idx]!=="iTainer") {
+							if(res.data.batt_voltage[idx]!=="na"){
+								html += '<li class="equipment__info-item">';
+								html += '<span class="equipment__info-title">' + '배터리전압 : ' + '</span>';
+								html += '<span class="equipment__info-value">' + nvl(res.data.batt_voltage[idx], "확 인 불 가") + 'V' + '</span>';
+								html += '</li>';
+							}else{
+								html += '<li class="equipment__info-item">';
+								html += '<span class="equipment__info-title">' + '배터리전압 : ' + '</span>';
+								html += '<span class="equipment__info-value">' + 'na' + '</span>';
+								html += '</li>';
+							}
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '태양광판넬 전류 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + nvl(res.data.solar_current[idx], "확 인 불 가") + 'A' + '</span>';
@@ -775,7 +780,8 @@
 						html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">';
 						html3 += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html3 += '</div>';
-						html3 += '<canvas id='+'timeStampChart'+idx+'></canvas>';
+						html3 += '<canvas id='+'timeStampChart'+idx+'></canvas>'
+						html3 += '<span style="display: none;position: absolute;top: 50%;left: 31%;font-size: 30px;" id='+'spanText'+idx+'></span>';
 						html3 += '</div>';
 
 						htmls.push(html);
@@ -976,10 +982,17 @@
 						html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>';
 						html += '</li>';
 						if(emTypes[idx]!=="iTainer") {
-							html += '<li class="equipment__info-item">';
-							html += '<span class="equipment__info-title">' + '배터리전압 : ' + '</span>';
-							html += '<span class="equipment__info-value">' + nvl(res.data.batt_level[idx], "확 인 불 가") + '%' + '</span>';
-							html += '</li>';
+							if(res.data.batt_voltage[idx]!=="na"){
+								html += '<li class="equipment__info-item">';
+								html += '<span class="equipment__info-title">' + '배터리전압 : ' + '</span>';
+								html += '<span class="equipment__info-value">' + nvl(res.data.batt_voltage[idx], "확 인 불 가") + 'V' + '</span>';
+								html += '</li>';
+							}else{
+								html += '<li class="equipment__info-item">';
+								html += '<span class="equipment__info-title">' + '배터리전압 : ' + '</span>';
+								html += '<span class="equipment__info-value">' + 'na' + '</span>';
+								html += '</li>';
+							}
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '태양광판넬 전류 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + nvl(res.data.solar_current[idx], "확 인 불 가") + 'A' + '</span>';
@@ -1006,10 +1019,13 @@
 						html += '</li>';
 						html += '</ul>';
 
+						html3 += '<div id='+'graphs'+idx+' class="equipment__section">';
 						html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">';
 						html3 += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html3 += '</div>';
-						html3 += '<canvas id='+'timeStampChart'+idx+' style="width: 100%;height: 220px;"></canvas>';
+						html3 += '<canvas id='+'timeStampChart'+idx+'></canvas>'
+						html3 += '<span style="display: none;position: absolute;top: 50%;left: 31%;font-size: 30px;" id='+'spanText'+idx+'></span>';
+						html3 += '</div>';
 
 						htmls.push(html);
 						htmls2.push(html2);
@@ -1060,14 +1076,14 @@
 						// var timeStamp = []; //타임스탬프
 						var temp_brd = []; //온도
 						var level = []; //배출량
-						var batt_level = []; //배터리잔량
+						var batt_voltage = []; //배터리잔량
 						var testTimeStamp = [];
 						$.each(res.data.datarow1, function (key, value) {
 							// console.log("해당아이디 : "+value.deviceid);
 							// console.log("타임스탬프 : "+value.timestamp);
 							// console.log("온도 : "+value.temp_brd);
 							// console.log("배출량 : "+value.level);
-							// console.log("배터리잔량 : "+value.batt_level);
+							// console.log("배터리잔량 : "+value.batt_voltage);
 
 							// var timestamp = parseInt(value.timestamp); // value.timestamp(밀리세컨드)는 문자열로 받아오기때문에 정수형으로 변환해준다.
 							// var date = new Date(timestamp);
@@ -1090,23 +1106,163 @@
 							// console.log("")
 							testTimeStamp.push(parseInt(value.timestamp));
 							// timeStamp.push(time);
-							temp_brd.push(value.temp_brd);
-							level.push(value.level);
-							batt_level.push(value.batt_level);
+
+							if(value.temp_brd==="na"){
+								temp_brd.push(0);
+							}else{
+								temp_brd.push(value.temp_brd);
+							}
+							if(value.level==="na"){
+								level.push(0);
+							}else{
+								level.push(value.level);
+							}
+							if(value.batt_voltage==="na"){
+								batt_voltage.push(0);
+							}else{
+								batt_voltage.push(value.batt_voltage);
+							}
 						});
+
 						// console.log("temp_brd : " + temp_brd.length);
 						// console.log("level : " + level.length);
-						// console.log("batt_level : " + batt_level.length);
+						// console.log("batt_voltage : " + batt_voltage.length);
 
-						// if (temp_brd.length===0 && level.length===0 && batt_level.length===0) {
-						// 	console.log("데이터없음")
-						//
-						// 	var _cvs = $('#graphs' + idx);
-						// 	_cvs.text("데이터가 존재하지 않습니다.")
-						//
-						// } else {
-							console.log("데이터있음")
-							var $days = $("#intervaltime").val(); // 기간선택 시간
+						var ctx;
+						var nowDate;
+						var max_milliseconds;
+						var min_milliseconds;
+						var spantext;
+						var barChartData;
+						var $days;
+						if (temp_brd.length===0 && level.length===0 && batt_voltage.length===0) {
+							// console.log("데이터없음")
+							ctx = document.getElementById('timeStampChart' + idx);
+							$days = $("#intervaltime").val(); // 기간선택 시간
+							temp_brd.push(0);
+							level.push(0);
+							batt_voltage.push(0);
+
+							nowDate = new Date();
+							// 라벨 최대값 구하기 (현재날짜)
+							max_milliseconds = nowDate.getTime();
+							// 라벨 최소값 구하기재
+							min_milliseconds = nowDate.setHours(nowDate.getHours() - $days);
+
+							spantext = $('#spanText' + idx);
+							spantext.text("데이터가 존재하지 않습니다.")
+
+							barChartData = {
+								labels: testTimeStamp,
+								datasets: [{
+									type: 'line',
+									label: '온도(℃)',
+									yAxisID: 'y',
+									backgroundColor: "#e35f5f",
+									borderWidth: 2,
+									borderColor: "#e35f5f",
+									data: temp_brd,
+									fill: false
+								}, {
+									type: 'line',
+									label: '배출량(%)',
+									yAxisID: 'x',
+									backgroundColor: "#48ae63",
+									borderWidth: 2,
+									borderColor: "#48ae63",
+									data: level,
+									fill: false
+								}, {
+									type: 'line',
+									label: '배터리전압(V)',
+									yAxisID: 'x',
+									backgroundColor: "#ffc600",
+									borderWidth: 2,
+									borderColor: "#ffc600",
+									data: batt_voltage,
+									fill: false
+								}]
+							};
+
+							new Chart(ctx, {
+								data: barChartData,
+								options: {
+									elements: {
+										point: {
+											radius: 0
+										}
+									},
+									legend: {
+										posiont: 'top'
+									},
+									maintainAspectRatio: false,
+									stacked: true,
+									tooltips: { //팁(모드설정)
+										borderWidth: 3,
+										borderColor: 'rgb(118,172,255)',
+										caretPadding: 65,
+										mode: 'index',
+										intersect: false,
+										caretSize: 0
+									},
+									hover: { //점 나오기
+										mode: 'index',
+										intersect: false
+									},
+									scales: {
+										xAxes: [{
+											gridLines: {
+												drawOnChartArea: false
+											},
+											display: false,
+											type: 'time',
+											time: {
+												min: min_milliseconds,
+												max: max_milliseconds,
+												tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+											}
+										}],
+										yAxes: [{
+											ticks: {
+												// callback: function(value) {
+												// 	return value+'%';
+												// },
+												max: 100,
+												min: 0,
+												stepSize: 20
+											},
+											id: 'x',
+											type: 'linear',
+											display: true,
+											position: 'left'
+										}, {
+											ticks: {
+												// callback: function(value) {
+												// 	return value+'℃';
+												// },
+												max: 10,
+												min: 0
+											},
+											id: 'y',
+											type: 'linear',
+											display: true,
+											position: 'right',
+											gridLines: {
+												drawOnChartArea: false
+											}
+										}],
+
+									}
+								}
+							});
+							setTimeout(function () {
+								$("#stateLoading" + idx).hide();
+								$("#detailLoading" + idx).hide();
+								$("#timechartLoading" + idx).hide();
+								spantext.css('display','block');
+							}, 2000);
+						} else {
+							$days = $("#intervaltime").val(); // 기간선택 시간
 
 							// 온도최대값,최소값 계산(y축그래프)
 							temp_brd_Max = Math.max.apply(0, temp_brd); // 온도최대값
@@ -1147,16 +1303,16 @@
 							// console.log("최종 최소 : "+tempBrdMin);
 
 							//var ctx = document.getElementById('timeStampChart'+idx).getContext('2d');
-							var ctx = document.getElementById('timeStampChart' + idx);
+							ctx = document.getElementById('timeStampChart' + idx);
 
-							var nowDate = new Date();
+							nowDate = new Date();
 							// 라벨 최대값 구하기 (현재날짜)
-							var max_milliseconds = nowDate.getTime();
+							max_milliseconds = nowDate.getTime();
 							// 라벨 최소값 구하기재
-							var min_milliseconds = nowDate.setHours(nowDate.getHours() - $days);
+							min_milliseconds = nowDate.setHours(nowDate.getHours() - $days);
 							// console.log("현재날짜 : "+max_milliseconds);
 							// console.log("이전날짜 : "+min_milliseconds);
-							var barChartData = {
+							barChartData = {
 								labels: testTimeStamp,
 								datasets: [{
 									type: 'line',
@@ -1183,11 +1339,10 @@
 									backgroundColor: "#ffc600",
 									borderWidth: 2,
 									borderColor: "#ffc600",
-									data: batt_level,
+									data: batt_voltage,
 									fill: false
 								}]
 							};
-
 							new Chart(ctx, {
 								data: barChartData,
 								options: {
@@ -1266,7 +1421,7 @@
 							$("#timechartLoading" + idx).hide();
 						}, 2000);
 					}
-				// }
+				}
 			});
 		}
 
