@@ -1019,13 +1019,11 @@
 						html += '</li>';
 						html += '</ul>';
 
-						html3 += '<div id='+'graphs'+idx+' class="equipment__section">';
 						html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">';
 						html3 += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html3 += '</div>';
 						html3 += '<canvas id='+'timeStampChart'+idx+'></canvas>'
 						html3 += '<span style="display: none;position: absolute;top: 50%;left: 31%;font-size: 30px;" id='+'spanText'+idx+'></span>';
-						html3 += '</div>';
 
 						htmls.push(html);
 						htmls2.push(html2);
@@ -1077,6 +1075,9 @@
 						var temp_brd = []; //온도
 						var level = []; //배출량
 						var batt_voltage = []; //배터리잔량
+
+						// var batt_voltageTest = []; //백분율테스트
+
 						var testTimeStamp = [];
 						$.each(res.data.datarow1, function (key, value) {
 							// console.log("해당아이디 : "+value.deviceid);
@@ -1119,10 +1120,26 @@
 							}
 							if(value.batt_voltage==="na"){
 								batt_voltage.push(0);
+								// batt_voltageTest.push(0);
 							}else{
+
+								// if(value.batt_voltage>=13.7){
+								// 	batt_voltageTest.push(100);
+								// }else if(value.batt_voltage>=13.4){
+								// 	batt_voltageTest.push(80);
+								// }else if(value.batt_voltage>=13.1){
+								// 	batt_voltageTest.push(60);
+								// }else if(value.batt_voltage>=12.8){
+								// 	batt_voltageTest.push(40);
+								// }else{
+								// 	batt_voltageTest.push(20);
+								// }
+
 								batt_voltage.push(value.batt_voltage);
 							}
 						});
+						// console.log("batt_voltageTest : " + batt_voltageTest);
+						// console.log("batt_voltageTest : " + batt_voltageTest.length);
 
 						// console.log("temp_brd : " + temp_brd.length);
 						// console.log("level : " + level.length);
