@@ -134,11 +134,15 @@ public class DeviceStatsController {
             model.addAttribute("level",awsData.get("level")+"%");
 
             if(!deviceInfoListDtos.getEmType().equals("iTainer")) {
-                model.addAttribute("batt_level", awsData.get("batt_level") + "%");
+                if(awsData.get("batt_voltage").equals("na")){
+                    model.addAttribute("batt_voltage", awsData.get("batt_voltage"));
+                }else{
+                    model.addAttribute("batt_voltage",awsData.get("batt_voltage") + "V");
+                }
                 model.addAttribute("solar_current", awsData.get("solar_current") + "A");
                 model.addAttribute("solar_voltage", awsData.get("solar_voltage") + "V");
             }else{
-                model.addAttribute("batt_level", "없음");
+                model.addAttribute("batt_voltage", "없음");
                 model.addAttribute("solar_current", "없음");
                 model.addAttribute("solar_voltage", "없음");
             }
