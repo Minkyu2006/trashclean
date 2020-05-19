@@ -1716,6 +1716,22 @@ table {
 	border: 1px solid #000000;
 	color: #000000;
 }
+.data--non {
+	position: absolute;
+	top: 55%;
+	left: 50%;
+	width: 90%;
+	font-size: 30px;
+	text-align: center;
+	-ms-word-break: keep-all;
+	word-break: keep-all;
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	
+}
 .equipment__connect {
 	/*right: 10px;*/
 	left: 86px;
