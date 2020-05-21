@@ -617,12 +617,13 @@
 								tempMax = (temp_brd_Max + 15).toFixed(0);
 								tempMin = (temp_brd_Min - 15).toFixed(0);
 
-								// if(tempMax/5!==0){
-								// 	tempMaxsub = tempMax.substring(1,2);
-								// 	tempBrdMax = parseInt(tempMax)-parseInt(tempMaxsub);
-								// }else{
-								// 	tempBrdMax = tempMap;
-								// }
+								if(tempMax/5!==0){
+									tempMaxsub = tempMax.substring(1,2);
+									tempBrdMax = parseInt(tempMax)-parseInt(tempMaxsub);
+								}else{
+									tempBrdMax = tempMap;
+								}
+
 								if (tempMin / 5 !== 0) {
 									if (-10 < tempMin < 0) {
 										tempMinsub = tempMin.substring(1, 2);
@@ -737,7 +738,7 @@
 													// callback: function(value) {
 													// 	return value+'℃';
 													// },
-													max: temp_brd_Max,
+													max: tempBrdMax,
 													min: tempBrdMin
 												},
 												id: 'y',
