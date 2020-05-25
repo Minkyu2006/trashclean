@@ -141,6 +141,11 @@ public class TestpageController {
         return "testpage/collectionroutingtest2";
     }
 
+    @RequestMapping("strongpoint")
+    public String strongpoint(){
+        return "testpage/strongpoint";
+    }
+
     @RequestMapping("beacongraph")
     public String beacongraph(){
         return "testpage/beacongraph";
