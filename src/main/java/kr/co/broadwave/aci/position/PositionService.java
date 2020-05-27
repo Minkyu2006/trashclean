@@ -1,0 +1,71 @@
+package kr.co.broadwave.aci.position;
+
+import kr.co.broadwave.aci.equipment.Equipment;
+import kr.co.broadwave.aci.equipment.EquipmentDto;
+import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
+import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * @author Minkyu
+ * Date : 2020-05-27
+ * Time :
+ * Remark : Position Service
+ */
+@Slf4j
+@Service
+public class PositionService {
+    private final ModelMapper modelMapper;
+    private final PositionRepository positionRepository;
+    private final KeyGenerateService keyGenerateService;
+    private final PositionRepositoryCustom positionRepositoryCustom;
+
+    @Autowired
+    public PositionService(PositionRepository positionRepository,
+                           KeyGenerateService keyGenerateService,
+                           PositionRepositoryCustom positionRepositoryCustom,
+                           ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+        this.positionRepository = positionRepository;
+        this.positionRepositoryCustom = positionRepositoryCustom;
+        this.keyGenerateService = keyGenerateService;
+    }
+
+
+    public Position save(Position position) {
+        //장비코드 가공하기
+        if (position.getPsZoneCode() == null || position.getPsZoneCode().isEmpty()){
+
+            String psCountryCode = position.getPsCountry().getCode();
+            String psLocationCode = position.getPsLocation().getCode();
+
+            String zoneCode = keyGenerateService.keyGenerate("bs_position",'Z'+psCountryCode+psLocationCode+'-',position.getModify_id());
+
+            //고유 장비번호 저장이름 바꾸기 : 장비타입-국가-지역-순번
+            position.setPsZoneCode(zoneCode);
+        }
+
+        return positionRepository.save(position);
+    }
+
+    public Optional<Position> findByPsZoneCode(String psZoneCode) {
+        return positionRepository.findByPsZoneCode(psZoneCode);
+    }
+
+    public Page<PositionListDto> findByPositionSearch(String psZoneCode, String psZoneName, Long psLocationId, Long psCountryId, Pageable pageable) {
+        return positionRepositoryCustom.findByPositionSearch(psZoneCode,psZoneName,psLocationId,psCountryId,pageable);
+    }
+
+    public PositionDto findByPositionInfo(Long id) {
+        Optional<Position> optionalPosition = positionRepository.findByPositionInfo(id);
+        return optionalPosition.map(position -> modelMapper.map(position, PositionDto.class)).orElse(null);
+    }
+
+}

@@ -108,4 +108,12 @@ public class AdminController {
         return "admin/vehiclereg";
     }
 
+    //거점등록
+    @RequestMapping("positionreg")
+    public String positionreg(Model model){
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+        return "admin/positionreg";
+    }
+
 }

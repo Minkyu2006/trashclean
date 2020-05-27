@@ -765,15 +765,12 @@
 							html += '<span class="equipment__info-value">' + nvl(res.data.inputDoor[idx], "확 인 불 가") + '</span>';
 							html += '</li>';
 						}
-						html += '<li class="equipment__info-item">';
-						if(res.data.gps_laDatas[idx]==="0.0" || res.data.gps_loDatas[idx]==="0.0"){
-							html += '<input type="button" class="c-button c-button--point" value="GPS정보 없음" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
-						}else{
-							html += '<input type="button" class="c-button c-button--point" value="'+res.data.gps_laDatas[idx]+','+res.data.gps_loDatas[idx]+'" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
-						}
-						html += '</li>';
-
 						html += '</ul>';
+						if(res.data.gps_laDatas[idx]==="0.0" || res.data.gps_loDatas[idx]==="0.0"){
+							html += '<input style="margin-top: 10px" type="button" class="c-button c-button--point" value="GPS정보 없음" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						}else{
+							html += '<input style="margin-top: 10px" type="button" class="c-button c-button--point" value="'+res.data.gps_laDatas[idx]+','+res.data.gps_loDatas[idx]+'" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						}
 						html += '</div>';
 
 						html3 += '<div id='+'graphs'+idx+' class="equipment__section">';
@@ -1010,14 +1007,13 @@
 							html += '<span class="equipment__info-value">' + nvl(res.data.inputDoor[idx])+'</span>';
 							html += '</li>';
 						}
-						html += '<li class="equipment__info-item">';
-						if(res.data.gps_laDatas[idx]==="0.0" || res.data.gps_loDatas[idx]==="0.0"){
-							html += '<input type="button" class="c-button c-button--point" value="GPS정보 없음" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
-						}else{
-							html += '<input type="button" class="c-button c-button--point" value="'+res.data.gps_laDatas[idx]+','+res.data.gps_loDatas[idx]+'" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
-						}
-						html += '</li>';
 						html += '</ul>';
+
+						if(res.data.gps_laDatas[idx]==="0.0" || res.data.gps_loDatas[idx]==="0.0"){
+							html += '<input type="button" style="margin-top: 10px" class="c-button c-button--point" value="GPS정보 없음" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						}else{
+							html += '<input type="button" style="margin-top: 10px" class="c-button c-button--point" value="'+res.data.gps_laDatas[idx]+','+res.data.gps_loDatas[idx]+'" onclick="mapMove('+nvl(res.data.gps_laDatas[idx],"확 인 불 가")+','+nvl(res.data.gps_loDatas[idx],"확 인 불 가")+')" />';
+						}
 
 						html3 += '<div id='+'timechartLoading'+idx+' class="c-loader">';
 						html3 += '<div class="c-loader__active c-loader__active--ring"></div>';
