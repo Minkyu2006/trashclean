@@ -909,6 +909,12 @@ a.c-button {
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
+.c-search-form input[type=text].only {
+	width: 100%;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
 .c-search-form__button {
 	position: absolute;
 	bottom:0;

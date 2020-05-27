@@ -1817,6 +1817,10 @@ table {
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
+.article.article--1080 {
+	max-width: 1080px;
+	margin: 0 auto;
+}
 .article:before {
 	content: " ";
 	display: table;
