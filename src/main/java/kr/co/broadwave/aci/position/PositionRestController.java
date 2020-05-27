@@ -1,24 +1,11 @@
 package kr.co.broadwave.aci.position;
 
-import javafx.geometry.Pos;
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
-import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
-import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
-import kr.co.broadwave.aci.company.Company;
-import kr.co.broadwave.aci.company.CompanyDto;
-import kr.co.broadwave.aci.company.CompanyListDto;
-import kr.co.broadwave.aci.company.CompanyService;
-import kr.co.broadwave.aci.dashboard.DashboardService;
-import kr.co.broadwave.aci.equipment.*;
-import kr.co.broadwave.aci.imodel.IModel;
-import kr.co.broadwave.aci.imodel.IModelChangeDto;
-import kr.co.broadwave.aci.imodel.IModelService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -32,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

@@ -1,13 +1,6 @@
 package kr.co.broadwave.aci.position;
 
-import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 /**
  * @author Minkyu

@@ -3,7 +3,6 @@ package kr.co.broadwave.aci.position;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
