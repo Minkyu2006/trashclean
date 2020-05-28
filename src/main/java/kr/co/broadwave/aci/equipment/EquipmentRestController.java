@@ -158,7 +158,7 @@ public class EquipmentRestController {
         }
 
         // 모델저장
-        Optional<IModel>  iModels = iModelService.findByModel(equipmentMapperDto.getMdId());
+        Optional<IModel>  iModels = iModelService.findByModel(equipmentMapperDto.getiModel());
         //log.info("iModelDto : "+iModelDto);
 
         //모델이 존재하지않으면
