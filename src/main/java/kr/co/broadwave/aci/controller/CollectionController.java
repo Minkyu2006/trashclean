@@ -94,4 +94,14 @@ public class CollectionController {
         return "collection/collectionitainer";
     }
 
+    @RequestMapping("accorditainerlist")
+    public String accorditainerlist(){
+        return "collection/accorditainerlist";
+    }
+
+    @RequestMapping("accorditainerreg")
+    public String accorditainerreg(){
+        return "collection/accorditainerreg";
+    }
+
 }

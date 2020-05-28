@@ -174,4 +174,14 @@ public class TestpageController {
         return ResponseEntity.ok(res.success());
     }
 
+    @RequestMapping("accorditainerlisttest")
+    public String accorditainerlisttest(){
+        return "testpage/accorditainerlisttest";
+    }
+
+    @RequestMapping("accorditainerregtest")
+    public String accorditainerregtest(){
+        return "testpage/accorditainerregtest";
+    }
+
 }
