@@ -463,7 +463,7 @@
 					}
 
 					for(var i=0; i<lengthList; i++){
-						if(res.data.deviceInfoListDtos[i]["emState"]!=="없음") {
+						// if(res.data.deviceInfoListDtos[i]["emState"]!=="없음") {
 							html2 += '<li class="c-list__item">';
 							html2 += '<div class="equipment">';
 							html2 += '<div id=' + 'mask' + idx + ' class="c-loader">';
@@ -524,7 +524,7 @@
 								files.push(nvl(res.data.deviceInfoListDtos[i]["filePath"] + res.data.deviceInfoListDtos[i]["saveFileName"], "확 인 불 가"));
 							}
 						}
-					}
+					// }
 
 					$deviceList.html(html2);
 					setTimeout(function(){
@@ -730,11 +730,11 @@
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.temp_brd[idx],"확 인 불 가")+'℃'+'</span>';
+						html += '<span class="equipment__info-value">'+tem(res.data.temp_brd[idx],"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>';
+						html += '<span class="equipment__info-value">'+lev(res.data.level[idx],"확 인 불 가")+'</span>';
 						html += '</li>';
 						if(emTypes[idx]!=="iTainer") {
 							if(res.data.batt_voltage[idx]!=="na"){
@@ -972,11 +972,11 @@
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.temp_brd[idx],"확 인 불 가")+'℃'+'</span>';
+						html += '<span class="equipment__info-value">'+tem(res.data.temp_brd[idx],"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
-						html += '<span class="equipment__info-value">'+nvl(res.data.level[idx],"확 인 불 가")+'%'+'</span>';
+						html += '<span class="equipment__info-value">'+lev(res.data.level[idx],"확 인 불 가")+'</span>';
 						html += '</li>';
 						if(emTypes[idx]!=="iTainer") {
 							if(res.data.batt_voltage[idx]!=="na"){

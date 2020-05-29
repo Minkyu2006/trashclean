@@ -1,4 +1,18 @@
-
+//배출량,온도
+function tem(str, defaultStr){
+	if(typeof str == "undefined" || str == null || str == "") {
+		return defaultStr;
+	}else{
+		return str+'℃' ;
+	}
+}
+function lev(str, defaultStr){
+	if(typeof str == "undefined" || str == null || str == "") {
+		return defaultStr;
+	}else{
+		return str+'%' ;
+	}
+}
 
 // *********************************************************************************
 Date.prototype.format = function(f) {

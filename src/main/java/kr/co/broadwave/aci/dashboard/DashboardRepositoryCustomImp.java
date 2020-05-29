@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.dashboard;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
 import kr.co.broadwave.aci.company.Company;
+import kr.co.broadwave.aci.company.QCompany;
 import kr.co.broadwave.aci.equipment.QEquipment;
 import kr.co.broadwave.aci.files.QFileUpload;
 import kr.co.broadwave.aci.imodel.QIModel;
@@ -31,11 +32,17 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
         QEquipment equipment = QEquipment.equipment;
         QIModel qiModel = QIModel.iModel;
         QFileUpload fileUpload = QFileUpload.fileUpload;
-        QMasterCode masterCode = QMasterCode.masterCode;
+        QCompany company = QCompany.company;
+
+        QMasterCode master = QMasterCode.masterCode; // 지역
+        QMasterCode master2 = QMasterCode.masterCode; // 국가
+
+
+
 
         JPQLQuery<DashboardDeviceListViewDto> query = from(equipment)
                 .innerJoin(equipment.mdId,qiModel)
-                .leftJoin(equipment.emState,masterCode)
+                .innerJoin(equipment.company,company)
                 .leftJoin(equipment.mdId.mdFileid,fileUpload)
                 .select(Projections.constructor(DashboardDeviceListViewDto.class,
                         equipment.id,
@@ -43,15 +50,14 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
                         equipment.emType,
                         qiModel.mdName,
                         qiModel.mdMaximumPayload,
-                        qiModel.mdUnit.name,
-                        equipment.company,
+                        qiModel.mdUnit,
+                        company.csOperator,
                         equipment.emLocation,
                         equipment.emCountry,
                         equipment.emInstallDate,
                         equipment.emSubName,
                         fileUpload.filePath,
-                        fileUpload.saveFileName,
-                        equipment.emState
+                        fileUpload.saveFileName
                 ));
 
         // 검색조건필터
@@ -98,8 +104,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
                         equipment.emInstallDate,
                         equipment.emSubName,
                         fileUpload.filePath,
-                        fileUpload.saveFileName,
-                        equipment.emState
+                        fileUpload.saveFileName
                 ));
 
         // 검색조건필터

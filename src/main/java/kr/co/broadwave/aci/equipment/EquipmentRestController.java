@@ -107,7 +107,8 @@ public class EquipmentRestController {
         Optional<MasterCode> optionalEmType = masterCodeService.findById(equipmentMapperDto.getEmType());
         Optional<MasterCode> optionalEmCountry = masterCodeService.findById(equipmentMapperDto.getEmCountry());
         Optional<MasterCode> optionalEmLocation = masterCodeService.findById(equipmentMapperDto.getEmLocation());
-
+        CodeType codeType = CodeType.valueOf("C0015");
+        Optional<MasterCode> state = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS01");
         //장비타입/국가/지역코드가 존재하지않으면
         if (!optionalEmType.isPresent() || !optionalEmCountry.isPresent() || !optionalEmLocation.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E016.getCode(),ResponseErrorCode.E016.getDesc()));
@@ -116,16 +117,10 @@ public class EquipmentRestController {
             equipment.setEmType(optionalEmType.get());
             equipment.setEmCountry(optionalEmCountry.get());
             equipment.setEmLocation(optionalEmLocation.get());
-            if(optionalEmType.get().getName().equals("iTainer")){
-                CodeType codeType = CodeType.valueOf("C0015");
-                Optional<MasterCode> tainerState = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"TS02");
-                if(!tainerState.isPresent()){
-                    return ResponseEntity.ok(res.fail(ResponseErrorCode.E030.getCode(),ResponseErrorCode.E030.getDesc()));
-                }else{
-                    equipment.setEmState(tainerState.get());
-                }
+            if(!state.isPresent()){
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E030.getCode(),ResponseErrorCode.E030.getDesc()));
             }else{
-                equipment.setEmState(null);
+                equipment.setEmState(state.get());
             }
         }
 

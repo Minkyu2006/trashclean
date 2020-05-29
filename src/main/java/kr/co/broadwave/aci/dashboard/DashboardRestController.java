@@ -6,7 +6,6 @@ import kr.co.broadwave.aci.accounts.AccountService;
 import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
-import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.devicestats.DevicestatsDto;
 import kr.co.broadwave.aci.devicestats.DevicestatusService;
@@ -18,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -156,7 +154,7 @@ public class DashboardRestController {
 
         List<DashboardDeviceListViewDto> deviceInfoListDtos =
                 dashboardService.findByDashboardListView(emNumber, emTypeId, emCountryId, emLocationId, pageable);
-//        log.info("deviceInfxoListDtos : "+deviceInfoListDtos);
+//        log.info("deviceInfoListDtos : "+deviceInfoListDtos);
 
         data.put("deviceInfoListDtos",deviceInfoListDtos);
         res.addResponse("data",data);
@@ -294,8 +292,8 @@ public class DashboardRestController {
             } else {
                 devices.add("0");
                 status.add("0");
-                temp_brd.add("0");
-                level.add("0");
+                temp_brd.add(null);
+                level.add(null);
                 batt_voltage.add("0");
                 solar_current.add("0");
                 solar_voltage.add("0");
