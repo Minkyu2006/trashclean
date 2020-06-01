@@ -133,8 +133,8 @@ public class PositionRestController {
         HashMap<String, Object> data = new HashMap<>();
 
         PositionDto positionDto = positionService.findByPositionInfo(id);
-//        log.info("positionDto : "+positionDto);
-//        log.info("받아온 아이디값 : "+id);
+        log.info("positionDto : "+positionDto);
+        log.info("받아온 아이디값 : "+id);
 
         data.put("positionDto",positionDto);
         res.addResponse("data",data);
