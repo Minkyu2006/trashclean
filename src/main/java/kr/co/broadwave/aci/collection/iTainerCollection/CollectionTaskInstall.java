@@ -1,6 +1,7 @@
 package kr.co.broadwave.aci.collection.iTainerCollection;
 
 import kr.co.broadwave.aci.accounts.Account;
+import kr.co.broadwave.aci.bscodes.AccordiType;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.vehicle.Vehicle;
 import lombok.*;
@@ -33,8 +34,9 @@ public class CollectionTaskInstall {
     @Column(name="ci_code")
     private String ciCode; // 작업코드
 
+    @Enumerated(EnumType.STRING)
     @Column(name="ci_type")
-    private String ciType; // 구분(배치,수거,배치/수거) -> enum관리
+    private AccordiType ciType; // 구분(배치,수거,배치/수거) -> enum관리
 
     @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.LAZY)
     @JoinColumn(name="ci_priority")
@@ -45,6 +47,9 @@ public class CollectionTaskInstall {
 
     @Column(name="ps_zone_code")
     private String psZoneCode; // 거점코드
+
+    @Column(name="ps_zone_name")
+    private String psZoneName; // 거점명
 
     @ManyToOne(targetEntity = Account.class,fetch = FetchType.LAZY)
     @JoinColumn(name="account_id")

@@ -31,11 +31,11 @@ public class Position {
     @Column(unique = true,name="ps_zone_code")
     private String psZoneCode; // 거점코드
 
-    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
     @JoinColumn(name="ps_country")
     private MasterCode psCountry; // 국가
 
-    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
     @JoinColumn(name="ps_location")
     private MasterCode psLocation; // 지역
 

@@ -68,4 +68,9 @@ public class PositionService {
         return optionalPosition.map(position -> modelMapper.map(position, PositionDto.class)).orElse(null);
     }
 
+    public PositionPopDto findByPositionPopInfo(Long id) {
+        Optional<Position> optionalPosition = positionRepository.findByPositionInfo(id);
+        return optionalPosition.map(position -> modelMapper.map(position, PositionPopDto.class)).orElse(null);
+    }
+
 }

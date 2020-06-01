@@ -132,11 +132,27 @@ public class PositionRestController {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
+//        log.info("받아온 아이디값 : "+id);
         PositionDto positionDto = positionService.findByPositionInfo(id);
-        log.info("positionDto : "+positionDto);
-        log.info("받아온 아이디값 : "+id);
+//        log.info("positionDto : "+positionDto);
 
         data.put("positionDto",positionDto);
+        res.addResponse("data",data);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 거점코드 가져오기
+    @PostMapping ("popupinfo")
+    public ResponseEntity<Map<String,Object>> popupinfo(@RequestParam (value="id", defaultValue="") Long id){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+//        log.info("받아온 아이디값 : "+id);
+        PositionPopDto positionPopDto = positionService.findByPositionPopInfo(id);
+//        log.info("positionPopDto : "+positionPopDto);
+
+        data.put("positionPopDto",positionPopDto);
         res.addResponse("data",data);
 
         return ResponseEntity.ok(res.success());

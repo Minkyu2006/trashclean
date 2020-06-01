@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface PositionRepository extends JpaRepository<Position,Long>,QuerydslPredicateExecutor<Account> {
     Optional<Position> findByPsZoneCode(String psZoneCode);
 
-    @Query("select a from Position a join fetch a.psCountry join fetch  a.psLocation")
+    @Query("select a from Position a join fetch a.psCountry join fetch a.psLocation where a.id = :id")
     Optional<Position> findByPositionInfo(Long id);
 
 }

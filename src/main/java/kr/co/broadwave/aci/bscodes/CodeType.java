@@ -20,7 +20,9 @@ public enum CodeType {
     C0012("C0012", "차량상태"),
     C0013("C0013", "장비기본값"),
     C0014("C0014", "시스템주소"),
-    C0015("C0015", "iTainer설비상태");
+    C0015("C0015", "iTainer설비상태"),
+    C0016("C0016", "iTainer우선순위");
+
     private String code;
     private String desc;
 

@@ -50,11 +50,7 @@ public class EquipmentWaitingCollectionListDto {
     }
 
     public String getEmState() {
-        if(emState==null || !emState.getName().equals("대기")){
-            return null;
-        }else{
-            return emState.getName();
-        }
+        return emState.getName();
     }
 
 }
