@@ -6,7 +6,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.accounts.AccountRole;
 import kr.co.broadwave.aci.accounts.QAccount;
 import kr.co.broadwave.aci.bscodes.ProcStatsType;
-import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.company.QCompany;
 import kr.co.broadwave.aci.equipment.QEquipment;
 import kr.co.broadwave.aci.files.QFileUpload;
@@ -122,7 +121,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
     public List<CollectionTaskListDateDto> findByCollectionsTaskDateList(String currentuserid, AccountRole role, ProcStatsType procStatsType){
 
         AccountRole admin = AccountRole.valueOf("ROLE_ADMIN");
-        AccountRole subadmin = AccountRole.valueOf("ROLE_SUBADMIN");
+//        AccountRole subadmin = AccountRole.valueOf("ROLE_SUBADMIN");
 
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
 
@@ -155,7 +154,7 @@ public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySuppor
     public List<CollectionTaskListDeviceDto> findByCollectionsTaskDeviceList(String ctCode,String currentuserid, AccountRole role){
 
         AccountRole admin = AccountRole.valueOf("ROLE_ADMIN");
-        AccountRole subadmin = AccountRole.valueOf("ROLE_SUBADMIN");
+//        AccountRole subadmin = AccountRole.valueOf("ROLE_SUBADMIN");
 
         QCollectionTask collectionTask = QCollectionTask.collectionTask;
 

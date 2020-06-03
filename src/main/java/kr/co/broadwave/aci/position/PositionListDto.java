@@ -1,6 +1,5 @@
 package kr.co.broadwave.aci.position;
 
-import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 

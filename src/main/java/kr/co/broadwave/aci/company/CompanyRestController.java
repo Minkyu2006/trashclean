@@ -33,9 +33,6 @@ import java.util.Optional;
 @RequestMapping("/api/company")
 public class CompanyRestController {
 
-    private AjaxResponse res = new AjaxResponse();
-    private HashMap<String, Object> data = new HashMap<>();
-
     private final ModelMapper modelMapper;
     private final CompanyService companyService;
     private final AccountService accountService;
@@ -55,6 +52,8 @@ public class CompanyRestController {
     // 업체 저장
     @PostMapping ("reg")
     public ResponseEntity<Map<String,Object>> companyReg(@ModelAttribute CompanyMapperDto companyMapperDto, HttpServletRequest request){
+
+        AjaxResponse res = new AjaxResponse();
 
         Company company = modelMapper.map(companyMapperDto, Company.class);
 
@@ -140,10 +139,11 @@ public class CompanyRestController {
     // 업체 정보 보기
     @PostMapping ("info")
     public ResponseEntity<Map<String,Object>> companyInfo(@RequestParam (value="id", defaultValue="") Long id){
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
 
         CompanyDto company = companyService.findById(id);
 
-        data.clear();
         data.put("company",company);
         res.addResponse("data",data);
 
@@ -153,6 +153,7 @@ public class CompanyRestController {
     // 업체 삭제
     @PostMapping("del")
     public ResponseEntity<Map<String,Object>> companyDel(@RequestParam(value="csNumber", defaultValue="") String csNumber){
+        AjaxResponse res = new AjaxResponse();
 
         Optional<Company> optionalCompany = companyService.findByCsNumber(csNumber);
 

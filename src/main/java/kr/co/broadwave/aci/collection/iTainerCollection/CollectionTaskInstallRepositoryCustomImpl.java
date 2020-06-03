@@ -100,5 +100,21 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
                 .fetch();
     }
 
+    @Override
+    public List<CollectionTaskInstallCheckDto> findByPsZoneCodeCheck(String psZoneCode) {
+
+        JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
+
+        QCollectionTaskInstall collectionTaskInstall = QCollectionTaskInstall.collectionTaskInstall;
+
+        return queryFactory.select(Projections.constructor(CollectionTaskInstallCheckDto.class,
+                collectionTaskInstall.ciCode,
+                collectionTaskInstall.psZoneCode,
+                collectionTaskInstall.ciStatus))
+                .from(collectionTaskInstall)
+                .where(collectionTaskInstall.psZoneCode.eq(psZoneCode))
+                .fetch();
+    }
+
 }
 

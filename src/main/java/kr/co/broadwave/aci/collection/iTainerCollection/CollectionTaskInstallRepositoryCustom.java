@@ -17,4 +17,6 @@ public interface CollectionTaskInstallRepositoryCustom {
     Page<CollectionTaskInstallListDto> findByCollectionTaskInstallSearch(AccordiType ciTypes, Long ciPriorityId, String ciCode, String psZoneCode, String deviceid, Pageable pageable);
 
     List<CollectionTaskInstallDto> findByCollectionTaskInstallInfo(String ciCode);
+
+    List<CollectionTaskInstallCheckDto> findByPsZoneCodeCheck(String psZoneCode);
 }

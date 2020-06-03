@@ -2,7 +2,8 @@ package kr.co.broadwave.aci.position;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
-import kr.co.broadwave.aci.collection.iTainerCollection.CollectionTaskInstall;
+import kr.co.broadwave.aci.collection.iTainerCollection.CollectionTaskInstallCheckDto;
+import kr.co.broadwave.aci.collection.iTainerCollection.CollectionTaskInstallService;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,16 +40,19 @@ public class PositionRestController {
     private final PositionService positionService;
     private final MasterCodeService masterCodeService;
     private final AccountService accountService;
+    private final CollectionTaskInstallService collectionTaskInstallService;
 
     @Autowired
     public PositionRestController(ModelMapper modelMapper,
                                   PositionService positionService,
                                   MasterCodeService masterCodeService,
-                                  AccountService accountService) {
+                                  AccountService accountService,
+                                  CollectionTaskInstallService collectionTaskInstallService) {
         this.modelMapper = modelMapper;
         this.positionService = positionService;
         this.masterCodeService = masterCodeService;
         this.accountService = accountService;
+        this.collectionTaskInstallService = collectionTaskInstallService;
     }
 
     // 장비 저장
@@ -148,12 +153,22 @@ public class PositionRestController {
     public ResponseEntity<Map<String,Object>> del(@RequestParam(value="psZoneCode", defaultValue="") String psZoneCode){
         AjaxResponse res = new AjaxResponse();
 
-        Optional<Position> optionalPosition = positionService.findByPsZoneCode(psZoneCode);
+        // 삭제할수있는 거점인지 확인
+        List<CollectionTaskInstallCheckDto> psZoneCodeCheck = collectionTaskInstallService.findByPsZoneCodeCheck(psZoneCode);
+//        log.info("psZoneCodeCheck : " + psZoneCodeCheck);
 
-        if (!optionalPosition.isPresent()){
-            return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+        if(!psZoneCodeCheck.isEmpty()){
+//            log.info("삭제불가");
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E035.getCode(), ResponseErrorCode.E035.getDesc()));
+        }else{
+//            log.info("삭제가능");
+            Optional<Position> optionalPosition = positionService.findByPsZoneCode(psZoneCode);
+            if (!optionalPosition.isPresent()){
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+            }
+            positionService.delete(optionalPosition.get());
         }
-        positionService.delete(optionalPosition.get());
+
         return ResponseEntity.ok(res.success());
     }
 
@@ -206,20 +221,5 @@ public class PositionRestController {
 
         return ResponseEntity.ok(res.success());
     }
-
-//    // 장비 삭제
-//    @PostMapping("del")
-//    public ResponseEntity<Map<String,Object>> equipmentDel(@RequestParam(value="emNumber", defaultValue="") String emNumber){
-//        AjaxResponse res = new AjaxResponse();
-//
-//        Optional<Equipment> optionalEquipment = equipmentService.findByEmNumber(emNumber);
-//
-//        if (!optionalEquipment.isPresent()){
-//            return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
-//        }
-//        equipmentService.delete(optionalEquipment.get());
-//        return ResponseEntity.ok(res.success());
-//    }
-
 
 }

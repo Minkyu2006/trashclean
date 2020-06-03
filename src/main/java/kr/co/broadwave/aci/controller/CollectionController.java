@@ -1,7 +1,6 @@
 package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.bscodes.AccordiType;
-import kr.co.broadwave.aci.bscodes.ApprovalType;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;

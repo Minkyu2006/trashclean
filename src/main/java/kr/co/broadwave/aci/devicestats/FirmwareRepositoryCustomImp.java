@@ -2,10 +2,7 @@ package kr.co.broadwave.aci.devicestats;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.files.QFileUpload;
-import kr.co.broadwave.aci.imodel.IModelListDto;
-import kr.co.broadwave.aci.imodel.QIModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

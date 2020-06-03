@@ -103,7 +103,7 @@
 					if (!Ajax.checkResult(res)) {
 						return;
 					}
-					alertSuccess('업무가 삭제 되었습니다.');
+					alertSuccess('거점이 삭제 되었습니다.');
 					init();
 					callList(1);
 				}
@@ -273,7 +273,7 @@
 
 		// 등록용 국가,지역검색
 		function LocationSetting() {
-			console.log("psCountry : "+$("#psCountry").val());
+			// console.log("psCountry : "+$("#psCountry").val());
 			var params = {
 				emCountry: $("#psCountry").val()
 			};

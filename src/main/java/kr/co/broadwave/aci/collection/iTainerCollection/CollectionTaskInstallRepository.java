@@ -19,7 +19,4 @@ public interface CollectionTaskInstallRepository extends JpaRepository<Collectio
 
     Optional<CollectionTaskInstall> findByCiCode(String ciCode);
 
-//    @Query("select a from Position a join fetch a.psCountry join fetch a.psLocation where a.id = :id")
-//    Optional<Position> findByPositionInfo(Long id);
-
 }

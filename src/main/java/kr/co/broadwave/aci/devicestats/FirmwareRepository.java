@@ -1,12 +1,7 @@
 package kr.co.broadwave.aci.devicestats;
 
-import kr.co.broadwave.aci.imodel.IModel;
-import kr.co.broadwave.aci.mastercode.MasterCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Minkyu

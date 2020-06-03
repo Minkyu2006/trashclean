@@ -1,7 +1,6 @@
 package kr.co.broadwave.aci.collection.iTainerCollection;
 
 import kr.co.broadwave.aci.bscodes.AccordiType;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +45,10 @@ public class CollectionTaskInstallService {
 
     public void delete(CollectionTaskInstall collectionTaskInstall) {
         collectionTaskInstallRepository.delete(collectionTaskInstall);
+    }
+
+    public List<CollectionTaskInstallCheckDto> findByPsZoneCodeCheck(String psZoneCode) {
+        return collectionTaskInstallRepositoryCustom.findByPsZoneCodeCheck(psZoneCode);
     }
 
 }

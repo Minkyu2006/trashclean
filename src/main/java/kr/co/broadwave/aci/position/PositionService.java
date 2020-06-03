@@ -1,7 +1,5 @@
 package kr.co.broadwave.aci.position;
 
-import kr.co.broadwave.aci.equipment.Equipment;
-import kr.co.broadwave.aci.equipment.EquipmentDto;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -10,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 /**

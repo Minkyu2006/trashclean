@@ -1,10 +1,7 @@
 package kr.co.broadwave.aci.collection;
 
-import kr.co.broadwave.aci.company.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-
-import java.util.Optional;
 
 /**
  * @author Minkyu

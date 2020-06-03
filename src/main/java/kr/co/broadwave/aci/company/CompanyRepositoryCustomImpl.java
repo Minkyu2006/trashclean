@@ -2,8 +2,6 @@ package kr.co.broadwave.aci.company;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
-import kr.co.broadwave.aci.teams.QTeam;
-import kr.co.broadwave.aci.teams.TeamDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
