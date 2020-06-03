@@ -22,8 +22,6 @@
                 beaconData();
             });
 
-            $("#s_yyyymmdd").datepicker({});
-
             beaconData();
 
         });
@@ -32,24 +30,8 @@
             // console.log("비콘센서데이터가져오기")
             $("div[name=beaconChartLoading]").css('display','block');
 
-            var $dateTo = $("#s_yyyymmdd");
-            if($dateTo.val()==="") {
-                var today = new Date();
-                var year = today.getFullYear();
-                var month = today.getMonth() + 1;
-                var day = today.getDate();
-                if (month < 10) {
-                    month = "0" + month;
-                }
-                if (day < 10) {
-                    day = "0" + day;
-                }
-                var todayData = year + "-" + month + "-" + day;
-                $dateTo.val(todayData);
-            }
-
             var params = {
-                yyyymmdd:$dateTo.val()
+                hour : $("#hour").val()
             };
 
             var token = $("meta[name='_csrf']").attr("content");
@@ -57,7 +39,7 @@
             $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
             $.ajax({
-                url:'/testpage/beaconData',
+                url:'/testpage/beacon',
                 type : 'post',
                 data : params,
                 cache:false,
@@ -142,7 +124,7 @@
                         // console.log("humidity_arr : " + humidity_arr)
                         // console.log("tvoc_arr : " + tvoc_arr)
 
-                        var ctx1 = document.getElementById('beaconTemperature').getContext("2d");
+                        var ctx1 = document.getElementById('beaconTemphum').getContext("2d");
                         var ctx2 = document.getElementById('beaconNh3').getContext("2d");
                         var ctx3 = document.getElementById('beaconTvoc').getContext("2d");
 
@@ -429,7 +411,7 @@
                     <th>날짜검색</th>
                     <td>
                         <div class="c-text">
-                            <input type="text" id="s_yyyymmdd" class="c-text__input" placeholder="연 - 월 - 일" />
+                            <input type="text" id="hour" class="c-text__input" value="24" />
                         </div>
                     </td>
                     <td>
@@ -439,14 +421,11 @@
             </table>
 
             <div>
-                <div id="beaconChartLoading" style="display: none">
-                    <div class="c-loader__active c-loader__active--ring"></div>
-                </div>
                 <div style="position:relative;">
                     <div name="beaconChartLoading" style="display: none">
                         <div class="c-loader__active c-loader__active--ring"></div>
                     </div>
-                    <canvas id='beaconTemperature' width="250" height="250"></canvas>
+                    <canvas id='beaconTemphum' width="250" height="250"></canvas>
                 </div>
                 <div style="position:relative;">
                     <div name="beaconChartLoading" style="display: none">

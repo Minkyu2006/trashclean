@@ -69,7 +69,8 @@
 					<li><a href="/collection/collectionmonitering">수거업무모니터링</a></li>
 					<li><a href="/collection/collectionreg">수거업무등록</a></li>
 					<li><a href="/collection/collectionsearch">수거업무조회</a></li>
-					<li><a href="/collection/accorditainer">배치/수거 등록(iTainer)</a></li>
+					<li><a href="/collection/accorditainerreg">iTainer 배치/수거 등록</a></li>
+					<li><a href="/collection/accorditainer">iTainer 배치/수거 조회</a></li>
 					<li><a href="/mobile/mobileindex">모바일인덱스</a></li>
 				</ul>
 			</li>
@@ -78,7 +79,9 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--dash toggle">테스트페이지</a>
 				<ul class="nav-child">
-					<li><a href="/testpage/beacongraph">비콘센서데이터</a></li>
+					<li><a href="/testpage/sensorbeacon">beacon데이터</a></li>
+					<li><a href="/testpage/sensorncd">ncd데이터</a></li>
+					<li><a href="/testpage/beacongraph">비콘센서데이터(제주도)</a></li>
 					<li><a href="/testpage/accorditainerregtest">배치/수거 등록(iTainer)</a></li>
 					<li><a href="/testpage/accorditainerlisttest">배치/수거 조회(iTainer)</a></li>
 					<li><a href="/testpage/strongpoint">거점등록</a></li>

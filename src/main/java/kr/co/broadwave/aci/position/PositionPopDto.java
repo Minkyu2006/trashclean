@@ -22,6 +22,8 @@ public class PositionPopDto {
     private String psZoneName; // 거점명칭
     private String deviceid; // 거점명칭
 
+
+
     public String getDeviceid() {
         return deviceid;
     }

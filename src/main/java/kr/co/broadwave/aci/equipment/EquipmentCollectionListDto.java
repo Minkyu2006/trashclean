@@ -25,10 +25,6 @@ public class EquipmentCollectionListDto {
     private MasterCode emLocation; // 지역
     private IModel iModel; // 모델명,종류
     private MasterCode emState; // 설비상태
-//    private Company company; // 소속운영사
-//    private Double maximum;
-//    private MasterCode unit;
-
 
     public Long getId() {
         return id;
@@ -62,15 +58,4 @@ public class EquipmentCollectionListDto {
         }
     }
 
-//    public String getCompany() {
-//        return company.getCsOperator();
-//    }
-//
-//    public Double getMaximum() {
-//        return maximum;
-//    }
-//
-//    public String getUnit() {
-//        return unit.getName();
-//    }
 }

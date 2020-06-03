@@ -96,15 +96,33 @@ public class CollectionController {
         return "collection/collectionitainer";
     }
 
-    @RequestMapping("accorditainer")
-    public String accorditainer(Model model){
-        List<MasterCodeDto> ciTypes = masterCodeService.findCodeList(CodeType.C0016);
+    @RequestMapping("accorditainerreg")
+    public String accorditainerreg(Model model){
+        List<MasterCodeDto> ciPrioritys = masterCodeService.findCodeList(CodeType.C0016);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
         List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
         List<MasterCodeDto> vcUsages = masterCodeService.findCodeList(CodeType.C0011);
         List<MasterCodeDto> vcStates = masterCodeService.findCodeList(CodeType.C0012);
 
-        model.addAttribute("ciTypes", ciTypes);
+        model.addAttribute("ciPrioritys", ciPrioritys);
+        model.addAttribute("equipdCountrys", equipdCountrys);
+        model.addAttribute("vcShapes", vcShapes);
+        model.addAttribute("vcUsages", vcUsages);
+        model.addAttribute("vcStates", vcStates);
+        model.addAttribute("accordiTypes", AccordiType.values());
+
+        return "collection/accorditainerreg";
+    }
+
+    @RequestMapping("accorditainer")
+    public String accorditainer(Model model){
+        List<MasterCodeDto> ciPrioritys = masterCodeService.findCodeList(CodeType.C0016);
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+        List<MasterCodeDto> vcShapes = masterCodeService.findCodeList(CodeType.C0010);
+        List<MasterCodeDto> vcUsages = masterCodeService.findCodeList(CodeType.C0011);
+        List<MasterCodeDto> vcStates = masterCodeService.findCodeList(CodeType.C0012);
+
+        model.addAttribute("ciPrioritys", ciPrioritys);
         model.addAttribute("equipdCountrys", equipdCountrys);
         model.addAttribute("vcShapes", vcShapes);
         model.addAttribute("vcUsages", vcUsages);

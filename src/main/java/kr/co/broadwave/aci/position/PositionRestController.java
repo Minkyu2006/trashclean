@@ -2,6 +2,7 @@ package kr.co.broadwave.aci.position;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.collection.iTainerCollection.CollectionTaskInstall;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
@@ -140,6 +141,54 @@ public class PositionRestController {
         res.addResponse("data",data);
 
         return ResponseEntity.ok(res.success());
+    }
+
+    // 거점 삭제
+    @PostMapping("del")
+    public ResponseEntity<Map<String,Object>> del(@RequestParam(value="psZoneCode", defaultValue="") String psZoneCode){
+        AjaxResponse res = new AjaxResponse();
+
+        Optional<Position> optionalPosition = positionService.findByPsZoneCode(psZoneCode);
+
+        if (!optionalPosition.isPresent()){
+            return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
+        }
+        positionService.delete(optionalPosition.get());
+        return ResponseEntity.ok(res.success());
+    }
+
+    // 업무지시 거점리스트 가져오기
+    @PostMapping("popuplist")
+    public ResponseEntity<Map<String,Object>> popuplist(@RequestParam (value="psCountry", defaultValue="") String psCountry,
+                                                           @RequestParam (value="psLocation", defaultValue="")String psLocation,
+                                                           @RequestParam (value="deviceid", defaultValue="")String deviceid,
+                                                           @RequestParam (value="division", defaultValue="")String division,
+                                                           @PageableDefault Pageable pageable){
+        Long psCountryId = null;
+        Long psLocationId = null;
+//        log.info("division : "+division);
+        if(deviceid.equals("") && division.equals("operation")){
+            deviceid = "ITAI";
+        }else if(deviceid.equals("") && division.equals("unoperation")){
+            deviceid = null;
+        }else{
+            deviceid = "";
+        }
+//        log.info("deviceid : "+deviceid);
+
+        if(!psCountry.equals("")){
+            Optional<MasterCode> emCountrys = masterCodeService.findByCode(psCountry);
+            psCountryId = emCountrys.map(MasterCode::getId).orElse(null);
+        }
+        if(!psLocation.equals("")){
+            Optional<MasterCode> emLocations = masterCodeService.findByCode(psLocation);
+            psLocationId = emLocations.map(MasterCode::getId).orElse(null);
+        }
+
+        Page<PositionPopListDto> positionListDtos = positionService.findByPositionPopSearch(psCountryId,psLocationId,deviceid,pageable);
+//        log.info("positionListDtos : "+positionListDtos.getContent());
+
+        return CommonUtils.ResponseEntityPage(positionListDtos);
     }
 
     // 거점코드 가져오기

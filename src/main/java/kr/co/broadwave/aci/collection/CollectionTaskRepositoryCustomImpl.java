@@ -25,7 +25,7 @@ import java.util.Objects;
 
 /**
  * @author Minkyu
- * Date : 2020-01-28ø
+ * Date : 2020-01-28
  * Remark :
  */
 @Slf4j
@@ -33,7 +33,7 @@ import java.util.Objects;
 public class CollectionTaskRepositoryCustomImpl extends QuerydslRepositorySupport implements CollectionTaskRepositoryCustom{
 
     public CollectionTaskRepositoryCustomImpl() {
-        super(Company.class);
+        super(CollectionTask.class);
     }
 
     @Override

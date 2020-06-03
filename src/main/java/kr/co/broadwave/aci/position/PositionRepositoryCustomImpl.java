@@ -67,4 +67,35 @@ public class PositionRepositoryCustomImpl extends QuerydslRepositorySupport impl
         return new PageImpl<>(positionListDtos, pageable, query.fetchCount());
     }
 
+    @Override
+    public Page<PositionPopListDto> findByPositionPopSearch(Long psCountryId, Long psLocationId, String deviceid, Pageable pageable){
+
+        QPosition position = QPosition.position;
+
+        JPQLQuery<PositionPopListDto> query = from(position)
+                .select(Projections.constructor(PositionPopListDto.class,
+                        position.id,
+                        position.psZoneName,
+                        position.deviceid
+                ));
+
+        // 검색조건필터
+        if (deviceid != null && !deviceid.isEmpty()) {
+            query.where(position.deviceid.likeIgnoreCase(deviceid.concat("%")));
+        }else if(deviceid == null){
+            query.where(position.deviceid.isNull());
+        }
+        if (psCountryId != null ){
+            query.where(position.psCountry.id.eq(psCountryId));
+        }
+        if (psLocationId != null ){
+            query.where(position.psLocation.id.eq(psLocationId));
+        }
+
+        query.orderBy(position.id.desc());
+
+        final List<PositionPopListDto> positionListDtos = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
+        return new PageImpl<>(positionListDtos, pageable, query.fetchCount());
+    }
+
 }

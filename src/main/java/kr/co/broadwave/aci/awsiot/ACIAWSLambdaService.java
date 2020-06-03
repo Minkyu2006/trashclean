@@ -200,8 +200,6 @@ public class ACIAWSLambdaService {
 
         final String url = ACIAWSAPIBASEURL + "/api/v1/deviceinfo/{id}" ;
 
-
-
         RestTemplate restTemplate = new RestTemplate();
 
         //header
@@ -231,8 +229,6 @@ public class ACIAWSLambdaService {
         return getHashMap(res);
     }
 
-
-
     //비콘센서 데이터가져오기
     public HashMap getDeviceBeacon(String yyyymmdd){
 
@@ -250,6 +246,74 @@ public class ACIAWSLambdaService {
         //params
         Map<String, String> params = new HashMap<>();
         params.put("id", yyyymmdd);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(url)
+                .buildAndExpand(params)
+                .toUri();
+        //queryParams
+        uri = UriComponentsBuilder
+                .fromUri(uri)
+                .build()
+                .toUri();
+
+        ResponseEntity<String> res = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+
+        return getHashMap(res);
+    }
+
+    //ncd센서 데이터가져오기
+    public HashMap getDeviceNcd(String hour){
+        System.out.println("hour : "+hour);
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/beacon/lora/{id}" ;
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        //params
+        Map<String, String> params = new HashMap<>();
+        params.put("id", hour);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(url)
+                .buildAndExpand(params)
+                .toUri();
+        //queryParams
+        uri = UriComponentsBuilder
+                .fromUri(uri)
+                .build()
+                .toUri();
+
+        ResponseEntity<String> res = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+
+        return getHashMap(res);
+    }
+
+    //beacon센서 데이터가져오기
+    public HashMap getBeacon(String hour){
+        System.out.println("hour : "+hour);
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/beacon/office/{id}" ;
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        //params
+        Map<String, String> params = new HashMap<>();
+        params.put("id", hour);
 
         URI uri = UriComponentsBuilder
                 .fromUriString(url)

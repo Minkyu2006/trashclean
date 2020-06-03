@@ -164,12 +164,12 @@ public class TestpageController {
         }
 //        System.out.println("searchDate : "+searchDate);
 
-        HashMap<String,Object> resData = aciawsLambdaService.getDeviceBeacon(searchDate);
+        HashMap<String, Object> resData = aciawsLambdaService.getDeviceBeacon(searchDate);
 //        System.out.println("resData : "+resData);
 
-        data.put("statusCode",resData.get("statusCode"));
-        data.put("datarow1",resData.get("data"));
-        res.addResponse("data",data);
+        data.put("statusCode", resData.get("statusCode"));
+        data.put("datarow1", resData.get("data"));
+        res.addResponse("data", data);
 
         return ResponseEntity.ok(res.success());
     }
@@ -183,5 +183,50 @@ public class TestpageController {
     public String accorditainerregtest(){
         return "testpage/accorditainerregtest";
     }
+
+    @RequestMapping("sensorncd")
+    public String sensorncd(){
+        return "testpage/sensorncd";
+    }
+
+    // ncd센서데이터가져오기
+    @PostMapping("ncdData")
+    public ResponseEntity<Map<String,Object>> ncdData(@RequestParam(value="hour", defaultValue="") String hour) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+//        System.out.println("hour : "+hour);
+        HashMap<String, Object> resData = aciawsLambdaService.getDeviceNcd(hour);
+        System.out.println("resData : "+resData);
+
+        data.put("statusCode", resData.get("statusCode"));
+        data.put("datarow", resData.get("data"));
+        res.addResponse("data", data);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    @RequestMapping("sensorbeacon")
+    public String sensorbeacon(){
+        return "testpage/sensorbeacon";
+    }
+
+    // beacon센서데이터가져오기
+    @PostMapping("beacon")
+    public ResponseEntity<Map<String,Object>> beacon(@RequestParam(value="hour", defaultValue="") String hour) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+//        System.out.println("hour : "+hour);
+        HashMap<String, Object> resData = aciawsLambdaService.getBeacon(hour);
+//        System.out.println("resData : "+resData);
+
+        data.put("statusCode", resData.get("statusCode"));
+        data.put("datarow1", resData.get("data"));
+        res.addResponse("data", data);
+
+        return ResponseEntity.ok(res.success());
+    }
+
 
 }

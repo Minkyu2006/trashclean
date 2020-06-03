@@ -73,4 +73,11 @@ public class PositionService {
         return optionalPosition.map(position -> modelMapper.map(position, PositionPopDto.class)).orElse(null);
     }
 
+    public void delete(Position position) {
+        positionRepository.delete(position);
+    }
+
+    public Page<PositionPopListDto> findByPositionPopSearch(Long psCountryId, Long psLocationId, String deviceid, Pageable pageable) {
+        return positionRepositoryCustom.findByPositionPopSearch(psCountryId,psLocationId,deviceid,pageable);
+    }
 }

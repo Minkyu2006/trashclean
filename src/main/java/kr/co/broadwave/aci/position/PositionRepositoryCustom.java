@@ -15,4 +15,5 @@ public interface PositionRepositoryCustom {
 
     Page<PositionListDto> findByPositionSearch(String psZoneCode, String psZoneName, Long psLocationId, Long psCountryId, Pageable pageable);
 
+    Page<PositionPopListDto> findByPositionPopSearch(Long psCountryId, Long psLocationId, String deviceid, Pageable pageable);
 }

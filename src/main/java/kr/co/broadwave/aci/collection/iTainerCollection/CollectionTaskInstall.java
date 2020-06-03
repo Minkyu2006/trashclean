@@ -2,6 +2,7 @@ package kr.co.broadwave.aci.collection.iTainerCollection;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.bscodes.AccordiType;
+import kr.co.broadwave.aci.bscodes.CiStatusType;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.vehicle.Vehicle;
 import lombok.*;
@@ -62,8 +63,9 @@ public class CollectionTaskInstall {
     @Column(name="ci_remark")
     private String ciRemark; // 특이사항
 
+    @Enumerated(EnumType.STRING)
     @Column(name="ci_status")
-    private String ciStatus; // 배치상태(지시|완료) -> enum관리
+    private CiStatusType ciStatus; // 배치상태(지시|완료) -> enum관리
 
     @Column(name="ci_complete_date")
     private LocalDateTime ciCompleteDate; // 배치완료일자
