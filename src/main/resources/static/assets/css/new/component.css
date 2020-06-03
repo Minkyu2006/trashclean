@@ -116,6 +116,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 	width: auto;
 }
 
+
 /* button */
 .c-button {
     display: block;
@@ -879,6 +880,10 @@ a.c-button {
 }
 .c-input-list.c-input-list--flex li + li {
 	margin-left: 10px;
+}
+.c-input-list li input[type="checkbox"] + label {
+	line-height: 19px;
+	vertical-align: bottom;
 }
 
 .c-search-form {
