@@ -33,6 +33,10 @@
 				collectionDelCheck();
 			});
 
+			//대기장비조회
+			$("#waitingDevcieBtnSearch").on('click', function () {
+				waitingDevcieList(1);
+			});
 			//수거원조회
 			$("#collectionUserBtnSearch").on('click', function () {
 				collectionCallList(1);
@@ -52,6 +56,12 @@
 			$('#vehicleClose').on('click', function (e) {
 				$('.l-popup').removeClass('open');
 				vehreset();
+				e.preventDefault();
+			});
+			//대기장비팝업닫기
+			$('#waitingClose').on('click', function (e) {
+				$('.l-popup').removeClass('open');
+				waitingreset();
 				e.preventDefault();
 			});
 
@@ -74,6 +84,7 @@
 			}
 
 			var $psZoneCode = $("#psZoneCode");
+			var $deviceid = $("#deviceid");
 
 			if ($psZoneCode.val().trim() === '') {
 				alertCaution("업무를 선택해주세요.");
@@ -93,7 +104,6 @@
 				ciType : $("#ciType").val(),
 				ciPriority : $("#ciPriority").val(),
 				psZoneCode : $psZoneCode.val(),
-				psZoneName : $("#psZoneName").val(),
 				deviceid : $deviceid.val(),
 				vehicleNumber : $("#vehicleNumber").val(),
 				accountUserId : $("#accountUserId").val(),
@@ -283,6 +293,85 @@
 					callList(1);
 				}
 			})
+		}
+
+		// 대기장비 조건초기화
+		function waitingreset() {
+			$("#s_emLocationPop").val('');
+			$("#s_emCountryPop").val('');
+			$("#s_emNumberPop").val('');
+		}
+		// 대상장비 리스트보기
+		function waitingDevcieList(page) {
+			page = page - 1;
+			if (page < 0) page = 0;
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+			var $schList = $('#waitingSchList');
+			var $totalCnt = $('#waitingTotalCnt');
+
+			var params = {
+				emType: "ITAI",
+				emLocation: $('#s_emLocationPop').val(),
+				emCountry: $('#s_emCountryPop').val(),
+				emNumber: $('#s_emNumberPop').val(),
+				emState: "운영"
+			};
+
+			$schList.empty().append('<tr ><td colspan="5" align="center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) {
+				xhr.setRequestHeader(header, token);
+			});
+
+			$.ajax({
+				url: '/api/collection/waitingDevcieList?size=' + perPage + '&page=' + page,
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#waitingPaging").jqueryPager({
+						pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'waitingDevcieList'
+					});
+					if (totCnt === 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+					$totalCnt.text(totCnt);
+					var html = '';
+					$.each(res.data.datalist, function (key, value) {
+						html += '<tr >';
+						html += '<td >' + nvl(value.emNumber, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.iModel, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.emCountry, "확 인 불 가") + '-' + nvl(value.emLocation, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.emState, "확 인 불 가") + '</td>';
+						html += '<td><button onclick="deviceWaitingChose(\'' + value.emNumber + '\')" class="c-button c-button--small">선택</button></td>'
+						html += '</tr>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+		// 대상장비 넣기
+		function deviceWaitingChose(emNumber) {
+			$("#deviceid").val(emNumber);
+			$('.l-popup').removeClass('open');
+			waitingreset();
 		}
 
 		// 수거원 조건초기화
@@ -485,6 +574,12 @@
 			});
 		}
 
+		// 대기장비팝업
+		function waitingPop() {
+			$('#waiting_popup').addClass('open');
+			LocationSetting("",1);
+		}
+
 		// 수거원팝업
 		function collectionManPop() {
 			$('#collectionMan_popup').addClass('open');
@@ -494,6 +589,46 @@
 			$('#vehicle_popup').addClass('open');
 		}
 
+		// 국가,지역검색
+		function LocationSetting(value,num) {
+
+			var params = {
+				s_emCountry: value
+			};
+
+			var $s_emLocation;
+			if(num===1){
+				$s_emLocation = $("#s_emLocationPop");
+			}
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) {
+				xhr.setRequestHeader(header, token);
+			});
+
+			$.ajax({
+				url: '/api/dashboard/location',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var html = '';
+					html += '<option value ="">' + '전체' + '</option>';
+					$.each(res.data.locationData, function (key, value) {
+						html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name) + '</option>';
+					});
+					$s_emLocation.html(html);
+				}
+			});
+		}
 	</script>
 </head>
 
@@ -664,6 +799,7 @@
 						<td colspan="3">
 							<div class="c-search-form">
 								<input id="deviceid" type="text" class="c-text__input only" readonly="readonly">
+								<button onclick="waitingPop()" class="c-search-form__button">검색</button>
 							</div>
 						</td>
 					</tr>
@@ -891,5 +1027,103 @@
 		</div>
 	</div>
 
+	<!-- 대기장비 팝업 -->
+	<div class="l-popup" id="waiting_popup">
+		<div class="l-popup__container">
+			<div class="l-popup__head">
+				<h3 class="l-popup__heading">대상장비 조회</h3>
+			</div>
+			<div class="l-popup__content">
+				<div class="l-popup__section">
+					<table class="c-table c-table--non-border">
+						<colgroup>
+							<col style="width: 70px;"/>
+							<col/>
+							<col style="width: 60px;"/>
+							<col/>
+							<col style="width: 60px;"/>
+							<col/>
+							<col style="width: 70px;"/>
+							<col/>
+							<col style="width: 80px;"/>
+						</colgroup>
+						<tbody>
+						<tr>
+							<th>모델 타입</th>
+							<td>
+								<input type="text" id="s_emTypePop" value="iTainer" class="c-text__input" readonly="readonly"/>
+							</td>
+							<th>국가</th>
+							<td>
+								<div class="c-select">
+									<select id="s_emCountryPop" class="c-select__input" onchange="LocationSetting(this.value,1)">
+										<option value="">전체</option>
+										<option th:each="equipdCountry : ${equipdCountrys}"
+												th:value="${equipdCountry.code}"
+												th:text="${equipdCountry.name}">
+										</option>
+									</select>
+								</div>
+							</td>
+							<th>지역</th>
+							<td>
+								<div class="c-select">
+									<select id="s_emLocationPop" class="c-select__input">
+									</select>
+								</div>
+							</td>
+							<th>장비번호</th>
+							<td>
+								<div class="c-text">
+									<input type="text" class="c-text__input" id="s_emNumberPop"/>
+								</div>
+							</td>
+							<td>
+								<button id="waitingDevcieBtnSearch" class="c-button c-button--point">조회</button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+
+				<div class="l-popup__section">
+					<table class="c-table">
+						<colgroup>
+							<col/>
+							<col/>
+							<col/>
+							<col/>
+							<col style="width: 60px;"/>
+						</colgroup>
+						<thead>
+						<tr>
+							<th>장비번호</th>
+							<th>모델명/종류</th>
+							<th>국가/지역</th>
+							<th>설비상태</th>
+							<th></th>
+						</tr>
+						</thead>
+						<tbody id="waitingSchList">
+
+						</tbody>
+					</table>
+
+					<div class="c-pager">
+						<div class="c-paging" id="waitingPaging">
+							<!-- 페이징 처리되는곳   -->
+						</div>
+						<div class="c-paging__total">
+							<div class="c-paging__total-group">
+								Total
+							</div>
+							<div class="c-paging__total-group" id="waitingTotalCnt">0</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="#" id="waitingClose" class="l-popup__close">팝업닫기</a>
+		</div>
+	</div>
 </div>
 </html>

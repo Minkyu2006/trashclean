@@ -10,6 +10,8 @@ import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.keygenerate.KeyGenerateService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
+import kr.co.broadwave.aci.position.Position;
+import kr.co.broadwave.aci.position.PositionService;
 import kr.co.broadwave.aci.vehicle.Vehicle;
 import kr.co.broadwave.aci.vehicle.VehicleService;
 import lombok.extern.slf4j.Slf4j;
@@ -44,18 +46,21 @@ public class CollectionTaskInstallRestController {
     private final VehicleService vehicleService;
     private final CollectionTaskInstallService collectionTaskInstallService;
     private final KeyGenerateService keyGenerateService;
+    private final PositionService positionService;
 
     @Autowired
     public CollectionTaskInstallRestController(CollectionTaskInstallService collectionTaskInstallService,
                                                VehicleService vehicleService,
                                                AccountService accountService,
                                                MasterCodeService masterCodeService,
-                                               KeyGenerateService keyGenerateService) {
+                                               KeyGenerateService keyGenerateService,
+                                               PositionService positionService) {
         this.accountService = accountService;
         this.keyGenerateService = keyGenerateService;
         this.collectionTaskInstallService = collectionTaskInstallService;
         this.masterCodeService = masterCodeService;
         this.vehicleService = vehicleService;
+        this.positionService = positionService;
     }
 
     // iSolarbin 수거업무 저장
@@ -64,7 +69,6 @@ public class CollectionTaskInstallRestController {
                                                            @RequestParam(value="ciType", defaultValue="") String ciType,
                                                            @RequestParam(value="ciPriority", defaultValue="") String ciPriority,
                                                            @RequestParam(value="psZoneCode", defaultValue="") String psZoneCode,
-                                                           @RequestParam(value="psZoneName", defaultValue="") String psZoneName,
                                                            @RequestParam(value="deviceid", defaultValue="") String deviceid,
                                                            @RequestParam(value="vehicleNumber", defaultValue="") String vehicleNumber,
                                                            @RequestParam(value="accountUserId", defaultValue="") String accountUserId,
@@ -94,6 +98,8 @@ public class CollectionTaskInstallRestController {
         // 유저아이디/배차차량 가져오기
         Optional<Account> optionalUserId = accountService.findByUserid(accountUserId);
         Optional<Vehicle> optionalVehicleId = vehicleService.findByVcNumber(vehicleNumber);
+        Optional<Position> optionalPosition = positionService.findByPsZoneCode(psZoneCode);
+
         AccordiType ciTypes;
 
         if(!ciCode.equals("")) {
@@ -107,15 +113,15 @@ public class CollectionTaskInstallRestController {
 
                 collectionTaskInstall.setId(optionalCollectionTaskInstall.get().getId());
 
-                if (!optionalUserId.isPresent() || !optionalVehicleId.isPresent() || !ciPrioritys.isPresent()) {
+                if (!optionalUserId.isPresent() || !optionalVehicleId.isPresent() || !ciPrioritys.isPresent() || !optionalPosition.isPresent()) {
                     return ResponseEntity.ok(res.fail(ResponseErrorCode.E034.getCode(), ResponseErrorCode.E034.getDesc() + "'" + currentuserid + "'"));
                 }else{
 
                     collectionTaskInstall.setCiCode(ciCode);
                     collectionTaskInstall.setCiType(ciTypes);
                     collectionTaskInstall.setCiPriority(ciPrioritys.get());
+                    collectionTaskInstall.setPsId(optionalPosition.get());
                     collectionTaskInstall.setPsZoneCode(psZoneCode);
-                    collectionTaskInstall.setPsZoneName(psZoneName);
                     collectionTaskInstall.setDeviceid(deviceid);
                     collectionTaskInstall.setAccountId(optionalUserId.get());
                     collectionTaskInstall.setVehicleId(optionalVehicleId.get());
@@ -141,7 +147,7 @@ public class CollectionTaskInstallRestController {
                 String today = todayFormat.format(time);
                 String ciCodeSet = keyGenerateService.keyGenerate("cl_task_install", "TI"+today, currentuserid);
                 ciTypes = AccordiType.valueOf(ciType);
-                if (!optionalUserId.isPresent() || !optionalVehicleId.isPresent() || !ciPrioritys.isPresent()) {
+                if (!optionalUserId.isPresent() || !optionalVehicleId.isPresent() || !ciPrioritys.isPresent()|| !optionalPosition.isPresent()) {
                     return ResponseEntity.ok(res.fail(ResponseErrorCode.E034.getCode(), ResponseErrorCode.E034.getDesc() + "'" + currentuserid + "'"));
                 }else{
                     CollectionTaskInstall collectionTaskInstall = new CollectionTaskInstall();
@@ -149,8 +155,8 @@ public class CollectionTaskInstallRestController {
                     collectionTaskInstall.setCiCode(ciCodeSet);
                     collectionTaskInstall.setCiType(ciTypes);
                     collectionTaskInstall.setCiPriority(ciPrioritys.get());
+                    collectionTaskInstall.setPsId(optionalPosition.get());
                     collectionTaskInstall.setPsZoneCode(psZoneCode);
-                    collectionTaskInstall.setPsZoneName(psZoneName);
                     collectionTaskInstall.setDeviceid(deviceid);
                     collectionTaskInstall.setAccountId(optionalUserId.get());
                     collectionTaskInstall.setVehicleId(optionalVehicleId.get());
@@ -179,7 +185,7 @@ public class CollectionTaskInstallRestController {
                         ciTypes = AccordiType.valueOf("AT02");
                     }
 
-                    if (!optionalUserId.isPresent() || !optionalVehicleId.isPresent() || !ciPrioritys.isPresent()) {
+                    if (!optionalUserId.isPresent() || !optionalVehicleId.isPresent() || !ciPrioritys.isPresent()|| !optionalPosition.isPresent()) {
                         return ResponseEntity.ok(res.fail(ResponseErrorCode.E034.getCode(), ResponseErrorCode.E034.getDesc() + "'" + currentuserid + "'"));
                     }else {
                         CollectionTaskInstall collectionTaskInstall = new CollectionTaskInstall();
@@ -189,8 +195,8 @@ public class CollectionTaskInstallRestController {
                         collectionTaskInstall.setCiCode(ciCodeSet);
                         collectionTaskInstall.setCiType(ciTypes);
                         collectionTaskInstall.setCiPriority(ciPrioritys.get());
+                        collectionTaskInstall.setPsId(optionalPosition.get());
                         collectionTaskInstall.setPsZoneCode(psZoneCode);
-                        collectionTaskInstall.setPsZoneName(psZoneName);
                         collectionTaskInstall.setDeviceid(deviceid);
                         collectionTaskInstall.setAccountId(optionalUserId.get());
                         collectionTaskInstall.setVehicleId(optionalVehicleId.get());

@@ -4,6 +4,7 @@ import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.bscodes.AccordiType;
 import kr.co.broadwave.aci.bscodes.CiStatusType;
 import kr.co.broadwave.aci.mastercode.MasterCode;
+import kr.co.broadwave.aci.position.Position;
 import kr.co.broadwave.aci.vehicle.Vehicle;
 import lombok.*;
 
@@ -43,14 +44,15 @@ public class CollectionTaskInstall {
     @JoinColumn(name="ci_priority")
     private MasterCode ciPriority; // 우선순위(보통/긴급) - 마스터코드등록관리
 
+    @ManyToOne(targetEntity = Position.class,fetch = FetchType.LAZY)
+    @JoinColumn(name="ps_id")
+    private Position psId; // 거점 ID
+
     @Column(name="deviceid")
     private String deviceid; // 장비코드(iTainer)
 
     @Column(name="ps_zone_code")
     private String psZoneCode; // 거점코드
-
-    @Column(name="ps_zone_name")
-    private String psZoneName; // 거점명
 
     @ManyToOne(targetEntity = Account.class,fetch = FetchType.LAZY)
     @JoinColumn(name="account_id")

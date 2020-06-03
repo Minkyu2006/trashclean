@@ -14,8 +14,8 @@ import java.util.Optional;
  */
 public interface CollectionTaskInstallRepository extends JpaRepository<CollectionTaskInstall,Long>, QuerydslPredicateExecutor<CollectionTaskInstall>{
 
-    @Query("select a from CollectionTaskInstall a join fetch a.accountId join fetch a.vehicleId join fetch a.ciPriority where a.id = :id")
-    Optional<CollectionTaskInstall> findByCollectionTaskInstallInfo(Long id);
+//    @Query("select a from CollectionTaskInstall a join fetch a.accountId join fetch a.vehicleId join fetch a.ciPriority join fetch a.psId where a.id = :id")
+//    Optional<CollectionTaskInstall> findByCollectionTaskInstallInfo(Long id);
 
     Optional<CollectionTaskInstall> findByCiCode(String ciCode);
 

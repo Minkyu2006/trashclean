@@ -95,6 +95,54 @@ public class Equipment {
     @Column(name="v_redstart")
     private Double vRedstart; // 쓰레기량에 따른 적색등의 경계값
 
+    @Column(name="v_manager")
+    private String vManager; // 담당수거원이름
+
+    @Column(name="v_manager_call")
+    private String vManagerCall; // 담당수거원번호
+
+    @Column(name="v_manager_id")
+    private String vManagerId; // 아이테이너장비 아이디
+
+    @Column(name="v_manager_pass")
+    private String vManagerPass; // 아이테이너장비 비번
+
+    @Column(name="v_language")
+    private String vLanguage; // 사용언어
+
+    @Column(name="v_mqtt_interval")
+    private String vMqttInterval; // mqtt 데이터전송주기(단위,초)
+
+    @Column(name="v_lora_interval")
+    private String vLoraInterval; // lora 데이터 전송주기(단위,초)
+
+    @Column(name="v_scale_safe_interval")
+    private String vScaleSafeInterval; //
+
+    @Column(name="v_shutter_idle_interval")
+    private String vShutterIdleInterval; // 담당수거원이름
+
+    @Column(name="v_waste_press_interval")
+    private String vWastePressInterval; //
+
+    @Column(name="v_waste_capacity")
+    private String vWasteCapacity; //
+
+    @Column(name="v_ozon_time")
+    private String vOzonTime; //
+
+    @Column(name="v_pay_preamt")
+    private String vPayPreamt; //
+
+    @Column(name="v_pay_unit_price")
+    private String vPayUnitPrice; // 기준가격
+
+    @Column(name="v_pay_unit_weight")
+    private String vPayUnitWeight; // 기준무게
+
+    @Column(name="v_pay_method")
+    private String vPayMethod; //
+
     @Column(name="em_certification_number")
     private String emCertificationNumber; // AWS보안인증서코드
 

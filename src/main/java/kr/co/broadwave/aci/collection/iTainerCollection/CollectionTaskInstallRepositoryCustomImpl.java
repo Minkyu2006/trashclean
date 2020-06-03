@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import kr.co.broadwave.aci.accounts.QAccount;
 import kr.co.broadwave.aci.bscodes.AccordiType;
 import kr.co.broadwave.aci.mastercode.QMasterCode;
+import kr.co.broadwave.aci.position.QPosition;
 import kr.co.broadwave.aci.vehicle.QVehicle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -86,14 +87,16 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
         QAccount account = QAccount.account;
         QVehicle vehicle = QVehicle.vehicle;
         QMasterCode masterCode = QMasterCode.masterCode;
+        QPosition position = QPosition.position;
 
         return queryFactory.select(Projections.constructor(CollectionTaskInstallDto.class,
                 collectionTaskInstall.ciCode,collectionTaskInstall.ciType,masterCode.code,
-                collectionTaskInstall.psZoneCode,collectionTaskInstall.psZoneName,collectionTaskInstall.deviceid,
+                collectionTaskInstall.psZoneCode,position.psZoneName,collectionTaskInstall.deviceid,
                 account.userid,account.username,vehicle.vcNumber,vehicle.vcName,
                 collectionTaskInstall.ciRemark,collectionTaskInstall.ciStatus))
                 .from(collectionTaskInstall)
                 .where(collectionTaskInstall.ciCode.eq(ciCode))
+                .innerJoin(collectionTaskInstall.psId,position)
                 .innerJoin(collectionTaskInstall.accountId,account)
                 .innerJoin(collectionTaskInstall.vehicleId,vehicle)
                 .innerJoin(collectionTaskInstall.ciPriority,masterCode)
