@@ -1743,11 +1743,24 @@ table {
 	text-align: center;
 }
 .equipment__img img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
 	height: 200px;
+	-webkit-transform: translate(-50%, -50%);
+	-moz-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
 }
 .equipment__img span {
 	display: block;
+	position: absolute;
+	bottom: 20px;
+	left: 0;
+	width: 100%;
 	font-size: 12px;
+	text-align: center;
 }
 
 
