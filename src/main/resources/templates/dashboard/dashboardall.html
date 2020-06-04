@@ -479,7 +479,7 @@
 							html += '<ul class="equipment__info">';
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '장비 ID : ' + '</span>';
-							html += '<span class="equipment__info-value">' + nvl(res.data.deviceInfoListDtos[i]["emNumber"], "확 인 불 가") + '</span>';
+							html += '<span id=' + 'emNumber' + idx + ' class="equipment__info-value">' + nvl(res.data.deviceInfoListDtos[i]["emNumber"], "확 인 불 가") + '</span>';
 							html += '</li>';
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '모델타입 : ' + '</span>';
@@ -488,10 +488,6 @@
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '모델명 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + nvl(res.data.deviceInfoListDtos[i]["mdName"], "확 인 불 가") + '</span>';
-							html += '</li>';
-							html += '<li class="equipment__info-item">';
-							html += '<span class="equipment__info-title">' + '최대적재량 : ' + '</span>';
-							html += '<span class="equipment__info-value">' + nvl(res.data.deviceInfoListDtos[i]["mdMaximumPayload"], "확 인 불 가") + nvl(res.data.deviceInfoListDtos[i]["mdUnit"], "확 인 불 가") + '</span>';
 							html += '</li>';
 							html += '<li class="equipment__info-item">';
 							html += '<span class="equipment__info-title">' + '운영사 : ' + '</span>';
@@ -509,6 +505,13 @@
 							html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
 							html += '<span class="equipment__info-value">'+installDayDatas[idx]+'일'+'</span>';
 							html += '</li>';
+
+							html += '<li class="equipment__info-item">';
+							if(res.data.deviceInfoListDtos[i]["emType"]==="iSolarbin") {
+								html += '<input type="button" class="c-button c-button--point" value="모뎀리셋" onclick="modemReset(\''+idx+'\')" />';
+							}
+							html += '</li>';
+
 							html += '</ul>';
 							html += '</div>';
 							html += '</div>';
@@ -540,6 +543,40 @@
 						$("#devicefiles").val(files);
 						$("#emTypes").val(emTypes);
 					},1000);
+				}
+			});
+		}
+
+		// iSolarbin용 모뎀리셋버튼
+		function modemReset(idx) {
+			// console.log("$emNumber : "+$("#emNumber"+idx).text());
+			var $emNumber = $("#emNumber"+idx).text();
+			timestamp = + new Date();
+
+			if ($emNumber === null) {
+				alertCaution("장비코드가 존재하지 않습니다.");
+				return false;
+			}
+
+			var params = {
+				emNumber:$emNumber,
+				timestamp:timestamp,
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/dashboard/modemReset',
+				data : params,
+				type : 'post',
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(){
+					alertSuccess("모뎀리셋완료");
 				}
 			});
 		}

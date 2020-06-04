@@ -84,6 +84,12 @@
 				 firmUpdate();
 			 });
 
+			 if($("#emType").text()==="iSolarbin"){
+				 $("#resetBtn").show();
+			 }else{
+				 $("#resetBtn").hide();
+			 }
+
 		 });
 
          //버젼확인하기
@@ -216,6 +222,41 @@
 			 $("#devcieInstalDateBtw").text(parseInt(betweenDay)+"일");
 		 }
 
+		 // iSolarbin용 모뎀리셋버튼
+		 function modemReset() {
+
+			 timestamp = + new Date();
+
+			 var $emNumber =  $("#deviceid").text();
+
+			 if ($emNumber === null) {
+				 alertCaution("장비코드가 존재하지 않습니다.");
+				 return false;
+			 }
+
+			 var params = {
+				 emNumber: $emNumber,
+				 timestamp:timestamp
+			 };
+
+			 var token = $("meta[name='_csrf']").attr("content");
+			 var header = $("meta[name='_csrf_header']").attr("content");
+			 $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			 $.ajax({
+				 url:'/api/dashboard/modemReset',
+				 data : params,
+				 type : 'post',
+				 cache:false,
+				 error:function(request){
+					 ajaxErrorMsg(request);
+				 },
+				 success: function(){
+					 alertSuccess("모뎀리셋완료");
+				 }
+			 });
+		 }
+
     </script>
 
 </head>
@@ -223,16 +264,17 @@
     <section class="section" style="padding: 10px">
         <article class="article" style="padding: 13px">
 		<h2 id="header_deviceid" th:text="'장비코드 : '+${header_deviceid}" class="article__heading"></h2>
+
 		<div class="winpop__layout--flex">
 			<div class="winpop__section">
 				<div class="equipment__img">
-					<span id="statusName" th:class="${status}" th:text="${stausName}"></span>
-					<span th:class="${onoffline}" th:text="${offlineName}"></span>
-					<img th:src="${filePath}+${saveFileName}" />
+					<span id="statusName" th:class="${status}" th:text="${stausName}" style="width: 20%;position: absolute;top: -5px;"></span>
+					<span th:class="${onoffline}" th:text="${offlineName}" style="width: 30%;position: absolute;left: 100px;top: -5px;"></span>
+					<img th:src="${filePath}+${saveFileName}" style="bottom:0;"/>
 					<div class="equipment__signal">
-						<img th:src="${rsrp}" alt="신호강도" />
+						<img th:src="${rsrp}" alt="신호강도" style="left: -20px;position: absolute;top: -5px;"/>
 					</div>
-					<span id="offlineTimeName"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">
+					<span id="offlineTimeName" style="bottom: 0"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">
 				</div>
 			</div>
 
@@ -245,16 +287,16 @@
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">모델타입 : </span>
-						<span class="equipment__info-value" th:text="${emtype}"></span>
+						<span id="emType" class="equipment__info-value" th:text="${emtype}"></span>
 					</li>
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">모델명 : </span>
 						<span class="equipment__info-value" th:text="${mdName}"></span>
 					</li>
-					<li class="equipment__info-item">
-						<span class="equipment__info-title">최대적재량 : </span>
-						<span class="equipment__info-value" th:text="${mdMaxUnit}"></span>
-					</li>
+<!--					<li class="equipment__info-item">-->
+<!--						<span class="equipment__info-title">최대적재량 : </span>-->
+<!--						<span class="equipment__info-value" th:text="${mdMaxUnit}"></span>-->
+<!--					</li>-->
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">운영사 : </span>
 						<span class="equipment__info-value" th:text="${company}"></span>
@@ -266,6 +308,9 @@
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">설치일자 : </span>
 						<span class="equipment__info-value" th:text="${instalDate}"></span>
+					</li>
+					<li id="resetBtn" class="equipment__info-item" style="display: none">
+						<input type="button" class="c-button c-button--point" value="모뎀리셋" onclick="modemReset()" />
 					</li>
 				</ul>
 			</div>

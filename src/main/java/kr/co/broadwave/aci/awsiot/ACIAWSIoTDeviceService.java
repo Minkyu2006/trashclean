@@ -130,4 +130,12 @@ public class ACIAWSIoTDeviceService {
 
     }
 
+    // 모뎀리셋
+    public void setModemReset(String deviceid,String ts) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"modemreset",ts);
+
+    }
+
 }

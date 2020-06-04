@@ -34,12 +34,6 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
         QFileUpload fileUpload = QFileUpload.fileUpload;
         QCompany company = QCompany.company;
 
-        QMasterCode master = QMasterCode.masterCode; // 지역
-        QMasterCode master2 = QMasterCode.masterCode; // 국가
-
-
-
-
         JPQLQuery<DashboardDeviceListViewDto> query = from(equipment)
                 .innerJoin(equipment.mdId,qiModel)
                 .innerJoin(equipment.company,company)
@@ -49,8 +43,6 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
                         equipment.emNumber,
                         equipment.emType,
                         qiModel.mdName,
-                        qiModel.mdMaximumPayload,
-                        qiModel.mdUnit,
                         company.csOperator,
                         equipment.emLocation,
                         equipment.emCountry,
@@ -86,19 +78,19 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
         QIModel qiModel = QIModel.iModel;
         QFileUpload fileUpload = QFileUpload.fileUpload;
         QMasterCode masterCode = QMasterCode.masterCode;
+        QCompany company = QCompany.company;
 
         JPQLQuery<DashboardDeviceListViewDto> query = from(equipment)
                 .innerJoin(equipment.mdId,qiModel)
                 .leftJoin(equipment.emState,masterCode)
+                .innerJoin(equipment.company,company)
                 .leftJoin(equipment.mdId.mdFileid,fileUpload)
                 .select(Projections.constructor(DashboardDeviceListViewDto.class,
                         equipment.id,
                         equipment.emNumber,
                         equipment.emType,
                         qiModel.mdName,
-                        qiModel.mdMaximumPayload,
-                        qiModel.mdUnit.name,
-                        equipment.company,
+                        company.csOperator,
                         equipment.emLocation,
                         equipment.emCountry,
                         equipment.emInstallDate,

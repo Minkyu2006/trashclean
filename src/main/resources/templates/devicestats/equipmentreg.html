@@ -520,9 +520,11 @@
 					var nullstr = "등록된 모델없음";
 
 					if(res.data.dataselect===null){
+						$("#iSolarbinOption").hide();
+						$("#iTainerOption").hide();
 						html += '<option value ="">' + nullstr + '</option>';
 					}else{
-						console.log("mdType : "+res.data.mdType)
+						// console.log("mdType : "+res.data.mdType)
 						if(res.data.mdType==="iSol"){
 							$("#iSolarbinOption").show();
 							$("#iTainerOption").hide();
@@ -882,96 +884,94 @@
 
 				<tbody id="iTainerOption" style="display: none">
 					<tr>
-						<th>v_manager</th>
+						<th>담당자 명</th>
 						<td>
-							<div class="c-text"><input type="text" class="c-text__input" /></div>
+							<div class="c-text"><input id="vManager" name="vManager" type="text" class="c-text__input" /></div>
 						</td>
-						<th>v_manager_call</th>
+						<th>담당자 번호</th>
 						<td>
-							<div class="c-text"><input type="text" class="c-text__input" /></div>
-						</td>
-					</tr>
-					<tr>
-						<th>v_manager_id</th>
-						<td>
-							<div class="c-text"><input type="text" class="c-text__input" /></div>
-						</td>
-						<th>v_manager_pass</th>
-						<td>
-							<div class="c-text"><input type="text" class="c-text__input" /></div>
+							<div class="c-text"><input id="vManagerCall" name="vManagerCall" type="text" class="c-text__input" /></div>
 						</td>
 					</tr>
 					<tr>
-						<th>v_language</th>
+						<th>장비ID</th>
+						<td>
+							<div class="c-text"><input id="vManagerId" name="vManagerId" type="text" class="c-text__input" /></div>
+						</td>
+						<th>장비PW</th>
+						<td>
+							<div class="c-text"><input id="vManagerPass" name="vManagerPass" type="text" class="c-text__input" /></div>
+						</td>
+					</tr>
+					<tr>
+						<th>장비언어</th>
 						<td>
 							<div class="c-select">
-								<select name="" id="" class="c-select__input">
-									<option value="">ko</option>
-									<option value="">en</option>
-									<option value="">ch</option>
+								<select name="vLanguage" id="vLanguage" class="c-select__input">
+									<option th:each ="vLanguage : ${vLanguages}"
+											th:value="${vLanguage.code}"
+											th:text="${vLanguage.name}">
+									</option>
 								</select>
 							</div>
 						</td>
-						<th>v_mqtt_interval</th>
+						<th>mqtt 데이터전송주기(단위:초)</th>
 						<td>
-							<div class="c-text"><input type="number" class="c-text__input" placeholder="단위: 초" /></div>
+							<div class="c-text"><input type="text" id="vMqttInterval" name="vMqttInterval" class="c-text__input" placeholder="기본값 3600" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
 						</td>
 					</tr>
 					<tr>
-						<th>v_lora_interval</th>
+						<th>lora 데이터전송주기(단위:초)</th>
 						<td>
-							<div class="c-text"><input type="number" class="c-text__input" placeholder="단위: 초" /></div>
+							<div class="c-text"><input type="text" id="vLoraInterval" name="vLoraInterval" class="c-text__input" placeholder="기본값 10" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
 						</td>
-						<th>v_scale_safe_interval</th>
+						<th>저울측정 대기시간(단위:초)</th>
 						<td>
-							<div class="c-text"><input type="number" class="c-text__input" placeholder="단위: 초" /></div>
-						</td>
-					</tr>
-					<tr>
-						<th>v_shutter_idle_interval</th>
-						<td>
-							<div class="c-text"><input type="number" class="c-text__input" placeholder="단위: 초" /></div>
-						</td>
-						<th>v_waste_press_interval</th>
-						<td>
-							<div class="c-text"><input type="number" class="c-text__input" placeholder="단위: 초" /></div>
+							<div class="c-text"><input type="text" id="vScaleSafeInterval" name="vScaleSafeInterval" class="c-text__input" placeholder="기본값 65" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
 						</td>
 					</tr>
 					<tr>
-						<th>v_waste_capacity</th>
+						<th>투입구 닫힘 대기시간(단위:초)</th>
 						<td>
-							<div class="c-text"><input type="number" class="c-text__input" placeholder="단위: g" /></div>
+							<div class="c-text"><input type="text" id="vShutterIdleInterval" name="vShutterIdleInterval" class="c-text__input" placeholder="기본값 60" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
 						</td>
-						<th>v_ozon_time</th>
+						<th>v_waste_press_interval(단위:초)</th>
 						<td>
-							<div class="c-text"><input type="number" class="c-text__input" placeholder="단위: 초" /></div>
+							<div class="c-text"><input type="text" id="vWastePressInterval" name="vWastePressInterval" class="c-text__input" placeholder="기본값 3" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
 						</td>
 					</tr>
 					<tr>
-						<th>v_pay_preamt</th>
+						<th>v_waste_capacity(단위:그램)</th>
 						<td>
-							<div class="c-text"><input type="number" class="c-text__input" /></div>
+							<div class="c-text"><input type="text" id="vWasteCapacity" name="vWasteCapacity" class="c-text__input" placeholder="기본값 5000000" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
+						</td>
+						<th>v_ozon_time(단위:초)</th>
+						<td>
+							<div class="c-text"><input type="text" id="vOzonTime" name="vOzonTime" class="c-text__input" placeholder="기본값 7" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
+						</td>
+					</tr>
+					<tr>
+						<th>v_pay_preamt(단위:미정)</th>
+						<td>
+							<div class="c-text"><input type="text" id="vPayPreamt" name="vPayPreamt" class="c-text__input" placeholder="기본값 8000" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
 						</td>
 						<th></th>
 						<td></td>
 					</tr>
 					<tr>
-						<th>v_pay_unit_price</th>
-						<td colspan="3">
-							<ul class="c-input-list c-input-list--flex">
-								<li>
-									<div class="c-text"><input type="number" class="c-text__input" placeholder="price" /></div>
-								</li>
-								<li>
-									<div class="c-text"><input type="number" class="c-text__input" placeholder="weight" /></div>
-								</li>
-							</ul>
+						<th>기준 가격</th>
+						<td>
+							<div class="c-text"><input type="text" id="vPayUnitPrice" name="vPayUnitPrice" class="c-text__input" placeholder="기본값 25" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
+						</td>
+						<th>기준 무게(단위:g)</th>
+						<td>
+							<div class="c-text"><input type="text" id="vPayUnitWeight" name="vPayUnitWeight" class="c-text__input" placeholder="기본값 1" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
 						</td>
 					</tr>
 					<tr>
-						<th>v_pay_method
-						</th>
+						<th>v_pay_method(미정)</th>
 						<td colspan="3">
+							<div class="c-text"><input type="text" id="vPayMethod" name="vPayMethod" class="c-text__input" /></div>
 							<ul class="c-input-list">
 								<li>
 									<input type="checkbox" name="checks" id="check01" />

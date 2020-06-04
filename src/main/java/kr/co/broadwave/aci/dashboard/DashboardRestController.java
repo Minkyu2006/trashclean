@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.dashboard;
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountMapperDto;
 import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
 import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
@@ -49,6 +50,7 @@ public class DashboardRestController {
     private final ModelMapper modelMapper;
     private final DevicestatusService devicestatusService;
     private final ACIAWSLambdaService aciawsLambdaService;
+    private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
 
     @Autowired
     public DashboardRestController(DashboardService dashboardService,
@@ -56,13 +58,15 @@ public class DashboardRestController {
                                    AccountService accountService,
                                    MasterCodeService masterCodeService,
                                    DevicestatusService devicestatusService,
-                                   ACIAWSLambdaService aciawsLambdaService) {
+                                   ACIAWSLambdaService aciawsLambdaService,
+                                   ACIAWSIoTDeviceService aciawsIoTDeviceService) {
         this.modelMapper = modelMapper;
         this.dashboardService = dashboardService;
         this.accountService = accountService;
         this.masterCodeService = masterCodeService;
         this.devicestatusService = devicestatusService;
         this.aciawsLambdaService = aciawsLambdaService;
+        this.aciawsIoTDeviceService = aciawsIoTDeviceService;
     }
 
     @PostMapping("monitering")
@@ -1175,4 +1179,18 @@ public class DashboardRestController {
         }
     }
 
+    // 모뎀리셋
+    @PostMapping("modemReset")
+    public ResponseEntity<Map<String,Object>> modemReset(@RequestParam(value="emNumber", defaultValue="") String emNumber,
+                                                          @RequestParam(value="timestamp", defaultValue="") String timestamp) throws Exception {
+        AjaxResponse res = new AjaxResponse();
+
+//        log.info("장비코드 : "+emNumber);
+//        log.info("timestamp : "+timestamp);
+
+        // 모뎀리셋버튼 실행 keyString -> modemreset
+        aciawsIoTDeviceService.setModemReset(emNumber,timestamp);
+
+        return ResponseEntity.ok(res.success());
+    }
 }

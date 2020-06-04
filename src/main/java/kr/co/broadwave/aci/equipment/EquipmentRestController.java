@@ -75,25 +75,6 @@ public class EquipmentRestController {
 
         Equipment equipment = modelMapper.map(equipmentMapperDto, Equipment.class);
 
-        if(equipment.getVInterval()==null){
-            equipment.setVInterval(60.0);
-        }
-        if(equipment.getVPresstime()==null){
-            equipment.setVPresstime(3.0);
-        }
-        if(equipment.getVInputtime()==null){
-            equipment.setVInputtime(10.0);
-        }
-        if(equipment.getVSolenoidtime()==null){
-            equipment.setVSolenoidtime(5.0);
-        }
-        if(equipment.getVYellowstart()==null){
-            equipment.setVYellowstart(61.0);
-        }
-        if(equipment.getVRedstart()==null){
-            equipment.setVRedstart(81.0);
-        }
-
         String currentuserid = CommonUtils.getCurrentuser(request);
 
         Optional<Account> optionalAccount = accountService.findByUserid(currentuserid);
@@ -113,6 +94,59 @@ public class EquipmentRestController {
         if (!optionalEmType.isPresent() || !optionalEmCountry.isPresent() || !optionalEmLocation.isPresent()) {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E016.getCode(),ResponseErrorCode.E016.getDesc()));
         }else{
+            if(optionalEmType.get().getCode().equals("ISOL")){
+                if(equipment.getVInterval()==null){
+                    equipment.setVInterval(60.0);
+                }
+                if(equipment.getVPresstime()==null){
+                    equipment.setVPresstime(3.0);
+                }
+                if(equipment.getVInputtime()==null){
+                    equipment.setVInputtime(10.0);
+                }
+                if(equipment.getVSolenoidtime()==null){
+                    equipment.setVSolenoidtime(5.0);
+                }
+                if(equipment.getVYellowstart()==null){
+                    equipment.setVYellowstart(61.0);
+                }
+                if(equipment.getVRedstart()==null){
+                    equipment.setVRedstart(81.0);
+                }
+            }else if(optionalEmType.get().getCode().equals("ITAI")){
+                if(equipment.getVMqttInterval()==null){
+                    equipment.setVMqttInterval("3600");
+                }
+                if(equipment.getVLoraInterval()==null){
+                    equipment.setVLoraInterval("10");
+                }
+                if(equipment.getVScaleSafeInterval()==null){
+                    equipment.setVScaleSafeInterval("65");
+                }
+                if(equipment.getVShutterIdleInterval()==null){
+                    equipment.setVShutterIdleInterval("60");
+                }
+                if(equipment.getVWastePressInterval()==null){
+                    equipment.setVWastePressInterval("3");
+                }
+                if(equipment.getVWasteCapacity()==null){
+                    equipment.setVWasteCapacity("5000000");
+                }
+                if(equipment.getVOzonTime()==null){
+                    equipment.setVOzonTime("7");
+                }
+                if(equipment.getVPayPreamt()==null){
+                    equipment.setVPayPreamt("8000");
+                }
+                if(equipment.getVPayUnitPrice()==null){
+                    equipment.setVPayUnitPrice("25");
+                }
+                if(equipment.getVPayUnitWeight()==null){
+                    equipment.setVPayUnitWeight("1");
+                }
+            }else{
+
+            }
             // 장비타입/국가/지역 저장/설비상태
             equipment.setEmType(optionalEmType.get());
             equipment.setEmCountry(optionalEmCountry.get());
@@ -164,7 +198,7 @@ public class EquipmentRestController {
             equipment.setMdId(iModel);
         }
 
-        equipmentService.save(equipment);
+//        equipmentService.save(equipment);
 
         return ResponseEntity.ok(res.success());
     }
@@ -394,7 +428,7 @@ public class EquipmentRestController {
 
         if(optionalEmType.isPresent()){
             List<IModelChangeDto> ref = iModelService.findByEmTypeQuerydsl(optionalEmType.get());
-            log.info("ref : "+ref);
+//            log.info("ref : "+ref);
             if(ref.size()==0){
                 data.put("dataselect",null);
             }else{

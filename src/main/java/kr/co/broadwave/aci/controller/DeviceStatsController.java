@@ -53,10 +53,12 @@ public class DeviceStatsController {
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
         List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
         List<MasterCodeDto> modelTypes = masterCodeService.findCodeList(CodeType.C0009);
+        List<MasterCodeDto> vLanguages = masterCodeService.findCodeList(CodeType.C0017);
 
         model.addAttribute("equipdTypes", equipdTypes);
         model.addAttribute("equipdCountrys", equipdCountrys);
         model.addAttribute("modelTypes", modelTypes);
+        model.addAttribute("vLanguages", vLanguages);
 
         return "devicestats/equipmentreg";
     }
@@ -214,7 +216,6 @@ public class DeviceStatsController {
         // 장비정보
         model.addAttribute("emtype", deviceInfoListDtos.getEmType());
         model.addAttribute("mdName", deviceInfoListDtos.getMdName());
-        model.addAttribute("mdMaxUnit", deviceInfoListDtos.getMdMaximumPayload()+" "+deviceInfoListDtos.getMdUnit());
         model.addAttribute("company", deviceInfoListDtos.getCompany());
         model.addAttribute("emCountryLoaction", deviceInfoListDtos.getEmCountry()+"/"+deviceInfoListDtos.getEmLocation());
         model.addAttribute("instalDate", deviceInfoListDtos.getEmInstallDate().substring(0,4)+"년 "+deviceInfoListDtos.getEmInstallDate().substring(4,6)+"월 "+deviceInfoListDtos.getEmInstallDate().substring(6,8)+"일");

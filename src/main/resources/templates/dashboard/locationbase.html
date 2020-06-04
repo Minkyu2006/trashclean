@@ -333,7 +333,7 @@
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>';
-						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.emNumber+'</span>';
+						html += '<span id="emNumber" class="equipment__info-value">'+res.data.deviceDetailList.emNumber+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'모델타입 : '+'</span>';
@@ -342,10 +342,6 @@
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'모델명 : '+'</span>';
 						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.mdId.mdName+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'최대적재량 : '+'</span>';
-						html += '<span class="equipment__info-value">'+res.data.deviceDetailList.mdId.mdMaximumPayload+res.data.deviceDetailList.mdId.mdUnit.name+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'운영사 : '+'</span>';
@@ -362,6 +358,11 @@
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'운영일 : '+'</span>';
 						html += '<span class="equipment__info-value">'+parseInt(operationDay)+'일'+'</span>';
+						html += '</li>';
+						html += '<li class="equipment__info-item">';
+						if(res.data.deviceDetailList.emType==="iSolarbin") {
+							html += '<input type="button" class="c-button c-button--point" value="모뎀리셋" onclick="modemReset()" />';
+						}
 						html += '</li>';
 						html += '</ul>';
 						html += '</div>';
@@ -427,6 +428,40 @@
 
 						$deviceDetail.html(html);
 						timeStamp(pushValue);
+					}
+				});
+			}
+
+			// iSolarbin용 모뎀리셋버튼
+			function modemReset() {
+				// console.log("$emNumber : "+$("#emNumber"+idx).text());
+				var $emNumber = $("#emNumber").text();
+				timestamp = + new Date();
+
+				if ($emNumber === null) {
+					alertCaution("장비코드가 존재하지 않습니다.");
+					return false;
+				}
+
+				var params = {
+					emNumber:$emNumber,
+					timestamp:timestamp,
+				};
+
+				var token = $("meta[name='_csrf']").attr("content");
+				var header = $("meta[name='_csrf_header']").attr("content");
+				$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+				$.ajax({
+					url:'/api/dashboard/modemReset',
+					data : params,
+					type : 'post',
+					cache:false,
+					error:function(request){
+						ajaxErrorMsg(request);
+					},
+					success: function(){
+						alertSuccess("모뎀리셋완료");
 					}
 				});
 			}

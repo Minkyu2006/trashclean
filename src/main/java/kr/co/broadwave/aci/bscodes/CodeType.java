@@ -21,10 +21,11 @@ public enum CodeType {
     C0013("C0013", "장비기본값"),
     C0014("C0014", "시스템주소"),
     C0015("C0015", "iTainer설비상태"),
-    C0016("C0016", "iTainer우선순위");
+    C0016("C0016", "iTainer우선순위"),
+    C0017("C0017", "iTainer장비언어");
 
-    private String code;
-    private String desc;
+    private final String code;
+    private final String desc;
 
     CodeType(String code, String desc) {
         this.code = code;

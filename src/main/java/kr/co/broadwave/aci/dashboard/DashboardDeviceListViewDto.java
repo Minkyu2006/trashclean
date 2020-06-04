@@ -19,8 +19,6 @@ public class DashboardDeviceListViewDto {
     private String emNumber; // 장비 번호
     private MasterCode emType; // 장비타입
     private String mdName; // 모델명
-    private Double mdMaximumPayload; // 최대적재량
-    private MasterCode mdUnit; // 단위
     private String company; // 소속운영사
     private MasterCode emLocation; // 지역
     private MasterCode emCountry; // 국가
@@ -51,14 +49,6 @@ public class DashboardDeviceListViewDto {
 
     public String getMdName() {
         return mdName;
-    }
-
-    public Double getMdMaximumPayload() {
-        return mdMaximumPayload;
-    }
-
-    public String getMdUnit() {
-        return mdUnit.getName();
     }
 
     public String getEmSubName() {

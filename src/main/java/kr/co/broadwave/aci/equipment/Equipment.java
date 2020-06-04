@@ -120,7 +120,7 @@ public class Equipment {
     private String vScaleSafeInterval; //
 
     @Column(name="v_shutter_idle_interval")
-    private String vShutterIdleInterval; // 담당수거원이름
+    private String vShutterIdleInterval; //
 
     @Column(name="v_waste_press_interval")
     private String vWastePressInterval; //
