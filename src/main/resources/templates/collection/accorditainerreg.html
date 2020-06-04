@@ -27,10 +27,10 @@
 			$("#btnInit").on('click', function () {
 				init();
 			});
-			psZoneList(1);
+			psBaseList(1);
 			//거점조회
 			$("#btnSearch").on('click', function () {
-				psZoneList(1);
+				psBaseList(1);
 			});
 			//수거원조회
 			$("#collectionUserBtnSearch").on('click', function () {
@@ -76,8 +76,8 @@
 		function init() {
 			$("#ciType").val('AT00');
 			$("#ciPriority").val('CP01');
-			$("#psZoneCode").val('');
-			$("#psZoneName").val('');
+			$("#psBaseCode").val('');
+			$("#psBaseName").val('');
 			$("#deviceid").val('');
 			$("#vehicleNumber").val('');
 			$("#vehicleName").val('');
@@ -88,10 +88,10 @@
 		// 배치/수거 업무 등록(iTainer)
 		function ciTasksave() {
 
-			var $psZoneCode = $("#psZoneCode");
+			var $psBaseCode = $("#psBaseCode");
 			var $deviceid = $("#deviceid");
 
-			if ($psZoneCode.val().trim() === '') {
+			if ($psBaseCode.val().trim() === '') {
 				alertCaution("거점을 선택해주세요.");
 				return false;
 			}
@@ -112,8 +112,8 @@
 				ciCode : $("#ciCode").val(),
 				ciType : $("#ciType").val(),
 				ciPriority : $("#ciPriority").val(),
-				psZoneCode : $psZoneCode.val(),
-				psZoneName : $("#psZoneName").val(),
+				psBaseCode : $psBaseCode.val(),
+				psBaseName : $("#psBaseName").val(),
 				deviceid : $deviceid.val(),
 				vehicleNumber : $("#vehicleNumber").val(),
 				accountUserId : $("#accountUserId").val(),
@@ -138,13 +138,12 @@
 					}
 					alertSuccess('저장되었습니다.');
 					init();
-					callList(1);
 				}
 			});
 		}
 
 		// 거점 리스트보기
-		function psZoneList(page) {
+		function psBaseList(page) {
 
 			page = page - 1;
 			if (page < 0) page = 0;
@@ -185,7 +184,7 @@
 						pageBlock: perArea,
 						currentPage: page + 1,
 						pageTotal: totCnt,
-						clickEvent: 'psZoneList'});
+						clickEvent: 'psBaseList'});
 
 					$totalCnt.text(totCnt);
 
@@ -198,7 +197,7 @@
 					var html = '';
 					$.each(res.data.datalist, function(key, value){
 						html += '<tr >';
-						html += '<td >'+ echoNull2Blank(value.psZoneName) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.psBaseName) +'</td>';
 						html += '<td >'+ nvl(value.deviceid,"등록된 장비없음") +'</td>';
 						html += '<td ></td>';
 						html += '<td ></td>';
@@ -231,8 +230,8 @@
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
-					$("#psZoneCode").val(res.data.positionPopDto.psZoneCode);
-					$("#psZoneName").val(res.data.positionPopDto.psZoneName);
+					$("#psBaseCode").val(res.data.positionPopDto.psBaseCode);
+					$("#psBaseName").val(res.data.positionPopDto.psBaseName);
 
 					var deviceid = res.data.positionPopDto.deviceid;
 					if(deviceid===null){
@@ -748,12 +747,12 @@
 						<ul class="c-input-list c-input-list--flex">
 							<li>
 								<div class="c-text">
-									<input id="psZoneCode" type="text" class="c-text__input" readonly />
+									<input id="psBaseCode" type="text" class="c-text__input" readonly />
 								</div>
 							</li>
 							<li>
 								<div class="c-text">
-									<input id="psZoneName" type="text" class="c-text__input" readonly />
+									<input id="psBaseName" type="text" class="c-text__input" readonly />
 								</div>
 							</li>
 						</ul>

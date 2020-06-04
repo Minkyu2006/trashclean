@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @Setter
 public class PositionPopDto {
 
-    private String psZoneCode; // 거점코드
-    private String psZoneName; // 거점명칭
+    private String psBaseCode; // 거점코드
+    private String psBaseName; // 거점명칭
     private String deviceid; // 거점명칭
 
 
@@ -28,11 +28,11 @@ public class PositionPopDto {
         return deviceid;
     }
 
-    public String getPsZoneCode() {
-        return psZoneCode;
+    public String getPsBaseCode() {
+        return psBaseCode;
     }
 
-    public String getPsZoneName() {
-        return psZoneName;
+    public String getPsBaseName() {
+        return psBaseName;
     }
 }

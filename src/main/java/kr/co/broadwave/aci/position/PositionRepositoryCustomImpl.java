@@ -26,17 +26,17 @@ public class PositionRepositoryCustomImpl extends QuerydslRepositorySupport impl
 
 
     @Override
-    public Page<PositionListDto> findByPositionSearch(String psZoneCode, String psZoneName, Long psLocationId, Long psCountryId, Pageable pageable){
+    public Page<PositionListDto> findByPositionSearch(String psBaseCode, String psBaseName, Long psLocationId, Long psCountryId, Pageable pageable){
 
         QPosition position = QPosition.position;
 
         JPQLQuery<PositionListDto> query = from(position)
                 .select(Projections.constructor(PositionListDto.class,
                         position.id,
-                        position.psZoneCode,
+                        position.psBaseCode,
                         position.psCountry,
                         position.psLocation,
-                        position.psZoneName,
+                        position.psBaseName,
                         position.psPostnumber,
                         position.psAddress,
                         position.psDetailAddress,
@@ -45,11 +45,11 @@ public class PositionRepositoryCustomImpl extends QuerydslRepositorySupport impl
                 ));
 
         // 검색조건필터
-        if (psZoneCode != null && !psZoneCode.isEmpty()){
-            query.where(position.psZoneCode.likeIgnoreCase(psZoneCode.concat("%")));
+        if (psBaseCode != null && !psBaseCode.isEmpty()){
+            query.where(position.psBaseCode.likeIgnoreCase(psBaseCode.concat("%")));
         }
-        if (psZoneName != null && !psZoneName.isEmpty()){
-            query.where(position.psZoneName.likeIgnoreCase(psZoneName.concat("%")));
+        if (psBaseName != null && !psBaseName.isEmpty()){
+            query.where(position.psBaseName.likeIgnoreCase(psBaseName.concat("%")));
         }
         if (psCountryId != null ){
             query.where(position.psCountry.id.eq(psCountryId));
@@ -72,7 +72,7 @@ public class PositionRepositoryCustomImpl extends QuerydslRepositorySupport impl
         JPQLQuery<PositionPopListDto> query = from(position)
                 .select(Projections.constructor(PositionPopListDto.class,
                         position.id,
-                        position.psZoneName,
+                        position.psBaseName,
                         position.deviceid
                 ));
 

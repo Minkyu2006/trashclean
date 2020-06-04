@@ -374,11 +374,11 @@
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
-						html += '<span class="equipment__info-value">'+temp_brd+'℃'+'</span>';
+						html += '<span class="equipment__info-value">'+tem(temp_brd,"확 인 불 가")+'</span>';
 						html += '</li>';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
-						html += '<span class="equipment__info-value">'+level+'%'+'</span>';
+						html += '<span class="equipment__info-value">'+lev(level,"확 인 불 가")+'</span>';
 						html += '</li>';
 						if(res.data.deviceDetailList.emType!=="iTainer") {
 							if(batt_voltage!=="na"){

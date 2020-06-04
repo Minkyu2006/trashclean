@@ -72,7 +72,7 @@
 			$("#sch_ciType").val('');
 			$("#sch_ciPriority").val('');
 			$("#sch_ciCode").val('');
-			$("#sch_psZoneCode").val('');
+			$("#sch_psBaseCode").val('');
 			$("#sch_deviceid").val('');
 		}
 
@@ -83,10 +83,10 @@
 				return false;
 			}
 
-			var $psZoneCode = $("#psZoneCode");
+			var $psBaseCode = $("#psBaseCode");
 			var $deviceid = $("#deviceid");
 
-			if ($psZoneCode.val().trim() === '') {
+			if ($psBaseCode.val().trim() === '') {
 				alertCaution("업무를 선택해주세요.");
 				return false;
 			}
@@ -103,7 +103,7 @@
 				ciCode : $("#ciCode").val(),
 				ciType : $("#ciType").val(),
 				ciPriority : $("#ciPriority").val(),
-				psZoneCode : $psZoneCode.val(),
+				psBaseCode : $psBaseCode.val(),
 				deviceid : $deviceid.val(),
 				vehicleNumber : $("#vehicleNumber").val(),
 				accountUserId : $("#accountUserId").val(),
@@ -148,7 +148,7 @@
 				ciType : $('#sch_ciType').val(),
 				ciPriority : $('#sch_ciPriority').val(),
 				ciCode : $('#sch_ciCode').val(),
-				psZoneCode : $('#sch_psZoneCode').val(),
+				psBaseCode : $('#sch_psBaseCode').val(),
 				deviceid : $('#sch_deviceid').val()
 			};
 
@@ -190,7 +190,7 @@
 						html += '<td >' + nvl(value.ciCode, "확 인 불 가") + '</td>';
 						html += '<td >' + nvl(value.ciType, "확 인 불 가") + '</td>';
 						html += '<td >' + nvl(value.ciPriority, "확 인 불 가") + '</td>';
-						html += '<td >' + nvl(value.psZoneCode, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.psBaseCode, "확 인 불 가") + '</td>';
 						html += '<td >' + nvl(value.deviceid, "확 인 불 가") + '</td>';
 						html += '<td >' + nvl(value.vehicleId, "확 인 불 가") + '</td>';
 						html += '<td >' + nvl(value.accountId, "확 인 불 가") + '</td>';
@@ -229,8 +229,8 @@
 					$("#ciCode").val(res.data.collectionTaskInstallDtos[0].ciCode);
 					$("#ciType").val(res.data.collectionTaskInstallDtos[0].ciType);
 					$("#ciPriority").val(res.data.collectionTaskInstallDtos[0].ciPriority);
-					$("#psZoneCode").val(res.data.collectionTaskInstallDtos[0].psZoneCode);
-					$("#psZoneName").val(res.data.collectionTaskInstallDtos[0].psZoneName);
+					$("#psBaseCode").val(res.data.collectionTaskInstallDtos[0].psBaseCode);
+					$("#psBaseName").val(res.data.collectionTaskInstallDtos[0].psBaseName);
 					$("#deviceid").val(res.data.collectionTaskInstallDtos[0].deviceid);
 					$("#accountUserId").val(res.data.collectionTaskInstallDtos[0].accountuserid);
 					$("#accountName").val(res.data.collectionTaskInstallDtos[0].accountname);
@@ -692,7 +692,7 @@
 						<th>거점코드</th>
 						<td>
 							<div class="c-text">
-								<input type="text" id="sch_psZoneCode" class="c-text__input">
+								<input type="text" id="sch_psBaseCode" class="c-text__input">
 							</div>
 						</td>
 						<th>장비코드</th>
@@ -791,8 +791,8 @@
 						<th>거점</th>
 						<td colspan="3">
 							<div class="c-search-form">
-								<input type="text" id="psZoneCode" class="c-text__input" readonly="readonly">
-								<input type="text" id="psZoneName" class="c-text__input" readonly="readonly">
+								<input type="text" id="psBaseCode" class="c-text__input" readonly="readonly">
+								<input type="text" id="psBaseName" class="c-text__input" readonly="readonly">
 							</div>
 						</td>
 						<th>대상장비</th>

@@ -17,15 +17,15 @@ import lombok.*;
 public class CollectionTaskInstallCheckDto {
 
     private String ciCode; // 작업코드
-    private String psZoneCode; // 거점코드
+    private String psBaseCode; // 거점코드
     private CiStatusType ciStatus; // 거점코드
 
     public String getCiCode() {
         return ciCode;
     }
 
-    public String getPsZoneCode() {
-        return psZoneCode;
+    public String getPsBaseCode() {
+        return psBaseCode;
     }
 
     public String getCiStatus() {

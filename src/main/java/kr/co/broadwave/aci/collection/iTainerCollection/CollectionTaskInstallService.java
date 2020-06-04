@@ -31,8 +31,8 @@ public class CollectionTaskInstallService {
         return collectionTaskInstallRepository.save(collectionTaskInstall);
     }
 
-    public Page<CollectionTaskInstallListDto> findByCollectionTaskInstallSearch(AccordiType ciTypes, Long ciPriorityId, String ciCode, String psZoneCode, String deviceid, Pageable pageable) {
-        return collectionTaskInstallRepositoryCustom.findByCollectionTaskInstallSearch(ciTypes,ciPriorityId,ciCode,psZoneCode,deviceid,pageable);
+    public Page<CollectionTaskInstallListDto> findByCollectionTaskInstallSearch(AccordiType ciTypes, Long ciPriorityId, String ciCode, String psBaseCode, String deviceid, Pageable pageable) {
+        return collectionTaskInstallRepositoryCustom.findByCollectionTaskInstallSearch(ciTypes,ciPriorityId,ciCode,psBaseCode,deviceid,pageable);
     }
 
     public List<CollectionTaskInstallDto> findByCollectionTaskInstallInfo(String ciCode) {
@@ -47,8 +47,8 @@ public class CollectionTaskInstallService {
         collectionTaskInstallRepository.delete(collectionTaskInstall);
     }
 
-    public List<CollectionTaskInstallCheckDto> findByPsZoneCodeCheck(String psZoneCode) {
-        return collectionTaskInstallRepositoryCustom.findByPsZoneCodeCheck(psZoneCode);
+    public List<CollectionTaskInstallCheckDto> findByPsBaseCodeCheck(String psBaseCode) {
+        return collectionTaskInstallRepositoryCustom.findByPsBaseCodeCheck(psBaseCode);
     }
 
 }

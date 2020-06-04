@@ -190,12 +190,12 @@ public class EquipmentRestController {
 
         CodeType codeType = CodeType.valueOf("C0013");
         List<MasterCodeDto> masterCodes= masterCodeService.findCodeList(codeType);
-        Double vInterval = null;
-        Double vPresstime = null;
-        Double vInputtime = null;
-        Double vSolenoidtime = null;
-        Double vYellowstart = null;
-        Double vRedstart = null;
+        double vInterval;
+        double vPresstime;
+        double vInputtime;
+        double vSolenoidtime;
+        double vYellowstart;
+        double vRedstart;
 
         for(int i=0; i<equipmentBaseDto.size(); i++) {
             equipment.setId(equipmentBaseDto.get(i).getId());
@@ -394,11 +394,12 @@ public class EquipmentRestController {
 
         if(optionalEmType.isPresent()){
             List<IModelChangeDto> ref = iModelService.findByEmTypeQuerydsl(optionalEmType.get());
-//            log.info("ref : "+ref);
+            log.info("ref : "+ref);
             if(ref.size()==0){
                 data.put("dataselect",null);
             }else{
                 data.put("dataselect",ref);
+                data.put("mdType",ref.get(0).getMdName().substring(0,4));
             }
         }else{
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E021.getCode(), ResponseErrorCode.E021.getDesc()));

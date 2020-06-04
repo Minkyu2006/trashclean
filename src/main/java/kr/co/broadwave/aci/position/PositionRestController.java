@@ -87,7 +87,7 @@ public class PositionRestController {
         }
 
         // 장비번호 가져오기(고유값)
-        Optional<Position> optionalPosition = positionService.findByPsZoneCode(position.getPsZoneCode());
+        Optional<Position> optionalPosition = positionService.findByPsBaseCode(position.getPsBaseCode());
         //신규 및 수정여부
         if (optionalPosition.isPresent()) {
             //수정
@@ -110,8 +110,8 @@ public class PositionRestController {
     }
 
     @PostMapping("list")
-    public ResponseEntity<Map<String,Object>> positionList(@RequestParam (value="psZoneCode", defaultValue="") String psZoneCode,
-                                                       @RequestParam (value="psZoneName", defaultValue="")String psZoneName,
+    public ResponseEntity<Map<String,Object>> positionList(@RequestParam (value="psBaseCode", defaultValue="") String psBaseCode,
+                                                       @RequestParam (value="psBaseName", defaultValue="")String psBaseName,
                                                        @RequestParam (value="psCountry", defaultValue="")String psCountry,
                                                        @RequestParam (value="psLocation", defaultValue="")String psLocation,
                                                        @PageableDefault Pageable pageable){
@@ -127,7 +127,7 @@ public class PositionRestController {
             psLocationId = emLocations.map(MasterCode::getId).orElse(null);
         }
 
-        Page<PositionListDto> positionListDtos = positionService.findByPositionSearch(psZoneCode,psZoneName,psLocationId,psCountryId,pageable);
+        Page<PositionListDto> positionListDtos = positionService.findByPositionSearch(psBaseCode,psBaseName,psLocationId,psCountryId,pageable);
 
         return CommonUtils.ResponseEntityPage(positionListDtos);
     }
@@ -150,19 +150,19 @@ public class PositionRestController {
 
     // 거점 삭제
     @PostMapping("del")
-    public ResponseEntity<Map<String,Object>> del(@RequestParam(value="psZoneCode", defaultValue="") String psZoneCode){
+    public ResponseEntity<Map<String,Object>> del(@RequestParam(value="psBaseCode", defaultValue="") String psBaseCode){
         AjaxResponse res = new AjaxResponse();
 
         // 삭제할수있는 거점인지 확인
-        List<CollectionTaskInstallCheckDto> psZoneCodeCheck = collectionTaskInstallService.findByPsZoneCodeCheck(psZoneCode);
-//        log.info("psZoneCodeCheck : " + psZoneCodeCheck);
+        List<CollectionTaskInstallCheckDto> psBaseCodeCheck = collectionTaskInstallService.findByPsBaseCodeCheck(psBaseCode);
+//        log.info("psBaseCodeCheck : " + psBaseCodeCheck);
 
-        if(!psZoneCodeCheck.isEmpty()){
+        if(!psBaseCodeCheck.isEmpty()){
 //            log.info("삭제불가");
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E035.getCode(), ResponseErrorCode.E035.getDesc()));
         }else{
 //            log.info("삭제가능");
-            Optional<Position> optionalPosition = positionService.findByPsZoneCode(psZoneCode);
+            Optional<Position> optionalPosition = positionService.findByPsBaseCode(psBaseCode);
             if (!optionalPosition.isPresent()){
                 return ResponseEntity.ok(res.fail(ResponseErrorCode.E003.getCode(), ResponseErrorCode.E003.getDesc()));
             }

@@ -16,11 +16,11 @@ import lombok.*;
 @Setter
 public class PositionListDto {
     private Long id; // 고유값id
-    private String psZoneCode; // 거점코드
+    private String psBaseCode; // 거점코드
 
     private MasterCode psCountry; // 국가
     private MasterCode psLocation; // 지역
-    private String psZoneName; // 거점명칭
+    private String psBaseName; // 거점명칭
     private String psPostnumber; // 우편번호
     private String psAddress; // 주소
     private String psDetailAddress; // 상세주소
@@ -39,12 +39,12 @@ public class PositionListDto {
         return psLocation.getName();
     }
 
-    public String getPsZoneCode() {
-        return psZoneCode;
+    public String getPsBaseCode() {
+        return psBaseCode;
     }
 
-    public String getPsZoneName() {
-        return psZoneName;
+    public String getPsBaseName() {
+        return psBaseName;
     }
 
     public String getPsPostnumber() {

@@ -28,8 +28,8 @@ public class Position {
     @Column(name="ps_id")
     private Long id; // 거점관리 고유ID
 
-    @Column(unique = true,name="ps_zone_code")
-    private String psZoneCode; // 거점코드
+    @Column(unique = true,name="ps_base_code")
+    private String psBaseCode; // 거점코드
 
     @ManyToOne(targetEntity = MasterCode.class,fetch = FetchType.EAGER)
     @JoinColumn(name="ps_country")
@@ -39,8 +39,8 @@ public class Position {
     @JoinColumn(name="ps_location")
     private MasterCode psLocation; // 지역
 
-    @Column(name="ps_zone_name")
-    private String psZoneName; // 거점명칭
+    @Column(name="ps_base_name")
+    private String psBaseName; // 거점명칭
 
     @Column(name="ps_postnumber")
     private String psPostnumber; // 우편번호

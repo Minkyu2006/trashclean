@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface PositionRepositoryCustom {
 
-    Page<PositionListDto> findByPositionSearch(String psZoneCode, String psZoneName, Long psLocationId, Long psCountryId, Pageable pageable);
+    Page<PositionListDto> findByPositionSearch(String psBaseCode, String psBaseName, Long psLocationId, Long psCountryId, Pageable pageable);
 
     Page<PositionPopListDto> findByPositionPopSearch(Long psCountryId, Long psLocationId, String deviceid, Pageable pageable);
 }

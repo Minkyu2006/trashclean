@@ -17,7 +17,7 @@ import lombok.*;
 public class PositionPopListDto {
     private Long id; // 고유값id
 
-    private String psZoneName; // 거점명칭
+    private String psBaseName; // 거점명칭
     private String deviceid; // 우편번호
 
 
@@ -25,8 +25,8 @@ public class PositionPopListDto {
         return id;
     }
 
-    public String getPsZoneName() {
-        return psZoneName;
+    public String getPsBaseName() {
+        return psBaseName;
     }
 
     public String getDeviceid() {

@@ -33,7 +33,7 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
 
     @Override
     public Page<CollectionTaskInstallListDto> findByCollectionTaskInstallSearch
-            (AccordiType ciTypes, Long ciPriorityId, String ciCode, String psZoneCode, String deviceid, Pageable pageable){
+            (AccordiType ciTypes, Long ciPriorityId, String ciCode, String psBaseCode, String deviceid, Pageable pageable){
 
         QCollectionTaskInstall collectionTaskInstall = QCollectionTaskInstall.collectionTaskInstall;
         QAccount account = QAccount.account;
@@ -48,7 +48,7 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
                         collectionTaskInstall.ciCode,
                         collectionTaskInstall.ciType,
                         masterCode.name,
-                        collectionTaskInstall.psZoneCode,
+                        collectionTaskInstall.psBaseCode,
                         collectionTaskInstall.deviceid,
                         account.username,
                         vehicle.vcNumber,
@@ -65,8 +65,8 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
         if (ciCode != null && !ciCode.isEmpty()){
             query.where(collectionTaskInstall.ciCode.likeIgnoreCase(ciCode.concat("%")));
         }
-        if (psZoneCode != null && !psZoneCode.isEmpty()){
-            query.where(collectionTaskInstall.psZoneCode.likeIgnoreCase(psZoneCode.concat("%")));
+        if (psBaseCode != null && !psBaseCode.isEmpty()){
+            query.where(collectionTaskInstall.psBaseCode.likeIgnoreCase(psBaseCode.concat("%")));
         }
         if (deviceid != null && !deviceid.isEmpty()){
             query.where(collectionTaskInstall.deviceid.likeIgnoreCase(deviceid.concat("%")));
@@ -91,7 +91,7 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
 
         return queryFactory.select(Projections.constructor(CollectionTaskInstallDto.class,
                 collectionTaskInstall.ciCode,collectionTaskInstall.ciType,masterCode.code,
-                collectionTaskInstall.psZoneCode,position.psZoneName,collectionTaskInstall.deviceid,
+                collectionTaskInstall.psBaseCode,position.psBaseName,collectionTaskInstall.deviceid,
                 account.userid,account.username,vehicle.vcNumber,vehicle.vcName,
                 collectionTaskInstall.ciRemark,collectionTaskInstall.ciStatus))
                 .from(collectionTaskInstall)
@@ -104,7 +104,7 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
     }
 
     @Override
-    public List<CollectionTaskInstallCheckDto> findByPsZoneCodeCheck(String psZoneCode) {
+    public List<CollectionTaskInstallCheckDto> findByPsBaseCodeCheck(String psBaseCode) {
 
         JPAQueryFactory queryFactory = new JPAQueryFactory(this.getEntityManager());
 
@@ -112,10 +112,10 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
 
         return queryFactory.select(Projections.constructor(CollectionTaskInstallCheckDto.class,
                 collectionTaskInstall.ciCode,
-                collectionTaskInstall.psZoneCode,
+                collectionTaskInstall.psBaseCode,
                 collectionTaskInstall.ciStatus))
                 .from(collectionTaskInstall)
-                .where(collectionTaskInstall.psZoneCode.eq(psZoneCode))
+                .where(collectionTaskInstall.psBaseCode.eq(psBaseCode))
                 .fetch();
     }
 

@@ -51,8 +51,8 @@ public class CollectionTaskInstall {
     @Column(name="deviceid")
     private String deviceid; // 장비코드(iTainer)
 
-    @Column(name="ps_zone_code")
-    private String psZoneCode; // 거점코드
+    @Column(name="ps_base_code")
+    private String psBaseCode; // 거점코드
 
     @ManyToOne(targetEntity = Account.class,fetch = FetchType.LAZY)
     @JoinColumn(name="account_id")

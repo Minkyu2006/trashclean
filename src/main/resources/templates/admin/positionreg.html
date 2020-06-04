@@ -43,13 +43,13 @@
 		function reset() {
 			$("#s_psCountry").val('');
 			$("#s_psLocation").val('');
-			$("#s_psZoneCode").val('');
+			$("#s_psBaseCode").val('');
 			$("#s_psName").val('');
 		}
 
 		function init() {
-			$("#psZoneCode").val('');
-			$("#psZoneName").val('');
+			$("#psBaseCode").val('');
+			$("#psBaseName").val('');
 			$("#psPostnumber").val('');
 			$("#psAddress").val('');
 			$("#psDetailAddress").val('');
@@ -69,7 +69,7 @@
 		// 정말삭제? 여부확인
 		function positionDelCheck(){
 			// console.log("ciStatus : "+$("#ciStatus").val());
-			if ($("#psZoneCode").val().trim() === '') {
+			if ($("#psBaseCode").val().trim() === '') {
 				alertCaution("삭제하고자하는 거점을 선택하세요.");
 				return false;
 			}else{
@@ -89,7 +89,7 @@
 		function del() {
 
 			var params = {
-				psZoneCode: $("#psZoneCode").val()
+				psBaseCode: $("#psBaseCode").val()
 			};
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -119,7 +119,7 @@
 
 		function save() {
 
-			if ($("#psZoneName").val().trim() === '') {
+			if ($("#psBaseName").val().trim() === '') {
 				alertCaution("거점명칭을 작성해주세요.");
 				return false;
 			}
@@ -170,8 +170,8 @@
 			var params = {
 				psCountry:$('#s_psCountry').val(),
 				psLocation:$('#s_psLocation').val(),
-				psZoneCode:$('#s_psZoneCode').val(),
-				psZoneName:$('#s_psZoneName').val(),
+				psBaseCode:$('#s_psBaseCode').val(),
+				psBaseName:$('#s_psBaseName').val(),
 			};
 
 			$schList.empty().append('<tr ><td colspan="8" align = "center">조회 중</td></tr>');
@@ -209,8 +209,8 @@
 					var html = '';
 					$.each(res.data.datalist, function(key, value){
 						html += '<tr >';
-						html += '<td >'+ echoNull2Blank(value.psZoneCode) +'</td>';
-						html += '<td >'+ echoNull2Blank(value.psZoneName) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.psBaseCode) +'</td>';
+						html += '<td >'+ echoNull2Blank(value.psBaseName) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.psCountry)+'/'+echoNull2Blank(value.psLocation)+'</td>';
 						html += '<td >'+ echoNull2Blank(value.psPostnumber) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.psAddress)+' '+echoNull2Blank(value.psDetailAddress)+'</td>';
@@ -243,12 +243,12 @@
 					ajaxErrorMsg(request);
 				},
 				success: function (res) {
-					$("#psZoneCode").val(res.data.positionDto.psZoneCode);
+					$("#psBaseCode").val(res.data.positionDto.psBaseCode);
 					$("#psCountry").hide();
 					$("#psLocation").hide();
 					$("#psCountryView").val(res.data.positionDto.psCountry).show();
 					$("#psLocationView").val(res.data.positionDto.psLocation).show();
-					$("#psZoneName").val(res.data.positionDto.psZoneName);
+					$("#psBaseName").val(res.data.positionDto.psBaseName);
 					$("#psPostnumber").val(res.data.positionDto.psPostnumber);
 					$("#psAddress").val(res.data.positionDto.psAddress);
 					$("#psDetailAddress").val(res.data.positionDto.psDetailAddress);
@@ -492,13 +492,13 @@
 					<th>거점 코드</th>
 					<td>
 						<div class="c-text">
-						<input type="text" id="s_psZoneCode" class="c-text__input" />
+						<input type="text" id="s_psBaseCode" class="c-text__input" />
 						</div>
 					</td>
 					<th>거점 명칭</th>
 					<td>
 						<div class="c-text">
-							<input id="s_psZoneName" type="text" class="c-text__input" />
+							<input id="s_psBaseName" type="text" class="c-text__input" />
 						</div>
 					</td>
 					<td>
@@ -562,7 +562,7 @@
 					<tr>
 						<th>거점코드</th>
 						<td>
-							<div class="c-text"><input id="psZoneCode" name="psZoneCode" type="text" class="c-text__input" readonly /></div>
+							<div class="c-text"><input id="psBaseCode" name="psBaseCode" type="text" class="c-text__input" readonly /></div>
 						</td>
 						<th></th>
 						<td></td>
@@ -595,7 +595,7 @@
 						<th>거점명칭</th>
 						<td>
 							<div class="c-text">
-								<input id="psZoneName" name="psZoneName" type="text" class="c-text__input" />
+								<input id="psBaseName" name="psBaseName" type="text" class="c-text__input" />
 							</div>
 						</td>
 					</tr>

@@ -522,6 +522,17 @@
 					if(res.data.dataselect===null){
 						html += '<option value ="">' + nullstr + '</option>';
 					}else{
+						console.log("mdType : "+res.data.mdType)
+						if(res.data.mdType==="iSol"){
+							$("#iSolarbinOption").show();
+							$("#iTainerOption").hide();
+						}else if(res.data.mdType==="iTai"){
+							$("#iSolarbinOption").hide();
+							$("#iTainerOption").show();
+						}else{
+							$("#iSolarbinOption").hide();
+							$("#iTainerOption").hide();
+						}
 						$.each(res.data.dataselect, function (key, value) {
 							html += '<option value ="'+echoNull2Blank(value.id)+'">'+echoNull2Blank(value.mdName)+"-"+echoNull2Blank(value.mdType)+'</option>';
 						});
@@ -813,6 +824,19 @@
 						</td>
 					</tr>
 					<tr>
+						<th>AWS보안인증서코드</th>
+						<td>
+							<div class="c-text">
+								<input type="text" name="emCertificationNumber" id="emCertificationNumber" class="c-text__input" />
+							</div>
+						</td>
+						<th></th>
+						<td></td>
+					</tr>
+				</tbody>
+
+				<tbody id="iSolarbinOption" style="display: none">
+					<tr>
 						<th>센서 데이터 주기적 송신시간(단위:분)</th>
 						<td>
 							<div class="c-text">
@@ -854,16 +878,9 @@
 							</div>
 						</td>
 					</tr>
-					<tr>
-						<th>AWS보안인증서코드</th>
-						<td>
-							<div class="c-text">
-								<input type="text" name="emCertificationNumber" id="emCertificationNumber" class="c-text__input" />
-							</div>
-						</td>
-						<th></th>
-						<td></td>
-					</tr>
+				</tbody>
+
+				<tbody id="iTainerOption" style="display: none">
 					<tr>
 						<th>v_manager</th>
 						<td>
@@ -976,6 +993,7 @@
 						</td>
 					</tr>
 				</tbody>
+
 			</table>
 			</form>
 			<div class="c-function">

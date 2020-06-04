@@ -68,7 +68,7 @@ public class CollectionTaskInstallRestController {
     public ResponseEntity<Map<String,Object>> iSolarbinReg(@RequestParam(value="ciCode", defaultValue="") String ciCode,
                                                            @RequestParam(value="ciType", defaultValue="") String ciType,
                                                            @RequestParam(value="ciPriority", defaultValue="") String ciPriority,
-                                                           @RequestParam(value="psZoneCode", defaultValue="") String psZoneCode,
+                                                           @RequestParam(value="psBaseCode", defaultValue="") String psBaseCode,
                                                            @RequestParam(value="deviceid", defaultValue="") String deviceid,
                                                            @RequestParam(value="vehicleNumber", defaultValue="") String vehicleNumber,
                                                            @RequestParam(value="accountUserId", defaultValue="") String accountUserId,
@@ -98,7 +98,7 @@ public class CollectionTaskInstallRestController {
         // 유저아이디/배차차량 가져오기
         Optional<Account> optionalUserId = accountService.findByUserid(accountUserId);
         Optional<Vehicle> optionalVehicleId = vehicleService.findByVcNumber(vehicleNumber);
-        Optional<Position> optionalPosition = positionService.findByPsZoneCode(psZoneCode);
+        Optional<Position> optionalPosition = positionService.findByPsBaseCode(psBaseCode);
 
         AccordiType ciTypes;
 
@@ -121,7 +121,7 @@ public class CollectionTaskInstallRestController {
                     collectionTaskInstall.setCiType(ciTypes);
                     collectionTaskInstall.setCiPriority(ciPrioritys.get());
                     collectionTaskInstall.setPsId(optionalPosition.get());
-                    collectionTaskInstall.setPsZoneCode(psZoneCode);
+                    collectionTaskInstall.setPsBaseCode(psBaseCode);
                     collectionTaskInstall.setDeviceid(deviceid);
                     collectionTaskInstall.setAccountId(optionalUserId.get());
                     collectionTaskInstall.setVehicleId(optionalVehicleId.get());
@@ -156,7 +156,7 @@ public class CollectionTaskInstallRestController {
                     collectionTaskInstall.setCiType(ciTypes);
                     collectionTaskInstall.setCiPriority(ciPrioritys.get());
                     collectionTaskInstall.setPsId(optionalPosition.get());
-                    collectionTaskInstall.setPsZoneCode(psZoneCode);
+                    collectionTaskInstall.setPsBaseCode(psBaseCode);
                     collectionTaskInstall.setDeviceid(deviceid);
                     collectionTaskInstall.setAccountId(optionalUserId.get());
                     collectionTaskInstall.setVehicleId(optionalVehicleId.get());
@@ -196,7 +196,7 @@ public class CollectionTaskInstallRestController {
                         collectionTaskInstall.setCiType(ciTypes);
                         collectionTaskInstall.setCiPriority(ciPrioritys.get());
                         collectionTaskInstall.setPsId(optionalPosition.get());
-                        collectionTaskInstall.setPsZoneCode(psZoneCode);
+                        collectionTaskInstall.setPsBaseCode(psBaseCode);
                         collectionTaskInstall.setDeviceid(deviceid);
                         collectionTaskInstall.setAccountId(optionalUserId.get());
                         collectionTaskInstall.setVehicleId(optionalVehicleId.get());
@@ -223,7 +223,7 @@ public class CollectionTaskInstallRestController {
     public ResponseEntity<Map<String,Object>> list(@RequestParam (value="ciType", defaultValue="") String ciType,
                                                    @RequestParam (value="ciPriority", defaultValue="") String  ciPriority,
                                                    @RequestParam (value="ciCode", defaultValue="")String ciCode,
-                                                   @RequestParam (value="psZoneCode", defaultValue="")String psZoneCode,
+                                                   @RequestParam (value="psBaseCode", defaultValue="")String psBaseCode,
                                                    @RequestParam (value="deviceid", defaultValue="")String deviceid,
                                                    @PageableDefault Pageable pageable){
 
@@ -239,7 +239,7 @@ public class CollectionTaskInstallRestController {
         }
 
         Page<CollectionTaskInstallListDto> collectionTaskInstallListDtos =
-                collectionTaskInstallService.findByCollectionTaskInstallSearch(ciTypes,ciPriorityId,ciCode,psZoneCode,deviceid,pageable);
+                collectionTaskInstallService.findByCollectionTaskInstallSearch(ciTypes,ciPriorityId,ciCode,psBaseCode,deviceid,pageable);
 //        log.info("collectionTaskInstallListDtos : "+collectionTaskInstallListDtos.getContent());
 
         return CommonUtils.ResponseEntityPage(collectionTaskInstallListDtos);

@@ -18,5 +18,5 @@ public interface CollectionTaskInstallRepositoryCustom {
 
     List<CollectionTaskInstallDto> findByCollectionTaskInstallInfo(String ciCode);
 
-    List<CollectionTaskInstallCheckDto> findByPsZoneCodeCheck(String psZoneCode);
+    List<CollectionTaskInstallCheckDto> findByPsBaseCodeCheck(String psBaseCode);
 }

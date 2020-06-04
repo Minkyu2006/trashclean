@@ -38,26 +38,26 @@ public class PositionService {
 
     public Position save(Position position) {
         //장비코드 가공하기
-        if (position.getPsZoneCode() == null || position.getPsZoneCode().isEmpty()){
+        if (position.getPsBaseCode() == null || position.getPsBaseCode().isEmpty()){
 
             String psCountryCode = position.getPsCountry().getCode();
             String psLocationCode = position.getPsLocation().getCode();
 
-            String zoneCode = keyGenerateService.keyGenerate("bs_position",'Z'+psCountryCode+psLocationCode+'-',position.getModify_id());
+            String baseCode = keyGenerateService.keyGenerate("bs_position",'Z'+psCountryCode+psLocationCode+'-',position.getModify_id());
 
             //고유 장비번호 저장이름 바꾸기 : 장비타입-국가-지역-순번
-            position.setPsZoneCode(zoneCode);
+            position.setPsBaseCode(baseCode);
         }
 
         return positionRepository.save(position);
     }
 
-    public Optional<Position> findByPsZoneCode(String psZoneCode) {
-        return positionRepository.findByPsZoneCode(psZoneCode);
+    public Optional<Position> findByPsBaseCode(String psBaseCode) {
+        return positionRepository.findByPsBaseCode(psBaseCode);
     }
 
-    public Page<PositionListDto> findByPositionSearch(String psZoneCode, String psZoneName, Long psLocationId, Long psCountryId, Pageable pageable) {
-        return positionRepositoryCustom.findByPositionSearch(psZoneCode,psZoneName,psLocationId,psCountryId,pageable);
+    public Page<PositionListDto> findByPositionSearch(String psBaseCode, String psBaseName, Long psLocationId, Long psCountryId, Pageable pageable) {
+        return positionRepositoryCustom.findByPositionSearch(psBaseCode,psBaseName,psLocationId,psCountryId,pageable);
     }
 
     public PositionDto findByPositionInfo(Long id) {

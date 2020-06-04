@@ -15,18 +15,18 @@ import lombok.*;
 @Setter
 public class PositionMapperDto {
 
-    private String psZoneCode; // 거점코드
+    private String psBaseCode; // 거점코드
     private Long psCountry; // 국가
     private Long psLocation; // 지역
-    private String psZoneName; // 거점명칭
+    private String psBaseName; // 거점명칭
     private String psPostnumber; // 우편번호
     private String psAddress; // 주소
     private String psDetailAddress; // 상세주소
     private Double psLatitude; // GPS위도
     private Double psLongitude; // GPS경도
 
-    public String getPsZoneCode() {
-        return psZoneCode;
+    public String getPsBaseCode() {
+        return psBaseCode;
     }
 
     public Long getPsCountry() {
@@ -37,8 +37,8 @@ public class PositionMapperDto {
         return psLocation;
     }
 
-    public String getPsZoneName() {
-        return psZoneName;
+    public String getPsBaseName() {
+        return psBaseName;
     }
 
     public String getPsPostnumber() {
