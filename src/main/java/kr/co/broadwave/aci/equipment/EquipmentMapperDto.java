@@ -33,7 +33,7 @@ public class EquipmentMapperDto {
     private String operator;
     private String emInstallDate;
     private Double emLatitude; // 위도
-    private Double emHardness; // 경도
+    private Double emLongitude; // 경도
 
     private Double vInterval; // 센서 데이터 주기적 송신시간
     private Double vPresstime; // 압축 정지시간
@@ -45,9 +45,8 @@ public class EquipmentMapperDto {
     private String emCertificationNumber; // 인증번호
 
     private String vManager; // 담당수거원이름
-
     private String vManagerCall; // 담당수거원번호
-    private String vManagerId; // 아이테이너장비 아이디
+    private String vManagerid; // 아이테이너장비 아이디
     private String vManagerPass; // 아이테이너장비 비번
     private String vLanguage; // 사용언어
     private String vMqttInterval; // mqtt 데이터전송주기(단위,초)
@@ -70,8 +69,8 @@ public class EquipmentMapperDto {
         return vManagerCall;
     }
 
-    public String getvManagerId() {
-        return vManagerId;
+    public String getvManagerid() {
+        return vManagerid;
     }
 
     public String getvManagerPass() {
@@ -158,8 +157,8 @@ public class EquipmentMapperDto {
         return emLatitude;
     }
 
-    public Double getEmHardness() {
-        return emHardness;
+    public Double getEmLongitude() {
+        return emLongitude;
     }
 
     public String getEmSubName() {

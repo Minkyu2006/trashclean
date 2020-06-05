@@ -38,7 +38,7 @@ public class EquipmentDto {
     private String emInstallDate; // 설치일자
     private String emSubName; // 장비약칭
     private Double emLatitude; // 위도
-    private Double emHardness; // 경도
+    private Double emLongitude; // 경도
 
     private Double vInterval; // 센서 데이터 주기적 송신시간
     private Double vPresstime; // 압축 정지시간
@@ -46,6 +46,87 @@ public class EquipmentDto {
     private Double vSolenoidtime; // 솔레노이드 열림 시간
     private Double vYellowstart; // 쓰레기량에 따른 노랑색등의 경계값
     private Double vRedstart; // 쓰레기량에 따른 적색등의 경계값
+
+    private String vManager; // 담당수거원이름
+    private String vManagerCall; // 담당수거원번호
+    private String vManagerid; // 아이테이너장비 아이디
+    private String vManagerPass; // 아이테이너장비 비번
+    private String vLanguage; // 사용언어
+    private String vMqttInterval; // mqtt 데이터전송주기(단위,초)
+    private String vLoraInterval; // lora 데이터 전송주기(단위,초)
+    private String vScaleSafeInterval; //
+    private String vShutterIdleInterval; //
+    private String vWastePressInterval; //
+    private String vWasteCapacity; //
+    private String vOzonTime; //
+    private String vPayPreamt; //
+    private String vPayUnitPrice; // 기준가격
+    private String vPayUnitWeight; // 기준무게
+    private String vPayMethod; //
+
+    public String getvManager() {
+        return vManager;
+    }
+
+    public String getvManagerCall() {
+        return vManagerCall;
+    }
+
+    public String getvManagerid() {
+        return vManagerid;
+    }
+
+    public String getvManagerPass() {
+        return vManagerPass;
+    }
+
+    public String getvLanguage() {
+        return vLanguage;
+    }
+
+    public String getvMqttInterval() {
+        return vMqttInterval;
+    }
+
+    public String getvLoraInterval() {
+        return vLoraInterval;
+    }
+
+    public String getvScaleSafeInterval() {
+        return vScaleSafeInterval;
+    }
+
+    public String getvShutterIdleInterval() {
+        return vShutterIdleInterval;
+    }
+
+    public String getvWastePressInterval() {
+        return vWastePressInterval;
+    }
+
+    public String getvWasteCapacity() {
+        return vWasteCapacity;
+    }
+
+    public String getvOzonTime() {
+        return vOzonTime;
+    }
+
+    public String getvPayPreamt() {
+        return vPayPreamt;
+    }
+
+    public String getvPayUnitPrice() {
+        return vPayUnitPrice;
+    }
+
+    public String getvPayUnitWeight() {
+        return vPayUnitWeight;
+    }
+
+    public String getvPayMethod() {
+        return vPayMethod;
+    }
 
     private String emCertificationNumber; // AWS보안인증서코드
 
@@ -81,8 +162,8 @@ public class EquipmentDto {
         return emLatitude;
     }
 
-    public Double getEmHardness() {
-        return emHardness;
+    public Double getEmLongitude() {
+        return emLongitude;
     }
 
     public Long getId() {

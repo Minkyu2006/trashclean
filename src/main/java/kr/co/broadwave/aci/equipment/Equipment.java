@@ -74,8 +74,8 @@ public class Equipment {
     @Column(name="em_latitude")
     private Double emLatitude; // 위도
 
-    @Column(name="em_hardness")
-    private Double emHardness; // 경도
+    @Column(name="em_longitude")
+    private Double emLongitude; // 경도
 
     @Column(name="v_interval")
     private Double vInterval; // 센서 데이터 주기적 송신시간
@@ -102,7 +102,7 @@ public class Equipment {
     private String vManagerCall; // 담당수거원번호
 
     @Column(name="v_manager_id")
-    private String vManagerId; // 아이테이너장비 아이디
+    private String vManagerid; // 아이테이너장비 아이디
 
     @Column(name="v_manager_pass")
     private String vManagerPass; // 아이테이너장비 비번

@@ -292,7 +292,7 @@ public class CollectionTaskRestController {
                     equipment.setEmSubName(optionalEquipment.get().getEmSubName());
                     equipment.setMdId(optionalEquipment.get().getMdId());
                     equipment.setEmLatitude(optionalEquipment.get().getEmLatitude());
-                    equipment.setEmHardness(optionalEquipment.get().getEmHardness());
+                    equipment.setEmLongitude(optionalEquipment.get().getEmLongitude());
                     equipment.setInsert_id(optionalEquipment.get().getInsert_id());
                     equipment.setInsertDateTime(optionalEquipment.get().getInsertDateTime());
                     equipment.setModify_id(optionalEquipment.get().getModify_id());
@@ -342,7 +342,7 @@ public class CollectionTaskRestController {
                     equipment.setEmSubName(optionalEquipment.get().getEmSubName());
                     equipment.setMdId(optionalEquipment.get().getMdId());
                     equipment.setEmLatitude(optionalEquipment.get().getEmLatitude());
-                    equipment.setEmHardness(optionalEquipment.get().getEmHardness());
+                    equipment.setEmLongitude(optionalEquipment.get().getEmLongitude());
                     equipment.setInsert_id(optionalEquipment.get().getInsert_id());
                     equipment.setInsertDateTime(optionalEquipment.get().getInsertDateTime());
                     equipment.setModify_id(optionalEquipment.get().getModify_id());
@@ -608,7 +608,7 @@ public class CollectionTaskRestController {
                     equipment.setEmSubName(optionalEquipment.get().getEmSubName());
                     equipment.setMdId(optionalEquipment.get().getMdId());
                     equipment.setEmLatitude(optionalEquipment.get().getEmLatitude());
-                    equipment.setEmHardness(optionalEquipment.get().getEmHardness());
+                    equipment.setEmLongitude(optionalEquipment.get().getEmLongitude());
                     equipment.setInsert_id(optionalEquipment.get().getInsert_id());
                     equipment.setInsertDateTime(optionalEquipment.get().getInsertDateTime());
                     equipment.setModify_id(optionalEquipment.get().getModify_id());

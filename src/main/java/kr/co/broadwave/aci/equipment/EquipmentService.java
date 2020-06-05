@@ -60,14 +60,16 @@ public class EquipmentService {
             equipment.setEmNumber(emNumber);
         }
 
-        String p1 = Double.toString(equipment.getVInterval());
-        String p2 = Double.toString(equipment.getVPresstime());
-        String p3 = Double.toString(equipment.getVInputtime());
-        String p4 = Double.toString(equipment.getVSolenoidtime());
-        String p5 = Double.toString(equipment.getVYellowstart());
-        String p6 = Double.toString(equipment.getVRedstart());
+        if(equipment.getEmType().getCode().equals("ISOL")) {
+            String p1 = Double.toString(equipment.getVInterval());
+            String p2 = Double.toString(equipment.getVPresstime());
+            String p3 = Double.toString(equipment.getVInputtime());
+            String p4 = Double.toString(equipment.getVSolenoidtime());
+            String p5 = Double.toString(equipment.getVYellowstart());
+            String p6 = Double.toString(equipment.getVRedstart());
 
-        aciawsIoTDeviceService.setDeviceBaseSetting(equipment.getEmNumber(),p1,p2,p3,p4,p5,p6);
+            aciawsIoTDeviceService.setDeviceBaseSetting(equipment.getEmNumber(),p1,p2,p3,p4,p5,p6);
+        }
 
         return equipmentRepository.save(equipment);
     }

@@ -114,39 +114,43 @@ public class EquipmentRestController {
                     equipment.setVRedstart(81.0);
                 }
             }else if(optionalEmType.get().getCode().equals("ITAI")){
-                if(equipment.getVMqttInterval()==null){
+                if(equipment.getVMqttInterval().equals("")){
                     equipment.setVMqttInterval("3600");
                 }
-                if(equipment.getVLoraInterval()==null){
+                if(equipment.getVLoraInterval().equals("")){
                     equipment.setVLoraInterval("10");
                 }
-                if(equipment.getVScaleSafeInterval()==null){
+                if(equipment.getVScaleSafeInterval().equals("")){
                     equipment.setVScaleSafeInterval("65");
                 }
-                if(equipment.getVShutterIdleInterval()==null){
+                if(equipment.getVShutterIdleInterval().equals("")){
                     equipment.setVShutterIdleInterval("60");
                 }
-                if(equipment.getVWastePressInterval()==null){
+                if(equipment.getVWastePressInterval().equals("")){
                     equipment.setVWastePressInterval("3");
                 }
-                if(equipment.getVWasteCapacity()==null){
+                if(equipment.getVWasteCapacity().equals("")){
                     equipment.setVWasteCapacity("5000000");
                 }
-                if(equipment.getVOzonTime()==null){
+                if(equipment.getVOzonTime().equals("")){
                     equipment.setVOzonTime("7");
                 }
-                if(equipment.getVPayPreamt()==null){
+                if(equipment.getVPayPreamt().equals("")){
                     equipment.setVPayPreamt("8000");
                 }
-                if(equipment.getVPayUnitPrice()==null){
+                if(equipment.getVPayUnitPrice().equals("")){
                     equipment.setVPayUnitPrice("25");
                 }
-                if(equipment.getVPayUnitWeight()==null){
+                if(equipment.getVPayUnitWeight().equals("")){
                     equipment.setVPayUnitWeight("1");
                 }
+                if(equipment.getVPayMethod().equals("")){
+                    equipment.setVPayMethod("");
+                }
             }else{
-
+                return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(),ResponseErrorCode.E004.getDesc()));
             }
+
             // 장비타입/국가/지역 저장/설비상태
             equipment.setEmType(optionalEmType.get());
             equipment.setEmCountry(optionalEmCountry.get());
@@ -156,6 +160,7 @@ public class EquipmentRestController {
             }else{
                 equipment.setEmState(state.get());
             }
+
         }
 
         // 장비번호 가져오기(고유값)
@@ -198,7 +203,7 @@ public class EquipmentRestController {
             equipment.setMdId(iModel);
         }
 
-//        equipmentService.save(equipment);
+        equipmentService.save(equipment);
 
         return ResponseEntity.ok(res.success());
     }
@@ -246,7 +251,7 @@ public class EquipmentRestController {
             equipment.setEmSubName(equipmentBaseDto.get(i).getEmSubName());
             equipment.setMdId(equipmentBaseDto.get(i).getMdId());
             equipment.setEmLatitude(equipmentBaseDto.get(i).getEmLatitude());
-            equipment.setEmHardness(equipmentBaseDto.get(i).getEmHardness());
+            equipment.setEmLongitude(equipmentBaseDto.get(i).getEmLongitude());
             equipment.setEmCertificationNumber(equipmentBaseDto.get(i).getEmCertificationNumber());
 
             if (equipment.getVInterval() == null) {
@@ -312,7 +317,7 @@ public class EquipmentRestController {
 
         List<EquipmentBaseListDto> equipmentListDtos =
                 equipmentService.findByBaseEquipmentSearch(emNumber,emLocationId,emType,emCountryId,pageable);
-        log.info("equipmentListDtos : "+equipmentListDtos);
+//        log.info("equipmentListDtos : "+equipmentListDtos);
 
         data.put("equipmentListDtos",equipmentListDtos);
         res.addResponse("data",data);

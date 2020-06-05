@@ -39,7 +39,7 @@ public class EquipmentBaseDto {
     private String emSubName; // 장비약칭
 
     private Double emLatitude; // 위도
-    private Double emHardness; // 경도
+    private Double emLongitude; // 경도
 
     private LocalDateTime insertDateTime;
     private String insert_id;
@@ -106,8 +106,8 @@ public class EquipmentBaseDto {
         return emLatitude;
     }
 
-    public Double getEmHardness() {
-        return emHardness;
+    public Double getEmLongitude() {
+        return emLongitude;
     }
 
     public LocalDateTime getInsertDateTime() {

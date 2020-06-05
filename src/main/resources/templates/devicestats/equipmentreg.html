@@ -53,6 +53,7 @@
 			$("#devcieCheckBtn").on('click',function(){
 				devcieCheck();
 			});
+
 		});
 
 		function devcieCheck() {
@@ -112,7 +113,7 @@
 			$("#emInstallDate").val('');
 			$("#emSubName").val('');
 			$("#emLatitude").val('');
-			$("#emHardness").val('');
+			$("#emLongitude").val('');
 			$("#vInterval").val('');
 			$("#vPresstime").val('');
 			$("#vInputtime").val('');
@@ -128,6 +129,28 @@
 			$("#emLocation").show();
 
 			$("#devcieCheckBtn").hide();
+
+			$("#vManager").val('');
+			$("#vManagerCall").val('');
+			$("#vManagerid").val('');
+			$("#vManagerPass").val('');
+			$("#vLanguage").val('ko');
+			$("#vMqttInterval").val('');
+			$("#vLoraInterval").val('');
+			$("#vScaleSafeInterval").val('');
+			$("#vShutterIdleInterval").val('');
+			$("#vWastePressInterval").val('');
+			$("#vWasteCapacity").val('');
+			$("#vOzonTime").val('');
+			$("#vPayPreamt").val('');
+			$("#vPayUnitPrice").val('');
+			$("#vPayUnitWeight").val('');
+			$("#vPayMethod").val('');
+
+			$('#check01').attr("checked", false);
+			$('#check02').attr("checked", false);
+			$('#check03').attr("checked", false);
+			$('#check04').attr("checked", false);
 
 			ModelChange(null);
 		}
@@ -147,6 +170,21 @@
 				alertCaution("소속 운영사를 선택해주세요.");
 				return false;
 			}
+
+			var listsArr = [];
+			if ($("#check01").is(":checked") === true) {
+				listsArr.push("fr");
+			}
+			if ($("#check02" ).is(":checked") === true) {
+				listsArr.push("cc");
+			}
+			if ($("#check03").is(":checked") === true) {
+				listsArr.push("tm");
+			}
+			if ($("#check04").is(":checked") === true) {
+				listsArr.push("mb");
+			}
+			$("#vPayMethod").val(listsArr.join());
 
 			var $form = $('form[name="equreg"]');
 
@@ -332,7 +370,7 @@
 					$("#operator").val(res.data.equipment.company.csOperator);
 					$("#emSubName").val(res.data.equipment.emSubName);
 					$("#emLatitude").val(res.data.equipment.emLatitude);
-					$("#emHardness").val(res.data.equipment.emHardness);
+					$("#emLongitude").val(res.data.equipment.emLongitude);
 					$("#vInterval").val(res.data.equipment.vInterval);
 					$("#vPresstime").val(res.data.equipment.vPresstime);
 					$("#vInputtime").val(res.data.equipment.vInputtime);
@@ -340,6 +378,50 @@
 					$("#vYellowstart").val(res.data.equipment.vYellowstart);
 					$("#vRedstart").val(res.data.equipment.vRedstart);
 					$("#emCertificationNumber").val(res.data.equipment.emCertificationNumber);
+
+					$("#vManager").val(res.data.equipment.vManager);
+					$("#vManagerCall").val(res.data.equipment.vManagerCall);
+					$("#vManagerid").val(res.data.equipment.vManagerid);
+					$("#vManagerPass").val(res.data.equipment.vManagerPass);
+					var $vLanguageCode = $("#vLanguageCode");
+					$vLanguageCode.val(res.data.equipment.vLanguage);
+					$("#vLanguage").val($vLanguageCode.val());
+					$("#vMqttInterval").val(res.data.equipment.vMqttInterval);
+					$("#vLoraInterval").val(res.data.equipment.vLoraInterval);
+					$("#vScaleSafeInterval").val(res.data.equipment.vScaleSafeInterval);
+					$("#vShutterIdleInterval").val(res.data.equipment.vShutterIdleInterval);
+					$("#vWastePressInterval").val(res.data.equipment.vWastePressInterval);
+					$("#vWasteCapacity").val(res.data.equipment.vWasteCapacity);
+					$("#vOzonTime").val(res.data.equipment.vOzonTime);
+					$("#vPayPreamt").val(res.data.equipment.vPayPreamt);
+					$("#vPayUnitPrice").val(res.data.equipment.vPayUnitPrice);
+					$("#vPayUnitWeight").val(res.data.equipment.vPayUnitWeight);
+
+					// console.log("emType : "+res.data.equipment.emType);
+					if(res.data.equipment.emType==="iTainer"){
+						var method = res.data.equipment.vPayMethod;
+						// console.log("method : "+method);
+						if(method.match("fr")){
+							$('#check01').prop("checked", true);
+						}else{
+							$('#check01').prop("checked", false);
+						}
+						if(method.match("cc")){
+							$('#check02').prop("checked", true);
+						}else{
+							$('#check02').prop("checked", false);
+						}
+						if(method.match("tm")){
+							$('#check03').prop("checked", true);
+						}else{
+							$('#check03').prop("checked", false);
+						}
+						if(method.match("mb")){
+							$('#check04').prop("checked", true);
+						}else{
+							$('#check04').prop("checked", false);
+						}
+					}
 
 					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
 					var install = res.data.equipment.emInstallDate;
@@ -821,7 +903,7 @@
 						<th>경도</th>
 						<td>
 							<div class="c-text">
-								<input type="text" name="emHardness" id="emHardness" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+								<input type="text" name="emLongitude" id="emLongitude" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 							</div>
 						</td>
 					</tr>
@@ -890,13 +972,13 @@
 						</td>
 						<th>담당자 번호</th>
 						<td>
-							<div class="c-text"><input id="vManagerCall" name="vManagerCall" type="text" class="c-text__input" /></div>
+							<div class="c-text"><input id="vManagerCall" name="vManagerCall" type="text" class="c-text__input" placeholder="'-'를 빼고 입력하시오." onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" /></div>
 						</td>
 					</tr>
 					<tr>
 						<th>장비ID</th>
 						<td>
-							<div class="c-text"><input id="vManagerId" name="vManagerId" type="text" class="c-text__input" /></div>
+							<div class="c-text"><input id="vManagerid" name="vManagerid" type="text" class="c-text__input" /></div>
 						</td>
 						<th>장비PW</th>
 						<td>
@@ -907,6 +989,7 @@
 						<th>장비언어</th>
 						<td>
 							<div class="c-select">
+								<input type="hidden" id="vLanguageCode" />
 								<select name="vLanguage" id="vLanguage" class="c-select__input">
 									<option th:each ="vLanguage : ${vLanguages}"
 											th:value="${vLanguage.code}"
@@ -971,22 +1054,22 @@
 					<tr>
 						<th>v_pay_method(미정)</th>
 						<td colspan="3">
-							<div class="c-text"><input type="text" id="vPayMethod" name="vPayMethod" class="c-text__input" /></div>
+							<div class="c-text"><input type="hidden" id="vPayMethod" name="vPayMethod" class="c-text__input" /></div>
 							<ul class="c-input-list">
 								<li>
-									<input type="checkbox" name="checks" id="check01" />
+									<input type="checkbox" name="checks" id="check01" value="fr" />
 									<label for="check01">FR</label>
 								</li>
 								<li>
-									<input type="checkbox" name="checks" id="check02" />
+									<input type="checkbox" name="checks" id="check02" value="cc" />
 									<label for="check02">CC</label>
 								</li>
 								<li>
-									<input type="checkbox" name="checks" id="check03" />
+									<input type="checkbox" name="checks" id="check03" value="tm" />
 									<label for="check03">TM</label>
 								</li>
 								<li>
-									<input type="checkbox" name="checks" id="check04" />
+									<input type="checkbox" name="checks" id="check04" value="mb" />
 									<label for="check04">MB</label>
 								</li>
 							</ul>

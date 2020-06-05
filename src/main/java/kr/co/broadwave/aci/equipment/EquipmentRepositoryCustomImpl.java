@@ -150,7 +150,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                 equipment.emAwsNumber, equipment.emEmbeddedNumber,
                 equipment.company,equipment.mdId,
                 equipment.emInstallDate,equipment.emSubName,
-                equipment.emLatitude,equipment.emHardness,
+                equipment.emLatitude,equipment.emLongitude,
                 equipment.insertDateTime,equipment.insert_id,
                 equipment.emCertificationNumber))
                 .from(equipment)
