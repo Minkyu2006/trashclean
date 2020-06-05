@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/default}">
+<head>
+	<script type="text/javascript">
+
+		function oauth2() {
+			console.log("API실행 시작")
+			$.ajax({
+				url:'/testpage/oauth',
+				type : 'post',
+				cache:false,
+				error:function(request){
+					console.log("API실행 실패")
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					console.log("API실행 성공")
+				}
+			});
+		}
+
+	</script>
+</head>
+
+<div layout:fragment="content" class="contents-body">
+	<section class="section">
+		<article class="article article--1080">
+			<h2 class="article__heading">OAuth2 테스트</h2>
+			<div class="c-function">
+				<div class="c-function__item">
+					<button onclick="oauth2()" class="c-button c-button--point">API실행</button>
+				</div>
+			</div>
+		</article>
+	</section>
+</div>
+</html>

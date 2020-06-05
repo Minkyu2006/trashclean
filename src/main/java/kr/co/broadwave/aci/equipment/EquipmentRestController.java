@@ -142,7 +142,7 @@ public class EquipmentRestController {
                     equipment.setVPayUnitPrice("25");
                 }
                 if(equipment.getVPayUnitWeight().equals("")){
-                    equipment.setVPayUnitWeight("1");
+                    equipment.setVPayUnitWeight("100");
                 }
                 if(equipment.getVPayMethod().equals("")){
                     equipment.setVPayMethod("");

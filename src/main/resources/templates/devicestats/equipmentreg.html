@@ -150,7 +150,7 @@
 			$('#check01').attr("checked", false);
 			$('#check02').attr("checked", false);
 			$('#check03').attr("checked", false);
-			$('#check04').attr("checked", false);
+			// $('#check04').attr("checked", false);
 
 			ModelChange(null);
 		}
@@ -181,9 +181,9 @@
 			if ($("#check03").is(":checked") === true) {
 				listsArr.push("tm");
 			}
-			if ($("#check04").is(":checked") === true) {
-				listsArr.push("mb");
-			}
+			// if ($("#check04").is(":checked") === true) {
+			// 	listsArr.push("mb");
+			// }
 			$("#vPayMethod").val(listsArr.join());
 
 			var $form = $('form[name="equreg"]');
@@ -416,11 +416,11 @@
 						}else{
 							$('#check03').prop("checked", false);
 						}
-						if(method.match("mb")){
-							$('#check04').prop("checked", true);
-						}else{
-							$('#check04').prop("checked", false);
-						}
+						// if(method.match("mb")){
+						// 	$('#check04').prop("checked", true);
+						// }else{
+						// 	$('#check04').prop("checked", false);
+						// }
 					}
 
 					// 날짜뷰 DATABASE(YYYYMMDD) -> VIEW(YYYY-MM-DD)
@@ -1068,7 +1068,7 @@
 									<input type="checkbox" name="checks" id="check03" value="tm" />
 									<label for="check03">TM</label>
 								</li>
-								<li>
+								<li style="display: none">
 									<input type="checkbox" name="checks" id="check04" value="mb" />
 									<label for="check04">MB</label>
 								</li>

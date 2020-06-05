@@ -228,5 +228,23 @@ public class TestpageController {
         return ResponseEntity.ok(res.success());
     }
 
+    @RequestMapping("oauth2test")
+    public String oauth2test(){
+        return "testpage/oauth2test";
+    }
+
+    // Oauth2 API실행
+    @PostMapping("oauth")
+    public ResponseEntity<Map<String,Object>> oauth() {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        
+
+
+        data.put("data", "");
+        res.addResponse("data", data);
+        return ResponseEntity.ok(res.success());
+    }
 
 }
