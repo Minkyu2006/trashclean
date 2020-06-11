@@ -103,118 +103,66 @@
                         var red_arr = []; // reg
                         var tvoc_arr = []; // TVOC
 
-                        var temp = "0";
-                        var humi = "0";
-                        var co2 = "0";
-                        var eco2 = "0";
-                        var green = "0";
-                        var ir = "0";
-                        var nh = "0";
-                        var red = "0";
-                        var tv = "0";
-
                         $.each(res.data.datarow, function (key, value) {
                             beaconTimeStamp_arr.push(parseInt(value.inserttimestamp));
 
-                            if (value.tmp === "na") {
-                                if(temp!=="na"){
-                                    temperature_arr.push(temp);
-                                }else{
-                                    temperature_arr.push("0");
-                                }
+                            if (isNaN(Number(value.tmp))===true) {
+                                temperature_arr.push("0");
                             } else {
-                                temperature_arr.push(value.tmp);
+                                temperature_arr.push(value.tmp)
                             }
-                            temp = value.tmp
 
-                            if (value.hum === "na") {
-                                if(hum!=="na"){
-                                    humidity_arr.push(hum);
-                                }else{
-                                    humidity_arr.push("0");
-                                }
+                            if (isNaN(Number(value.hum))===true) {
+                                humidity_arr.push("0");
                             } else {
                                 humidity_arr.push(value.hum);
                             }
-                            humi = value.hum
 
-                            if (value.co2 === "na") {
-                                if(co2!=="na"){
-                                    co2_arr.push(co2);
-                                }else{
-                                    co2_arr.push("0");
-                                }
+                            // console.log("Number(value.co2) : "+Number(value.co2));
+                            // console.log("value.co2 : "+value.co2);
+                            if (isNaN(Number(value.co2))===true) {
+                                co2_arr.push("0");
+                                // console.log("영넣어");
                             } else {
                                 co2_arr.push(value.co2);
+                                // console.log("값넣어");
                             }
-                            co2 = value.co2
 
-                            if (value.eco2 === "na") {
-                                if(eco2!=="na"){
-                                    eco2_arr.push(eco2);
-                                }else{
-                                    eco2_arr.push("0");
-                                }
+                            if (isNaN(Number(value.eco2))===true) {
+                                eco2_arr.push("0");
                             } else {
                                 eco2_arr.push(value.eco2);
                             }
-                            eco2 = value.eco2
 
-                            if (value.green === "na") {
-                                if(green!=="na"){
-                                    green_arr.push(green);
-                                }else{
-                                    green_arr.push("0");
-                                }
+                            if (isNaN(Number(value.green))===true) {
+                                green_arr.push("0");
                             } else {
                                 green_arr.push(value.green);
                             }
-                            green = value.green
 
-                            if (value.ir === "na") {
-                                if(ir!=="na"){
-                                    ir_arr.push(ir);
-                                }else{
-                                    ir_arr.push("0");
-                                }
+                            if (isNaN(Number(value.ir))===true) {
+                                ir_arr.push("0");
                             } else {
                                 ir_arr.push(value.ir);
                             }
-                            ir = value.ir
 
-                            if (value.nh3 === "na") {
-                                if(nh!=="na"){
-                                    nh3_arr.push(nh);
-                                }else{
-                                    nh3_arr.push("0");
-                                }
+                            if (isNaN(Number(value.nh3))===true) {
+                                nh3_arr.push("0");
                             } else {
                                 nh3_arr.push(value.nh3);
                             }
-                            nh = value.nh3
 
-                            if (value.red === "na") {
-                                if(red!=="na"){
-                                    red_arr.push(red);
-                                }else{
-                                    red_arr.push("0");
-                                }
+                            if (isNaN(Number(value.red))===true) {
+                                red_arr.push("0");
                             } else {
                                 red_arr.push(value.red);
                             }
-                            red = value.red
 
-                            if (value.tvoc === "na") {
-                                if(tv!=="na"){
-                                    tvoc_arr.push(tv);
-                                }else{
-                                    tvoc_arr.push("0");
-                                }
+                            if (isNaN(Number(value.tvoc))===true) {
+                                tvoc_arr.push("0");
                             } else {
                                 tvoc_arr.push(value.tvoc);
                             }
-                            tv = value.tvoc
-
                         })
 
                         var ctx1 = document.getElementById('ncdTemphum').getContext("2d");

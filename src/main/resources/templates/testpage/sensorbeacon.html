@@ -88,57 +88,32 @@
                         var humidity_arr = []; // 습도
                         var tvoc_arr = []; // TVOC
 
-                        var tem = "0";
-                        var hum = "0";
-                        var nh = "0";
-                        var tv = "0";
-
                         $.each(res.data.datarow1, function (key, value) {
                             beaconTimeStamp_arr.push(parseInt(value.inserttimestamp));
 
-                            if (value.temperature === "na") {
-                                if(tem!=="na"){
-                                    temperature_arr.push(tem);
-                                }else{
-                                    temperature_arr.push("0");
-                                }
+                            if (isNaN(Number(value.temperature))===true) {
+                                temperature_arr.push("0");
                             } else {
                                 temperature_arr.push(value.temperature);
                             }
-                            tem = value.temperature
 
-                            if (value.humidity === "na") {
-                                if(hum!=="na"){
-                                    humidity_arr.push(hum);
-                                }else{
-                                    humidity_arr.push("0");
-                                }
+                            if (isNaN(Number(value.humidity))===true) {
+                                humidity_arr.push("0");
                             } else {
                                 humidity_arr.push(value.humidity);
                             }
-                            hum = value.humidity
 
-                            if (value.nh3 === "na") {
-                                if(nh!=="na"){
-                                    nh3_arr.push(nh);
-                                }else{
-                                    nh3_arr.push("0");
-                                }
+                            if (isNaN(Number(value.nh3))===true) {
+                                nh3_arr.push("0");
                             } else {
                                 nh3_arr.push(value.nh3);
                             }
-                            nh = value.nh3
 
-                            if (value.tvoc === "na") {
-                                if(tv!=="na"){
-                                    tvoc_arr.push(tv);
-                                }else{
-                                    tvoc_arr.push("0");
-                                }
+                            if (isNaN(Number(value.tvoc))===true) {
+                                tvoc_arr.push("0");
                             } else {
                                 tvoc_arr.push(value.tvoc);
                             }
-                            tv = value.tvoc
 
                         })
 
@@ -424,7 +399,7 @@
 <div layout:fragment="content" class="contents-body">
     <section class="section">
         <article class="article">
-            <h2 class="article__heading">비콘센서 데이터 그래프</h2>
+            <h2 class="article__heading">beacon센서 데이터 그래프</h2>
             <div class="l-float-heading">
                 <div class="l-float-heading--left">
                     <h4 class="article__head">대상시간<span class="article__head-caption"> ex)2020.6.10 15:00 부터 2020.06.10 16:00 까지면 -> from.2020061015 - to.2020061016</span></h4>
