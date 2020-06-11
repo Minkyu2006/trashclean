@@ -174,21 +174,21 @@
                         var ctx7 = document.getElementById('ncdred').getContext("2d");
                         var ctx8 = document.getElementById('ncdTvoc').getContext("2d");
 
-                        var humMaxVal = Math.max.apply(0, humidity_arr)+15;
+                        var humMaxVal = Math.max.apply(0, humidity_arr);
                         var humMinVal = Math.min.apply(0, humidity_arr);
                         var co2MaxVal = Math.max.apply(0, co2_arr);
                         var co2MinVal = Math.min.apply(0, co2_arr);
-                        var eco2MaxVal = Math.max.apply(0, eco2_arr)+200;
+                        var eco2MaxVal = Math.max.apply(0, eco2_arr);
                         var eco2MinVal = Math.min.apply(0, eco2_arr);
-                        var greenMaxVal = Math.max.apply(0, green_arr)+1000;
+                        var greenMaxVal = Math.max.apply(0, green_arr);
                         var greenMinVal = Math.min.apply(0, green_arr);
-                        var irMaxVal = Math.max.apply(0, ir_arr)+10000;
+                        var irMaxVal = Math.max.apply(0, ir_arr);
                         var irMinVal = Math.min.apply(0, ir_arr);
-                        var nh3MaxVal = Math.max.apply(0, nh3_arr)+15;
+                        var nh3MaxVal = Math.max.apply(0, nh3_arr);
                         var nh3MinVal = Math.min.apply(0, nh3_arr);
-                        var redMaxVal = Math.max.apply(0, red_arr)+10000;
+                        var redMaxVal = Math.max.apply(0, red_arr);
                         var redMinVal = Math.min.apply(0, red_arr);
-                        var tvocMaxVal = Math.max.apply(0, tvoc_arr)+200;
+                        var tvocMaxVal = Math.max.apply(0, tvoc_arr);
                         var tvocMinVal = Math.min.apply(0, tvoc_arr);
 
                         // 온도최대값,최소값 계산(y축그래프)
