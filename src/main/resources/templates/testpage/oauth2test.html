@@ -2,13 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate ="~{layout/default}">
+
 <head>
 	<script type="text/javascript">
 
 		function oauth2() {
 			console.log("API실행 시작")
+			var url = "/testpage/oauth";
+			var action = "http://openlaye/test"
 			$.ajax({
-				url:'/testpage/oauth',
+				action : action,
+				url : url,
 				type : 'post',
 				cache:false,
 				error:function(request){
@@ -30,13 +34,41 @@
 <div layout:fragment="content" class="contents-body">
 	<section class="section">
 		<article class="article article--1080">
-			<h2 class="article__heading">OAuth2 테스트</h2>
+			<h2 class="article__heading">구글 OAuth2 테스트</h2>
 			<div class="c-function">
-				<div class="c-function__item">
-					<button onclick="oauth2()" class="c-button c-button--point">API실행</button>
-				</div>
+<!--				<div class="c-function__item">-->
+<!--					<button onclick="oauth2()" class="c-button c-button&#45;&#45;point">API실행</button>-->
+<!--				</div>-->
+
+				<a href="https://accounts.google.com/o/oauth2/v2/auth?
+						scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar.readonly
+						&access_type=offline
+						&include_granted_scopes=true
+						&state=state_parameter_passthrough_value
+						&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2
+						&response_type=code
+						&client_id=473917193653-nlpkiighg77nvsi2k6uh4m9s4r53ln76.apps.googleusercontent.com">
+					구글 API Oauth2.0 code받기
+				</a>
 			</div>
 		</article>
 	</section>
+	<br>
+	<section class="section">
+		<article class="article article--1080">
+			<h2 class="article__heading">삼성 OAuth2 테스트</h2>
+			<div class="c-function">
+				<a href="https://api.smartthings.com/oauth/authorize?
+						client_id=92c02679-855c-42b0-b972-1b2e940e1f3d
+						&response_type=code
+						&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2
+						&scope=r:devices:*&scope=r:devices:$">
+					삼성 API Oauth2.0 code받기
+				</a>
+			</div>
+		</article>
+	</section>
+
 </div>
+
 </html>

@@ -91,7 +91,7 @@ public class CollectionTaskInstallRepositoryCustomImpl extends QuerydslRepositor
 
         return queryFactory.select(Projections.constructor(CollectionTaskInstallDto.class,
                 collectionTaskInstall.ciCode,collectionTaskInstall.ciType,masterCode.code,
-                collectionTaskInstall.psBaseCode,position.psBaseName,collectionTaskInstall.deviceid,
+                collectionTaskInstall.psBaseCode,collectionTaskInstall.deviceid,
                 account.userid,account.username,vehicle.vcNumber,vehicle.vcName,
                 collectionTaskInstall.ciRemark,collectionTaskInstall.ciStatus))
                 .from(collectionTaskInstall)

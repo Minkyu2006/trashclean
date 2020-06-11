@@ -19,7 +19,30 @@
             }else{
                 $("#default_wrap").addClass('wrap nav--small');
             }
-
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth()+1;
+            var day = today.getDate();
+            var hours = today.getHours();
+            var hours2 = today.getHours()-1;
+            if(month < 10){
+                month = "0"+month;
+            }
+            if(day < 10){
+                day = "0"+day;
+            }
+            if(hours < 10){
+                hours = "0"+hours;
+            }
+            if(hours2 < 10){
+                hours2 = "0"+hours2;
+            }
+            var fromValue = year+month+day+hours2;
+            var toValue = year+month+day+hours;
+            // console.log("fromValue : "+fromValue);
+            // console.log("toValue : "+toValue);
+            $("#s_from").val(fromValue);
+            $("#s_to").val(toValue);
             $("#btnSearch").on('click',function(){
                 myChart1.destroy();
                 myChart2.destroy();
@@ -41,7 +64,8 @@
             $("div[name=beaconChartLoading]").css('display','block');
 
             var params = {
-                hour : $("#s_hour").val()
+                fromVal : $("#s_from").val(),
+                toVal : $("#s_to").val()
             };
 
             var token = $("meta[name='_csrf']").attr("content");
@@ -203,21 +227,21 @@
                         var ctx8 = document.getElementById('ncdTvoc').getContext("2d");
 
                         var humMaxVal = Math.max.apply(0, humidity_arr)+15;
-                        var humMinVal = 0;
-                        var co2MaxVal = Math.max.apply(0, co2_arr)+100;
-                        var co2MinVal = 0;
+                        var humMinVal = Math.min.apply(0, humidity_arr);
+                        var co2MaxVal = Math.max.apply(0, co2_arr);
+                        var co2MinVal = Math.min.apply(0, co2_arr);
                         var eco2MaxVal = Math.max.apply(0, eco2_arr)+200;
-                        var eco2MinVal = 0;
+                        var eco2MinVal = Math.min.apply(0, eco2_arr);
                         var greenMaxVal = Math.max.apply(0, green_arr)+1000;
-                        var greenMinVal = 0;
+                        var greenMinVal = Math.min.apply(0, green_arr);
                         var irMaxVal = Math.max.apply(0, ir_arr)+10000;
-                        var irMinVal = 0;
+                        var irMinVal = Math.min.apply(0, ir_arr);
                         var nh3MaxVal = Math.max.apply(0, nh3_arr)+15;
-                        var nh3MinVal = 0;
+                        var nh3MinVal = Math.min.apply(0, nh3_arr);
                         var redMaxVal = Math.max.apply(0, red_arr)+10000;
-                        var redMinVal = 0;
+                        var redMinVal = Math.min.apply(0, red_arr);
                         var tvocMaxVal = Math.max.apply(0, tvoc_arr)+200;
-                        var tvocMinVal = 0;
+                        var tvocMinVal = Math.min.apply(0, tvoc_arr);
 
                         // 온도최대값,최소값 계산(y축그래프)
                         var temp_brd_Max = Math.max.apply(0, temperature_arr); // 온도최대값
@@ -795,17 +819,30 @@
     <section class="section">
         <article class="article">
             <h2 class="article__heading">ncd센서 데이터 그래프</h2>
+            <div class="l-float-heading">
+                <div class="l-float-heading--left">
+                    <h4 class="article__head">대상시간<span class="article__head-caption"> ex)2020.6.10 15:00 부터 2020.06.10 16:00 까지면 -> from.2020061015 - to.2020061016</span></h4>
+                </div>
+            </div>
             <table class="c-table">
                 <colgroup>
+                    <col style="width: 80px;" />
+                    <col />
                     <col style="width: 80px;" />
                     <col />
                     <col style="width: 62px;" />
                 </colgroup>
                 <tr>
-                    <th>시간검색</th>
+                    <th>from.</th>
                     <td>
                         <div class="c-text">
-                            <input type="text" id="s_hour" class="c-text__input" value="24" />
+                            <input type="text" id="s_from" class="c-text__input" />
+                        </div>
+                    </td>
+                    <th>to.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="s_to" class="c-text__input" />
                         </div>
                     </td>
                     <td>

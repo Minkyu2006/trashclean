@@ -5,12 +5,17 @@ import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.files.FileUploadDto;
 import kr.co.broadwave.aci.files.FileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestOperations;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -191,12 +196,13 @@ public class TestpageController {
 
     // ncd센서데이터가져오기
     @PostMapping("ncdData")
-    public ResponseEntity<Map<String,Object>> ncdData(@RequestParam(value="hour", defaultValue="") String hour) {
+    public ResponseEntity<Map<String,Object>> ncdData(@RequestParam(value="fromVal", defaultValue="") String fromVal,
+                                                      @RequestParam(value="toVal", defaultValue="") String toVal) {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
-
-//        System.out.println("hour : "+hour);
-        HashMap<String, Object> resData = aciawsLambdaService.getDeviceNcd(hour);
+        String timeVal = fromVal+"-"+toVal;
+        System.out.println("timeVal : "+timeVal);
+        HashMap<String, Object> resData = aciawsLambdaService.getDeviceNcd(timeVal);
         System.out.println("resData : "+resData);
 
         data.put("statusCode", resData.get("statusCode"));
@@ -213,12 +219,13 @@ public class TestpageController {
 
     // beacon센서데이터가져오기
     @PostMapping("beacon")
-    public ResponseEntity<Map<String,Object>> beacon(@RequestParam(value="hour", defaultValue="") String hour) {
+    public ResponseEntity<Map<String,Object>> beacon(@RequestParam(value="fromVal", defaultValue="") String fromVal,
+                                                     @RequestParam(value="toVal", defaultValue="") String toVal) {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
-
-//        System.out.println("hour : "+hour);
-        HashMap<String, Object> resData = aciawsLambdaService.getBeacon(hour);
+        String timeVal = fromVal+"-"+toVal;
+//        System.out.println("timeVal : "+timeVal);
+        HashMap<String, Object> resData = aciawsLambdaService.getBeacon(timeVal);
 //        System.out.println("resData : "+resData);
 
         data.put("statusCode", resData.get("statusCode"));
@@ -233,14 +240,19 @@ public class TestpageController {
         return "testpage/oauth2test";
     }
 
+    @RequestMapping("oauth2test2")
+    public String oauth2test2(){
+        return "testpage/oauth2test2";
+    }
+
     // Oauth2 API실행
     @PostMapping("oauth")
     public ResponseEntity<Map<String,Object>> oauth() {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
-        
-
+//        RestOperations restOperations;
+//        InputStream inputStream = new ByteArrayInputStream(restOperations.getForObject(URI.create())})
 
         data.put("data", "");
         res.addResponse("data", data);

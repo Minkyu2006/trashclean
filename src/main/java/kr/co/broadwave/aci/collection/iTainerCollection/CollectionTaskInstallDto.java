@@ -24,7 +24,6 @@ public class CollectionTaskInstallDto {
     private String ciPriority; // 우선순위(보통/긴급) - 마스터코드등록관리
 
     private String psBaseCode; // 거점코드
-    private String psBaseName; // 거점명
 
     private String deviceid; // 장비코드(iTainer)
 
@@ -56,10 +55,6 @@ public class CollectionTaskInstallDto {
 
     public String getPsBaseCode() {
         return psBaseCode;
-    }
-
-    public String getPsBaseName() {
-        return psBaseName;
     }
 
     public String getDeviceid() {

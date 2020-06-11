@@ -263,8 +263,8 @@ public class ACIAWSLambdaService {
     }
 
     //ncd센서 데이터가져오기
-    public HashMap getDeviceNcd(String hour){
-        System.out.println("hour : "+hour);
+    public HashMap getDeviceNcd(String timeVal){
+//        System.out.println("timeVal : "+timeVal);
 
         final String url = ACIAWSAPIBASEURL + "/api/v1/beacon/lora/{id}" ;
 
@@ -279,7 +279,7 @@ public class ACIAWSLambdaService {
 
         //params
         Map<String, String> params = new HashMap<>();
-        params.put("id", hour);
+        params.put("id", timeVal);
 
         URI uri = UriComponentsBuilder
                 .fromUriString(url)
@@ -297,8 +297,8 @@ public class ACIAWSLambdaService {
     }
 
     //beacon센서 데이터가져오기
-    public HashMap getBeacon(String hour){
-        System.out.println("hour : "+hour);
+    public HashMap getBeacon(String timeVal){
+//        System.out.println("timeVal : "+timeVal);
 
         final String url = ACIAWSAPIBASEURL + "/api/v1/beacon/office/{id}" ;
 
@@ -313,7 +313,7 @@ public class ACIAWSLambdaService {
 
         //params
         Map<String, String> params = new HashMap<>();
-        params.put("id", hour);
+        params.put("id", timeVal);
 
         URI uri = UriComponentsBuilder
                 .fromUriString(url)

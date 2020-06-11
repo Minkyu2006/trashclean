@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate ="~{layout/default}">
+
+<head>
+	<script type="text/javascript">
+
+	</script>
+</head>
+
+<div layout:fragment="content" class="contents-body">
+	<section class="section">
+		<article class="article article--1080">
+			<h2 class="article__heading">구글 OAuth2 테스트</h2>
+			<div class="c-function">
+				<a href="/testpage/oauth2test">code받기 페이지</a>
+				<form action="https://www.googleapis.com/oauth2/v4/token" method="post" enctype="application/x-www-form-urlencoded">
+					code : <input style="width: 80%" type="text" name="code"><br>
+					client_id : <input style="width: 80%"type="text" name="client_id" value="473917193653-nlpkiighg77nvsi2k6uh4m9s4r53ln76.apps.googleusercontent.com"><br>
+					client_secret : <input style="width: 80%" type="text" name="client_secret" value="bblWNUg2z9w5oUo71v0DNLNu"><br>
+					redirect_uri : <input style="width: 80%" type="text" name="redirect_uri" value="http://localhost:5000/testpage/oauth2test2"><br>
+					grant_type : <input style="width: 80%" type="text" name="grant_type" value="authorization_code"><br>
+					<input type="submit" value="구글 Access token 받기">
+				</form>
+			</div>
+		</article>
+	</section>
+
+	<section class="section">
+		<article class="article article--1080">
+			<h2 class="article__heading">삼성 OAuth2 테스트</h2>
+			<div class="c-function">
+				<a href="/testpage/oauth2test">code받기 페이지</a>
+<!--				<form action="https://api.smartthings.com/v1/oauth/token" method="post" enctype="application/x-www-form-urlencoded">-->
+				<form action="https://api.smartthings.com/v1/oauth/token" method="post">
+					code : <input style="width: 80%" type="text" name="code"><br>
+					client_id : <input style="width: 80%" type="text" name="client_id" value="d767d829-c91a-408d-8db8-c2cc846dbe1e"><br>
+					redirect_uri : <input style="width: 80%" type="text" name="redirect_uri" value="http://localhost:5000/testpage/oauth2test2"><br>
+					grant_type : <input style="width: 80%" type="text" name="grant_type" value="authorization_code"><br>
+					<input type="submit" value="삼성 Access token 받기">
+				</form>
+
+<div style="display: none">
+curl -X POST “https://api.smartthings.com/v1/oauth/token” \
+-u gkhtls2006@broadwave.co.kr:brian951159! \
+-H “Content-Type: application/x-www-form-urlencoded”
+-d ‘grant_type=authorization_code&client_id=YOUR-CLIENT-ID&code=YOUR-AUTH-CODE&redirect_uri=YOUR-REDIRECT-URI’
+
+curl -X POST "https://api.smartthings.com/oauth/token?grant_type=authorization_code?client_id=d767d829-c91a-408d-8db8-c2cc846dbe1e?code=tYqbVN?redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2" \
+-u gkhtls2006@broadwave.co.kr:brian951159! \
+-H 'Content-Type: application/x-www-form-urlencoded'
+
+curl -X POST "https://api.smartthings.com/oauth/token?grant_type=authorization_code,client_id=d767d829-c91a-408d-8db8-c2cc846dbe1e,code=tYqbVN,redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2"
+-H "Content-Type: application/x-www-form-urlencoded"
+
+curl -X POST https://api.smartthings.com/v1/oauth/token \
+-u 'gkhtls2006@broadwave.co.kr:brian951159!' \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d '{"grant_type":"authorization_code","client_id":"d767d829-c91a-408d-8db8-c2cc846dbe1e","code":"tYqbVN","redirect_uri":,"http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2"}' \
+
+curl -X POST https://api.smartthings.com/v1/oauth/token \
+-u gkhtls2006@broadwave.co.kr:brian951159! \
+-H 'Content-Type: application/x-www-form-urlencoded' \
+-d 'grant_type=authorization_code \
+-d client_id=d767d829-c91a-408d-8db8-c2cc846dbe1e \
+-d code=tYqbVN \
+-d redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2
+
+curl -X “POST https://api.smartthings.com/v1/oauth/token” \
+-H “Content-Type: application/x-www-form-urlencoded” \
+-d 'grant_type=authorization_code' \
+-d 'client_id=d767d829-c91a-408d-8db8-c2cc846dbe1e' \
+-d 'code=tYqbVN' \
+-d 'redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2'
+
+curl -X POST https://api.smartthings.com/v1/oauth/token \
+-u gkhtls2006@broadwave.co.kr:brian951159! \
+-H "Content-Type: application / x-www-form-urlencoded"
+-d grant_type=authorization_code \
+-d client_id=d767d829-c91a-408d-8db8-c2cc846dbe1e \
+-d code=ZoAUXw \
+-d redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2
+
+curl -X POST https://api.smartthings.com/v1/oauth/token \
+-u 'gkhtls2006@broadwave.co.kr' \
+-d 'grant_type=authorization_code -d client_id=d767d829-c91a-408d-8db8-c2cc846dbe1e -d code=vN16bO -d redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2'
+
+	317955fa-5c20-43b9-9b1e-4afb848c9a0d
+
+
+curl -X POST https://api.smartthings.com/v1/oauth/token \
+-u 'gkhtls2006@broadwave.co.kr' \
+-d 'client_id=92c02679-855c-42b0-b972-1b2e940e1f3d -d code=3E0rvO -d redirect_uri=http://localhost:5000/testpage/oauth2test2'
+
+
+</div>
+
+			</div>
+		</article>
+	</section>
+
+</div>
+
+</html>
