@@ -75,10 +75,12 @@ curl -X “POST https://api.smartthings.com/v1/oauth/token” \
 -d 'redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2'
 
 curl -X POST https://api.smartthings.com/v1/oauth/token \
+-u gkhtls2006@broadwave.co.kr \
 -d grant_type=authorization_code \
 -d client_id=d767d829-c91a-408d-8db8-c2cc846dbe1e \
--d code=pmJaXb \
--d redirect_uri=http://localhost:5000/testpage/oauth2test2
+-d client_secret=317955fa-5c20-43b9-9b1e-4afb848c9a0d \
+-d code=87Kfhl \
+-d redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2
 
 317955fa-5c20-43b9-9b1e-4afb848c9a0d
 </div>
