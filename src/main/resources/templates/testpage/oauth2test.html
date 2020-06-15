@@ -59,7 +59,7 @@
 			<h2 class="article__heading">삼성 OAuth2 테스트</h2>
 			<div class="c-function">
 				<a href="https://api.smartthings.com/oauth/authorize?
-						client_id=92c02679-855c-42b0-b972-1b2e940e1f3d
+						client_id=bdc977c2-2be4-4bc9-9740-f185d7edfe74
 						&response_type=code
 						&redirect_uri=http%3A%2F%2Flocalhost%3A5000%2Ftestpage%2Foauth2test2">
 					삼성 API Oauth2.0 code받기
@@ -67,6 +67,19 @@
 			</div>
 		</article>
 	</section>
+
+	<section class="section">
+		<article class="article article--1080">
+			<h2 class="article__heading">삼성 OAuth2 테스트</h2>
+			<div class="c-function">
+				<form action="http://localhost:5000/testpage/oauth2test2" method="post">
+					code : <input style="width: 80%" type="text" name="code"><br>
+					<input type="submit" value="삼성 oauth 권한 받기">
+				</form>
+			</div>
+		</article>
+	</section>
+
 
 </div>
 
