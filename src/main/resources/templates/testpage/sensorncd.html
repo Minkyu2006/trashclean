@@ -44,6 +44,10 @@
             $("#s_from").val(fromValue);
             $("#s_to").val(toValue);
 
+            $("#btnReset").on('click',function(){
+                reset();
+            });
+
             $('[name=btnSearch]').click(function(){
                 myChart1.destroy();
                 // myChart2.destroy();
@@ -59,6 +63,16 @@
             beaconData();
 
         });
+
+        // 조건초기화
+        function reset() {
+            $("#tvoc_min").val('');
+            $("#tvoc_max").val('');
+            $("#nh3_min").val('');
+            $("#nh3_max").val('');
+            $("#red_min").val('');
+            $("#red_max").val('');
+        }
 
         //한글을 지우는 함수
         function delHangle(evt){
@@ -985,6 +999,7 @@
                 <div class="l-float-heading--left">
                     <h4 class="article__head">대상시간<span class="article__head-caption"> ex)2020.6.10 15:00 부터 2020.06.10 16:00 까지면 -> from.2020061015 - to.2020061016</span></h4>
                 </div>
+                <div class="l-float-heading--right"><button class="c-button c-button--small" id="btnReset">최소값/최대값 클리어</button></div>
             </div>
             <table class="c-table">
                 <colgroup>
