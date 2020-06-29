@@ -5,7 +5,7 @@
 <head>
     <script>
         var myChart1;
-        // var myChart2;
+        var myChart2;
         // var myChart3;
         // var myChart4;
         // var myChart5;
@@ -50,7 +50,7 @@
 
             $('[name=btnSearch]').click(function(){
                 myChart1.destroy();
-                // myChart2.destroy();
+                myChart2.destroy();
                 // myChart3.destroy();
                 // myChart4.destroy();
                 // myChart5.destroy();
@@ -66,6 +66,8 @@
 
         // 조건초기화
         function reset() {
+            $("#co2_min").val('');
+            $("#co2_max").val('');
             $("#tvoc_min").val('');
             $("#tvoc_max").val('');
             $("#nh3_min").val('');
@@ -145,7 +147,7 @@
                         var beaconTimeStamp_arr = []; //타임스탬프
                         var temperature_arr = []; // 온도
                         var humidity_arr = []; // 습도
-                        // var co2_arr = []; // co2
+                        var co2_arr = []; // co2
                         // var eco2_arr = []; // eco2
                         // var green_arr = []; // green
                         // var ir_arr = []; // ir
@@ -157,6 +159,8 @@
                         // var irVal = '0';
                         // var greenVal = '0';
 
+                        var $co2_max = $("#co2_max");
+                        var $co2_min = $("#co2_min");
                         var $nh3_max = $("#nh3_max");
                         var $nh3_min = $("#nh3_min");
                         var $red_max = $("#red_max");
@@ -179,19 +183,27 @@
                                 humidity_arr.push(value.hum);
                             }
 
-                            // console.log("Number(value.co2) : "+Number(value.co2));
-                            // console.log("value.co2 : "+value.co2);
-                            // if (isNaN(Number(value.co2))===true) {
-                            //     co2_arr.push("0");
-                            //     // console.log("영넣어");
-                            // } else {
-                            //     if(value.co2>0){
-                            //         co2_arr.push("0");
-                            //     }else{
-                            //         co2_arr.push(value.co2);
-                            //     }
-                            //     // console.log("값넣어");
-                            // }
+                            if (isNaN(Number(value.co2))===true) {
+                                co2_arr.push("0");
+                            } else {
+                                if($co2_max.val()!==""){
+                                    if(value.nh3 > Number($co2_max.val())){
+                                        co2_arr.push($co2_max.val());
+                                    }else{
+                                        if(value.co2>0){
+                                            co2_arr.push(value.co2);
+                                        }else{
+                                            co2_arr.push("0");
+                                        }
+                                    }
+                                }else{
+                                    if(value.co2>0){
+                                        co2_arr.push(value.co2);
+                                    }else{
+                                        co2_arr.push("0");
+                                    }
+                                }
+                            }
 
                             // if (isNaN(Number(value.eco2))===true) {
                             //     eco2_arr.push("0");
@@ -281,7 +293,7 @@
                         })
 
                         var ctx1 = document.getElementById('ncdTemphum').getContext("2d");
-                        // var ctx2 = document.getElementById('ncdco2').getContext("2d");
+                        var ctx2 = document.getElementById('ncdco2').getContext("2d");
                         // var ctx3 = document.getElementById('ncdeco2').getContext("2d");
                         // var ctx4 = document.getElementById('ncdgreen').getContext("2d");
                         // var ctx5 = document.getElementById('ncdir').getContext("2d");
@@ -291,8 +303,7 @@
 
                         var humMaxVal = Math.max.apply(0, humidity_arr);
                         var humMinVal = Math.min.apply(0, humidity_arr);
-                        // var co2MaxVal = Math.max.apply(0, co2_arr);
-                        // var co2MinVal = Math.min.apply(0, co2_arr);
+
                         // var eco2MaxVal = Math.max.apply(0, eco2_arr);
                         // var eco2MinVal = Math.min.apply(0, eco2_arr);
                         // var greenMaxVal = Math.max.apply(0, green_arr);
@@ -300,12 +311,29 @@
                         // var irMaxVal = Math.max.apply(0, ir_arr);
                         // var irMinVal = Math.min.apply(0, ir_arr);
 
+                        var co2MaxVal;
+                        var co2MinVal;
                         var nh3MaxVal;
                         var nh3MinVal;
                         var redMaxVal;
                         var redMinVal;
                         var tvocMaxVal;
                         var tvocMinVal;
+
+                        if($nh3_max.val()===""){
+                            var co2MaxVal_ = Math.max.apply(0, co2_arr);
+                            co2MaxVal = Number((co2MaxVal_).toFixed(0));
+                            $co2_max.val(co2MaxVal);
+                        }else{
+                            co2MaxVal = Number($co2_max.val());
+                        }
+                        if($co2_min.val()===""){
+                            var co2MinVal_ = Math.min.apply(0, co2_arr);
+                            co2MinVal = Number((co2MinVal_).toFixed(0));
+                            $co2_min.val(co2MinVal);
+                        }else{
+                            co2MinVal = Number($co2_min.val());
+                        }
 
                         if($nh3_max.val()===""){
                             var nh3MaxVal_ = Math.max.apply(0, nh3_arr);
@@ -472,77 +500,79 @@
                             }
                         });
 
-                        // var chartData2 = {
-                        //     labels: beaconTimeStamp_arr,
-                        //     datasets: [{
-                        //         type: 'line',
-                        //         label: 'CO2',
-                        //         yAxisID: 'x',
-                        //         backgroundColor: "#0af1f1",
-                        //         borderWidth: 2,
-                        //         borderColor: "#0af1f1",
-                        //         data: co2_arr,
-                        //         fill: false
-                        //     }]
-                        // };
-                        // myChart2 = new Chart(ctx2, {
-                        //     data: chartData2,
-                        //     options: {
-                        //         elements: {
-                        //             point: {
-                        //                 radius: 0
-                        //             }
-                        //         },
-                        //         legend: {
-                        //             posiont: 'top'
-                        //         },
-                        //         maintainAspectRatio: false,
-                        //         stacked: true,
-                        //         tooltips: { //팁(모드설정)
-                        //             caretPadding: 10,
-                        //             borderWidth: 3,
-                        //             borderColor: 'rgb(118,172,255)',
-                        //             mode: 'index',
-                        //             intersect: false,
-                        //             caretSize: 0
-                        //         },
-                        //         hover: { //점 나오기
-                        //             mode: 'index',
-                        //             intersect: false
-                        //         },
-                        //         scales: {
-                        //             xAxes: [{
-                        //                 gridLines: {
-                        //                     drawOnChartArea: false
-                        //                 },
-                        //                 display: false,
-                        //                 type: 'time',
-                        //                 time: {
-                        //                     tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
-                        //                 }
-                        //             }],
-                        //             yAxes: [{
-                        //                 ticks: {
-                        //                     max: co2MaxVal,
-                        //                     min: co2MinVal,
-                        //                 },
-                        //                 id: 'x',
-                        //                 type: 'linear',
-                        //                 display: true,
-                        //                 position: 'left'
-                        //             },{
-                        //                 ticks: {
-                        //                     max: co2MaxVal,
-                        //                     min: co2MinVal,
-                        //                 },
-                        //                 id: 'y',
-                        //                 type: 'linear',
-                        //                 display: true,
-                        //                 position: 'right'
-                        //             }]
-                        //         }
-                        //     }
-                        // });
+                        var chartData2 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: 'CO2',
+                                yAxisID: 'x',
+                                backgroundColor: "#0af1f1",
+                                borderWidth: 2,
+                                borderColor: "#0af1f1",
+                                data: co2_arr,
+                                fill: false
+                            }]
+                        };
+                        myChart2 = new Chart(ctx2, {
+                            data: chartData2,
+                            options: {
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legend: {
+                                    posiont: 'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked: true,
+                                tooltips: { //팁(모드설정)
+                                    caretPadding: 10,
+                                    borderWidth: 3,
+                                    borderColor: 'rgb(118,172,255)',
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize: 0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            max: co2MaxVal,
+                                            min: co2MinVal,
+                                            fontSize: 20
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    },{
+                                        ticks: {
+                                            max: co2MaxVal,
+                                            min: co2MinVal,
+                                            fontSize: 20
+                                        },
+                                        id: 'y',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right'
+                                    }]
+                                }
+                            }
+                        });
 
                         // var chartData3 = {
                         //     labels: beaconTimeStamp_arr,
@@ -1073,12 +1103,38 @@
                     </div>
                     <canvas id='ncdTvoc' width="250" height="250"></canvas>
                 </div>
-<!--                <div style="margin: 30px 0 30px 0; position:relative;">-->
-<!--                    <div name="beaconChartLoading" style="display: none">-->
-<!--                        <div class="c-loader__active c-loader__active&#45;&#45;ring"></div>-->
-<!--                    </div>-->
-<!--                    <canvas id='ncdco2' width="250" height="250"></canvas>-->
-<!--                </div>-->
+                <table class="c-table">
+                    <colgroup>
+                        <col style="width: 100px;" />
+                        <col />
+                        <col style="width: 100px;" />
+                        <col />
+                        <col style="width: 62px;" />
+                    </colgroup>
+                    <tr>
+                        <th>co2 최소값.</th>
+                        <td>
+                            <div class="c-text">
+                                <input type="text" id="co2_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                            </div>
+                        </td>
+                        <th>co2 최대값.</th>
+                        <td>
+                            <div class="c-text">
+                                <input type="text" id="co2_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                            </div>
+                        </td>
+                        <td>
+                            <button class="c-button c-button--point" name="btnSearch">조회</button>
+                        </td>
+                    </tr>
+                </table>
+                <div style="margin: 30px 0 30px 0; position:relative;">
+                    <div name="beaconChartLoading" style="display: none">
+                        <div class="c-loader__active c-loader__active--ring"></div>
+                    </div>
+                    <canvas id='ncdco2' width="250" height="250"></canvas>
+                </div>
                 <table class="c-table">
                     <colgroup>
                         <col style="width: 100px;" />
