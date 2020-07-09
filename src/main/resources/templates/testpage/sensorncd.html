@@ -5,13 +5,14 @@
 <head>
     <script>
         var myChart1;
-        var myChart2;
+        // var myChart2;
         // var myChart3;
         // var myChart4;
         // var myChart5;
         var myChart6;
         var myChart7;
         var myChart8;
+        var myChart9;
 
         $(function() {
             if($("#headerMode").val()==="1"){
@@ -50,13 +51,14 @@
 
             $('[name=btnSearch]').click(function(){
                 myChart1.destroy();
-                myChart2.destroy();
+                // myChart2.destroy();
                 // myChart3.destroy();
                 // myChart4.destroy();
                 // myChart5.destroy();
                 myChart6.destroy();
                 myChart7.destroy();
                 myChart8.destroy();
+                myChart9.destroy();
                 beaconData();
             });
 
@@ -66,12 +68,14 @@
 
         // 조건초기화
         function reset() {
-            $("#co2_min").val('');
-            $("#co2_max").val('');
+            // $("#co2_min").val('');
+            // $("#co2_max").val('');
             $("#tvoc_min").val('');
             $("#tvoc_max").val('');
             $("#nh3_min").val('');
             $("#nh3_max").val('');
+            $("#nh32_min").val('');
+            $("#nh32_max").val('');
             $("#red_min").val('');
             $("#red_max").val('');
         }
@@ -152,6 +156,7 @@
                         // var green_arr = []; // green
                         // var ir_arr = []; // ir
                         var nh3_arr = []; // 암모니아
+                        var nh32_arr = []; // 암모니아2
                         var red_arr = []; // reg
                         var tvoc_arr = []; // TVOC
 
@@ -159,10 +164,12 @@
                         // var irVal = '0';
                         // var greenVal = '0';
 
-                        var $co2_max = $("#co2_max");
-                        var $co2_min = $("#co2_min");
+                        // var $co2_max = $("#co2_max");
+                        // var $co2_min = $("#co2_min");
                         var $nh3_max = $("#nh3_max");
                         var $nh3_min = $("#nh3_min");
+                        var $nh32_max = $("#nh32_max");
+                        var $nh32_min = $("#nh32_min");
                         var $red_max = $("#red_max");
                         var $red_min = $("#red_min");
                         var $tvoc_max = $("#tvoc_max");
@@ -183,27 +190,27 @@
                                 humidity_arr.push(value.hum);
                             }
 
-                            if (isNaN(Number(value.co2))===true) {
-                                co2_arr.push("0");
-                            } else {
-                                if($co2_max.val()!==""){
-                                    if(value.nh3 > Number($co2_max.val())){
-                                        co2_arr.push($co2_max.val());
-                                    }else{
-                                        if(value.co2>0){
-                                            co2_arr.push(value.co2);
-                                        }else{
-                                            co2_arr.push("0");
-                                        }
-                                    }
-                                }else{
-                                    if(value.co2>0){
-                                        co2_arr.push(value.co2);
-                                    }else{
-                                        co2_arr.push("0");
-                                    }
-                                }
-                            }
+                            // if (isNaN(Number(value.co2))===true) {
+                            //     co2_arr.push("0");
+                            // } else {
+                            //     if($co2_max.val()!==""){
+                            //         if(value.nh3 > Number($co2_max.val())){
+                            //             co2_arr.push($co2_max.val());
+                            //         }else{
+                            //             if(value.co2>0){
+                            //                 co2_arr.push(value.co2);
+                            //             }else{
+                            //                 co2_arr.push("0");
+                            //             }
+                            //         }
+                            //     }else{
+                            //         if(value.co2>0){
+                            //             co2_arr.push(value.co2);
+                            //         }else{
+                            //             co2_arr.push("0");
+                            //         }
+                            //     }
+                            // }
 
                             // if (isNaN(Number(value.eco2))===true) {
                             //     eco2_arr.push("0");
@@ -231,7 +238,7 @@
                             //     }
                             // }
 
-
+                            // console.log("nh3 : "+value.nh3);
                             if (isNaN(Number(value.nh3))===true) {
                                 // console.log("숫자임")
                                 nh3_arr.push("0");
@@ -251,6 +258,30 @@
                                         nh3_arr.push(value.nh3);
                                     }else{
                                         nh3_arr.push("0");
+                                    }
+                                }
+                            }
+
+                            // console.log("nh32 : "+value.nh32);
+                            if (isNaN(Number(value.nh32))===true) {
+                                // console.log("숫자임")
+                                nh32_arr.push("0");
+                            } else {
+                                if($nh32_max.val()!==""){
+                                    if(value.nh32 > Number($nh32_max.val())){
+                                        nh32_arr.push($nh3_max.val());
+                                    }else{
+                                        if(value.nh32>0){
+                                            nh32_arr.push(value.nh32);
+                                        }else{
+                                            nh32_arr.push("0");
+                                        }
+                                    }
+                                }else{
+                                    if(value.nh32>0){
+                                        nh32_arr.push(value.nh32);
+                                    }else{
+                                        nh32_arr.push("0");
                                     }
                                 }
                             }
@@ -293,13 +324,14 @@
                         })
 
                         var ctx1 = document.getElementById('ncdTemphum').getContext("2d");
-                        var ctx2 = document.getElementById('ncdco2').getContext("2d");
+                        // var ctx2 = document.getElementById('ncdco2').getContext("2d");
                         // var ctx3 = document.getElementById('ncdeco2').getContext("2d");
                         // var ctx4 = document.getElementById('ncdgreen').getContext("2d");
                         // var ctx5 = document.getElementById('ncdir').getContext("2d");
                         var ctx6 = document.getElementById('ncdNh3').getContext("2d");
                         var ctx7 = document.getElementById('ncdred').getContext("2d");
                         var ctx8 = document.getElementById('ncdTvoc').getContext("2d");
+                        var ctx9 = document.getElementById('ncdNh32').getContext("2d");
 
                         var humMaxVal = Math.max.apply(0, humidity_arr);
                         var humMinVal = Math.min.apply(0, humidity_arr);
@@ -311,29 +343,31 @@
                         // var irMaxVal = Math.max.apply(0, ir_arr);
                         // var irMinVal = Math.min.apply(0, ir_arr);
 
-                        var co2MaxVal;
-                        var co2MinVal;
+                        // var co2MaxVal;
+                        // var co2MinVal;
                         var nh3MaxVal;
                         var nh3MinVal;
                         var redMaxVal;
                         var redMinVal;
                         var tvocMaxVal;
                         var tvocMinVal;
+                        var nh32MaxVal;
+                        var nh32MinVal;
 
-                        if($nh3_max.val()===""){
-                            var co2MaxVal_ = Math.max.apply(0, co2_arr);
-                            co2MaxVal = Number((co2MaxVal_).toFixed(0));
-                            $co2_max.val(co2MaxVal);
-                        }else{
-                            co2MaxVal = Number($co2_max.val());
-                        }
-                        if($co2_min.val()===""){
-                            var co2MinVal_ = Math.min.apply(0, co2_arr);
-                            co2MinVal = Number((co2MinVal_).toFixed(0));
-                            $co2_min.val(co2MinVal);
-                        }else{
-                            co2MinVal = Number($co2_min.val());
-                        }
+                        // if($co2_max.val()===""){
+                        //     var co2MaxVal_ = Math.max.apply(0, co2_arr);
+                        //     co2MaxVal = Number((co2MaxVal_).toFixed(0));
+                        //     $co2_max.val(co2MaxVal);
+                        // }else{
+                        //     co2MaxVal = Number($co2_max.val());
+                        // }
+                        // if($co2_min.val()===""){
+                        //     var co2MinVal_ = Math.min.apply(0, co2_arr);
+                        //     co2MinVal = Number((co2MinVal_).toFixed(0));
+                        //     $co2_min.val(co2MinVal);
+                        // }else{
+                        //     co2MinVal = Number($co2_min.val());
+                        // }
 
                         if($nh3_max.val()===""){
                             var nh3MaxVal_ = Math.max.apply(0, nh3_arr);
@@ -348,6 +382,21 @@
                             $nh3_min.val(nh3MinVal);
                         }else{
                             nh3MinVal = Number($nh3_min.val());
+                        }
+
+                        if($nh32_max.val()===""){
+                            var nh32MaxVal_ = Math.max.apply(0, nh32_arr);
+                            nh32MaxVal = Number((nh32MaxVal_).toFixed(0));
+                            $nh32_max.val(nh32MaxVal);
+                        }else{
+                            nh32MaxVal = Number($nh32_max.val());
+                        }
+                        if($nh32_min.val()===""){
+                            var nh32MinVal_ = Math.min.apply(0, nh32_arr);
+                            nh32MinVal = Number((nh32MinVal_).toFixed(0));
+                            $nh32_min.val(nh32MinVal);
+                        }else{
+                            nh32MinVal = Number($nh32_min.val());
                         }
 
                         if($red_max.val()===""){
@@ -500,79 +549,79 @@
                             }
                         });
 
-                        var chartData2 = {
-                            labels: beaconTimeStamp_arr,
-                            datasets: [{
-                                type: 'line',
-                                label: 'CO2',
-                                yAxisID: 'x',
-                                backgroundColor: "#0af1f1",
-                                borderWidth: 2,
-                                borderColor: "#0af1f1",
-                                data: co2_arr,
-                                fill: false
-                            }]
-                        };
-                        myChart2 = new Chart(ctx2, {
-                            data: chartData2,
-                            options: {
-                                elements: {
-                                    point: {
-                                        radius: 0
-                                    }
-                                },
-                                legend: {
-                                    posiont: 'top'
-                                },
-                                maintainAspectRatio: false,
-                                stacked: true,
-                                tooltips: { //팁(모드설정)
-                                    caretPadding: 10,
-                                    borderWidth: 3,
-                                    borderColor: 'rgb(118,172,255)',
-                                    mode: 'index',
-                                    intersect: false,
-                                    caretSize: 0
-                                },
-                                hover: { //점 나오기
-                                    mode: 'index',
-                                    intersect: false
-                                },
-                                scales: {
-                                    xAxes: [{
-                                        gridLines: {
-                                            drawOnChartArea: false
-                                        },
-                                        display: false,
-                                        type: 'time',
-                                        time: {
-                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
-                                        }
-                                    }],
-                                    yAxes: [{
-                                        ticks: {
-                                            max: co2MaxVal,
-                                            min: co2MinVal,
-                                            fontSize: 20
-                                        },
-                                        id: 'x',
-                                        type: 'linear',
-                                        display: true,
-                                        position: 'left'
-                                    },{
-                                        ticks: {
-                                            max: co2MaxVal,
-                                            min: co2MinVal,
-                                            fontSize: 20
-                                        },
-                                        id: 'y',
-                                        type: 'linear',
-                                        display: true,
-                                        position: 'right'
-                                    }]
-                                }
-                            }
-                        });
+                        // var chartData2 = {
+                        //     labels: beaconTimeStamp_arr,
+                        //     datasets: [{
+                        //         type: 'line',
+                        //         label: 'CO2',
+                        //         yAxisID: 'x',
+                        //         backgroundColor: "#0af1f1",
+                        //         borderWidth: 2,
+                        //         borderColor: "#0af1f1",
+                        //         data: co2_arr,
+                        //         fill: false
+                        //     }]
+                        // };
+                        // myChart2 = new Chart(ctx2, {
+                        //     data: chartData2,
+                        //     options: {
+                        //         elements: {
+                        //             point: {
+                        //                 radius: 0
+                        //             }
+                        //         },
+                        //         legend: {
+                        //             posiont: 'top'
+                        //         },
+                        //         maintainAspectRatio: false,
+                        //         stacked: true,
+                        //         tooltips: { //팁(모드설정)
+                        //             caretPadding: 10,
+                        //             borderWidth: 3,
+                        //             borderColor: 'rgb(118,172,255)',
+                        //             mode: 'index',
+                        //             intersect: false,
+                        //             caretSize: 0
+                        //         },
+                        //         hover: { //점 나오기
+                        //             mode: 'index',
+                        //             intersect: false
+                        //         },
+                        //         scales: {
+                        //             xAxes: [{
+                        //                 gridLines: {
+                        //                     drawOnChartArea: false
+                        //                 },
+                        //                 display: false,
+                        //                 type: 'time',
+                        //                 time: {
+                        //                     tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                        //                 }
+                        //             }],
+                        //             yAxes: [{
+                        //                 ticks: {
+                        //                     max: co2MaxVal,
+                        //                     min: co2MinVal,
+                        //                     fontSize: 20
+                        //                 },
+                        //                 id: 'x',
+                        //                 type: 'linear',
+                        //                 display: true,
+                        //                 position: 'left'
+                        //             },{
+                        //                 ticks: {
+                        //                     max: co2MaxVal,
+                        //                     min: co2MinVal,
+                        //                     fontSize: 20
+                        //                 },
+                        //                 id: 'y',
+                        //                 type: 'linear',
+                        //                 display: true,
+                        //                 position: 'right'
+                        //             }]
+                        //         }
+                        //     }
+                        // });
 
                         // var chartData3 = {
                         //     labels: beaconTimeStamp_arr,
@@ -1012,6 +1061,80 @@
                             }
                         });
 
+                        var chartData9 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: 'NH3-2',
+                                yAxisID: 'x',
+                                backgroundColor: "#2e8ff5",
+                                borderWidth: 2,
+                                borderColor: "#2e8ff5",
+                                data: nh32_arr,
+                                fill: false
+                            }]
+                        };
+                        myChart9 = new Chart(ctx9, {
+                            data: chartData9,
+                            options: {
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legend: {
+                                    posiont: 'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked: true,
+                                tooltips: { //팁(모드설정)
+                                    caretPadding: 10,
+                                    borderWidth: 3,
+                                    borderColor: 'rgb(118,172,255)',
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize: 0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: nh32MaxVal,
+                                            min: nh32MinVal,
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    },{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: nh32MaxVal,
+                                            min: nh32MinVal,
+                                        },
+                                        id: 'y',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right'
+                                    }]
+                                }
+                            }
+                        });
+
                     }
                     $("div[name=beaconChartLoading]").css('display','none');
                 }
@@ -1057,162 +1180,172 @@
                     </td>
                 </tr>
             </table>
-
-            <div>
-                <div style="margin: 0 0 30px 0; position:relative;">
-                    <div name="beaconChartLoading" style="display: none">
-                        <div class="c-loader__active c-loader__active--ring"></div>
-                    </div>
-                    <canvas id='ncdTemphum' width="250" height="250"></canvas>
+            <div style="margin: 0 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
                 </div>
-<!--                <div style="margin: 30px 0 30px 0; position:relative;">-->
-<!--                    <div name="beaconChartLoading" style="display: none">-->
-<!--                        <div class="c-loader__active c-loader__active&#45;&#45;ring"></div>-->
-<!--                    </div>-->
-<!--                    <canvas id='ncdeco2' width="250" height="250"></canvas>-->
-<!--                </div>-->
-                <table class="c-table">
-                    <colgroup>
-                        <col style="width: 100px;" />
-                        <col />
-                        <col style="width: 100px;" />
-                        <col />
-                        <col style="width: 62px;" />
-                    </colgroup>
-                    <tr>
-                        <th>tvoc 최소값.</th>
-                        <td>
-                            <div class="c-text">
-                                <input type="text" id="tvoc_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-                            </div>
-                        </td>
-                        <th>tvoc 최대값.</th>
-                        <td>
-                            <div class="c-text">
-                                <input type="text" id="tvoc_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-                            </div>
-                        </td>
-                        <td>
-                            <button class="c-button c-button--point" name="btnSearch">조회</button>
-                        </td>
-                    </tr>
-                </table>
-                <div style="margin: 30px 0 30px 0; position:relative;">
-                    <div name="beaconChartLoading" style="display: none">
-                        <div class="c-loader__active c-loader__active--ring"></div>
-                    </div>
-                    <canvas id='ncdTvoc' width="250" height="250"></canvas>
-                </div>
-                <table class="c-table">
-                    <colgroup>
-                        <col style="width: 100px;" />
-                        <col />
-                        <col style="width: 100px;" />
-                        <col />
-                        <col style="width: 62px;" />
-                    </colgroup>
-                    <tr>
-                        <th>co2 최소값.</th>
-                        <td>
-                            <div class="c-text">
-                                <input type="text" id="co2_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-                            </div>
-                        </td>
-                        <th>co2 최대값.</th>
-                        <td>
-                            <div class="c-text">
-                                <input type="text" id="co2_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-                            </div>
-                        </td>
-                        <td>
-                            <button class="c-button c-button--point" name="btnSearch">조회</button>
-                        </td>
-                    </tr>
-                </table>
-                <div style="margin: 30px 0 30px 0; position:relative;">
-                    <div name="beaconChartLoading" style="display: none">
-                        <div class="c-loader__active c-loader__active--ring"></div>
-                    </div>
-                    <canvas id='ncdco2' width="250" height="250"></canvas>
-                </div>
-                <table class="c-table">
-                    <colgroup>
-                        <col style="width: 100px;" />
-                        <col />
-                        <col style="width: 100px;" />
-                        <col />
-                        <col style="width: 62px;" />
-                    </colgroup>
-                    <tr>
-                        <th>nh3 최소값.</th>
-                        <td>
-                            <div class="c-text">
-                                <input type="text" id="nh3_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-                            </div>
-                        </td>
-                        <th>nh3 최대값.</th>
-                        <td>
-                            <div class="c-text">
-                                <input type="text" id="nh3_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-                            </div>
-                        </td>
-                        <td>
-                            <button class="c-button c-button--point" name="btnSearch">조회</button>
-                        </td>
-                    </tr>
-                </table>
-                <div style="margin: 30px 0 30px 0; position:relative;">
-                    <div name="beaconChartLoading" style="display: none">
-                        <div class="c-loader__active c-loader__active--ring"></div>
-                    </div>
-                    <canvas id='ncdNh3' width="250" height="250"></canvas>
-                </div>
-                <table class="c-table">
-                    <colgroup>
-                        <col style="width: 100px;" />
-                        <col />
-                        <col style="width: 100px;" />
-                        <col />
-                        <col style="width: 62px;" />
-                    </colgroup>
-                    <tr>
-                        <th>스모크 최소값.</th>
-                        <td>
-                            <div class="c-text">
-                                <input type="text" id="red_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-                            </div>
-                        </td>
-                        <th>스모크 최대값.</th>
-                        <td>
-                            <div class="c-text">
-                                <input type="text" id="red_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
-                            </div>
-                        </td>
-                        <td>
-                            <button class="c-button c-button--point" name="btnSearch">조회</button>
-                        </td>
-                    </tr>
-                </table>
-                <div style="margin: 30px 0 30px 0; position:relative;">
-                    <div name="beaconChartLoading" style="display: none">
-                        <div class="c-loader__active c-loader__active--ring"></div>
-                    </div>
-                    <canvas id='ncdred' width="250" height="250"></canvas>
-                </div>
-<!--                <div style="margin: 30px 0 30px 0; position:relative;">-->
-<!--                    <div name="beaconChartLoading" style="display: none">-->
-<!--                        <div class="c-loader__active c-loader__active&#45;&#45;ring"></div>-->
-<!--                    </div>-->
-<!--                    <canvas id='ncdir' width="250" height="250"></canvas>-->
-<!--                </div>-->
-<!--                <div style="margin: 30px 0 30px 0; position:relative;">-->
-<!--                    <div name="beaconChartLoading" style="display: none">-->
-<!--                        <div class="c-loader__active c-loader__active&#45;&#45;ring"></div>-->
-<!--                    </div>-->
-<!--                    <canvas id='ncdgreen' width="250" height="250"></canvas>-->
-<!--                </div>-->
+                <canvas id='ncdTemphum' width="250" height="250"></canvas>
             </div>
-
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>tvoc 최소값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="tvoc_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>tvoc 최대값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="tvoc_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" name="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 30px 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='ncdTvoc' width="250" height="250"></canvas>
+            </div>
+<!--                <table class="c-table">-->
+<!--                    <colgroup>-->
+<!--                        <col style="width: 100px;" />-->
+<!--                        <col />-->
+<!--                        <col style="width: 100px;" />-->
+<!--                        <col />-->
+<!--                        <col style="width: 62px;" />-->
+<!--                    </colgroup>-->
+<!--                    <tr>-->
+<!--                        <th>co2 최소값.</th>-->
+<!--                        <td>-->
+<!--                            <div class="c-text">-->
+<!--                                <input type="text" id="co2_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                        <th>co2 최대값.</th>-->
+<!--                        <td>-->
+<!--                            <div class="c-text">-->
+<!--                                <input type="text" id="co2_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <button class="c-button c-button&#45;&#45;point" name="btnSearch">조회</button>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+<!--                <div style="margin: 30px 0 30px 0; position:relative;">-->
+<!--                    <div name="beaconChartLoading" style="display: none">-->
+<!--                        <div class="c-loader__active c-loader__active&#45;&#45;ring"></div>-->
+<!--                    </div>-->
+<!--                    <canvas id='ncdco2' width="250" height="250"></canvas>-->
+<!--                </div>-->
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>nh3 최소값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="nh3_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>nh3 최대값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="nh3_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" name="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 30px 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='ncdNh3' width="250" height="250"></canvas>
+            </div>
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>nh32 최소값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="nh32_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>nh32 최대값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="nh32_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" name="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 30px 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='ncdNh32' width="250" height="250"></canvas>
+            </div>
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>스모크 최소값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="red_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>스모크 최대값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="red_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" name="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 30px 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='ncdred' width="250" height="250"></canvas>
+            </div>
         </article>
     </section>
 </div>
