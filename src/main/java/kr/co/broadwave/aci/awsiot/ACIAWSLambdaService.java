@@ -262,7 +262,7 @@ public class ACIAWSLambdaService {
         return getHashMap(res);
     }
 
-    //ncd센서 데이터가져오기
+    //ncd센서 데이터가져오기(창고)
     public HashMap getDeviceNcd(String timeVal){
 //        System.out.println("timeVal : "+timeVal);
 
@@ -301,6 +301,74 @@ public class ACIAWSLambdaService {
 //        System.out.println("timeVal : "+timeVal);
 
         final String url = ACIAWSAPIBASEURL + "/api/v1/beacon/office/{id}" ;
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        //params
+        Map<String, String> params = new HashMap<>();
+        params.put("id", timeVal);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(url)
+                .buildAndExpand(params)
+                .toUri();
+        //queryParams
+        uri = UriComponentsBuilder
+                .fromUri(uri)
+                .build()
+                .toUri();
+
+        ResponseEntity<String> res = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+
+        return getHashMap(res);
+    }
+
+    //ml추론 센서데이터가져오기
+    public HashMap getDeviceMl(String timeVal){
+//        System.out.println("timeVal : "+timeVal);
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/beacon/mltest/{id}" ;
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        //params
+        Map<String, String> params = new HashMap<>();
+        params.put("id", timeVal);
+
+        URI uri = UriComponentsBuilder
+                .fromUriString(url)
+                .buildAndExpand(params)
+                .toUri();
+        //queryParams
+        uri = UriComponentsBuilder
+                .fromUri(uri)
+                .build()
+                .toUri();
+
+        ResponseEntity<String> res = restTemplate.exchange(uri, HttpMethod.GET, entity, String.class);
+
+        return getHashMap(res);
+    }
+
+    //ncd센서 데이터가져오기(제주)
+    public HashMap getDeviceNcdJeju(String timeVal){
+//        System.out.println("timeVal : "+timeVal);
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/beacon/ncdjeju/{id}" ;
 
         RestTemplate restTemplate = new RestTemplate();
 

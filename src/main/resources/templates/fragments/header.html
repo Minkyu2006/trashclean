@@ -79,8 +79,10 @@
 			<li class="nav__item" sec:authorize = "hasRole('ROLE_ADMIN')">
 				<a href="#" class="nav__link nav__link--dash toggle">테스트페이지</a>
 				<ul class="nav-child">
+					<li><a href="/testpage/mlsensor">ML추론 테스트센서</a></li>
+					<li><a href="/testpage/sensorncdjeju">ncd데이터(제주)</a></li>
 					<li><a href="/testpage/sensorbeacon">beacon데이터</a></li>
-					<li><a href="/testpage/sensorncd">ncd데이터</a></li>
+					<li><a href="/testpage/sensorncd">ncd데이터(창고)</a></li>
 					<li><a href="/testpage/beacongraph">비콘센서데이터(제주도)</a></li>
 					<li><a href="/testpage/oauth2test">Oauth2</a></li>
 					<li><a href="/testpage/accorditainerregtest">배치/수거 등록(iTainer)</a></li>

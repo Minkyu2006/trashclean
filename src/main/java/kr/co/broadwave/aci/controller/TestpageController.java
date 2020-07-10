@@ -194,7 +194,7 @@ public class TestpageController {
         return "testpage/sensorncd";
     }
 
-    // ncd센서데이터가져오기
+    // ncd센서데이터가져오기(창고)
     @PostMapping("ncdData")
     public ResponseEntity<Map<String,Object>> ncdData(@RequestParam(value="fromVal", defaultValue="") String fromVal,
                                                       @RequestParam(value="toVal", defaultValue="") String toVal) {
@@ -230,6 +230,53 @@ public class TestpageController {
 
         data.put("statusCode", resData.get("statusCode"));
         data.put("datarow1", resData.get("data"));
+        res.addResponse("data", data);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    @RequestMapping("sensorncdjeju")
+    public String sensorncdjeju(){
+        return "testpage/sensorncdjeju";
+    }
+
+    // ncd센서데이터가져오기(제주)
+    @PostMapping("ncdDataJeju")
+    public ResponseEntity<Map<String,Object>> ncdDataJeju(@RequestParam(value="fromVal", defaultValue="") String fromVal,
+                                                          @RequestParam(value="toVal", defaultValue="") String toVal) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        String timeVal = fromVal+"-"+toVal;
+//        System.out.println("timeVal : "+timeVal);
+        HashMap<String, Object> resData = aciawsLambdaService.getDeviceNcdJeju(timeVal);
+        System.out.println("resData : "+resData);
+
+        data.put("statusCode", resData.get("statusCode"));
+        data.put("datarow", resData.get("data"));
+        res.addResponse("data", data);
+
+        return ResponseEntity.ok(res.success());
+    }
+
+    @RequestMapping("mlsensor")
+    public String mlsensor(){
+        return "testpage/mlsensor";
+    }
+
+    // ml추론 센서데이터가져오기
+    @PostMapping("mlData")
+    public ResponseEntity<Map<String,Object>> mlData(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                     @RequestParam(value="fromVal", defaultValue="") String fromVal,
+                                                     @RequestParam(value="toVal", defaultValue="") String toVal) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        String timeVal = deviceid+"="+fromVal+"="+toVal;
+//        System.out.println("timeVal : "+timeVal);
+        HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal);
+//        System.out.println("resData : "+resData);
+
+        data.put("statusCode", resData.get("statusCode"));
+        data.put("datarow", resData.get("data"));
         res.addResponse("data", data);
 
         return ResponseEntity.ok(res.success());
