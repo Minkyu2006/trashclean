@@ -6,6 +6,7 @@
     <script>
         var myChart1;
         var myChart2;
+        var myChart3;
 
         $(function() {
             if($("#headerMode").val()==="1"){
@@ -46,6 +47,7 @@
             $('[name=btnSearch]').click(function(){
                 myChart1.destroy();
                 myChart2.destroy();
+                myChart3.destroy();
                 mlData();
             });
 
@@ -139,6 +141,8 @@
                         var pre1_3m_arr = []; // pre1_3m
                         var pre2_1m_arr = []; // pre2_1m
                         var pre2_3m_arr = []; // pre2_3m
+
+                        var fireCheck_arr = []; // fireCheck
 
                         var $mltvoc_max = $("#mltvoc_max");
                         var $mltvoc_min = $("#mltvoc_min");
@@ -256,6 +260,13 @@
                                 }
                             }
 
+                            if (isNaN(Number(value.firecheck))===true) {
+                                fireCheck_arr.push("0");
+                            }else{
+                                fireCheck_arr.push(value.firecheck);
+                            }
+
+
                         })
 
                         // console.log("red_arr : "+red_arr);
@@ -266,12 +277,12 @@
 
                         var ctx1 = document.getElementById('mltvoc').getContext("2d");
                         var ctx2 = document.getElementById('mlred').getContext("2d");
+                        var ctx3 = document.getElementById('mlfireCheck').getContext("2d");
 
                         var tvocMaxVal;
                         var tvocMinVal;
                         var redMaxVal;
                         var redMinVal;
-
 
                         if($mltvoc_max.val()===""){
                             tvocMaxVal = Math.max.apply(0, mltvoc_arr);
@@ -483,6 +494,80 @@
                             }
                         });
 
+                        var chartData3 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: 'fireCheck',
+                                yAxisID: 'x',
+                                backgroundColor: "#fc6161",
+                                borderWidth: 2,
+                                borderColor: "#fc6161",
+                                data: fireCheck_arr,
+                                fill: false
+                            }]
+                        };
+                        myChart3 = new Chart(ctx3, {
+                            data: chartData3,
+                            options: {
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legend: {
+                                    posiont: 'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked: true,
+                                tooltips: { //팁(모드설정)
+                                    caretPadding: 10,
+                                    borderWidth: 3,
+                                    borderColor: 'rgb(118,172,255)',
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize: 0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: 4,
+                                            min: 0,
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    },{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: 4,
+                                            min: 0,
+                                        },
+                                        id: 'y',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right'
+                                    }]
+                                }
+                            }
+                        });
+
                     }
                     $("div[name=beaconChartLoading]").css('display','none');
                 }
@@ -495,7 +580,7 @@
 <div layout:fragment="content" class="contents-body">
     <section class="section">
         <article class="article">
-            <h2 class="article__heading">ML추론센서 데이터 그래프</h2>
+            <h2 class="article__heading">ML추론센서 데이터 그래프(화재)</h2>
             <div class="l-float-heading">
                 <div class="l-float-heading--left">
                     <h4 class="article__head">대상시간<span class="article__head-caption"> ex)2020.6.10 15:00 부터 2020.06.10 16:00 까지면 -> from.2020061015 - to.2020061016</span></h4>
@@ -599,6 +684,13 @@
                     <div class="c-loader__active c-loader__active--ring"></div>
                 </div>
                 <canvas id='mlred' width="250" height="250"></canvas>
+            </div>
+            <br>
+            <div style="margin: 30px 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='mlfireCheck' width="250" height="250"></canvas>
             </div>
         </article>
     </section>

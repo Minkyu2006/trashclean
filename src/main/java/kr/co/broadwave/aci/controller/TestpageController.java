@@ -273,7 +273,7 @@ public class TestpageController {
         String timeVal = deviceid+"="+fromVal+"="+toVal;
 //        System.out.println("timeVal : "+timeVal);
         HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal);
-//        System.out.println("resData : "+resData);
+        System.out.println("resData : "+resData);
 
         data.put("statusCode", resData.get("statusCode"));
         data.put("datarow", resData.get("data"));
