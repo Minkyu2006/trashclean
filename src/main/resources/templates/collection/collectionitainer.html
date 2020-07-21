@@ -10,6 +10,14 @@
             LocationSetting("",0);
             equipmentCallList();
 
+            if ($("#headerMode").val() === "1") {
+                $("#default_wrap").addClass('wrap');
+                $("#header_collection").css('display', 'block');
+            } else {
+                $("#default_wrap").addClass('wrap nav--small');
+                $("#header_collection").css('display', 'none');
+            }
+
             //iTainar 수거업무등록
             $("#collectionSave").on('click', function () {
                 collectionSave();

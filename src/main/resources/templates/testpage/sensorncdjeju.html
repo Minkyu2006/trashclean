@@ -68,6 +68,8 @@
             $("#nh32_max").val('');
             $("#red_min").val('');
             $("#red_max").val('');
+            $("#ir_min").val('');
+            $("#ir_max").val('');
         }
 
         //한글을 지우는 함수
@@ -145,6 +147,7 @@
                         var nh32_arr = []; // 암모니아2
                         var red_arr = []; // reg
                         var tvoc_arr = []; // TVOC
+                        var ir_arr = []; // IR
 
                         var $nh3_max = $("#nh3_max");
                         var $nh3_min = $("#nh3_min");
@@ -154,6 +157,8 @@
                         var $red_min = $("#red_min");
                         var $tvoc_max = $("#tvoc_max");
                         var $tvoc_min = $("#tvoc_min");
+                        var $ir_max = $("#ir_max");
+                        var $ir_min = $("#ir_min");
 
                         $.each(res.data.datarow, function (key, value) {
                             beaconTimeStamp_arr.push(parseInt(value.inserttimestamp));
@@ -249,6 +254,24 @@
                                     tvoc_arr.push(value.sensor['s_tvoc']);
                                 }
                             }
+
+                            if (isNaN(Number(value.sensor['s_ir']))===true) {
+                                ir_arr.push("0");
+                            } else {
+                                if($ir_max.val()!==""){
+                                    if(value.sensor['s_ir'] > Number($ir_max.val())){
+                                        ir_arr.push($ir_max.val());
+                                    }else{
+                                        if(value.sensor['s_ir']>0){
+                                            ir_arr.push(value.sensor['s_ir']);
+                                        }else{
+                                            ir_arr.push("0");
+                                        }
+                                    }
+                                }else{
+                                    ir_arr.push(value.sensor['s_ir']);
+                                }
+                            }
                         })
 
                         // console.log("beaconTimeStamp_arr : "+beaconTimeStamp_arr);
@@ -271,6 +294,8 @@
                         var tvocMinVal;
                         var nh32MaxVal;
                         var nh32MinVal;
+                        var irMaxVal;
+                        var irMinVal;
 
                         if($nh3_max.val()===""){
                             var nh3MaxVal_ = Math.max.apply(0, nh3_arr);
@@ -326,6 +351,19 @@
                             $tvoc_min.val(tvocMinVal);
                         }else{
                             tvocMinVal = Number($tvoc_min.val());
+                        }
+
+                        if($ir_max.val()===""){
+                            irMaxVal = Math.max.apply(0, ir_arr);
+                            $ir_max.val(irMaxVal);
+                        }else{
+                            irMaxVal = Number($ir_max.val());
+                        }
+                        if($ir_min.val()===""){
+                            irMinVal = Math.min.apply(0, ir_arr);
+                            $ir_min.val(irMinVal);
+                        }else{
+                            irMinVal = Number($ir_min.val());
                         }
 
                         // 온도최대값,최소값 계산(y축그래프)
@@ -537,6 +575,15 @@
                                 borderColor: "#ff2e57",
                                 data: red_arr,
                                 fill: false
+                            }, {
+                                type: 'line',
+                                label: 'IR',
+                                yAxisID: 'y',
+                                backgroundColor: "#955ffd",
+                                borderWidth: 2,
+                                borderColor: "#955ffd",
+                                data: ir_arr,
+                                fill: false
                             }]
                         };
                         myChart7 = new Chart(ctx7, {
@@ -588,8 +635,8 @@
                                     },{
                                         ticks: {
                                             fontSize: 20,
-                                            max: redMaxVal,
-                                            min: redMinVal,
+                                            max: irMaxVal,
+                                            min: irMinVal,
                                         },
                                         id: 'y',
                                         type: 'linear',
@@ -901,6 +948,10 @@
                     <col />
                     <col style="width: 100px;" />
                     <col />
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 100px;" />
+                    <col />
                     <col style="width: 62px;" />
                 </colgroup>
                 <tr>
@@ -914,6 +965,18 @@
                     <td>
                         <div class="c-text">
                             <input type="text" id="red_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>ir 최소값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="ir_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>ir 최대값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="ir_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
                         </div>
                     </td>
                     <td>
