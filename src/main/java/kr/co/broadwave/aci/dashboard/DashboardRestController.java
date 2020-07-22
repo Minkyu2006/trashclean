@@ -113,7 +113,7 @@ public class DashboardRestController {
         //log.info("Device History 가져오기 시작");
 
         HashMap<String, Object> resData = dashboardService.getDeviceHistory(deviceid,intervaltime);
-
+        log.info("data : "+resData.get("data"));
         data.put("statusCode",resData.get("statusCode"));
         data.put("datarow1",resData.get("data"));
         res.addResponse("data",data);
@@ -189,17 +189,24 @@ public class DashboardRestController {
         List<String> frontDoor_sol = new ArrayList<>(); // 전면도어
         List<String> inputDoor = new ArrayList<>();  // 투입구
 
+        // ITAI
+        List<String> s_tmp2 = new ArrayList<>(); // ITAI 온도
+        List<String> s_actuator_level = new ArrayList<>(); // ITAI 배출량(%)
+        List<String> s_dis_info_level = new ArrayList<>(); // ITAI 배출무게(%)
+        List<String> s_dis_info_weight = new ArrayList<>(); // ITAI 배출무게(g)
+        List<String> s_language = new ArrayList<>();// ITAI 사용언어
+
 //        log.info("deviceids : " + deviceids);
 //        log.info("deviceIdList : " + deviceIdList);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
-//        log.info("resData : " + resData);
+        log.info("resData : " + resData);
         List<String> sortDevice = new ArrayList<>();
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
 
         int deviceIdListSize = deviceIdList.size();
-
+//        log.info("deviceIdListSize : " + deviceIdListSize);
         for (int i = 0; i < number; i++) {
             HashMap map = (HashMap) resData.get("data").get(i);
             sortDevice.add((String) map.get("deviceid"));
@@ -223,74 +230,99 @@ public class DashboardRestController {
                 for (int j = 0; j < number; j++) {
                     HashMap map = (HashMap) resData.get("data").get(j);
                     String resDeviceid = (String) map.get("deviceid");
+                    String subDevice = resDeviceid.substring(0, 4);
+//                    log.info("subDevice : "+subDevice);
                     if (resDeviceid.equals(deviceid)) {
-                        if (map.get("status").equals("normal")) {
-                            map.replace("status", "정상");
-                        } else if (map.get("status").equals("caution")) {
-                            map.replace("status", "주의");
-                        } else if (map.get("status").equals("severe")) {
-                            map.replace("status", "심각");
-                        }
-
-                        devices.add((String) map.get("deviceid")); //장비값넣기
-                        status.add((String) map.get("status")); //상태값넣기
-                        temp_brd.add((String) map.get("temp_brd")); // 온도값넣기
-                        level.add((String) map.get("level")); //배출량값넣기
-                        batt_voltage.add((String) map.get("batt_voltage")); //배터리잔량값넣기
-                        solar_current.add((String) map.get("solar_current")); //전류값넣기
-                        solar_voltage.add((String) map.get("solar_voltage")); //전압값넣기
-                        gps_laDatas.add((String) map.get("gps_la")); //위도값넣기
-                        gps_loDatas.add((String) map.get("gps_lo")); //경도값넣기
-
-                        if(!String.valueOf(map.get("rsrp")).equals("")) {
-                            rsrp.add(Integer.parseInt(String.valueOf(map.get("rsrp"))));
-                        }else{
-                            rsrp.add(null);
-                        }
-
-                        if(!String.valueOf(map.get("frontdoor_sol")).equals("")||!String.valueOf(map.get("frontdoor_sol")).equals("na")) {
-                            String front = (String) map.get("frontdoor_sol");
-                            switch (front) {
-                                case "close":
-                                    frontDoor_sol.add("닫힘");
-                                    break;
-                                case "open":
-                                    frontDoor_sol.add("열림");
-                                    break;
-                                case "jamming":
-                                    frontDoor_sol.add("걸림");
-                                    break;
-                                default:
-                                    frontDoor_sol.add("미확인");
-                                    break;
-                            }
-                        }else{
-                            frontDoor_sol.add("미확인");
-                        }
-
-
-                        if(!String.valueOf(map.get("inputdoor")).equals("")||!String.valueOf(map.get("inputdoor")).equals("na")) {
-                            String inputdoor = (String) map.get("inputdoor");
-                            switch (inputdoor) {
-                                case "close":
-                                    inputDoor.add("닫힘");
-                                    break;
-                                case "open":
-                                    inputDoor.add("열림");
-                                    break;
-                                case "jamming":
-                                    inputDoor.add("걸림");
-                                    break;
-                                default:
-                                    inputDoor.add("미확인");
-                                    break;
-                            }
-                        }else{
-                            inputDoor.add("미확인");
-                        }
-
                         x++;
                         y++;
+                        if (subDevice.equals("ISOL")) {
+                            if (map.get("status").equals("normal")) {
+                                map.replace("status", "정상");
+                            } else if (map.get("status").equals("caution")) {
+                                map.replace("status", "주의");
+                            } else if (map.get("status").equals("severe")) {
+                                map.replace("status", "심각");
+                            }
+
+                            devices.add((String) map.get("deviceid")); // 장비값넣기
+                            status.add((String) map.get("status")); // 상태값넣기
+                            temp_brd.add((String) map.get("temp_brd")); // 온도값넣기
+                            level.add((String) map.get("level")); // 배출량값넣기
+                            batt_voltage.add((String) map.get("batt_voltage")); // 배터리잔량값넣기
+                            solar_current.add((String) map.get("solar_current")); // 전류값넣기
+                            solar_voltage.add((String) map.get("solar_voltage")); // 전압값넣기
+                            gps_laDatas.add((String) map.get("gps_la")); // 위도값넣기
+                            gps_loDatas.add((String) map.get("gps_lo")); // 경도값넣기
+
+                            if (!String.valueOf(map.get("rsrp")).equals("")) {
+                                rsrp.add(Integer.parseInt(String.valueOf(map.get("rsrp"))));
+                            } else {
+                                rsrp.add(null);
+                            }
+
+                            if (!String.valueOf(map.get("frontdoor_sol")).equals("") || !String.valueOf(map.get("frontdoor_sol")).equals("na")) {
+                                String front = (String) map.get("frontdoor_sol");
+                                switch (front) {
+                                    case "close":
+                                        frontDoor_sol.add("닫힘");
+                                        break;
+                                    case "open":
+                                        frontDoor_sol.add("열림");
+                                        break;
+                                    case "jamming":
+                                        frontDoor_sol.add("걸림");
+                                        break;
+                                    default:
+                                        frontDoor_sol.add("미확인");
+                                        break;
+                                }
+                            } else {
+                                frontDoor_sol.add("미확인");
+                            }
+
+
+                            if (!String.valueOf(map.get("inputdoor")).equals("") || !String.valueOf(map.get("inputdoor")).equals("na")) {
+                                String inputdoor = (String) map.get("inputdoor");
+                                switch (inputdoor) {
+                                    case "close":
+                                        inputDoor.add("닫힘");
+                                        break;
+                                    case "open":
+                                        inputDoor.add("열림");
+                                        break;
+                                    case "jamming":
+                                        inputDoor.add("걸림");
+                                        break;
+                                    default:
+                                        inputDoor.add("미확인");
+                                        break;
+                                }
+                            } else {
+                                inputDoor.add("미확인");
+                            }
+
+
+                        } else if (subDevice.equals("ITAI")) {
+
+                            if (map.get("status").equals("normal")) {
+                                map.replace("status", "정상");
+                            } else if (map.get("status").equals("caution")) {
+                                map.replace("status", "주의");
+                            } else if (map.get("status").equals("severe")) {
+                                map.replace("status", "심각");
+                            }
+
+                            devices.add((String) map.get("deviceid")); // 장비값넣기
+                            status.add((String) map.get("status")); // 상태값넣기
+                            s_tmp2.add((String) map.get("s_tmp2")); // 온도
+                            s_actuator_level.add((String) map.get("actuator_level")); // 배출량(%)
+                            s_dis_info_level.add((String) map.get("dis_info_level")); // 배출무게(%)
+                            s_dis_info_weight.add((String) map.get("dis_info_weight")); // 배출무게(g)
+                            s_language.add((String) map.get("language")); // 사용언어
+                            gps_laDatas.add((String) map.get("gps_la")); // 위도값넣기
+                            gps_loDatas.add((String) map.get("gps_lo")); // 경도값넣기
+
+                        }
                     }
                 }
             } else {
@@ -306,6 +338,12 @@ public class DashboardRestController {
                 rsrp.add(null);
                 frontDoor_sol.add("미확인");
                 inputDoor.add("미확인");
+
+//                s_tmp2.add("0");
+//                s_actuator_level.add("0");
+//                s_dis_info_level.add("0");
+//                s_dis_info_weight.add("0");
+//                s_language.add("na");
 
                 y++;
             }
@@ -381,6 +419,12 @@ public class DashboardRestController {
         data.put("rsrp",rsrp);
         data.put("frontDoor_sol",frontDoor_sol);
         data.put("inputDoor",inputDoor);
+
+        data.put("s_tmp2",s_tmp2);
+        data.put("s_actuator_level",s_actuator_level);
+        data.put("s_dis_info_level",s_dis_info_level);
+        data.put("s_dis_info_weight",s_dis_info_weight);
+        data.put("s_language",s_language);
 
         res.addResponse("data",data);
 
@@ -921,8 +965,15 @@ public class DashboardRestController {
         List<String> frontDoor_sol = new ArrayList<>(); // 전면도어
         List<String> inputDoor = new ArrayList<>();  // 투입구
 
+        // ITAI
+        List<String> s_tmp2 = new ArrayList<>(); // ITAI 온도
+        List<String> s_actuator_level = new ArrayList<>(); // ITAI 배출량(%)
+        List<String> s_dis_info_level = new ArrayList<>(); // ITAI 배출무게(%)
+        List<String> s_dis_info_weight = new ArrayList<>(); // ITAI 배출무게(g)
+        List<String> s_language = new ArrayList<>();// ITAI 사용언어
+
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
-        //log.info("AWS 장치 data : "+resData.get("data"));
+        log.info("AWS 장치 data : "+resData.get("data"));
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
@@ -930,6 +981,9 @@ public class DashboardRestController {
         barDataColumns.add("쓰레기양"); // 배출량 막대그래프 첫번째값 y축이름 -> 쓰레기양
         for(int i=0; i<number; i++){
             HashMap map = (HashMap)resData.get("data").get(i);
+
+            String emType = ((String)map.get("deviceid")).substring(0,4);
+
             if (map.get("status").equals("normal")) {
                 map.replace("status", "정상");
             } else if (map.get("status").equals("caution")) {
@@ -938,60 +992,69 @@ public class DashboardRestController {
                 map.replace("status", "심각");
             }
             statusDatas.add((String) map.get("status")); //상태 리스트
-            barDataColumns.add((String) map.get("level")); //배출량 리스트
             deviceIdNames.add((String) map.get("deviceid")); //장리 리스트
             gps_laDatas.add((String) map.get("gps_la")); // gps1 리스트
             gps_loDatas.add((String) map.get("gps_lo")); //gps2 리스트
-            temp_brd.add((String) map.get("temp_brd")); //온도 리스트
-            batt_voltage.add((String) map.get("batt_voltage")); //배터리잔량 리스트
-            solar_current.add((String) map.get("solar_current")); //전류 리스트
-            solar_voltage.add((String) map.get("solar_voltage")); //전압 리스트
 
-            if(!String.valueOf(map.get("rsrp")).equals("")) {
-                rsrp.add(Integer.parseInt(String.valueOf(map.get("rsrp"))));
-            }else{
-                rsrp.add(null);
-            }
+            if(emType.equals("ISOL")) {
+                temp_brd.add((String) map.get("temp_brd")); //온도 리스트
+                barDataColumns.add((String) map.get("level")); //배출량 리스트
+                batt_voltage.add((String) map.get("batt_voltage")); //배터리잔량 리스트
+                solar_current.add((String) map.get("solar_current")); //전류 리스트
+                solar_voltage.add((String) map.get("solar_voltage")); //전압 리스트
 
-            if(!String.valueOf(map.get("frontdoor_sol")).equals("")||!String.valueOf(map.get("frontdoor_sol")).equals("na")) {
-                String front = (String) map.get("frontdoor_sol");
-                switch (front) {
-                    case "close":
-                        frontDoor_sol.add("닫힘");
-                        break;
-                    case "open":
-                        frontDoor_sol.add("열림");
-                        break;
-                    case "jamming":
-                        frontDoor_sol.add("걸림");
-                        break;
-                    default:
-                        frontDoor_sol.add("미확인");
-                        break;
+                if(!String.valueOf(map.get("rsrp")).equals("")) {
+                    rsrp.add(Integer.parseInt(String.valueOf(map.get("rsrp"))));
+                }else{
+                    rsrp.add(null);
                 }
-            }else{
-                frontDoor_sol.add("미확인");
-            }
 
-
-            if(!String.valueOf(map.get("inputdoor")).equals("")||!String.valueOf(map.get("inputdoor")).equals("na")) {
-                String inputdoor = (String) map.get("inputdoor");
-                switch (inputdoor) {
-                    case "close":
-                        inputDoor.add("닫힘");
-                        break;
-                    case "open":
-                        inputDoor.add("열림");
-                        break;
-                    case "jamming":
-                        inputDoor.add("걸림");
-                        break;
-                    default:
-                        inputDoor.add("미확인");
-                        break;
+                if(!String.valueOf(map.get("frontdoor_sol")).equals("")||!String.valueOf(map.get("frontdoor_sol")).equals("na")) {
+                    String front = (String) map.get("frontdoor_sol");
+                    switch (front) {
+                        case "close":
+                            frontDoor_sol.add("닫힘");
+                            break;
+                        case "open":
+                            frontDoor_sol.add("열림");
+                            break;
+                        case "jamming":
+                            frontDoor_sol.add("걸림");
+                            break;
+                        default:
+                            frontDoor_sol.add("미확인");
+                            break;
+                    }
+                }else{
+                    frontDoor_sol.add("미확인");
                 }
-            }else{
-                inputDoor.add("미확인");
+
+                if(!String.valueOf(map.get("inputdoor")).equals("")||!String.valueOf(map.get("inputdoor")).equals("na")) {
+                    String inputdoor = (String) map.get("inputdoor");
+                    switch (inputdoor) {
+                        case "close":
+                            inputDoor.add("닫힘");
+                            break;
+                        case "open":
+                            inputDoor.add("열림");
+                            break;
+                        case "jamming":
+                            inputDoor.add("걸림");
+                            break;
+                        default:
+                            inputDoor.add("미확인");
+                            break;
+                    }
+                }else{
+                    inputDoor.add("미확인");
+                }
+
+            }else if(emType.equals("ITAI")){
+                temp_brd.add((String) map.get("s_tmp2")); //온도 리스트
+                barDataColumns.add((String) map.get("actuator_level")); //배출량 리스트
+                batt_voltage.add((String) map.get("dis_info_level")); //배터리잔량 리스트
+                solar_current.add((String) map.get("dis_info_weight")); //전류 리스트
+                solar_voltage.add((String) map.get("language")); //전압 리스트
             }
         }
 

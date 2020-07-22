@@ -100,13 +100,15 @@
 							return;
 						}
 						// 맵에 장치보기
-						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,res.data.temp_brd,res.data.batt_voltage,res.data.solar_current,res.data.solar_voltage,res.data.rsrp,res.data.frontDoor_sol,res.data.inputDoor);
+						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,
+								res.data.temp_brd,res.data.batt_voltage,res.data.solar_current,res.data.solar_voltage,res.data.rsrp,res.data.frontDoor_sol,res.data.inputDoor);
+
 						$("#mapLoaging").hide();
 					}
 				});
 			}
 
-			// 장비상세정보 리스트 보내기
+			// 장비상태정보 리스트 보내기
 			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_voltage,solar_current,solar_voltage,rsrp,frontDoor_sol,inputDoor) {
 				var locations = mapGps;
 
@@ -154,6 +156,7 @@
 							infowindow.setContent(content);
 							infowindow.open(map, marker);
 							$("#deviceDetail").show();
+
 							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_voltage[i],solar_current[i],solar_voltage[i],rsrp[i],mapGps[i][1],mapGps[i][2],frontDoor_sol[i],inputDoor[i]);
 
 							if (marker.getAnimation() != null) {
@@ -174,6 +177,7 @@
 			// 장치리스트 출력
 			function deviceDetail(pushValue,level,state,temp_brd,batt_voltage,solar_current,solar_voltage,rsrp,gps_la,gps_lo,frontDoor_sol,inputDoor) {
 				var $deviceDetail = $('#deviceDetail');
+				console.log("pushValue : "+pushValue);
 
 				var params = {
 					pushValue:pushValue,
@@ -241,28 +245,29 @@
 
 						html += '<div class="equipment__section">';
 
-						html += '<div class="equipment__signal">';
-						if(res.data.deviceOnOffstatus===true){
-							if (rsrp !== null) {
-								if (rsrp < -120) {
-									html += '<img src="/assets/images/icon__wifi-0.png" alt="신호강도" />';
-								} else if (rsrp < -115) {
-									html += '<img src="/assets/images/icon__wifi-1.png" alt="신호강도" />';
-								} else if (rsrp < -109) {
-									html += '<img src="/assets/images/icon__wifi-2.png" alt="신호강도" />';
-								} else if (rsrp < -103) {
-									html += '<img src="/assets/images/icon__wifi-3.png" alt="신호강도" />';
+						if(res.data.deviceDetailList.emType!=="iTainer") {
+							html += '<div class="equipment__signal">';
+							if (res.data.deviceOnOffstatus === true) {
+								if (rsrp !== null) {
+									if (rsrp < -120) {
+										html += '<img src="/assets/images/icon__wifi-0.png" alt="신호강도" />';
+									} else if (rsrp < -115) {
+										html += '<img src="/assets/images/icon__wifi-1.png" alt="신호강도" />';
+									} else if (rsrp < -109) {
+										html += '<img src="/assets/images/icon__wifi-2.png" alt="신호강도" />';
+									} else if (rsrp < -103) {
+										html += '<img src="/assets/images/icon__wifi-3.png" alt="신호강도" />';
+									} else {
+										html += '<img src="/assets/images/icon__wifi-4.png" alt="신호강도" />';
+									}
 								} else {
-									html += '<img src="/assets/images/icon__wifi-4.png" alt="신호강도" />';
+									html += '<img src="/assets/images/icon__wifi-off.png" alt="신호강도" />';
 								}
-							}else{
+							} else {
 								html += '<img src="/assets/images/icon__wifi-off.png" alt="신호강도" />';
 							}
-						}else{
-							html += '<img src="/assets/images/icon__wifi-off.png" alt="신호강도" />';
+							html += '</div>';
 						}
-						html += '</div>';
-
 						html += '<div id="stateLoading" class="c-loader">';
 						html += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html += '</div>';
@@ -329,7 +334,7 @@
 						html += '<div id="deviceLoading" class="c-loader">';
 						html += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html += '</div>';
-						html += '<h4 class="equipment__section-title">장치 상세 정보</h4>';
+						html += '<h4 class="equipment__section-title">장치 상태정보</h4>';
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'장비 ID : '+'</span>';
@@ -371,17 +376,17 @@
 						html += '<div id="detailLoading" class="c-loader">';
 						html += '<div class="c-loader__active c-loader__active--ring"></div>';
 						html += '</div>';
-						html += '<h4 class="equipment__section-title">상태 상세 정보</h4>';
+						html += '<h4 class="equipment__section-title">상태 상태정보</h4>';
 						html += '<ul class="equipment__info">';
 						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
-						html += '<span class="equipment__info-value">'+tem(temp_brd,"확 인 불 가")+'</span>';
-						html += '</li>';
-						html += '<li class="equipment__info-item">';
-						html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
-						html += '<span class="equipment__info-value">'+lev(level,"확 인 불 가")+'</span>';
-						html += '</li>';
 						if(res.data.deviceDetailList.emType!=="iTainer") {
+							html += '<span class="equipment__info-title">'+'온도 : '+'</span>';
+							html += '<span class="equipment__info-value">'+tem(temp_brd,"확 인 불 가")+'</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">'+'배출량 : '+'</span>';
+							html += '<span class="equipment__info-value">'+lev(level,"확 인 불 가")+'</span>';
+							html += '</li>';
 							if(batt_voltage!=="na"){
 								html += '<li class="equipment__info-item">';
 								html += '<span class="equipment__info-title">' + '배터리전압 : ' + '</span>';
@@ -409,6 +414,33 @@
 							html += '<span class="equipment__info-title">' + '투입구 : ' + '</span>';
 							html += '<span class="equipment__info-value">' + inputDoor +'</span>';
 							html += '</li>';
+						}else{
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '온도 : ' + '</span>';
+							html += '<span class="equipment__info-value">'+tem(temp_brd,"확 인 불 가")+'</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '배출량 : ' + '</span>';
+							html += '<span class="equipment__info-value">'+lev(level,"확 인 불 가")+'</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '배출무게(%) : ' + '</span>';
+							html += '<span class="equipment__info-value">'+lev(batt_voltage,"확 인 불 가")+'</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '배출무게(g) : ' + '</span>';
+							html += '<span class="equipment__info-value">'+grm(solar_current,"확 인 불 가")+'</span>';
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '사용언어 : ' + '</span>';
+							if(solar_voltage==="ko"){
+								html += '<span class="equipment__info-value">' + "한국어" +'</span>';
+							}else if(solar_voltage==="en"){
+								html += '<span class="equipment__info-value">' + "영어" +'</span>';
+							}else{
+								html += '<span class="equipment__info-value">' + "중국어" +'</span>';
+							}
+							html += '</li>';
 						}
 						html += '<li class="equipment__info-item">';
 						html += '<span class="equipment__info-title">'+'GPS : '+'</span>';
@@ -427,7 +459,11 @@
 						html += '</div>';
 
 						$deviceDetail.html(html);
-						timeStamp(pushValue);
+						if(res.data.deviceDetailList.emType!=="iTainer") {
+							timeStamp(pushValue,"ISOL");
+						}else{
+							timeStamp(pushValue,"ITAI");
+						}
 					}
 				});
 			}
@@ -467,7 +503,7 @@
 			}
 
 			// 타임스탬프 그래프함수
-			function timeStamp(pushValue){
+			function timeStamp(pushValue,emType){
 
 				var params = {
 					deviceid:pushValue,
@@ -495,20 +531,38 @@
 							var testTimeStamp = [];
 							$.each(res.data.datarow1, function (key, value) {
 								testTimeStamp.push(parseInt(value.timestamp));
-								if (value.temp_brd === "na") {
-									temp_brd.push(0);
-								} else {
-									temp_brd.push(value.temp_brd);
-								}
-								if (value.level === "na") {
-									level.push(0);
-								} else {
-									level.push(value.level);
-								}
-								if (value.batt_voltage === "na") {
-									batt_voltage.push(0);
-								} else {
-									batt_voltage.push(value.batt_voltage);
+								if(emType==="ITAI") {
+									if (value.s_tmp2 === "na") {
+										temp_brd.push(0);
+									} else {
+										temp_brd.push(value.s_tmp2);
+									}
+									if (value.actuator_level === "na") {
+										level.push(0);
+									} else {
+										level.push(value.actuator_level);
+									}
+									if (value.dis_info_level === "na") {
+										batt_voltage.push(0);
+									} else {
+										batt_voltage.push(value.dis_info_level);
+									}
+								}else{
+									if (value.temp_brd === "na") {
+										temp_brd.push(0);
+									} else {
+										temp_brd.push(value.temp_brd);
+									}
+									if (value.level === "na") {
+										level.push(0);
+									} else {
+										level.push(value.level);
+									}
+									if (value.batt_voltage === "na") {
+										batt_voltage.push(0);
+									} else {
+										batt_voltage.push(value.batt_voltage);
+									}
 								}
 							});
 
@@ -533,37 +587,72 @@
 								// 라벨 최소값 구하기
 								min_milliseconds = nowDate.setHours(nowDate.getHours() - $days);
 
-								barChartData = {
-									labels: testTimeStamp,
-									datasets: [{
-										type: 'line',
-										label: '온도(℃)',
-										yAxisID: 'y',
-										backgroundColor: "#e35f5f",
-										borderWidth: 2,
-										borderColor: "#e35f5f",
-										data: temp_brd,
-										fill: false
-									}, {
-										type: 'line',
-										label: '배출량(%)',
-										yAxisID: 'x',
-										backgroundColor: "#48ae63",
-										borderWidth: 2,
-										borderColor: "#48ae63",
-										data: level,
-										fill: false
-									}, {
-										type: 'line',
-										label: '배터리전압(V)',
-										yAxisID: 'x',
-										backgroundColor: "#ffc600",
-										borderWidth: 2,
-										borderColor: "#ffc600",
-										data: batt_voltage,
-										fill: false
-									}]
+								if(emType==="ITAI") {
+									barChartData = {
+										labels: testTimeStamp,
+										datasets: [{
+											type: 'line',
+											label: '온도(℃)',
+											yAxisID: 'y',
+											backgroundColor: "#e35f5f",
+											borderWidth: 2,
+											borderColor: "#e35f5f",
+											data: temp_brd,
+											fill: false
+										}, {
+											type: 'line',
+											label: '배출량(%)',
+											yAxisID: 'x',
+											backgroundColor: "#48ae63",
+											borderWidth: 2,
+											borderColor: "#48ae63",
+											data: level,
+											fill: false
+										}, {
+											type: 'line',
+											label: '배출무게(%)',
+											yAxisID: 'x',
+											backgroundColor: "#0effbb",
+											borderWidth: 2,
+											borderColor: "#0effbb",
+											data: batt_voltage,
+											fill: false
+										}]
+									}
+								}else{
+									barChartData = {
+										labels: testTimeStamp,
+										datasets: [{
+											type: 'line',
+											label: '온도(℃)',
+											yAxisID: 'y',
+											backgroundColor: "#e35f5f",
+											borderWidth: 2,
+											borderColor: "#e35f5f",
+											data: temp_brd,
+											fill: false
+										}, {
+											type: 'line',
+											label: '배출량(%)',
+											yAxisID: 'x',
+											backgroundColor: "#48ae63",
+											borderWidth: 2,
+											borderColor: "#48ae63",
+											data: level,
+											fill: false
+										}, {
+											type: 'line',
+											label: '배터리전압(V)',
+											yAxisID: 'x',
+											backgroundColor: "#ffc600",
+											borderWidth: 2,
+											borderColor: "#ffc600",
+											data: batt_voltage,
+											fill: false
+										}]
+									}
 								};
+
 
 								new Chart(ctx, {
 									data: barChartData,
@@ -685,36 +774,70 @@
 								// 라벨 최소값 구하기
 								min_milliseconds = nowDate.setHours(nowDate.getHours() - $days);
 
-								barChartData = {
-									labels: testTimeStamp,
-									datasets: [{
-										type: 'line',
-										label: '온도(℃)',
-										yAxisID: 'y',
-										backgroundColor: "#e35f5f",
-										borderWidth: 2,
-										borderColor: "#e35f5f",
-										data: temp_brd,
-										fill: false
-									}, {
-										type: 'line',
-										label: '배출량(%)',
-										yAxisID: 'x',
-										backgroundColor: "#48ae63",
-										borderWidth: 2,
-										borderColor: "#48ae63",
-										data: level,
-										fill: false
-									}, {
-										type: 'line',
-										label: '배터리전압(V)',
-										yAxisID: 'x',
-										backgroundColor: "#ffc600",
-										borderWidth: 2,
-										borderColor: "#ffc600",
-										data: batt_voltage,
-										fill: false
-									}]
+								if(emType==="ITAI") {
+									barChartData = {
+										labels: testTimeStamp,
+										datasets: [{
+											type: 'line',
+											label: '온도(℃)',
+											yAxisID: 'y',
+											backgroundColor: "#e35f5f",
+											borderWidth: 2,
+											borderColor: "#e35f5f",
+											data: temp_brd,
+											fill: false
+										}, {
+											type: 'line',
+											label: '배출량(%)',
+											yAxisID: 'x',
+											backgroundColor: "#48ae63",
+											borderWidth: 2,
+											borderColor: "#48ae63",
+											data: level,
+											fill: false
+										}, {
+											type: 'line',
+											label: '배출무게(%)',
+											yAxisID: 'x',
+											backgroundColor: "#0effbb",
+											borderWidth: 2,
+											borderColor: "#0effbb",
+											data: batt_voltage,
+											fill: false
+										}]
+									}
+								}else{
+									barChartData = {
+										labels: testTimeStamp,
+										datasets: [{
+											type: 'line',
+											label: '온도(℃)',
+											yAxisID: 'y',
+											backgroundColor: "#e35f5f",
+											borderWidth: 2,
+											borderColor: "#e35f5f",
+											data: temp_brd,
+											fill: false
+										}, {
+											type: 'line',
+											label: '배출량(%)',
+											yAxisID: 'x',
+											backgroundColor: "#48ae63",
+											borderWidth: 2,
+											borderColor: "#48ae63",
+											data: level,
+											fill: false
+										}, {
+											type: 'line',
+											label: '배터리전압(V)',
+											yAxisID: 'x',
+											backgroundColor: "#ffc600",
+											borderWidth: 2,
+											borderColor: "#ffc600",
+											data: batt_voltage,
+											fill: false
+										}]
+									}
 								};
 
 								new Chart(ctx, {

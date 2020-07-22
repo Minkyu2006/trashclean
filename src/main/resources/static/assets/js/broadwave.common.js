@@ -1,16 +1,23 @@
-//배출량,온도
+//배출량,온도,배출량(g)
 function tem(str, defaultStr){
-	if(typeof str == "undefined" || str == null || str == "") {
+	if(typeof str == "undefined" || str == null || str === "") {
 		return defaultStr;
 	}else{
 		return str+'℃' ;
 	}
 }
 function lev(str, defaultStr){
-	if(typeof str == "undefined" || str == null || str == "") {
+	if(typeof str == "undefined" || str == null || str === "") {
 		return defaultStr;
 	}else{
 		return str+'%' ;
+	}
+}
+function grm(str, defaultStr){
+	if(typeof str == "undefined" || str == null || str === "") {
+		return defaultStr;
+	}else{
+		return str+'g' ;
 	}
 }
 

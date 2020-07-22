@@ -102,6 +102,9 @@ public class DeviceStatsController {
                              @RequestParam(value="filePath", defaultValue="") String filePath){
         // Json String emNumber 만들기
         String stateEmNumber = '"'+emNumber+'"';
+        String emType = emNumber.substring(0,4);
+//        log.info("emType : "+emType);
+
         List<String> emNumbers = new ArrayList<>();
         emNumbers.add(stateEmNumber);
         HashMap<String,List<String>> deviceids = new HashMap<>();
@@ -126,16 +129,17 @@ public class DeviceStatsController {
 
 //            System.out.println("awsDatax/데이터 존재 : "+awsData);
 
+            model.addAttribute("emType",emType);
+
             // 장비상태정보(정상,주의,심각)
             model.addAttribute("status","equipment__stat "+awsData.get("status"));
             model.addAttribute("stausName",awsData.get("status"));
+            model.addAttribute("devcieInstalDateBtw", deviceInfoListDtos.getEmInstallDate());
 
             // 장비상태정보
-            model.addAttribute("devcieInstalDateBtw", deviceInfoListDtos.getEmInstallDate());
-            model.addAttribute("temp_brd",awsData.get("temp_brd")+"℃");
-            model.addAttribute("level",awsData.get("level")+"%");
-
-            if(!deviceInfoListDtos.getEmType().equals("iTainer")) {
+            if(!emType.equals("ITAI")) {
+                model.addAttribute("temp_brd",awsData.get("temp_brd")+"℃");
+                model.addAttribute("level",awsData.get("level")+"%");
                 if(awsData.get("batt_voltage").equals("na")){
                     model.addAttribute("batt_voltage", awsData.get("batt_voltage"));
                 }else{
@@ -144,9 +148,20 @@ public class DeviceStatsController {
                 model.addAttribute("solar_current", awsData.get("solar_current") + "A");
                 model.addAttribute("solar_voltage", awsData.get("solar_voltage") + "V");
             }else{
-                model.addAttribute("batt_voltage", "없음");
-                model.addAttribute("solar_current", "없음");
-                model.addAttribute("solar_voltage", "없음");
+                model.addAttribute("temp_brd",awsData.get("s_tmp2")+"℃");
+                model.addAttribute("level",awsData.get("actuator_level")+"%");
+                model.addAttribute("batt_voltage",awsData.get("dis_info_level")+"%");
+                model.addAttribute("solar_current",awsData.get("dis_info_weight")+"g");
+
+                String language = (String)awsData.get("language");
+                if(language.equals("ko")){
+                    model.addAttribute("solar_voltage","한국어");
+                }else if(language.equals("en")){
+                    model.addAttribute("solar_voltage","영어");
+                }else{
+                    model.addAttribute("solar_voltage","중국어");
+                }
+
             }
 
             if(awsData.get("gps_la").equals("na") || awsData.get("gps_lo").equals("") || awsData.get("gps_la").equals("na") || awsData.get("gps_lo").equals("")) {
@@ -161,30 +176,33 @@ public class DeviceStatsController {
                 model.addAttribute("offlineName","온라인");
                 model.addAttribute("onoffline","equipment__connect on");
 
-                if (!awsData.get("rsrp").equals("")) {
-                    int rsrp = Integer.parseInt(String.valueOf(awsData.get("rsrp")));
+                if(!emType.equals("ITAI")) {
+                    if (!awsData.get("rsrp").equals("")) {
+                        int rsrp = Integer.parseInt(String.valueOf(awsData.get("rsrp")));
 
-                    if (rsrp < -120) {
-                        model.addAttribute("rsrp", "/assets/images/icon__wifi-0.png");
-                    } else if (rsrp < -115) {
-                        model.addAttribute("rsrp", "/assets/images/icon__wifi-1.png");
-                    } else if (rsrp < -109) {
-                        model.addAttribute("rsrp", "/assets/images/icon__wifi-2.png");
-                    } else if (rsrp < -103) {
-                        model.addAttribute("rsrp", "/assets/images/icon__wifi-3.png");
+                        if (rsrp < -120) {
+                            model.addAttribute("rsrp", "/assets/images/icon__wifi-0.png");
+                        } else if (rsrp < -115) {
+                            model.addAttribute("rsrp", "/assets/images/icon__wifi-1.png");
+                        } else if (rsrp < -109) {
+                            model.addAttribute("rsrp", "/assets/images/icon__wifi-2.png");
+                        } else if (rsrp < -103) {
+                            model.addAttribute("rsrp", "/assets/images/icon__wifi-3.png");
+                        } else {
+                            model.addAttribute("rsrp", "/assets/images/icon__wifi-4.png");
+                        }
                     } else {
-                        model.addAttribute("rsrp", "/assets/images/icon__wifi-4.png");
+                        model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
                     }
-                } else {
-                    model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
                 }
             }else{
                 model.addAttribute("offlineName","오프라인");
                 model.addAttribute("onoffline","equipment__connect off");
                 model.addAttribute("offlineTime",onOffline.get("timestamp"));
-                model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
+                if(!emType.equals("ITAI")) {
+                    model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
+                }
             }
-
         }else {
             // 장비상태정보없음
             model.addAttribute("status","equipment__stat unknowon");
@@ -193,7 +211,9 @@ public class DeviceStatsController {
             model.addAttribute("offlineName","알수없음");
             model.addAttribute("onoffline","equipment__connect unknowon");
 
-            model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
+            if(!emType.equals("ITAI")) {
+                model.addAttribute("rsrp", "/assets/images/icon__wifi-off.png");
+            }
 //            System.out.println("awsData데이터 존재하지 않음");
         }
 

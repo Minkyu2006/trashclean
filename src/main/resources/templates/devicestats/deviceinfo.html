@@ -40,6 +40,14 @@
 				 versionCheck();
 			 }
 
+         	 var $emTypeVal = $("#emTypeVal").val();
+         	 if($emTypeVal==="ITAI"){
+				 $("#rsrpVal").css('display','none');
+				 $("#itaiName1").text("배출무게(%) : ")
+				 $("#itaiName2").text("배출무게(g) : ")
+				 $("#itaiName3").text("사용언어 : ")
+			 }
+
 			 var $updateTime = $("#updateTime").text();
 			 if($updateTime!=="") {
 				 timeStampfnc($updateTime, "#updateTime", null); // 업데이트 시간계산실행
@@ -264,14 +272,14 @@
     <section class="section" style="padding: 10px">
         <article class="article" style="padding: 13px">
 		<h2 id="header_deviceid" th:text="'장비코드 : '+${header_deviceid}" class="article__heading"></h2>
-
+		<input type="hidden" id="emTypeVal" th:value="${emType}" />
 		<div class="winpop__layout--flex">
 			<div class="winpop__section">
 				<div class="equipment__img">
 					<span id="statusName" th:class="${status}" th:text="${stausName}" style="width: 20%;position: absolute;top: -5px;"></span>
 					<span th:class="${onoffline}" th:text="${offlineName}" style="width: 30%;position: absolute;left: 100px;top: -5px;"></span>
 					<img th:src="${filePath}+${saveFileName}" style="bottom:0;"/>
-					<div class="equipment__signal">
+					<div id="rsrpVal" class="equipment__signal">
 						<img th:src="${rsrp}" alt="신호강도" style="left: -20px;position: absolute;top: -5px;"/>
 					</div>
 					<span id="offlineTimeName" style="bottom: 0"></span><input type="hidden" id="onlineTime" th:value="${offlineTime}">
@@ -329,6 +337,7 @@
 							<span class="equipment__info-title">운영일 : </span>
 							<span class="equipment__info-value" id="devcieInstalDateBtw" th:text="${devcieInstalDateBtw}"></span>
 						</li>
+
 						<li class="equipment__info-item">
 							<span class="equipment__info-title">온도 : </span>
 							<span class="equipment__info-value" th:text="${temp_brd}"></span>
@@ -338,17 +347,18 @@
 							<span class="equipment__info-value" th:text="${level}"></span>
 						</li>
 						<li class="equipment__info-item">
-							<span class="equipment__info-title">배터리전압 : </span>
+							<span class="equipment__info-title" id="itaiName1">배터리전압 : </span>
 							<span class="equipment__info-value" th:text="${batt_voltage}"></span>
 						</li>
 						<li class="equipment__info-item">
-							<span class="equipment__info-title">태양광판넬 전류 : </span>
+							<span class="equipment__info-title" id="itaiName2">태양광판넬 전류 : </span>
 							<span class="equipment__info-value" th:text="${solar_current}"></span>
 						</li>
 						<li class="equipment__info-item">
-							<span class="equipment__info-title">태양광판넬 전압 : </span>
+							<span class="equipment__info-title" id="itaiName3">태양광판넬 전압 : </span>
 							<span class="equipment__info-value" th:text="${solar_voltage}"></span>
 						</li>
+
 						<li class="equipment__info-item">
 							<span class="equipment__info-title">위도 : </span>
 							<span class="equipment__info-value" th:text="${gps_la}"></span>
