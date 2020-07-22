@@ -38,7 +38,7 @@
             // console.log("toValue : "+toValue);
             $("#s_from").val(fromValue);
             $("#s_to").val(toValue);
-            $("#s_deviceid").val("ITAI-KR-SEL-0001");
+            $("#s_deviceid").val("ITAI-NCD-JEJU");
 
             $("#btnReset").on('click',function(){
                 reset();
@@ -139,8 +139,7 @@
                         var mlred_arr = []; // reg
                         var pre1_1m_arr = []; // pre1_1m
                         var pre1_3m_arr = []; // pre1_3m
-                        var pre2_1m_arr = []; // pre2_1m
-                        var pre2_3m_arr = []; // pre2_3m
+                        var pre1_7m_arr = []; // pre1_7m
 
                         var fireCheck_arr = []; // fireCheck
 
@@ -224,39 +223,21 @@
                                 }
                             }
 
-                            if (isNaN(Number(value.pre2_1m))===true) {
-                                pre2_1m_arr.push("0");
+                            if (isNaN(Number(value.pre1_7m))===true) {
+                                pre1_7m_arr.push("0");
                             } else {
                                 if($mlred_max.val()!==""){
-                                    if(value.pre2_1m > Number($mlred_max.val())){
-                                        pre2_1m_arr.push($mlred_max.val());
+                                    if(value.pre1_7m > Number($mlred_max.val())){
+                                        pre1_7m_arr.push($mlred_max.val());
                                     }else{
-                                        if(value.pre2_1m>0){
-                                            pre2_1m_arr.push(value.pre2_1m);
+                                        if(value.pre1_7m>0){
+                                            pre1_7m_arr.push(value.pre1_7m);
                                         }else{
-                                            pre2_1m_arr.push("0");
+                                            pre1_7m_arr.push("0");
                                         }
                                     }
                                 }else{
-                                    pre2_1m_arr.push(value.pre2_1m);
-                                }
-                            }
-
-                            if (isNaN(Number(value.pre2_3m))===true) {
-                                pre2_3m_arr.push("0");
-                            } else {
-                                if($mlred_max.val()!==""){
-                                    if(value.pre2_3m > Number($mlred_max.val())){
-                                        pre2_3m_arr.push($mlred_max.val());
-                                    }else{
-                                        if(value.pre2_3m>0){
-                                            pre2_3m_arr.push(value.pre2_3m);
-                                        }else{
-                                            pre2_3m_arr.push("0");
-                                        }
-                                    }
-                                }else{
-                                    pre2_3m_arr.push(value.pre2_3m);
+                                    pre1_7m_arr.push(value.pre1_7m);
                                 }
                             }
 
@@ -297,14 +278,47 @@
                             tvocMinVal = Number($mltvoc_min.val());
                         }
 
+                        var pre1_1m;
+                        var pre1_3m;
+                        var pre1_7m;
                         if($mlred_max.val()===""){
+                            // redMaxVal = Math.max.apply(0, mlred_arr);
                             redMaxVal = Math.max.apply(0, mlred_arr);
+                            pre1_1m = Math.max.apply(0, pre1_1m_arr);
+                            pre1_3m = Math.max.apply(0, pre1_3m_arr);
+                            pre1_7m = Math.max.apply(0, pre1_7m_arr);
+
+                            if(redMaxVal<pre1_1m){
+                                redMaxVal = pre1_1m;
+                            }
+                            if(redMaxVal<pre1_3m){
+                                redMaxVal = pre1_3m;
+                            }
+                            if(redMaxVal<pre1_7m){
+                                redMaxVal = pre1_7m;
+                            }
+
                             $mlred_max.val(redMaxVal);
                         }else{
                             redMaxVal = Number($mlred_max.val());
                         }
                         if($mlred_min.val()===""){
                             redMinVal = Math.min.apply(0, mlred_arr);
+
+                            pre1_1m = Math.min.apply(0, pre1_1m_arr);
+                            pre1_3m = Math.min.apply(0, pre1_3m_arr);
+                            pre1_7m = Math.min.apply(0, pre1_7m_arr);
+
+                            if(redMinVal>pre1_1m){
+                                redMinVal = pre1_1m;
+                            }
+                            if(redMinVal>pre1_3m){
+                                redMinVal = pre1_3m;
+                            }
+                            if(redMinVal>pre1_7m){
+                                redMinVal = pre1_7m;
+                            }
+
                             $mlred_min.val(redMinVal);
                         }else{
                             redMinVal = Number($mlred_min.val());
@@ -415,21 +429,12 @@
                                 fill: false
                             }, {
                                 type: 'line',
-                                label: 'Pre2_1m',
+                                label: 'Pre1_7m',
                                 yAxisID: 'y',
                                 backgroundColor: "#0aadfc",
                                 borderWidth: 2,
                                 borderColor: "#0aadfc",
-                                data: pre2_1m_arr,
-                                fill: false
-                            }, {
-                                type: 'line',
-                                label: 'Pre2_3m',
-                                yAxisID: 'y',
-                                backgroundColor: "#004bac",
-                                borderWidth: 2,
-                                borderColor: "#004bac",
-                                data: pre2_3m_arr,
+                                data: pre1_7m_arr,
                                 fill: false
                             }]
                         };
@@ -601,7 +606,7 @@
                     <th>장비아이디</th>
                     <td>
                         <div class="c-text">
-                            <input type="text" id="s_deviceid" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                            <input type="text" id="s_deviceid" class="c-text__input" />
                         </div>
                     </td>
                     <th>날짜시간 from.</th>
