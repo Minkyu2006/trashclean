@@ -1889,6 +1889,47 @@ h4.article__heading {
 	width: 340px;
 }
 
+.article__body,
+.article__console {
+	position: ralative;
+}
+.article__body:before,
+.article__console:before,
+.article__console-item:before {
+	content: " ";
+	display: table;
+}
+.article__body:after,
+.article__console:arter,
+.article__console-item:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.article__console-item {
+	float: left;
+	position: relative;
+}
+.article__console-item + .article__console-item {
+	margin-left: 20px;
+}
+.article__console-item.article__console-item--right {
+	float: right;
+}
+.article__console-title {
+	float: left;
+	line-height: 30px;
+}
+.article__console-input {
+	float: left;
+	margin-left: 20px;
+}
+.article__console-input > .panel__button {
+	margin-top: 3px;
+}
+
+
+
 /* l-float-heading */
 .l-float-heading {
 	position: relative;
@@ -2794,6 +2835,155 @@ h4.article__heading {
 }
 .place__list li + li {
 	margin-top: 20px;
+}
+
+/* 장비 상태 */
+.eq {
+	position: relative;
+	width: 100%;
+}
+.eq:before {
+	content: " ";
+	display: table;
+}
+.eq:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.eq__item {
+	float: left;
+	width: 20%;
+	padding: 5px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.eq__item-inner {
+	width: 100%;
+	padding: 2px;
+	border: 1px solid #888;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.eq__title {
+	width: 100%;
+	height: 30px;
+	background-color: #424242;
+	color: #fff;
+	font-size: 16px;
+	text-align: center;
+	line-height: 30px;
+}
+.eq__status {
+	width: 100%;
+	margin-top: 2px;
+}
+.eq__btn {
+	width: 100%;
+	height: 30px;
+	border: 0;
+	background-color: #48ae63;
+	color: #fff;
+	font-size: 14px;
+	cursor: pointer;
+}
+.eq__btn.eq__btn--error {
+	background-color: #ff7f7f;
+}
+.eq__btn.eq__btn--none {
+	background-color: #ffcc00;
+}
+
+.eq-error {
+	position: relative;
+	width: 360px;
+}
+.eq-error__head:before,
+.eq-error__console:before {
+	content: " ";
+	display: table;
+}
+.eq-error__head:after,
+.eq-error__console:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.eq-error__title {
+	float: left;
+	height: 30px;
+	line-height: 30px;
+}
+.eq-error__console {
+	float: right;
+}
+.eq-error__console-item {
+	float: left;
+}
+.eq-error__console-item +.eq-error__console-item {
+	margin-left: 10px;
+}
+.eq-error__list {
+	overflow-y: auto;
+	width: 100%;
+	height: 300px;
+	margin-top: 20px;
+	border: 1px solid #888;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.eq-error__item {
+	width: 100%;
+	height: 40px;
+	padding: 0 10px;
+	background-color: #efefef;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.eq-error__item:nth-child(2n) {
+	background-color: #fff;
+}
+.eq-error__item:before {
+	content: " ";
+	display: table;
+}
+.eq-error__item:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.eq-error__date {
+	float: left;
+	display: inline-block;
+	line-height: 40px;
+}
+.eq-error__status {
+	float: right;
+	display: block;
+	width: 60px;
+	height: 30px;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin-top: 5px;
+	padding: 0 5px;
+	background-color: #48ae63;
+	color: #fff;
+	text-align: center;
+	line-height: 30px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.eq-error__status.eq-error__status--error {
+	background-color: #ff7f7f;
+}
+.eq-error__status.eq-error__status--none {
+	background-color: #ffcc00;
 }
 
 /* firmware */

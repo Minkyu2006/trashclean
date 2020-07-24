@@ -10,10 +10,307 @@
 </head>
 
 <div layout:fragment="content" class="contents-body">
-	<article class="article">
-		<h2 class="article__heading">에러보고서(iTainer)</h2>
-
-	</article>
+	<div class="page">
+		<div class="page-title">
+			<div class="page-title__left">
+				<h2>에러 보고서(iTainer)</h2>
+			</div>
+		</div>
+		<section class="section">
+			<article class="article article--1080">
+				<h2 class="article__heading">레포트 조회</h2>
+				<div class="article__body">
+					<div class="article__console">
+						<div class="article__console-item">
+							<div class="article__console-title">대상장비</div>
+							<div class="article__console-input">
+								<div class="c-search-form">
+									<input type="text" class="c-text__input only" readonly="readonly" />
+									<button class="c-search-form__button">조회</button>
+								</div>
+							</div>
+						</div>
+						<div class="article__console-item article__console-item--right">
+							<div class="article__console-title">레포트 시간</div>
+							<div class="article__console-input">
+								<div class="c-search-form">
+									<input type="text" class="c-text__input only" readonly="readonly" value="2020-07-22 18:16:52" style="width: 190px;" />
+									<button class="c-search-form__button refresh">새로고침</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+					<div class="panel" style="padding: 10px 0 0 0;">
+						<div class="panel__inner">
+							<div class="panel__header">장비 상태 리스트</div>
+							<div class="panel__body panel__body--height-auto">
+								<div class="eq">
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">터치스크린</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">키패드</div>
+											<div class="eq__status"><button class="eq__btn eq__btn--error">에러</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">임베디드 디바이스 상태</div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">임베디드 에러</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">결제 도어</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">폐기물 도어</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">오존 살포</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">폐기물 압축</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">저울 디바이스</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">저울 데이터</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">긴급 버튼</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">결제 디바이스</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">이지 카드</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">이지 게이트웨이</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">티머니 결제</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">신용카드 결제</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">로라 디바이스</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">센서 메인</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">온도, 습도</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">ECO2, TVOC</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">NH3</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">RED, IR, GREEN</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">아두이노 NH3</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">GPS 디바이스</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+									<div class="eq__item">
+										<div class="eq__item-inner">
+											<div class="eq__title">GPS 데이터</div>
+											<div class="eq__status"><button class="eq__btn">정상</button></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+		</section>
+		
+		<div class="l-popup open">
+			<div class="l-popup__container">
+				<div class="l-popup__head">
+					<h3 class="l-popup__heading">에러 이력</h3>
+				</div>
+				<div class="l-popup__content">
+					<div class="eq-error">
+						<div class="eq-error__head">
+							<h4 class="eq-error__title">터치스크린</h4>
+							<div class="eq-error__console">
+								<div class="eq-error__console-item">
+									<div class="c-select">
+										<select name="" id="" class="c-select__input">
+											<option value="">24</option>
+											<option value="">48</option>
+											<option value="">72</option>
+										</select>
+									</div>
+								</div>
+								<div class="eq-error__console-item">
+									<button class="c-button c-button--point">검색</button>
+								</div>
+							</div>
+						</div>
+						
+						<div class="eq-error__body">
+							<div class="eq-error__list">
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:10:12</span>
+									<span class="eq-error__status eq-error__status--error">에러</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 17:50:12</span>
+									<span class="eq-error__status eq-error__status--none">미확인</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:10:12</span>
+									<span class="eq-error__status eq-error__status--error">에러</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 17:50:12</span>
+									<span class="eq-error__status eq-error__status--none">미확인</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:10:12</span>
+									<span class="eq-error__status eq-error__status--error">에러</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 17:50:12</span>
+									<span class="eq-error__status eq-error__status--none">미확인</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+								<div class="eq-error__item">
+									<span class="eq-error__date">2020-07-22 18:16:52</span>
+									<span class="eq-error__status">정상</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a href="" class="l-popup__close">팝업 닫기</a>
+			</div>
+		</div>
+	</div>
 </div>
 
 </html>

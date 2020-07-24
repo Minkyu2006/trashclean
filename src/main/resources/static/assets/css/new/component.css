@@ -939,11 +939,23 @@ a.c-button {
 	box-sizing: border-box;
 	cursor: pointer;
 }
+.c-search-form__button.refresh {
+	background: #8d8d8d url(/assets/images/icon__revision--b.png) no-repeat;
+	background-position: center center;
+	-webkit-background-size: 24px 24px;
+	background-size: 24px 24px;
+}
 .c-search-form__button:hover {
 	background: #666 url(/assets/images/icon__search--w.png) no-repeat;
 	-webkit-background-size: 24px 24px;
 	background-size: 24px 24px;
 	background-position: center center;
+}
+.c-search-form__button.refresh:hover {
+	background: #666 url(/assets/images/icon__revision--w.png) no-repeat;
+	background-position: center center;
+	-webkit-background-size: 24px 24px;
+	background-size: 24px 24px;
 }
 
 .c-picfile {
