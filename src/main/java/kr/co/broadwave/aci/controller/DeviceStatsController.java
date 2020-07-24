@@ -282,4 +282,9 @@ public class DeviceStatsController {
         return "devicestats/firmware";
     }
 
+    @RequestMapping("report")
+    public String report(Model model){
+        return "devicestats/report";
+    }
+
 }
