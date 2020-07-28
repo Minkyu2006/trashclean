@@ -284,7 +284,17 @@ public class DeviceStatsController {
 
     @RequestMapping("report")
     public String report(Model model){
+
+        List<MasterCodeDto> equipdCountrys = masterCodeService.findCodeList(CodeType.C0004);
+
+        model.addAttribute("equipdCountrys", equipdCountrys);
+
         return "devicestats/report";
+    }
+
+    @RequestMapping("exhaustinfo")
+    public String exhaustinfo(Model model){
+        return "devicestats/exhaustinfo";
     }
 
 }
