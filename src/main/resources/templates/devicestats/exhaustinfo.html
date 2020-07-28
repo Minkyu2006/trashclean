@@ -6,7 +6,7 @@
 <head>
 	<script type="text/javascript">
 
-		}
+	
 
 	</script>
 </head>
@@ -14,7 +14,490 @@
 <div layout:fragment="content" class="contents-body">
 
 	<section class="section">
-
+		<h2 class="section__heading">배출정보조회</h2>
+		<article class="article">
+			<div class="l-float-heading">
+				<div class="l-float-heading--left">
+					<h4 class="article__hading">검색조건</h4>
+				</div>
+				<div class="l-float-heading--right">
+					<button class="c-button c-button--small">조건 초기화</button>
+				</div>
+			</div>
+			<table class="c-table">
+				<colgroup>
+					<col style="width: 300px;" />
+					<col style="width: 100px;" />
+					<col />
+					<col style="width: 100px;" />
+					<col />
+					<col style="width: 62px;" />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td>
+							<div class="c-date-group">
+                                 <div class="c-date">
+                                     <label for="s_dateFrom" class="c-date__label">from</label>
+                                     <input type="text" class="c-text__input hasDatepicker" id="s_dateFrom" placeholder="연 - 월 - 일" onchange="s_dateFromDate(this.value)">
+                                 </div>
+                                 <div class="c-date">
+                                     <label for="s_dateTo" class="c-date__label">to</label>
+                                     <input type="text" class="c-text__input hasDatepicker" id="s_dateTo" placeholder="연 - 월 - 일" onchange="s_dateToDate(this.value)">
+                                 </div>
+                                 <div style="display:none;">
+                                     <label for="s_dateTo" class="c-date__label">처리율</label>
+                                     <input type="text" class="c-text__input" id="s_percent" style="width: 61px;right: 93px;position: absolute;" maxlength="2" oninput="numberMaxLength(this);" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)">
+                                 </div>
+                             </div>
+						</td>
+						<th>장비코드</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+						<th>거점명</th>
+						<td>
+							<div class="c-text">
+								<input type="text" class="c-text__input" />
+							</div>
+						</td>
+						<td>
+							<button class="c-button c-button--point">조회</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</article>
+		
+		<article class="article">
+			<div class="c-scroll-table c-scroll-table--hover">
+				<div class="c-scroll-table__header">
+					<table style="width: 1579px;">
+						<colgroup>
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 19px;" />
+						</colgroup>
+						<thead>
+							<tr>
+								<th>deviceid</th>
+								<th>결제처리코드</th>
+								<th>발생시간</th>
+								<th>거점명</th>
+								<th>배출결과</th>
+								<th>배출시작시간</th>
+								<th>배출종료시간</th>
+								<th>결제방법</th>
+								<th>카드번호</th>
+								<th>폐기물 무게</th>
+								<th>결제금액</th>
+								<th>선결제금액</th>
+								<th>취소금액</th>
+								<th></th>
+							</tr>
+						</thead>
+					</table>
+				</div>
+				<div class="c-scroll-table__body">
+					<table style="width: 1560px;">
+						<colgroup>
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+						</colgroup>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			
+			
+		</article>
+		
+		
 	</section>
 
 </div>
