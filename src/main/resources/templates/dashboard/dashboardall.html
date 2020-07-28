@@ -2029,7 +2029,7 @@
 		// 사용자정의 시간구하기 (날짜선택에따른 시간)
 		function intervaltimeDate(date) {
 
-			// console.log("date : " + date); 받아온날짜
+			// console.log("date : " + date);
 			var today = new Date();
 			var year = today.getFullYear();
 			var month = today.getMonth()+1;
@@ -2046,7 +2046,7 @@
 			$dateTo.val(todayData);
 
 			var dateObj = new Date(date);
-
+			// console.log("dateObj : " + dateObj);
 			if (today<dateObj) {
 				alertCaution("현재 날짜보다 앞선 날짜는 <BR>선택할 수 없습니다.");
 				$intervaltime.val("");

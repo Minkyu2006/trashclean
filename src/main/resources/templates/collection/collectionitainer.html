@@ -196,7 +196,7 @@
                                 if (res.data.equipmentList[i]["emState"] != null) {
                                     html += '<tr>';
                                     html += '<td >' + nvl(res.data.equipmentList[i]["emNumber"], "확 인 불 가") + '</td>';
-                                    html += '<td >' + nvl(res.data.deviceLevel[i], "확 인 불 가") + '%' + '</td>';
+                                    html += '<td >' + lev(res.data.deviceLevel[i], "확 인 불 가") + '</td>';
                                     html += '<td >' + nvl(res.data.equipmentList[i]["iModel"], "확 인 불 가") + '</td>';
                                     html += '<td >' + nvl(res.data.equipmentList[i]["emCountry"], "확 인 불 가") + '-' + nvl(res.data.equipmentList[i]["emLocation"], "확 인 불 가") + '</td>';
                                     html += '<td >' + nvl(res.data.equipmentList[i]["emState"], "확 인 불 가") + '</td>';
@@ -509,7 +509,7 @@
 
             var params = {
                 emType: "ITAI",
-                emLocation: $('#s_emCountryPop').val(),
+                emLocation: $('#s_emLocationPop').val(),
                 emCountry: $('#s_emCountryPop').val(),
                 emNumber: $('#s_emNumberPop').val(),
                 emState: "대기"
@@ -647,7 +647,7 @@
                                 <table style="width: 739px;">
                                     <colgroup>
                                         <col style="width: 130px;" />
-                                        <col style="width: 80px;" />
+                                        <col style="width: 100px;" />
                                         <col style="width: 200px;" />
                                         <col style="width: 150px;" />
                                         <col style="width: 80px;" />
@@ -671,7 +671,7 @@
                                 <table style="width: 720px;">
                                     <colgroup>
                                         <col style="width: 130px;" />
-                                        <col style="width: 80px;" />
+                                        <col style="width: 100px;" />
                                         <col style="width: 200px;" />
                                         <col style="width: 150px;" />
                                         <col style="width: 80px;" />

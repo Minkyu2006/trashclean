@@ -152,4 +152,7 @@ public class ACIIoTService {
         }
 
     }
+
+    public void setErrorReport(String deviceNumber) {
+    }
 }

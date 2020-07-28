@@ -222,7 +222,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         if (emType != null ){
             query.where(equipment.emType.code.eq(emType));
         }
-        if (emType != null ){
+        if (emState != null ){
             query.where(equipment.emState.name.eq(emState));
         }
         if (emCountryId != null ){

@@ -6,16 +6,366 @@
 <head>
 	<script type="text/javascript">
 
+		$(function () {
+
+			if($("#headerMode").val()==="1"){
+				$("#default_wrap").addClass('wrap');
+				$("#header_device").css('display','block');
+			}else{
+				$("#default_wrap").addClass('wrap nav--small');
+				$("#header_device").css('display','none');
+			}
+
+			//리플레쉬버튼
+			$("#stateRefresh").on('click', function () {
+				stateRefresh();
+			});
+
+			// 에러이력검색
+			$("#errorRecord").on('click', function () {
+				deviceStatePop($("#keyVal").val(),$("#schStateName").text());
+			});
+
+			iTainerDevcieList(1);
+
+			// iTainer 장비리스트
+			$("#iTainerDevcieListSearch").on('click', function () {
+				iTainerDevcieList(1);
+			});
+
+			//대기장비팝업닫기
+			$('#iTainerClose').on('click', function (e) {
+				$('.l-popup').removeClass('open');
+				iTainerDevicReset();
+				e.preventDefault();
+			});
+
+		});
+
+		//레포트시간 출력
+		function reportTime(errorTime,num) {
+
+			var today = new Date(errorTime*1);
+			// console.log("today : "+today);
+
+			var year = today.getFullYear();
+			var month = today.getMonth()+1;
+			var day = today.getDate();
+			let hours = today.getHours(); // 시
+			let minutes = today.getMinutes();  // 분
+			let seconds = today.getSeconds();  // 초
+			if(month < 10){
+				month = "0"+month;
+			}
+			if(day < 10){
+				day = "0"+day;
+			}
+			if(hours < 10){
+				hours = "0"+hours;
+			}
+			if(minutes < 10){
+				minutes = "0"+minutes;
+			}
+			if(seconds < 10){
+				seconds = "0"+seconds;
+			}
+			var todayData = year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+			// console.log("todayData : "+todayData);
+
+			if(num===0) {
+				$("#reportTime").val(todayData);
+			}else{
+				return todayData;
+			}
+		}
+
+		// 에러리포트 새로고침버튼
+		function stateRefresh() {
+			if ($("#deviceid").val().trim() === '') {
+				alertCaution("조회할 장비를 선택해주세요.");
+				return false;
+			}
+
+			var params = {
+				deviceid : $('#deviceid').val(),
+				searchtype : "L",
+				intervalhour : "24"
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/deviestats/errorReport',
+				type : 'post',
+				data: JSON.stringify(params),
+				contentType: "application/json",
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var jsonParse = res.data.resData;
+					// console.log("jsonParse : " + jsonParse);
+
+					if(jsonParse===undefined){
+						alertCaution("데이터가 없는 장비입니다.")
+						return false;
+					}
+
+					var $allErrorReport = $('#allErrorReport');
+
+					var stateNameList = ['터치스크린','키패드','임베디드 디바이스 상태','임베디드 에러','결제 도어','폐기물 도어','오존 살포','폐기물 압축',
+						'저울 디바이스','저울 데이터','긴급 버튼','결제 디바이스','이지 카드','이지 게이트웨이','티머니 결제','신용카드 결제','로라 디바이스',
+						'센서 메인','온도, 습도','ECO2, TVOC','NH3','RED, IR, GREEN','아두이노 NH3','GPS 디바이스','GPS 데이터'];
+					var keyList = ['td001s','kd001s','ed001s','ed002s','ed003s','ed006s','ed009c','ed010s',
+						'ed011s','ed012s','ed014s','pi001s','pi002s','pi003s','pi004c','pi005c','ld001c',
+						'sd001c','sd002c','sd003c','sd004c','sd005c','sd006c','di001c','di002c'];
+
+					var deviceid = jsonParse['deviceid'];
+					// console.log("deviceid : " + deviceid);
+
+					reportTime(jsonParse['data']['error_time'],0);
+
+					var html = '';
+
+					for(i=0; i<keyList.length; i++){
+						// console.log("품목명 : "+stateNameList[i])
+						// console.log("해당 상태값 : "+jsonParse['data'][keyList[i]])
+						var keyListVal = jsonParse['data'][keyList[i]];
+
+						html += '<div class="eq__item">'
+						html += '<div class="eq__item-inner">'
+						html += '<div class="eq__title">'+stateNameList[i]+'</div>'
+						if(keyList[i]==='ed0003s' || keyList[i]==='ed0006s'){
+							if(keyListVal==='0' || keyListVal===''){
+								html += '<div class="eq__status"><button onclick="deviceStatePop(\'' + keyList[i] + '\',\'' + stateNameList[i] + '\')" class="eq__btn">정상</button></div>'
+							}else{
+								html += '<div class="eq__status"><button onclick="deviceStatePop(\'' + keyList[i] + '\',\'' + stateNameList[i] + '\')" class="eq__btn eq__btn--error">에러</button></div>'
+							}
+						}else{
+							if(keyListVal==='0' || keyListVal==='1' || keyListVal===''){
+								html += '<div class="eq__status"><button onclick="deviceStatePop(\'' + keyList[i] + '\',\'' + stateNameList[i] + '\')" class="eq__btn">정상</button></div>'
+							}else{
+								html += '<div class="eq__status"><button onclick="deviceStatePop(\'' + keyList[i] + '\',\'' + stateNameList[i] + '\')" class="eq__btn eq__btn--error">에러</button></div>'
+							}
+						}
+						html += '</div>'
+						html += '</div>'
+					}
+					$allErrorReport.html(html);
+				}
+			});
+		}
+
+		// 장비상태 팝업(에러이력조회)
+		function deviceStatePop(key,stateName) {
+			// console.log("key : "+key);
+			// console.log("stateName : "+stateName);
+
+			$('#deviceState').addClass('open');
+
+			$("#schStateName").text(stateName);
+			$("#keyVal").val(key);
+			var params = {
+				deviceid : $('#deviceid').val(),
+				searchtype : "H",
+				intervalhour : $('#schHour').val()
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url: '/api/deviestats/errorReport',
+				type: 'post',
+				data: JSON.stringify(params),
+				contentType: "application/json",
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var jsonParse = res.data.resData;
+					// console.log("jsonParse : " + jsonParse[0]['data'][key]);
+
+					var $chErrorReport = $('#chErrorReport');
+
+					var datacounts = res.data.datacounts;
+					// console.log("datacounts : " + datacounts);
+
+					// var errorTime = [];
+					// for(j=0; j<datacounts; j++) {
+					// 	errorTime.push(reportTime(jsonParse[j]['data']['error_time'],1));
+					// }
+
+					var html = '';
+					if(jsonParse!==undefined) {
+						for (i = 0; i < datacounts; i++) {
+							var keyData = jsonParse[i]['data'][key];
+							html += '<div class="eq-error__item">'
+							html += '<span class="eq-error__date">' + reportTime(jsonParse[i]['data']['error_time'], 1) + '</span>'
+							if (key === 'ed0003s' || key === 'ed0006s') {
+								if (keyData === '0' || keyData === '') {
+									html += '<span class="eq-error__status">정상</span>'
+								} else {
+									html += '<span class="eq-error__status eq-error__status--error">에러</span>'
+								}
+							} else {
+								if (keyData === '0' || keyData === '1' || keyData === '') {
+									html += '<span class="eq-error__status">정상</span>'
+								} else {
+									html += '<span class="eq-error__status eq-error__status--error">에러</span>'
+								}
+							}
+							html += '</div>'
+						}
+					}else{
+						html += '<div class="eq-error__item">'
+						html += '<span class="eq-error__date">'+"조회된 데이터가 없습니다."+'</span>'
+						html += '</div>'
+					}
+					$chErrorReport.html(html);
+				}
+			});
+		}
+
+		// iTainer 장비리스트팝업
+		function deviceListPop() {
+			$('#device_popup').addClass('open');
+			LocationSetting("",1);
+		}
+		// iTainer 리스트보기
+		function iTainerDevcieList(page) {
+			page = page - 1;
+			if (page < 0) page = 0;
+
+			var perPage = 10;
+			var perArea = 5;
+			var totCnt = 0;
+
+			var $schList = $('#iTainerSchList');
+			var $totalCnt = $('#iTainerTotalCnt');
+
+			var params = {
+				emType: "ITAI",
+				emLocation: $('#s_emLocationPop').val(),
+				emCountry: $('#s_emCountryPop').val(),
+				emNumber: $('#s_emNumberPop').val(),
+			};
+
+			$schList.empty().append('<tr ><td colspan="5" align="center">조회 중</td></tr>');
+			$totalCnt.text('0');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) {xhr.setRequestHeader(header, token);});
+
+			$.ajax({
+				url: '/api/deviestats/iTainerDevcieList?size=' + perPage + '&page=' + page,
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					//화면 출력
+					totCnt = res.data.total_rows;
+					$("#iTainerPaging").jqueryPager({
+						pageSize: perPage,
+						pageBlock: perArea,
+						currentPage: page + 1,
+						pageTotal: totCnt,
+						clickEvent: 'iTainerDevcieList'
+					});
+					if (totCnt === 0) {
+						$schList.empty().append('<tr class="t-c"><td colspan="5" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+					$totalCnt.text(totCnt);
+					var html = '';
+					$.each(res.data.datalist, function (key, value) {
+						html += '<tr >';
+						html += '<td >' + nvl(value.emNumber, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.iModel, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.emCountry, "확 인 불 가") + '-' + nvl(value.emLocation, "확 인 불 가") + '</td>';
+						html += '<td >' + nvl(value.emState, "확 인 불 가") + '</td>';
+						html += '<td><button onclick="deviceWaitingChose(\'' + value.emNumber + '\')" class="c-button c-button--small">선택</button></td>'
+						html += '</tr>';
+					});
+					$schList.html(html);
+				}
+			});
+		}
+		// iTainer 장비선택
+		function deviceWaitingChose(emNumber) {
+			$("#deviceid").val(emNumber);
+			$('.l-popup').removeClass('open');
+			iTainerDevicReset();
+		}
+		// iTainer장비 조건초기화
+		function iTainerDevicReset() {
+			$("#s_emLocationPop").val('');
+			$("#s_emCountryPop").val('');
+			$("#s_emNumberPop").val('');
+		}
+		// 국가,지역검색
+		function LocationSetting(value,num) {
+
+			var params = {
+				s_emCountry: value
+			};
+
+			var $s_emLocation;
+			if(num===1){
+				$s_emLocation = $("#s_emLocationPop");
+			}else{
+				$s_emLocation = $("#s_equipmentLocation");
+			}
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function (e, xhr) {
+				xhr.setRequestHeader(header, token);
+			});
+
+			$.ajax({
+				url: '/api/dashboard/location',
+				type: 'post',
+				data: params,
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function (res) {
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+
+					var html = '';
+					html += '<option value ="">' + '전체' + '</option>';
+					$.each(res.data.locationData, function (key, value) {
+						html += '<option value ="' + echoNull2Blank(value.code) + '">' + echoNull2Blank(value.name) + '</option>';
+					});
+					$s_emLocation.html(html);
+				}
+			});
+		}
+
 	</script>
 </head>
 
 <div layout:fragment="content" class="contents-body">
 	<div class="page">
-		<div class="page-title">
-			<div class="page-title__left">
-				<h2>에러 보고서(iTainer)</h2>
-			</div>
-		</div>
 		<section class="section">
 			<article class="article article--1080">
 				<h2 class="article__heading">레포트 조회</h2>
@@ -25,8 +375,8 @@
 							<div class="article__console-title">대상장비</div>
 							<div class="article__console-input">
 								<div class="c-search-form">
-									<input type="text" class="c-text__input only" readonly="readonly" />
-									<button class="c-search-form__button">조회</button>
+									<input type="text" id="deviceid" class="c-text__input only" readonly="readonly" />
+									<button onclick="deviceListPop()" class="c-search-form__button">조회</button>
 								</div>
 							</div>
 						</div>
@@ -34,8 +384,8 @@
 							<div class="article__console-title">레포트 시간</div>
 							<div class="article__console-input">
 								<div class="c-search-form">
-									<input type="text" class="c-text__input only" readonly="readonly" value="2020-07-22 18:16:52" style="width: 190px;" />
-									<button class="c-search-form__button refresh">새로고침</button>
+									<input type="text" class="c-text__input only" id="reportTime" readonly="readonly" style="width: 190px;" />
+									<button class="c-search-form__button refresh" id="stateRefresh">새로고침</button>
 								</div>
 							</div>
 						</div>
@@ -45,17 +395,17 @@
 						<div class="panel__inner">
 							<div class="panel__header">장비 상태 리스트</div>
 							<div class="panel__body panel__body--height-auto">
-								<div class="eq">
+								<div class="eq" id="allErrorReport">
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">터치스크린</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">키패드</div>
-											<div class="eq__status"><button class="eq__btn eq__btn--error">에러</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
@@ -67,133 +417,133 @@
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">임베디드 에러</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">결제 도어</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">폐기물 도어</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">오존 살포</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">폐기물 압축</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">저울 디바이스</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">저울 데이터</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">긴급 버튼</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">결제 디바이스</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">이지 카드</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">이지 게이트웨이</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">티머니 결제</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">신용카드 결제</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">로라 디바이스</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">센서 메인</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">온도, 습도</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">ECO2, TVOC</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">NH3</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">RED, IR, GREEN</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">아두이노 NH3</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">GPS 디바이스</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">GPS 데이터</div>
-											<div class="eq__status"><button class="eq__btn">정상</button></div>
+											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
 								</div>
@@ -203,8 +553,110 @@
 				</div>
 			</article>
 		</section>
-		
-		<div class="l-popup open">
+
+		<!-- iTainer 장비 팝업 -->
+		<div class="l-popup" id="device_popup">
+			<div class="l-popup__container">
+				<div class="l-popup__head">
+					<h3 class="l-popup__heading">iTainer 장비조회</h3>
+				</div>
+				<div class="l-popup__content">
+					<div class="l-popup__section">
+						<table class="c-table c-table--non-border">
+							<colgroup>
+								<col style="width: 100px;"/>
+								<col/>
+								<col style="width: 100px;"/>
+								<col/>
+								<col style="width: 100px;"/>
+								<col/>
+								<col style="width: 100px;"/>
+								<col/>
+								<col style="width: 60px;"/>
+							</colgroup>
+							<tbody>
+							<tr>
+								<th>모델 타입</th>
+								<td>
+									<input type="text" id="s_emTypePop" value="iTainer" class="c-text__input" readonly="readonly"/>
+								</td>
+								<th>국가</th>
+								<td>
+									<div class="c-select">
+										<select id="s_emCountryPop" class="c-select__input" onchange="LocationSetting(this.value,1)">
+											<option value="">전체</option>
+											<option th:each="equipdCountry : ${equipdCountrys}"
+													th:value="${equipdCountry.code}"
+													th:text="${equipdCountry.name}">
+											</option>
+										</select>
+									</div>
+								</td>
+								<th>지역</th>
+								<td>
+									<div class="c-select">
+										<select id="s_emLocationPop" class="c-select__input">
+										</select>
+									</div>
+								</td>
+								<th>장비번호</th>
+								<td>
+									<div class="c-text">
+										<input type="text" class="c-text__input" id="s_emNumberPop"/>
+									</div>
+								</td>
+								<td>
+									<button id="iTainerDevcieListSearch" class="c-button c-button--point">조회</button>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="l-popup__section">
+						<table class="c-table">
+							<colgroup>
+								<col/>
+								<col/>
+								<col/>
+								<col/>
+								<col style="width: 60px;"/>
+							</colgroup>
+							<thead>
+							<tr>
+								<th>장비번호</th>
+								<th>모델명/종류</th>
+								<th>국가/지역</th>
+								<th>설비상태</th>
+								<th></th>
+							</tr>
+							</thead>
+							<tbody id="iTainerSchList">
+
+							</tbody>
+						</table>
+
+						<div class="c-pager">
+							<div class="c-paging" id="iTainerPaging">
+								<!-- 페이징 처리되는곳   -->
+							</div>
+							<div class="c-paging__total">
+								<div class="c-paging__total-group">
+									Total
+								</div>
+								<div class="c-paging__total-group" id="iTainerTotalCnt">0</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a href="#" id="iTainerClose" class="l-popup__close">팝업닫기</a>
+			</div>
+		</div>
+
+
+
+
+		<div class="l-popup" id="deviceState">
 			<div class="l-popup__container">
 				<div class="l-popup__head">
 					<h3 class="l-popup__heading">에러 이력</h3>
@@ -212,97 +664,28 @@
 				<div class="l-popup__content">
 					<div class="eq-error">
 						<div class="eq-error__head">
-							<h4 class="eq-error__title">터치스크린</h4>
+							<h4 class="eq-error__title" id="schStateName">터치스크린</h4>
+							<input type="hidden" id="keyVal" />
 							<div class="eq-error__console">
 								<div class="eq-error__console-item">
 									<div class="c-select">
-										<select name="" id="" class="c-select__input">
-											<option value="">24</option>
-											<option value="">48</option>
-											<option value="">72</option>
+										<select id="schHour" class="c-select__input">
+											<option value="24">24</option>
+											<option value="48">48</option>
+											<option value="72">72</option>
+											<option value="1000">TEST</option>
 										</select>
 									</div>
 								</div>
 								<div class="eq-error__console-item">
-									<button class="c-button c-button--point">검색</button>
+									<button id="errorRecord" class="c-button c-button--point">검색</button>
 								</div>
 							</div>
 						</div>
 						
 						<div class="eq-error__body">
-							<div class="eq-error__list">
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:10:12</span>
-									<span class="eq-error__status eq-error__status--error">에러</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 17:50:12</span>
-									<span class="eq-error__status eq-error__status--none">미확인</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:10:12</span>
-									<span class="eq-error__status eq-error__status--error">에러</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 17:50:12</span>
-									<span class="eq-error__status eq-error__status--none">미확인</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:10:12</span>
-									<span class="eq-error__status eq-error__status--error">에러</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 17:50:12</span>
-									<span class="eq-error__status eq-error__status--none">미확인</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
-								<div class="eq-error__item">
-									<span class="eq-error__date">2020-07-22 18:16:52</span>
-									<span class="eq-error__status">정상</span>
-								</div>
+							<div class="eq-error__list" id="chErrorReport">
+
 							</div>
 						</div>
 					</div>

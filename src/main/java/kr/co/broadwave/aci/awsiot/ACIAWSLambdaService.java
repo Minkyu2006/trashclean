@@ -398,4 +398,24 @@ public class ACIAWSLambdaService {
         return getHashMap(res);
     }
 
+    //장비온라인 상태 확인하기
+    public HashMap getDeviceErrorReport(String params){
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/itainer/errreport";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity<>(params,headers);
+
+        ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+        return getHashMap(res);
+
+    }
+
 }

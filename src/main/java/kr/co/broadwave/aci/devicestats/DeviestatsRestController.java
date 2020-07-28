@@ -3,12 +3,14 @@ package kr.co.broadwave.aci.devicestats;
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
 import kr.co.broadwave.aci.awsiot.ACIAWSIoTDeviceService;
+import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
 import kr.co.broadwave.aci.equipment.EquipmentEmnumberDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
+import kr.co.broadwave.aci.equipment.EquipmentWaitingCollectionListDto;
 import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.files.FileUploadService;
 import kr.co.broadwave.aci.imodel.IModel;
@@ -56,6 +58,7 @@ public class DeviestatsRestController {
     private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
     private final AccountService accountService;
     private final FileUploadService fileUploadService;
+    private final ACIAWSLambdaService aciawsLambdaService;
 
     @Autowired
     public DeviestatsRestController(ModelMapper modelMapper,
@@ -63,6 +66,7 @@ public class DeviestatsRestController {
                                     AccountService accountService,
                                     EquipmentService equipmentService,
                                     MasterCodeService masterCodeService,
+                                    ACIAWSLambdaService aciawsLambdaService,
                                     ACIAWSIoTDeviceService aciawsIoTDeviceService,
                                     DevicestatusService devicestatusService) {
         this.modelMapper = modelMapper;
@@ -72,6 +76,7 @@ public class DeviestatsRestController {
         this.masterCodeService = masterCodeService;
         this.accountService = accountService;
         this.devicestatusService = devicestatusService;
+        this.aciawsLambdaService = aciawsLambdaService;
     }
 
     // 카운트리스트 조회
@@ -588,4 +593,58 @@ public class DeviestatsRestController {
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
         }
     }
+
+    // 아이테이너 리스트조회
+    @PostMapping("iTainerDevcieList")
+    public ResponseEntity<Map<String,Object>> iTainerDevcieList(@RequestParam (value="emType", defaultValue="")String emType,
+                                                                @RequestParam (value="emCountry", defaultValue="")String emCountry,
+                                                                @RequestParam (value="emLocation", defaultValue="")String emLocation,
+                                                                @RequestParam (value="emNumber", defaultValue="")String emNumber,
+                                                                @PageableDefault Pageable pageable) {
+
+        Long emCountryId = null;
+        Long emLocationId = null;
+
+        if (!emCountry.equals("")) {
+            Optional<MasterCode> emCountrys = masterCodeService.findByCode(emCountry);
+            emCountryId = emCountrys.map(MasterCode::getId).orElse(null);
+        }
+        if (!emLocation.equals("")) {
+            Optional<MasterCode> emLocations = masterCodeService.findByCode(emLocation);
+            emLocationId = emLocations.map(MasterCode::getId).orElse(null);
+        }
+
+        Page<EquipmentWaitingCollectionListDto> equipmentCollectionListDtos =
+                equipmentService.findByWaitingEquipmentCollectionQuerydsl(emType, emCountryId, emLocationId,emNumber,null, pageable);
+
+        return CommonUtils.ResponseEntityPage(equipmentCollectionListDtos);
+    }
+
+    // 장비 에러리포트받기
+    @ResponseBody
+    @PostMapping("errorReport")
+    public ResponseEntity<Map<String,Object>> errorReport(@RequestBody String params) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+
+        HashMap<String, ArrayList> resData = aciawsLambdaService.getDeviceErrorReport(params);
+//        log.info("resData : "+resData);
+        Object datacounts = resData.get("datacounts");
+        int datacounts2 = Integer.parseInt(String.valueOf(datacounts));
+        if(!String.valueOf(datacounts).equals("0")){
+            if(datacounts2>1){
+                data.put("resData",resData.get("data"));
+                data.put("datacounts",String.valueOf(datacounts));
+            }else{
+//                log.info("data : "+resData.get("data").get(0));
+                data.put("resData",resData.get("data").get(0));
+                data.put("datacounts",String.valueOf(datacounts));
+            }
+        }
+
+        res.addResponse("data",data);
+
+        return ResponseEntity.ok(res.success());
+    }
+
 }
