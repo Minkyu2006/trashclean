@@ -15,7 +15,7 @@
 				$("#header_device").css('display','none');
 			}
 
-			// nowDateSetting();
+			nowDateSetting();
 
 			// 달력폼
 			$("#s_dateFrom").datepicker({});
@@ -169,7 +169,8 @@
 		//날짜별검색 현재날짜셋팅
 		function nowDateSetting() {
 			var $s_dateFrom = $("#s_dateFrom");
-		
+			var $s_dateTo = $("#s_dateTo");
+
 			var today = new Date();
 			var year = today.getFullYear();
 			var month = today.getMonth()+1;
@@ -182,6 +183,7 @@
 			}
 			var todayData = year+"-"+month+"-"+day;
 			$s_dateFrom.val(todayData);
+			$s_dateTo.val(todayData);
 		}
 		
 		// 시작날짜가 끝난날짜보다 클수없음

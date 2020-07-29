@@ -113,7 +113,7 @@ public class DashboardRestController {
         //log.info("Device History 가져오기 시작");
 
         HashMap<String, Object> resData = dashboardService.getDeviceHistory(deviceid,intervaltime);
-        log.info("data : "+resData.get("data"));
+//        log.info("data : "+resData.get("data"));
         data.put("statusCode",resData.get("statusCode"));
         data.put("datarow1",resData.get("data"));
         res.addResponse("data",data);
@@ -199,7 +199,7 @@ public class DashboardRestController {
 //        log.info("deviceids : " + deviceids);
 //        log.info("deviceIdList : " + deviceIdList);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
-        log.info("resData : " + resData);
+//        log.info("resData : " + resData);
         List<String> sortDevice = new ArrayList<>();
 
         Object datacounts = resData.get("datacounts");
@@ -973,7 +973,7 @@ public class DashboardRestController {
         List<String> s_language = new ArrayList<>();// ITAI 사용언어
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
-        log.info("AWS 장치 data : "+resData.get("data"));
+//        log.info("AWS 장치 data : "+resData.get("data"));
 
         Object datacounts = resData.get("datacounts");
         int number = Integer.parseInt(datacounts.toString()); //반복수
@@ -1141,7 +1141,7 @@ public class DashboardRestController {
         Optional<Account> optionalAccount = accountService.findByUserid(userid);
 
         if(!optionalAccount.isPresent()){
-            log.info("사용자 일반 관리자(일반정보) : 사용자아이디: '" + account.getUserid() + "'");
+//            log.info("사용자 일반 관리자(일반정보) : 사용자아이디: '" + account.getUserid() + "'");
             return ResponseEntity.ok(res.fail(ResponseErrorCode.E004.getCode(), ResponseErrorCode.E004.getDesc()));
         }else{
             account.setId(optionalAccount.get().getId());
