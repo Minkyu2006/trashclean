@@ -1,4 +1,4 @@
-package kr.co.broadwave.aci.devicestats;
+package kr.co.broadwave.aci.devicestats.frimware;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,5 +9,5 @@ import org.springframework.data.domain.Pageable;
  * Remark :
  */
 public interface FirmwareRepositoryCustom {
-    Page<firmwareFileListDto> findByFirmwareListQuerydsl(Pageable pageable);
+    Page<FirmwareFileListDto> findByFirmwareListQuerydsl(Pageable pageable);
 }

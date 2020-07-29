@@ -1,7 +1,6 @@
-package kr.co.broadwave.aci.devicestats;
+package kr.co.broadwave.aci.devicestats.frimware;
 
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Minkyu

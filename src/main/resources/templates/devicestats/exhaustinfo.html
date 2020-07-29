@@ -2,11 +2,239 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
 	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	  layout:decorate ="~{layout/default}">
-
 <head>
 	<script type="text/javascript">
 
-	
+		$(function() {
+
+			if($("#headerMode").val()==="1"){
+				$("#default_wrap").addClass('wrap');
+				$("#header_device").css('display','block');
+			}else{
+				$("#default_wrap").addClass('wrap nav--small');
+				$("#header_device").css('display','none');
+			}
+
+			// nowDateSetting();
+
+			// 달력폼
+			$("#s_dateFrom").datepicker({});
+			$("#s_dateTo").datepicker({});
+
+			infoList();
+			// 배출정보조회 리스트버튼
+			$('#infoBtn').on('click', function() {
+				infoList();
+			});
+
+		});
+
+		//배출시간,배출시작시간,배출종료시간 출력
+		function levelTime(errorTime) {
+
+			var today = new Date(errorTime*1);
+			// console.log("today : "+today);
+
+			var year = today.getFullYear();
+			var month = today.getMonth()+1;
+			var day = today.getDate();
+			let hours = today.getHours(); // 시
+			let minutes = today.getMinutes();  // 분
+			let seconds = today.getSeconds();  // 초
+			if(month < 10){
+				month = "0"+month;
+			}
+			if(day < 10){
+				day = "0"+day;
+			}
+			if(hours < 10){
+				hours = "0"+hours;
+			}
+			if(minutes < 10){
+				minutes = "0"+minutes;
+			}
+			if(seconds < 10){
+				seconds = "0"+seconds;
+			}
+			var todayData = year+"-"+month+"-"+day+" "+hours+":"+minutes+":"+seconds;
+			// console.log("todayData : "+todayData);
+
+			return todayData;
+
+		}
+
+		function infoList() {
+
+			var $infoList = $("#infoList");
+
+			// // 날짜를 유닉스타임스탬프로 변환
+			// var toVal = new Date($('#s_dateFrom').val()).getTime();
+			// var fromVal = new Date($('#s_dateTo').val()).getTime();
+
+			var toVal;
+			var fromVal;
+			var $s_dateFrom = $('#s_dateFrom').val();
+			var $s_dateTo = $('#s_dateTo').val();
+			if($s_dateFrom.length===10) {
+				var dataFrom = $s_dateFrom.split("");
+				for(i = 0; i<2; i++) {
+					dataFrom.splice(dataFrom.indexOf("-"), 1);
+				}
+				fromVal = dataFrom.join("");
+			}
+			if($s_dateTo.length===10) {
+				var dateTo = $s_dateTo.split("");
+				for(i = 0; i<2; i++) {
+					dateTo.splice(dateTo.indexOf("-"), 1);
+				}
+				toVal = dateTo.join("");
+			}
+
+			var params = {
+				fromVal : fromVal,
+				toVal : toVal,
+				deviceid : $('#deviceid').val(),
+				basename : $('#basename').val(),
+			};
+
+			$infoList.empty().append('<tr class="t-c"><td colspan="13" align = "center">조회 중</td></tr>');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/payment/list',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					//화면 출력
+					var html = '';
+					var paymentListDtos = res.data.paymentListDtos;
+					var len = res.data.paymentListDtos.length;
+
+					if (len === 0 || len === undefined) {
+						$infoList.empty().append('<tr class="t-c"><td colspan="13" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return;
+					}
+
+					for(i=0; i<len; i++){
+						html += '<tr >';
+							html += '<td>'+ nvl(paymentListDtos[i]["deviceid"],"확 인 불 가") +'</td>';
+							html += '<td>'+ nvl(paymentListDtos[i]["eventTrid"],"확 인 불 가") +'</td>';
+							html += '<td>'+ nvl(levelTime(paymentListDtos[i]["eventTime"]),"확 인 불 가") +'</td>';
+							html += '<td>'+ nvl(paymentListDtos[i]["baseName"],"확 인 불 가") +'</td>';
+							var beforeStr = paymentListDtos[i]["disResult"];
+							var afterStr = null;
+							if(beforeStr !== ''){
+								afterStr = beforeStr.split(',');
+								html += '<td>'+ afterStr[1] +'</td>';
+							}else{
+								html += '<td>'+ '확 인 불 가' +'</td>';
+							}
+							html += '<td>'+ nvl(levelTime(paymentListDtos[i]["disStime"]),"확 인 불 가") +'</td>';
+							html += '<td>'+ nvl(levelTime(paymentListDtos[i]["disEtime"]),"확 인 불 가") +'</td>';
+							var disMethod = paymentListDtos[i]["disMethod"]
+							if(disMethod==='CC'){
+								html += '<td>'+ '신용카드' +'</td>';
+							}else if(disMethod==='TM'){
+								html += '<td>'+ '티머니' +'</td>';
+							}else if(disMethod==='FR'){
+								html += '<td>'+ '무료' +'</td>';
+							}else{
+								html += '<td>'+ '확 인 불 가' +'</td>';
+							}
+							var $disCardno = paymentListDtos[i]["disCardno"]
+						 	if($disCardno !== ''){
+								$disCardno = $disCardno.substr($disCardno.length-4);
+								html += '<td>'+ $disCardno +'</td>';
+							}else{
+								html += '<td>'+ '확 인 불 가' +'</td>';
+							}
+							html += '<td>'+ nvl(paymentListDtos[i]["disWeight"],"확 인 불 가") +'</td>';
+							html += '<td>'+ nvl(paymentListDtos[i]["disPayAmt"],"확 인 불 가") +'</td>';
+							html += '<td>'+ nvl(paymentListDtos[i]["disPreAmt"],"확 인 불 가") +'</td>';
+							html += '<td>'+ nvl(paymentListDtos[i]["disCancelAmt"],"확 인 불 가") +'</td>';
+						html += '</tr>';
+					}
+					$infoList.html(html);
+				}
+			})
+		}
+		
+		//날짜별검색 현재날짜셋팅
+		function nowDateSetting() {
+			var $s_dateFrom = $("#s_dateFrom");
+		
+			var today = new Date();
+			var year = today.getFullYear();
+			var month = today.getMonth()+1;
+			var day = today.getDate();
+			if(month < 10){
+				month = "0"+month;
+			}
+			if(day < 10){
+				day = "0"+day;
+			}
+			var todayData = year+"-"+month+"-"+day;
+			$s_dateFrom.val(todayData);
+		}
+		
+		// 시작날짜가 끝난날짜보다 클수없음
+		function s_dateFromDate(date) {
+			var $s_dateTo = $("#s_dateTo").val();
+			if($s_dateTo!=="") {
+				var dateObj = new Date(date);
+
+				var year = dateObj.getFullYear();
+				var month = dateObj.getMonth()+1;
+				var day = dateObj.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+
+				var choseDate = year+"-"+month+"-"+day;
+
+				if ($s_dateTo < choseDate) {
+					alertCaution("시작날짜가 마지막날짜보다<BR>클 수 없습니다.");
+					$("#s_dateFrom").val("");
+					return false;
+				}
+			}
+		}
+
+		// 끝난날짜보다 시작날짜보다 낮을수없음
+		function s_dateToDate(date) {
+			var $s_dateFrom = $("#s_dateFrom").val();
+			if($s_dateFrom!=="") {
+				var dateObj = new Date(date);
+
+				var year = dateObj.getFullYear();
+				var month = dateObj.getMonth()+1;
+				var day = dateObj.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+
+				var choseDate = year+"-"+month+"-"+day;
+
+				if ($s_dateFrom > choseDate) {
+					alertCaution("마지막날짜가 시작날짜보다<BR>작을 수 없습니다.");
+					$("#s_dateTo").val("");
+					return false;
+				}
+			}
+		}
 
 	</script>
 </head>
@@ -19,9 +247,6 @@
 			<div class="l-float-heading">
 				<div class="l-float-heading--left">
 					<h4 class="article__hading">검색조건</h4>
-				</div>
-				<div class="l-float-heading--right">
-					<button class="c-button c-button--small">조건 초기화</button>
 				</div>
 			</div>
 			<table class="c-table">
@@ -39,32 +264,28 @@
 							<div class="c-date-group">
                                  <div class="c-date">
                                      <label for="s_dateFrom" class="c-date__label">from</label>
-                                     <input type="text" class="c-text__input hasDatepicker" id="s_dateFrom" placeholder="연 - 월 - 일" onchange="s_dateFromDate(this.value)">
+                                     <input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일" onchange="s_dateFromDate(this.value)">
                                  </div>
                                  <div class="c-date">
                                      <label for="s_dateTo" class="c-date__label">to</label>
-                                     <input type="text" class="c-text__input hasDatepicker" id="s_dateTo" placeholder="연 - 월 - 일" onchange="s_dateToDate(this.value)">
-                                 </div>
-                                 <div style="display:none;">
-                                     <label for="s_dateTo" class="c-date__label">처리율</label>
-                                     <input type="text" class="c-text__input" id="s_percent" style="width: 61px;right: 93px;position: absolute;" maxlength="2" oninput="numberMaxLength(this);" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)">
+                                     <input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일" onchange="s_dateToDate(this.value)">
                                  </div>
                              </div>
 						</td>
 						<th>장비코드</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input id="deviceid" type="text" class="c-text__input" />
 							</div>
 						</td>
 						<th>거점명</th>
 						<td>
 							<div class="c-text">
-								<input type="text" class="c-text__input" />
+								<input id="basename" type="text" class="c-text__input" />
 							</div>
 						</td>
 						<td>
-							<button class="c-button c-button--point">조회</button>
+							<button id="infoBtn" class="c-button c-button--point">조회</button>
 						</td>
 					</tr>
 				</tbody>
@@ -74,17 +295,17 @@
 		<article class="article">
 			<div class="c-scroll-table c-scroll-table--hover">
 				<div class="c-scroll-table__header">
-					<table style="width: 1579px;">
+					<table style="width: 1669px;">
 						<colgroup>
+							<col style="width: 130px;" />
+							<col style="width: 180px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 110px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
+							<col style="width: 150px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
@@ -93,7 +314,7 @@
 						</colgroup>
 						<thead>
 							<tr>
-								<th>deviceid</th>
+								<th>장비코드</th>
 								<th>결제처리코드</th>
 								<th>발생시간</th>
 								<th>거점명</th>
@@ -101,7 +322,7 @@
 								<th>배출시작시간</th>
 								<th>배출종료시간</th>
 								<th>결제방법</th>
-								<th>카드번호</th>
+								<th>카드번호(뒷번호4자리)</th>
 								<th>폐기물 무게</th>
 								<th>결제금액</th>
 								<th>선결제금액</th>
@@ -112,383 +333,24 @@
 					</table>
 				</div>
 				<div class="c-scroll-table__body">
-					<table style="width: 1560px;">
+					<table style="width: 1650px;">
 						<colgroup>
+							<col style="width: 130px;" />
+							<col style="width: 180px;" />
+							<col style="width: 120px;" />
+							<col style="width: 120px;" />
+							<col style="width: 110px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
-							<col style="width: 120px;" />
+							<col style="width: 150px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
 							<col style="width: 120px;" />
 						</colgroup>
-						<tbody>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-								<td>1</td>
-							</tr>
+						<tbody id="infoList">
+
 						</tbody>
 					</table>
 				</div>

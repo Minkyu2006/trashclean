@@ -15,7 +15,7 @@
 			}
 
 			LocationSetting("");
-			callList(1);
+			callList();
 
 			$("#saveBtn").on('click',function(){
 				save();
@@ -29,7 +29,7 @@
 			});
 
 			$("#btnSearch").on('click',function(){
-				callList(1);
+				callList();
 			});
 
 		});
@@ -90,17 +90,14 @@
 					alertSuccess('적용되었습니다.');
 					checkfalse();
 					savereset();
-					callList(1);
+					callList();
 					$("#valueLoding").hide();
 				}
 			});
 		}
 
 		// 조회버튼
-		function callList(page) {
-
-			page = page - 1;
-			if (page < 0) page = 0;
+		function callList() {
 
 			var $schList = $('#schList');
 
@@ -111,14 +108,14 @@
 				emNumber:$('#s_emNumber').val(),
 			};
 
-			$schList.empty().append('<tr ><td colspan="11" align = "center">조회 중</td></tr>');
+			$schList.empty().append('<tr class="t-c"><td colspan="11" align = "center">조회 중</td></tr>');
 
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
 			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			$.ajax({
-				url:'/api/equipment/baselist?size=' + '&page=' + page,
+				url:'/api/equipment/baselist',
 				type : 'post',
 				data : params,
 				cache:false,

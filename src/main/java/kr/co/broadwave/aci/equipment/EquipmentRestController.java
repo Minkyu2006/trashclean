@@ -293,8 +293,7 @@ public class EquipmentRestController {
     public ResponseEntity<Map<String,Object>> baselist(@RequestParam (value="emNumber", defaultValue="") String emNumber,
                                                             @RequestParam (value="emType", defaultValue="")String emType,
                                                             @RequestParam (value="emCountry", defaultValue="")String emCountry,
-                                                            @RequestParam (value="emLocation", defaultValue="")String emLocation,
-                                                            @PageableDefault Pageable pageable){
+                                                            @RequestParam (value="emLocation", defaultValue="")String emLocation){
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
@@ -316,7 +315,7 @@ public class EquipmentRestController {
         }
 
         List<EquipmentBaseListDto> equipmentListDtos =
-                equipmentService.findByBaseEquipmentSearch(emNumber,emLocationId,emType,emCountryId,pageable);
+                equipmentService.findByBaseEquipmentSearch(emNumber,emLocationId,emType,emCountryId);
 //        log.info("equipmentListDtos : "+equipmentListDtos);
 
         data.put("equipmentListDtos",equipmentListDtos);

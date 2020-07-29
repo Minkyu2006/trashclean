@@ -1,4 +1,4 @@
-package kr.co.broadwave.aci.devicestats;
+package kr.co.broadwave.aci.devicestats.frimware;
 
 import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.mastercode.MasterCode;

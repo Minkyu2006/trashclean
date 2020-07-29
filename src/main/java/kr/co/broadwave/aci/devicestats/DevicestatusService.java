@@ -1,5 +1,11 @@
 package kr.co.broadwave.aci.devicestats;
 
+import kr.co.broadwave.aci.devicestats.frimware.Firmware;
+import kr.co.broadwave.aci.devicestats.frimware.FirmwareRepository;
+import kr.co.broadwave.aci.devicestats.frimware.FirmwareRepositoryCustom;
+import kr.co.broadwave.aci.devicestats.frimware.FirmwareFileListDto;
+import kr.co.broadwave.aci.devicestats.payment.PaymentListDto;
+import kr.co.broadwave.aci.devicestats.payment.PaymentRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,14 +28,17 @@ public class DevicestatusService {
     private final DevicestatsRepositoryCustom devicestatsRepositoryCustom;
     private final FirmwareRepository firmwareRepository;
     private final FirmwareRepositoryCustom firmwareRepositoryCustom;
+    private final PaymentRepositoryCustom paymentRepositoryCustom;
 
     @Autowired
     public DevicestatusService(DevicestatsRepositoryCustom devicestatsRepositoryCustom,
                                FirmwareRepository firmwareRepository,
-                               FirmwareRepositoryCustom firmwareRepositoryCustom) {
+                               FirmwareRepositoryCustom firmwareRepositoryCustom,
+                               PaymentRepositoryCustom paymentRepositoryCustom) {
         this.devicestatsRepositoryCustom = devicestatsRepositoryCustom;
         this.firmwareRepository = firmwareRepository;
         this.firmwareRepositoryCustom = firmwareRepositoryCustom;
+        this.paymentRepositoryCustom = paymentRepositoryCustom;
     }
 
     public List<DevicestatsDto> queryDslDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2) {
@@ -52,7 +61,7 @@ public class DevicestatusService {
         return firmwareRepository.save(firmware);
     }
 
-    public Page<firmwareFileListDto> findByFirmwareListQuerydsl(Pageable pageable) {
+    public Page<FirmwareFileListDto> findByFirmwareListQuerydsl(Pageable pageable) {
         return firmwareRepositoryCustom.findByFirmwareListQuerydsl(pageable);
     }
 
@@ -62,5 +71,9 @@ public class DevicestatusService {
 
     public void firmwareDelete(Firmware firmware) {
         firmwareRepository.delete(firmware);
+    }
+
+    public List<PaymentListDto> findByPaymentListQuerydsl(String fromVal, String toVal, String deviceid, String basename) {
+        return paymentRepositoryCustom.findByPaymentListQuerydsl(fromVal,toVal,deviceid,basename);
     }
 }

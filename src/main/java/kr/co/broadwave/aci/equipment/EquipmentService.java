@@ -106,8 +106,8 @@ public class EquipmentService {
         return equipmentRepositoryCustom.queryDslDeviceEmNumber(emNumber,emTypeId,emCountryId,emLocationId);
     }
 
-    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, String emTypeId, Long emCountryId, Pageable pageable) {
-        return equipmentRepositoryCustom.findByBaseEquipmentSearch(emNumber,emLocationId,emTypeId,emCountryId,pageable);
+    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, String emTypeId, Long emCountryId) {
+        return equipmentRepositoryCustom.findByBaseEquipmentSearch(emNumber,emLocationId,emTypeId,emCountryId);
     }
 
     public List<EquipmentBaseDto> EquipmentBaseSettingQuerydsl(List<String> emNumbers) {

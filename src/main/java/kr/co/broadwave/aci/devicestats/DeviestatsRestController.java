@@ -8,16 +8,15 @@ import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
+import kr.co.broadwave.aci.devicestats.frimware.Firmware;
+import kr.co.broadwave.aci.devicestats.frimware.FirmwareMapperDto;
+import kr.co.broadwave.aci.devicestats.frimware.FirmwareFileListDto;
 import kr.co.broadwave.aci.equipment.EquipmentEmnumberDto;
 import kr.co.broadwave.aci.equipment.EquipmentService;
 import kr.co.broadwave.aci.equipment.EquipmentWaitingCollectionListDto;
 import kr.co.broadwave.aci.files.FileUpload;
 import kr.co.broadwave.aci.files.FileUploadService;
-import kr.co.broadwave.aci.imodel.IModel;
-import kr.co.broadwave.aci.imodel.IModelListDto;
-import kr.co.broadwave.aci.imodel.IModelMapperDto;
 import kr.co.broadwave.aci.mastercode.MasterCode;
-import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -26,7 +25,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -529,7 +527,7 @@ public class DeviestatsRestController {
         HashMap<String, Object> data = new HashMap<>();
         CodeType codeType = CodeType.valueOf("C0014");
         Optional<MasterCode> path = masterCodeService.findByCoAndCodeTypeAndCode(codeType,"SP01");
-        Page<firmwareFileListDto> firmwareListDtos = devicestatusService.findByFirmwareListQuerydsl(pageable);
+        Page<FirmwareFileListDto> firmwareListDtos = devicestatusService.findByFirmwareListQuerydsl(pageable);
 //        log.info("figetContent() : "+firmwareListDtos.getContent());
 
         if(firmwareListDtos.getTotalElements()> 0 ){

@@ -97,7 +97,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
     }
 
     @Override
-    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, String emTypeId, Long emCountryId, Pageable pageable){
+    public List<EquipmentBaseListDto> findByBaseEquipmentSearch(String emNumber, Long emLocationId, String emTypeId, Long emCountryId){
 
         QEquipment equipment = QEquipment.equipment;
 

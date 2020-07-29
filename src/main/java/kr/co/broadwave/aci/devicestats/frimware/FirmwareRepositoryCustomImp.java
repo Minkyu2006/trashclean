@@ -1,4 +1,4 @@
-package kr.co.broadwave.aci.devicestats;
+package kr.co.broadwave.aci.devicestats.frimware;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.JPQLQuery;
@@ -18,21 +18,21 @@ import java.util.Objects;
  * Remark :
  */
 @Repository
-public class FirmwareRepositoryCustomImp extends QuerydslRepositorySupport implements FirmwareRepositoryCustom{
+public class FirmwareRepositoryCustomImp extends QuerydslRepositorySupport implements FirmwareRepositoryCustom {
 
     public FirmwareRepositoryCustomImp() {
-        super(Devicestatus.class);
+        super(Firmware.class);
     }
 
     @Override
-    public Page<firmwareFileListDto> findByFirmwareListQuerydsl(Pageable pageable){
+    public Page<FirmwareFileListDto> findByFirmwareListQuerydsl(Pageable pageable){
 
         QFirmware firmware = QFirmware.firmware;
         QFileUpload fileUpload = QFileUpload.fileUpload;
 
-        JPQLQuery<firmwareFileListDto> query = from(firmware)
+        JPQLQuery<FirmwareFileListDto> query = from(firmware)
                 .leftJoin(firmware.efFileid,fileUpload)
-                .select(Projections.constructor(firmwareFileListDto.class,
+                .select(Projections.constructor(FirmwareFileListDto.class,
                         firmware.id,
                         fileUpload.fileFullPath,
                         firmware.efType,
@@ -42,7 +42,7 @@ public class FirmwareRepositoryCustomImp extends QuerydslRepositorySupport imple
 
         query.orderBy(firmware.id.desc());
 
-        final List<firmwareFileListDto> firmwares = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
+        final List<FirmwareFileListDto> firmwares = Objects.requireNonNull(getQuerydsl()).applyPagination(pageable, query).fetch();
         return new PageImpl<>(firmwares, pageable, query.fetchCount());
     }
 

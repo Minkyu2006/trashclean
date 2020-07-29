@@ -1,4 +1,4 @@
-package kr.co.broadwave.aci.devicestats;
+package kr.co.broadwave.aci.devicestats.frimware;
 
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @ToString
 @Setter
 @Slf4j
-public class firmwareFileListDto {
+public class FirmwareFileListDto {
 
     private Long id;
     private String fileFullPath; // 파일경로
