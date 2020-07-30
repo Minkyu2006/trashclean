@@ -290,8 +290,18 @@ public class DeviceStatsController {
     }
 
     @RequestMapping("exhaustinfo")
-    public String exhaustinfo(Model model){
+    public String exhaustinfo(){
         return "devicestats/exhaustinfo";
+    }
+
+    @RequestMapping("errorweight")
+    public String errorweight(){
+        return "devicestats/errorweight";
+    }
+
+    @RequestMapping("errorindices")
+    public String errorindices(){
+        return "devicestats/errorindices";
     }
 
 }
