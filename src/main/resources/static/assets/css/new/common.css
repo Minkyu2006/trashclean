@@ -2986,6 +2986,69 @@ h4.article__heading {
 	background-color: #ffcc00;
 }
 
+.weight {
+	position: relative;
+	width: 100%;
+	margin: -5px -10px;
+}
+.weight:before {
+	content: " ";
+	display: table;
+}
+.weight:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.weight__item {
+	float: left;
+	width: 25%;
+	padding: 5px 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.weight__item-inner {
+	width: 100%;
+	border: 1px solid #888;
+	padding: 2px;
+}
+.weight__item-inner:before {
+	content: " ";
+	display: table;
+}
+.weight__item-inner:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.weight__title {
+	float: left;
+	width: calc(100% - 52px);
+	height: 30px;
+	background-color: #424242;
+	color: #fff;
+	line-height: 30px;
+	padding: 0 10px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.weight__number {
+	float: left;
+	width: 50px;
+	margin-left: 2px;
+}
+.weight__input {
+	width: 50px;
+	height: 30px;
+	border: 1px solid #888;
+	padding: 0 5px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
 /* firmware */
 .firmware {
 	position: relative;

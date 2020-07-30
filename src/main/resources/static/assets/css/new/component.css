@@ -364,6 +364,9 @@ a.c-button {
 /* functions */
 .c-function {
     margin-top: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 .c-function:before {
     content: " ";
@@ -376,6 +379,9 @@ a.c-button {
 }
 .c-function__group {
     float: left;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 .c-function__group:before {
     content: " ";
