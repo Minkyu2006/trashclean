@@ -4,6 +4,158 @@
       layout:decorate ="~{layout/default}">
 <head>
 
+	<script type="text/javascript">
+		$(function() {
+			if ($("#headerMode").val() === "1") {
+				$("#default_wrap").addClass('wrap');
+				$("#header_device").css('display', 'block');
+			} else {
+				$("#default_wrap").addClass('wrap nav--small');
+				$("#header_device").css('display', 'none');
+			}
+
+			// 가중치 셋팅
+			$("#btnSave").on('click',function(){
+				save();
+			});
+
+			//최종재도장경과년 계산하기
+			$('.weight__input').focusout(function() {
+				var sum = 0;
+
+				sum += Number($("#err01Weight").val());
+				sum += Number($("#err02Weight").val());
+				sum += Number($("#err03Weight").val());
+				sum += Number($("#err04Weight").val());
+				sum += Number($("#err05Weight").val());
+				sum += Number($("#err06Weight").val());
+				sum += Number($("#err07Weight").val());
+				sum += Number($("#err08Weight").val());
+				sum += Number($("#err09Weight").val());
+				sum += Number($("#err10Weight").val());
+
+				if(sum > 100){
+					$('#sumAll').val('');
+					alertCaution("총합 : "+sum +"<br>가중치총합은 100을 넘길 수 없습니다.");
+				}else {
+					$('#sumAll').val(sum);
+				}
+
+			});
+
+		});
+
+		// 가중치 셋팅
+		function save() {
+
+			if ($("#err01Weight").val().trim() === '') {
+				alertCaution("터치스크립 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err02Weight").val().trim() === '') {
+				alertCaution("키패드 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err03Weight").val().trim() === '') {
+				alertCaution("임베디드보드 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err04Weight").val().trim() === '') {
+				alertCaution("결제도어 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err05Weight").val().trim() === '') {
+				alertCaution("폐기물도어 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err06Weight").val().trim() === '') {
+				alertCaution("저울 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err07Weight").val().trim() === '') {
+				alertCaution("결제디바이스 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err08Weight").val().trim() === '') {
+				alertCaution("티머니결제 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err09Weight").val().trim() === '') {
+				alertCaution("신용카드결제 가중치를 입력해주세요.");
+				return false;
+			}
+			if ($("#err10Weight").val().trim() === '') {
+				alertCaution("LTE디바이스 가중치를 입력해주세요.");
+				return false;
+			}
+
+			if($("#sumAll").val()!=="100"){
+				alertCaution("가중치 총합은 100이어야 합니다.")
+				return false;
+			}
+
+			var $form = $('form[name="errorweight"]');
+
+			var params = $form.serialize();
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/errweight/save',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					if (!Ajax.checkResult(res)) {
+						return;
+					}
+					alertSuccess('저장되었습니다.');
+				}
+			});
+		}
+
+		//한글을 지우는 함수
+		function delHangle(evt){
+			var objTarget = evt.srcElement || evt.target;
+			var _value = event.srcElement.value;
+			if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
+				alertCaution("숫자만 입력가능합니다.");
+				objTarget.value = null;
+			}
+		}
+
+		// 소수점한개로 제한한 실수값입력할수있게하는 함수
+		function isNumberKey(evt) {
+			var charCode = (evt.which) ? evt.which : event.keyCode;
+
+			var _value = event.srcElement.value;
+
+			if (event.keyCode < 48 || event.keyCode > 57) {
+				if (event.keyCode !== 46) {
+					return false;
+				}
+			}
+			// 소수점(.)이 두번 이상 나오지 못하게
+			var _pattern0 = /^\d*[.]\d*$/;
+			if (_pattern0.test(_value)) {
+				if (charCode === 46) {
+					return false;
+				}
+			}
+			// 소수점 둘째자리까지만 입력가능
+			var _pattern2 = /^\d*[.]\d{6}$/;
+			if (_pattern2.test(_value)) {
+				alertCaution("소수점 여섯자리까지만 입력가능합니다.");
+				return false;
+			}
+		}
+
+	</script>
 </head>
 
 <div layout:fragment="content" class="contents-body">
@@ -15,12 +167,13 @@
 					<div class="panel">
 						<div class="panel__inner">
 							<div class="panel__body">
+								<form name="errorweight">
 								<div class="weight">
 									<div class="weight__item">
 										<div class="weight__item-inner">
 											<div class="weight__title">터치스크린</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="10" />
+												<input id="err01Weight" name="err01Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -28,7 +181,7 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">키패드</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="10" />
+												<input id="err02Weight" name="err02Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -36,7 +189,7 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">임베디드보드</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="5" />
+												<input id="err03Weight" name="err03Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -44,7 +197,7 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">결제 도어</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="20" />
+												<input id="err04Weight" name="err04Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -52,7 +205,7 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">폐기물 도어</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="20" />
+												<input id="err05Weight" name="err05Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -60,7 +213,7 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">저울</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="5" />
+												<input id="err06Weight" name="err06Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -68,7 +221,7 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">결제 디바이스</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="5" />
+												<input id="err07Weight" name="err07Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -76,7 +229,7 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">티머니 결제</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="5" />
+												<input id="err08Weight" name="err08Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -84,7 +237,7 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">신용카드 결제</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="10" />
+												<input id="err09Weight" name="err09Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -92,25 +245,25 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">LTE 디바이스</div>
 											<div class="weight__number">
-												<input type="number" class="weight__input" value="10" />
+												<input id="err10Weight" name="err10Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
 								</div>
-								
+							</form>
 								<div class="c-function" style="position: absolute; bottom: 10px; left: 0; width:100%; padding: 0 10px;">
 									<div class="c-function__group" style="width: 25%; padding: 0 10px; margin-left: -10px;">
 										<div class="c-function__item" style="width: 100%;">
 											<div class="weight__item-inner">
 												<div class="weight__title">총합</div>
 												<div class="weight__number">
-													<input type="number" class="weight__input" value="100" />
+													<input type="text" id="sumAll" class="weight__input" />
 												</div>
 											</div>
 										</div>
 									</div>
 									<div class="c-function__group c-function__group--right">
-										<button class="c-button c-button--point">저장</button>
+										<button id="btnSave" class="c-button c-button--point">저장</button>
 									</div>
 								</div>
 							</div>

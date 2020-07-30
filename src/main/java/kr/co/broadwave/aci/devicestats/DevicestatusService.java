@@ -1,9 +1,9 @@
 package kr.co.broadwave.aci.devicestats;
 
 import kr.co.broadwave.aci.devicestats.frimware.Firmware;
+import kr.co.broadwave.aci.devicestats.frimware.FirmwareFileListDto;
 import kr.co.broadwave.aci.devicestats.frimware.FirmwareRepository;
 import kr.co.broadwave.aci.devicestats.frimware.FirmwareRepositoryCustom;
-import kr.co.broadwave.aci.devicestats.frimware.FirmwareFileListDto;
 import kr.co.broadwave.aci.devicestats.payment.PaymentListDto;
 import kr.co.broadwave.aci.devicestats.payment.PaymentRepositoryCustom;
 import lombok.extern.slf4j.Slf4j;
@@ -36,9 +36,9 @@ public class DevicestatusService {
                                FirmwareRepositoryCustom firmwareRepositoryCustom,
                                PaymentRepositoryCustom paymentRepositoryCustom) {
         this.devicestatsRepositoryCustom = devicestatsRepositoryCustom;
-        this.firmwareRepository = firmwareRepository;
         this.firmwareRepositoryCustom = firmwareRepositoryCustom;
         this.paymentRepositoryCustom = paymentRepositoryCustom;
+        this.firmwareRepository = firmwareRepository;
     }
 
     public List<DevicestatsDto> queryDslDevicestatsAvgQuerydsl(List<String> deviceid,String yyyymmdd1,String yyyymmdd2) {

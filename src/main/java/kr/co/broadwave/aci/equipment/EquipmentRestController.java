@@ -50,6 +50,7 @@ public class EquipmentRestController {
     private final MasterCodeService masterCodeService;
     private final ACIAWSIoTDeviceService aciawsIoTDeviceService;
     private final IModelService iModelService;
+
     @Autowired
     public EquipmentRestController(ModelMapper modelMapper,
                                    AccountService accountService,
