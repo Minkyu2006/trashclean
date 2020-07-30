@@ -42,7 +42,7 @@ public class PaymentRestController {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
-//        log.info("fromVal : "+fromVal);
+        log.info("fromVal : "+fromVal);
 //        log.info("toVal : "+toVal);
 
         List<PaymentListDto> paymentListDtos = devicestatusService.findByPaymentListQuerydsl(fromVal,toVal,deviceid,basename);
