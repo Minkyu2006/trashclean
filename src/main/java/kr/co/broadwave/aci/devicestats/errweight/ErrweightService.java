@@ -5,6 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,12 +19,15 @@ import java.util.Optional;
 public class ErrweightService {
 
     private final ErrweightRepository errweightRepository;
+    private final ErrweightRepositoryCustom errweightRepositoryCustom;
     private final ModelMapper modelMapper;
 
     @Autowired
     public ErrweightService(ErrweightRepository errweightRepository,
+                            ErrweightRepositoryCustom errweightRepositoryCustom,
                             ModelMapper modelMapper) {
         this.errweightRepository = errweightRepository;
+        this.errweightRepositoryCustom = errweightRepositoryCustom;
         this.modelMapper = modelMapper;
     }
 
@@ -39,5 +43,9 @@ public class ErrweightService {
     public ErrweightMapperDto findById2(Long id) {
         Optional<Errweight> optionalSubInfo = errweightRepository.findById(id);
         return optionalSubInfo.map(subInfo -> modelMapper.map(subInfo, ErrweightMapperDto.class)).orElse(null);
+    }
+
+    public List<ErrweightDataDto> findByErrweighttDataListQuerydsl(ErrweightMapperDto errweightMapperDto,String fromVal, String toVal) {
+        return errweightRepositoryCustom.findByErrweighttDataListQuerydsl(errweightMapperDto,fromVal,toVal);
     }
 }

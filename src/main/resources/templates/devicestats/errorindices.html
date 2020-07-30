@@ -14,9 +14,191 @@
 				$("#header_device").css('display', 'none');
 			}
 
+			// 달력폼
+			$("#s_dateFrom").datepicker({});
+			$("#s_dateTo").datepicker({});
+
+			nowDateSetting();
+
+			callList();
+
 		});
 
 
+		function callList() {
+
+			var $schList = $("#schList");
+
+			// 날짜를 유닉스타임스탬프로 변환
+			var fromVal = new Date($('#s_dateFrom').val()).getTime();
+			var toVal = new Date($('#s_dateTo').val()).getTime();
+			var $sumResultSelect = $("#sumResultSelect").val();
+			// console.log("toVal : "+toVal);
+			// console.log("fromVal : "+fromVal);
+
+			var params = {
+				fromVal : fromVal,
+				toVal : toVal,
+				sumResultSelect : $sumResultSelect
+			};
+
+			$schList.empty().append('<tr class="t-c"><td colspan="13" align = "center">조회 중</td></tr>');
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/errweight/list',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res) {
+
+					var html = '';
+					var errweightMapperDto = res.data.errweightMapperDto;
+
+					if (errweightMapperDto !== 1) {
+						// 화면 출력
+						var errweightDataDtos = res.data.errweightDataDtos;
+						var sumResult = res.data.sumResult;
+						var sumRank = res.data.sumRank;
+						var len = res.data.errweightDataDtos.length;
+
+						if (len === 0 || len === undefined) {
+							$schList.empty().append('<tr class="t-c"><td colspan="13" align="center">조회된 데이터가 없습니다.</td></tr>');
+							return;
+						}
+
+						var $sumResultSelect = $("#sumResultSelect").val();
+
+						for(i=0; i<len; i++) {
+							if ($sumResultSelect !== "") {
+								if ($sumResultSelect === sumRank[i]) {
+									html += '<tr>';
+									html += '<td>' + nvl(errweightDataDtos[i]["deviceid"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err01Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err02Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err03Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err04Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err05Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err06Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err07Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err08Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err09Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(errweightDataDtos[i]["err10Cnt"], "0") + '</td>';
+									html += '<td>' + nvl(sumResult[i], "확 인 불 가") + '</td>';
+									html += '<td>' + nvl(sumRank[i], "확 인 불 가") + '</td>';
+									html += '</tr>';
+								}
+							}else{
+								html += '<tr>';
+								html += '<td>' + nvl(errweightDataDtos[i]["deviceid"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err01Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err02Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err03Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err04Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err05Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err06Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err07Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err08Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err09Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(errweightDataDtos[i]["err10Cnt"], "0") + '</td>';
+								html += '<td>' + nvl(sumResult[i], "확 인 불 가") + '</td>';
+								html += '<td>' + nvl(sumRank[i], "확 인 불 가") + '</td>';
+								html += '</tr>';
+							}
+						}
+						$schList.html(html);
+					}else{
+						alertCaution("가중치셋팅을 해주시길 바랍니다.")
+						$schList.empty().append('<tr class="t-c"><td colspan="13" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return false;
+					}
+				}
+			})
+		}
+
+		//날짜별검색 현재날짜셋팅
+		function nowDateSetting() {
+			var $s_dateFrom = $("#s_dateFrom");
+			var $s_dateTo = $("#s_dateTo");
+
+			var today = new Date();
+			var year = today.getFullYear();
+			var month = today.getMonth()+1;
+			var month2 = today.getMonth();
+			var day = today.getDate();
+			if(month < 10){
+				month = "0"+month;
+			}
+			if(month2 < 10){
+				month2 = "0"+month2;
+			}
+			if(day < 10){
+				day = "0"+day;
+			}
+			var toDate = year+"-"+month+"-"+day;
+			var fromDate = year+"-"+month2+"-"+day;
+
+			$s_dateTo.val(toDate);
+			$s_dateFrom.val(fromDate);
+		}
+
+		// 시작날짜가 끝난날짜보다 클수없음
+		function s_dateFromDate(date) {
+			var $s_dateTo = $("#s_dateTo").val();
+			if($s_dateTo!=="") {
+				var dateObj = new Date(date);
+
+				var year = dateObj.getFullYear();
+				var month = dateObj.getMonth()+1;
+				var day = dateObj.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+
+				var choseDate = year+"-"+month+"-"+day;
+
+				if ($s_dateTo < choseDate) {
+					alertCaution("시작날짜가 마지막날짜보다<BR>클 수 없습니다.");
+					$("#s_dateFrom").val("");
+					return false;
+				}
+			}
+		}
+
+		// 끝난날짜보다 시작날짜보다 낮을수없음
+		function s_dateToDate(date) {
+			var $s_dateFrom = $("#s_dateFrom").val();
+			if($s_dateFrom!=="") {
+				var dateObj = new Date(date);
+
+				var year = dateObj.getFullYear();
+				var month = dateObj.getMonth()+1;
+				var day = dateObj.getDate();
+				if(month < 10){
+					month = "0"+month;
+				}
+				if(day < 10){
+					day = "0"+day;
+				}
+
+				var choseDate = year+"-"+month+"-"+day;
+
+				if ($s_dateFrom > choseDate) {
+					alertCaution("마지막날짜가 시작날짜보다<BR>작을 수 없습니다.");
+					$("#s_dateTo").val("");
+					return false;
+				}
+			}
+		}
 
 	</script>
 </head>
@@ -25,26 +207,51 @@
 	<section class="section">
 		<h2 class="section__heading">고장예측지수 조회</h2>
 		<article class="article">
-			<div class="article__console" style="overflow: hidden;">
-				<div class="article__console-item">
-					<div class="article__console-title" style="margin-top: 15px;">조회 기간</div>
-					<div class="article__console-input">
-						<div class="c-date-group">
-						    <div class="c-date">
-						        <label for="s_dateFrom" class="c-date__label">from</label>
-						        <input type="text" class="c-text__input hasDatepicker" id="s_dateFrom" placeholder="연 - 월 - 일" onchange="s_dateFromDate(this.value)">
-						    </div>
-						    <div class="c-date">
-						        <label for="s_dateTo" class="c-date__label">to</label>
-						        <input type="text" class="c-text__input hasDatepicker" id="s_dateTo" placeholder="연 - 월 - 일" onchange="s_dateToDate(this.value)">
-						    </div>
-						</div>
-					</div>
-				</div>
-				<div class="article__console-item article__console-item--right">
-					<button class="c-button c-button--point" style="margin-top: 17px;">검색</button>
+			<div class="l-float-heading">
+				<div class="l-float-heading--left">
+					<h4 class="article__hading">검색조건</h4>
 				</div>
 			</div>
+			<table class="c-table">
+				<colgroup>
+					<col style="width: 100px;" />
+					<col />
+					<col style="width: 100px;" />
+					<col />
+					<col style="width: 62px;" />
+				</colgroup>
+				<tbody>
+				<tr>
+					<th>날짜조회</th>
+					<td>
+						<div class="c-date-group">
+							<div class="c-date">
+								<label for="s_dateFrom" class="c-date__label">from</label>
+								<input type="text" class="c-text__input" id="s_dateFrom" placeholder="연 - 월 - 일" onchange="s_dateFromDate(this.value)">
+							</div>
+							<div class="c-date">
+								<label for="s_dateTo" class="c-date__label">to</label>
+								<input type="text" class="c-text__input" id="s_dateTo" placeholder="연 - 월 - 일" onchange="s_dateToDate(this.value)">
+							</div>
+						</div>
+					</td>
+					<th>등급</th>
+					<td>
+						<div class="c-select">
+							<select id="sumResultSelect" class="c-select__input">
+								<option value="">전체</option>
+								<option value="정상">정상</option>
+								<option value="의심">의심</option>
+								<option value="점검요망">점검요망</option>
+							</select>
+						</div>
+					</td>
+					<td>
+						<button onclick="callList()" class="c-button c-button--point">검색</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
 			
 			<div class="c-scroll-table c-scroll-table--hover" style="margin-top: 20px;">
 				<div class="c-scroll-table__header c-scroll-table__header--scrollbar">
@@ -103,192 +310,14 @@
 							<col style="width: 100px;" />
 							<col style="width: 100px;" />
 						</colgroup>
-						<tbody>
-							<tr>
-								<td>ITAI-KR-SEL-0001</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0002</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0003</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0004</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0005</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0006</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0007</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0008</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0009</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0010</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0011</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td>ITAI-KR-SEL-0012</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>0</td>
-								<td>1</td>
-								<td>0</td>
-								<td>2</td>
-								<td>0</td>
-								<td>0</td>
-								<td>0</td>
-								<td>40</td>
-								<td></td>
-							</tr>
+						<tbody id="schList">
+
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</article>
 	</section>
+
 </div>
 </html>

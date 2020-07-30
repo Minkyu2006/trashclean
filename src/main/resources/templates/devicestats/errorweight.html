@@ -45,7 +45,7 @@
 			if(num===1) {
 				if (sum > 100) {
 					$('#sumAll').val('');
-					alertCaution("총합 : " + sum + "<br>가중치총합은 100을 넘길 수 없습니다.");
+					alertCaution("총합 : " + sum + "<br>총합은 100을 넘길 수 없습니다.");
 				} else {
 					$('#sumAll').val(sum);
 				}
@@ -98,7 +98,7 @@
 			}
 
 			if($("#sumAll").val()!=="100"){
-				alertCaution("가중치 총합은 100이어야 합니다.")
+				alertCaution("총합을 확인해주세요.<br>총합은 100이어야 합니다.")
 				return false;
 			}
 
@@ -156,9 +156,9 @@
 				}
 			}
 			// 소수점 둘째자리까지만 입력가능
-			var _pattern2 = /^\d*[.]\d{6}$/;
+			var _pattern2 = /^\d*[.]\d{2}$/;
 			if (_pattern2.test(_value)) {
-				alertCaution("소수점 여섯자리까지만 입력가능합니다.");
+				alertCaution("소수점 두자리까지만 입력가능합니다.");
 				return false;
 			}
 		}

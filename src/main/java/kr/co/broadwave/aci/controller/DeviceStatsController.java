@@ -1,11 +1,9 @@
 package kr.co.broadwave.aci.controller;
 
-import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.dashboard.DashboardDeviceListViewDto;
 import kr.co.broadwave.aci.dashboard.DashboardService;
-import kr.co.broadwave.aci.devicestats.errweight.Errweight;
 import kr.co.broadwave.aci.devicestats.errweight.ErrweightMapperDto;
 import kr.co.broadwave.aci.devicestats.errweight.ErrweightService;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
@@ -22,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Minkyu
@@ -305,7 +302,7 @@ public class DeviceStatsController {
 
     @RequestMapping("errorweight")
     public String errorweight(Model model){
-        ErrweightMapperDto errweightMapperDto = new ErrweightMapperDto();
+        ErrweightMapperDto errweightMapperDto;
         errweightMapperDto = errweightService.findById2(Long.parseLong(String.valueOf(1)));
 //        log.info("errweightMapperDto : "+errweightMapperDto);
         if(errweightMapperDto!=null){
