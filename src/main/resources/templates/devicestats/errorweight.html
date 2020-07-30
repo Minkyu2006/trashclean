@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate ="~{layout/default}">
-<head>
 
+<head>
 	<script type="text/javascript">
 		$(function() {
 			if ($("#headerMode").val() === "1") {
@@ -19,32 +19,40 @@
 				save();
 			});
 
+			fnSumAll(0);
+
 			//최종재도장경과년 계산하기
 			$('.weight__input').focusout(function() {
-				var sum = 0;
-
-				sum += Number($("#err01Weight").val());
-				sum += Number($("#err02Weight").val());
-				sum += Number($("#err03Weight").val());
-				sum += Number($("#err04Weight").val());
-				sum += Number($("#err05Weight").val());
-				sum += Number($("#err06Weight").val());
-				sum += Number($("#err07Weight").val());
-				sum += Number($("#err08Weight").val());
-				sum += Number($("#err09Weight").val());
-				sum += Number($("#err10Weight").val());
-
-				if(sum > 100){
-					$('#sumAll').val('');
-					alertCaution("총합 : "+sum +"<br>가중치총합은 100을 넘길 수 없습니다.");
-				}else {
-					$('#sumAll').val(sum);
-				}
-
+				fnSumAll(1)
 			});
 
 		});
 
+		function fnSumAll(num) {
+			var sum = 0;
+
+			sum += Number($("#err01Weight").val());
+			sum += Number($("#err02Weight").val());
+			sum += Number($("#err03Weight").val());
+			sum += Number($("#err04Weight").val());
+			sum += Number($("#err05Weight").val());
+			sum += Number($("#err06Weight").val());
+			sum += Number($("#err07Weight").val());
+			sum += Number($("#err08Weight").val());
+			sum += Number($("#err09Weight").val());
+			sum += Number($("#err10Weight").val());
+
+			if(num===1) {
+				if (sum > 100) {
+					$('#sumAll').val('');
+					alertCaution("총합 : " + sum + "<br>가중치총합은 100을 넘길 수 없습니다.");
+				} else {
+					$('#sumAll').val(sum);
+				}
+			}else{
+				$('#sumAll').val(sum);
+			}
+		}
 		// 가중치 셋팅
 		function save() {
 
@@ -173,7 +181,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">터치스크린</div>
 											<div class="weight__number">
-												<input id="err01Weight" name="err01Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err01Weight" name="err01Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err01Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -181,7 +191,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">키패드</div>
 											<div class="weight__number">
-												<input id="err02Weight" name="err02Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err02Weight" name="err02Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err02Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -189,7 +201,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">임베디드보드</div>
 											<div class="weight__number">
-												<input id="err03Weight" name="err03Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err03Weight" name="err03Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err03Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -197,7 +211,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">결제 도어</div>
 											<div class="weight__number">
-												<input id="err04Weight" name="err04Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err04Weight" name="err04Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err04Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -205,7 +221,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">폐기물 도어</div>
 											<div class="weight__number">
-												<input id="err05Weight" name="err05Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err05Weight" name="err05Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err05Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -213,7 +231,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">저울</div>
 											<div class="weight__number">
-												<input id="err06Weight" name="err06Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err06Weight" name="err06Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err06Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -221,7 +241,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">결제 디바이스</div>
 											<div class="weight__number">
-												<input id="err07Weight" name="err07Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err07Weight" name="err07Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err07Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -229,7 +251,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">티머니 결제</div>
 											<div class="weight__number">
-												<input id="err08Weight" name="err08Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err08Weight" name="err08Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err08Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -237,7 +261,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">신용카드 결제</div>
 											<div class="weight__number">
-												<input id="err09Weight" name="err09Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err09Weight" name="err09Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err09Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>
@@ -245,7 +271,9 @@
 										<div class="weight__item-inner">
 											<div class="weight__title">LTE 디바이스</div>
 											<div class="weight__number">
-												<input id="err10Weight" name="err10Weight" type="text" class="weight__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+												<input id="err10Weight" name="err10Weight" type="text" class="weight__input"
+													   th:value="${errweightMapperDto} ? ${errweightMapperDto.err10Weight} : ''"
+													   onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
 											</div>
 										</div>
 									</div>

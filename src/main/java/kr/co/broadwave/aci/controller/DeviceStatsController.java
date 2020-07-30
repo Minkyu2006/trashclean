@@ -1,9 +1,13 @@
 package kr.co.broadwave.aci.controller;
 
+import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.bscodes.CodeType;
 import kr.co.broadwave.aci.dashboard.DashboardDeviceListViewDto;
 import kr.co.broadwave.aci.dashboard.DashboardService;
+import kr.co.broadwave.aci.devicestats.errweight.Errweight;
+import kr.co.broadwave.aci.devicestats.errweight.ErrweightMapperDto;
+import kr.co.broadwave.aci.devicestats.errweight.ErrweightService;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Minkyu
@@ -35,13 +40,17 @@ public class DeviceStatsController {
     private final MasterCodeService masterCodeService;
     private final ACIAWSLambdaService aciawsLambdaService;
     private final DashboardService dashboardService;
+    private final ErrweightService errweightService;
+
     @Autowired
     public DeviceStatsController(MasterCodeService masterCodeService,
                                  DashboardService dashboardService,
-                                 ACIAWSLambdaService aciawsLambdaService) {
+                                 ACIAWSLambdaService aciawsLambdaService,
+                                 ErrweightService errweightService) {
         this.masterCodeService = masterCodeService;
         this.dashboardService = dashboardService;
         this.aciawsLambdaService = aciawsLambdaService;
+        this.errweightService = errweightService;
     }
 
     //장비등록
@@ -295,7 +304,16 @@ public class DeviceStatsController {
     }
 
     @RequestMapping("errorweight")
-    public String errorweight(){
+    public String errorweight(Model model){
+        ErrweightMapperDto errweightMapperDto = new ErrweightMapperDto();
+        errweightMapperDto = errweightService.findById2(Long.parseLong(String.valueOf(1)));
+//        log.info("errweightMapperDto : "+errweightMapperDto);
+        if(errweightMapperDto!=null){
+            model.addAttribute("errweightMapperDto", errweightMapperDto);
+        }else{
+            model.addAttribute("errweightMapperDto", errweightMapperDto);
+        }
+
         return "devicestats/errorweight";
     }
 

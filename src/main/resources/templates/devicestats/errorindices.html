@@ -3,7 +3,22 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate ="~{layout/default}">
 <head>
+	<script type="text/javascript">
+		$(function() {
 
+			if ($("#headerMode").val() === "1") {
+				$("#default_wrap").addClass('wrap');
+				$("#header_device").css('display', 'block');
+			} else {
+				$("#default_wrap").addClass('wrap nav--small');
+				$("#header_device").css('display', 'none');
+			}
+
+		});
+
+
+
+	</script>
 </head>
 
 <div layout:fragment="content" class="contents-body">

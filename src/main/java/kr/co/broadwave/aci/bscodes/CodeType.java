@@ -22,7 +22,8 @@ public enum CodeType {
     C0014("C0014", "시스템주소"),
     C0015("C0015", "iTainer설비상태"),
     C0016("C0016", "iTainer우선순위"),
-    C0017("C0017", "iTainer장비언어");
+    C0017("C0017", "iTainer장비언어"),
+    C0018("C0018", "등급");
 
     private final String code;
     private final String desc;

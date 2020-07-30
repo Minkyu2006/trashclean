@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 public class Errweight {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private Long id; // PK는 무조건 1
 
