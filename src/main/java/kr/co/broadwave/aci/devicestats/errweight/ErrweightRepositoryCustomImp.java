@@ -42,8 +42,6 @@ public class ErrweightRepositoryCustomImp extends QuerydslRepositorySupport impl
                         errweightData.err10Cnt.sum().multiply(errweightMapperDto.getErr10Weight())
                 ));
 
-//        log.info("fromVal : "+fromVal);
-//        log.info("toVal : "+toVal);
         if(!fromVal.equals("") && !toVal.equals("")){
             query.where(errweightData.eventTime.between(fromVal,toVal));
         }else if(!fromVal.equals("")){

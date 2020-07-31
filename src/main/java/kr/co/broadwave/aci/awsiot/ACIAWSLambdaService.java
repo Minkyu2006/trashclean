@@ -331,10 +331,15 @@ public class ACIAWSLambdaService {
     }
 
     //ml추론 센서데이터가져오기
-    public HashMap getDeviceMl(String timeVal){
+    public HashMap getDeviceMl(String timeVal,Integer mode){
 //        System.out.println("timeVal : "+timeVal);
+        final String url;
 
-        final String url = ACIAWSAPIBASEURL + "/api/v1/beacon/mltest/{id}" ;
+        if(mode ==2) {
+            url = ACIAWSAPIBASEURL + "/api/v1/beacon/mltest/{id}";
+        }else{
+            url = ACIAWSAPIBASEURL + "/api/v1/beacon/mltestall/{id}";
+        }
 
         RestTemplate restTemplate = new RestTemplate();
 

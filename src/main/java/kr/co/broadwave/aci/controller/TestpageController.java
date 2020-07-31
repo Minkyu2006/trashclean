@@ -272,7 +272,7 @@ public class TestpageController {
         HashMap<String, Object> data = new HashMap<>();
         String timeVal = deviceid+"="+fromVal+"="+toVal;
 //        System.out.println("timeVal : "+timeVal);
-        HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal);
+        HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal,2);
         System.out.println("resData : "+resData);
 
         data.put("statusCode", resData.get("statusCode"));

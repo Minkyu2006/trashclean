@@ -645,4 +645,34 @@ public class DeviestatsRestController {
         return ResponseEntity.ok(res.success());
     }
 
+    // 센서데이터 대역폭확인용(전체,효율화)
+    @PostMapping("graData")
+    public ResponseEntity<Map<String,Object>> graData(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                     @RequestParam(value="fromVal", defaultValue="") String fromVal,
+                                                     @RequestParam(value="toVal", defaultValue="") String toVal,
+                                                     @RequestParam(value="mode", defaultValue="") Integer mode) {
+        AjaxResponse res = new AjaxResponse();
+        HashMap<String, Object> data = new HashMap<>();
+        String timeVal = deviceid+"="+fromVal+"="+toVal;
+//        System.out.println("timeVal : "+timeVal);
+        if(mode==2) {
+            HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal,mode);
+            System.out.println("resData : " + resData);
+
+            data.put("statusCode", resData.get("statusCode"));
+            data.put("datarow", resData.get("data"));
+        }else{
+            HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal,mode);
+            System.out.println("resData : " + resData);
+
+            data.put("statusCode", resData.get("statusCode"));
+            data.put("datarow", resData.get("data"));
+        }
+
+        res.addResponse("data", data);
+        return ResponseEntity.ok(res.success());
+    }
+
+
+
 }

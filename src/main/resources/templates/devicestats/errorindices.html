@@ -24,7 +24,6 @@
 
 		});
 
-
 		function callList() {
 
 			var $schList = $("#schList");
@@ -32,14 +31,12 @@
 			// 날짜를 유닉스타임스탬프로 변환
 			var fromVal = new Date($('#s_dateFrom').val()).getTime();
 			var toVal = new Date($('#s_dateTo').val()).getTime();
-			var $sumResultSelect = $("#sumResultSelect").val();
 			// console.log("toVal : "+toVal);
 			// console.log("fromVal : "+fromVal);
 
 			var params = {
 				fromVal : fromVal,
 				toVal : toVal,
-				sumResultSelect : $sumResultSelect
 			};
 
 			$schList.empty().append('<tr class="t-c"><td colspan="13" align = "center">조회 중</td></tr>');
@@ -60,8 +57,17 @@
 
 					var html = '';
 					var errweightMapperDto = res.data.errweightMapperDto;
+					console.log("errweightMapperDto : "+errweightMapperDto);
 
-					if (errweightMapperDto !== 1) {
+					if (errweightMapperDto === 1) {
+						alertCaution("마스터코드의 등급을 추가해주세요.")
+						$schList.empty().append('<tr class="t-c"><td colspan="13" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return false;
+					}else if(errweightMapperDto === 2){
+						alertCaution("가중치셋팅을 해주시길 바랍니다.")
+						$schList.empty().append('<tr class="t-c"><td colspan="13" align="center">조회된 데이터가 없습니다.</td></tr>');
+						return false;
+					}else{
 						// 화면 출력
 						var errweightDataDtos = res.data.errweightDataDtos;
 						var sumResult = res.data.sumResult;
@@ -113,10 +119,6 @@
 							}
 						}
 						$schList.html(html);
-					}else{
-						alertCaution("가중치셋팅을 해주시길 바랍니다.")
-						$schList.empty().append('<tr class="t-c"><td colspan="13" align="center">조회된 데이터가 없습니다.</td></tr>');
-						return false;
 					}
 				}
 			})
@@ -240,9 +242,10 @@
 						<div class="c-select">
 							<select id="sumResultSelect" class="c-select__input">
 								<option value="">전체</option>
-								<option value="정상">정상</option>
-								<option value="의심">의심</option>
-								<option value="점검요망">점검요망</option>
+								<option th:each="masterCodeDto : ${masterCodeDtos}"
+										th:value="${masterCodeDto.name}"
+										th:text="${masterCodeDto.name}">
+								</option>
 							</select>
 						</div>
 					</td>

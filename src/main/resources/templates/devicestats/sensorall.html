@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate ="~{layout/default}">
+<head>
+    <script>
+        var myChart1;
+        var myChart2;
+        var myChart3;
+        var myChart4;
+
+        $(function() {
+            if($("#headerMode").val()==="1"){
+                $("#default_wrap").addClass('wrap');
+                $("#header_device").css('display','block');
+            }else{
+                $("#default_wrap").addClass('wrap nav--small');
+                $("#header_device").css('display','none');
+            }
+
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth()+1;
+            var day = today.getDate();
+            var hours = today.getHours()+1;
+            var hours2 = today.getHours()-1;
+            if(month < 10){
+                month = "0"+month;
+            }
+            if(day < 10){
+                day = "0"+day;
+            }
+            if(hours < 10){
+                hours = "0"+hours;
+            }
+            if(hours2 < 10){
+                hours2 = "0"+hours2;
+            }
+            var fromValue = year+month+day+hours2;
+            var toValue = year+month+day+hours;
+            // console.log("fromValue : "+fromValue);
+            // console.log("toValue : "+toValue);
+            $("#s_from").val(fromValue);
+            $("#s_to").val(toValue);
+            $("#s_deviceid").val("ITAI-KR-SEL-0001");
+
+            $("#btnReset").on('click',function(){
+                reset();
+            });
+
+            $('[name=btnSearch]').click(function(){
+                myChart1.destroy();
+                myChart2.destroy();
+                myChart3.destroy();
+                myChart4.destroy();
+                graData();
+            });
+
+            graData();
+
+        });
+
+        // 조건초기화
+        function reset() {
+            $("#tvoc_min").val('');
+            $("#tvoc_max").val('');
+            $("#red_min").val('');
+            $("#red_max").val('');
+            $("#nh3_min").val('');
+            $("#nh3_max").val('');
+        }
+
+        //한글을 지우는 함수
+        function delHangle(evt){
+            var objTarget = evt.srcElement || evt.target;
+            var _value = event.srcElement.value;
+            if(/[ㄱ-ㅎㅏ-ㅡ가-핳]/g.test(_value)) {
+                alertCaution("숫자만 입력가능합니다.");
+                objTarget.value = null;
+            }
+        }
+
+        // 소수점한개로 제한한 실수값입력할수있게하는 함수
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : event.keyCode;
+
+            var _value = event.srcElement.value;
+
+            if (event.keyCode < 48 || event.keyCode > 57) {
+                if (event.keyCode !== 46) {
+                    return false;
+                }
+            }
+            // 소수점(.)이 두번 이상 나오지 못하게
+            var _pattern0 = /^\d*[.]\d*$/;
+            if (_pattern0.test(_value)) {
+                if (charCode === 46) {
+                    return false;
+                }
+            }
+            // 소수점 둘째자리까지만 입력가능
+            var _pattern2 = /^\d*[.]\d{2}$/;
+            if (_pattern2.test(_value)) {
+                alertCaution("소수점 둘째자리까지만 입력가능합니다.");
+                return false;
+            }
+        }
+
+        function graData() {
+            // console.log("ncd센서데이터 가져오기")
+            $("div[name=beaconChartLoading]").css('display','block');
+
+            var params = {
+                deviceid : $("#s_deviceid").val(),
+                fromVal : $("#s_from").val(),
+                toVal : $("#s_to").val(),
+                mode : 1
+            };
+
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+            $.ajax({
+                url: '/api/deviestats/graData',
+                type: 'post',
+                data: params,
+                cache: false,
+                error: function (request) {
+                    ajaxErrorMsg(request);
+                },
+                success: function (res) {
+                    if (!Ajax.checkResult(res)) {
+                        return;
+                    }
+                    // console.log("가져오기 성공")
+
+                    statuscode = res.data.statusCode;
+
+                    if (statuscode === 200) {
+                        // console.log("타임스탬프 그래프 그리기 시작")
+
+                        var beaconTimeStamp_arr = []; //타임스탬프
+                        var temperature_arr = []; // 온도
+                        var humidity_arr = []; // 습도
+
+                        var nh3_arr = []; // 암모니아
+                        var red_arr = []; // reg
+                        var tvoc_arr = []; // TVOC
+
+                        var $nh3_max = $("#nh3_max");
+                        var $nh3_min = $("#nh3_min");
+                        var $red_max = $("#red_max");
+                        var $red_min = $("#red_min");
+                        var $tvoc_max = $("#tvoc_max");
+                        var $tvoc_min = $("#tvoc_min");
+
+                        $.each(res.data.datarow, function (key, value) {
+                            beaconTimeStamp_arr.push(parseInt(value.inserttimestamp));
+
+                            if (isNaN(Number(value.tmp)) === true) {
+                                temperature_arr.push("0");
+                            } else {
+                                temperature_arr.push(value.tmp)
+                            }
+
+                            if (isNaN(Number(value.hum)) === true) {
+                                humidity_arr.push("0");
+                            } else {
+                                humidity_arr.push(value.hum);
+                            }
+
+                            if (isNaN(Number(value.tvoc)) === true) {
+                                tvoc_arr.push("0");
+                            } else {
+                                if ($tvoc_max.val() !== "") {
+                                    if (value.tvoc > Number($tvoc_max.val())) {
+                                        tvoc_arr.push($tvoc_max.val());
+                                    } else {
+                                        if (value.tvoc > 0) {
+                                            tvoc_arr.push(value.tvoc);
+                                        } else {
+                                            tvoc_arr.push("0");
+                                        }
+                                    }
+                                } else {
+                                    tvoc_arr.push(value.tvoc);
+                                }
+                            }
+
+                            if (isNaN(Number(value.red)) === true) {
+                                red_arr.push("0");
+                            } else {
+                                if ($red_max.val() !== "") {
+                                    if (value.red > Number($red_max.val())) {
+                                        red_arr.push($red_max.val());
+                                    } else {
+                                        if (value.red > 0) {
+                                            red_arr.push(value.red);
+                                        } else {
+                                            red_arr.push("0");
+                                        }
+                                    }
+                                } else {
+                                    red_arr.push(value.red);
+                                }
+                            }
+
+                            if (isNaN(Number(value.nh3)) === true) {
+                                nh3_arr.push("0");
+                            } else {
+                                if ($nh3_max.val() !== "") {
+                                    if (value.nh3 > Number($nh3_max.val())) {
+                                        nh3_arr.push($nh3_max.val());
+                                    } else {
+                                        if (value.nh3 > 0) {
+                                            nh3_arr.push(value.nh3);
+                                        } else {
+                                            nh3_arr.push("0");
+                                        }
+                                    }
+                                } else {
+                                    if (value.nh3 > 0) {
+                                        nh3_arr.push(value.nh3);
+                                    } else {
+                                        nh3_arr.push("0");
+                                    }
+                                }
+                            }
+                        });
+
+                        var ctx1 = document.getElementById('temphum_gra').getContext("2d");
+                        var ctx2 = document.getElementById('tvoc_gra').getContext("2d");
+                        var ctx3 = document.getElementById('red_gra').getContext("2d");
+                        var ctx4 = document.getElementById('nh3_gra').getContext("2d");
+
+                        var humMaxVal = Math.max.apply(0, humidity_arr);
+                        var humMinVal = Math.min.apply(0, humidity_arr);
+
+                        var nh3MaxVal;
+                        var nh3MinVal;
+                        var redMaxVal;
+                        var redMinVal;
+                        var tvocMaxVal;
+                        var tvocMinVal;
+
+                        if($nh3_max.val()===""){
+                            var nh3MaxVal_ = Math.max.apply(0, nh3_arr);
+                            nh3MaxVal = Number((nh3MaxVal_).toFixed(0));
+                            $nh3_max.val(nh3MaxVal);
+                        }else{
+                            nh3MaxVal = Number($nh3_max.val());
+                        }
+                        if($nh3_min.val()===""){
+                            var nh3MinVal_ = Math.min.apply(0, nh3_arr);
+                            nh3MinVal = Number((nh3MinVal_).toFixed(0));
+                            $nh3_min.val(nh3MinVal);
+                        }else{
+                            nh3MinVal = Number($nh3_min.val());
+                        }
+
+                        if($red_max.val()===""){
+                            redMaxVal = Math.max.apply(0, red_arr);
+                            $red_max.val(redMaxVal);
+                        }else{
+                            redMaxVal = Number($red_max.val());
+                        }
+                        if($red_min.val()===""){
+                            redMinVal = Math.min.apply(0, red_arr);
+                            $red_min.val(redMinVal);
+                        }else{
+                            redMinVal = Number($red_min.val());
+                        }
+
+                        if($tvoc_max.val()===""){
+                            tvocMaxVal = Math.max.apply(0, tvoc_arr);
+                            $tvoc_max.val(tvocMaxVal);
+                        }else{
+                            tvocMaxVal = Number($tvoc_max.val());
+                        }
+                        if($tvoc_min.val()===""){
+                            tvocMinVal = Math.min.apply(0, tvoc_arr);
+                            $tvoc_min.val(tvocMinVal);
+                        }else{
+                            tvocMinVal = Number($tvoc_min.val());
+                        }
+
+                        // 온도최대값,최소값 계산(y축그래프)
+                        var temp_brd_Max = Math.max.apply(0, temperature_arr); // 온도최대값
+                        var temp_brd_Min = Math.min.apply(0, temperature_arr); // 온도최소값
+                        var tempMax = (temp_brd_Max+15).toFixed(0);
+                        var tempMin = (temp_brd_Min-15).toFixed(0);
+                        var tempBrdMax;
+                        var tempBrdMin;
+
+                        if(tempMax/5!==0){
+                            tempMaxsub = tempMax.substring(1,2);
+                            tempBrdMax = parseInt(tempMax)-parseInt(tempMaxsub);
+                        }else{
+                            tempBrdMax = tempMap;
+                        }
+
+                        if(tempMin/5!==0) {
+                            if(-10<tempMin<0){
+                                tempMinsub = tempMin.substring(1,2);
+                                tempBrdMin = parseInt(tempMin) + parseInt(tempMinsub);
+                            }else if(tempMin<-10) {
+                                tempMinsub = tempMin.substring(2,3);
+                                tempBrdMin = parseInt(tempMin) + parseInt(tempMinsub);
+                            }else if(tempMin>10){
+                                tempMinsub = tempMin.substring(1,2);
+                                tempBrdMin = parseInt(tempMin) - parseInt(tempMinsub);
+                            }else{
+                                tempBrdMin = 0;
+                            }
+                        }else{
+                            tempBrdMin = 0;
+                        }
+
+
+                        var chartData1 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: '온도',
+                                yAxisID: 'x',
+                                backgroundColor: "#e35f5f",
+                                borderWidth: 2,
+                                borderColor: "#e35f5f",
+                                data: temperature_arr,
+                                fill: false
+                            }, {
+                                type: 'line',
+                                label: '습도',
+                                yAxisID: 'y',
+                                backgroundColor: "#f1ad07",
+                                borderWidth: 2,
+                                borderColor: "#f1ad07",
+                                data: humidity_arr,
+                                fill: false
+                            }]
+                        };
+                        myChart1 = new Chart(ctx1, {
+                            data: chartData1,
+                            options: {
+                                elements: {
+                                    point:{
+                                        radius: 0
+                                    }
+                                },
+                                legend:{
+                                    posiont:'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked : true,
+                                tooltips: { //팁(모드설정)
+                                    caretPadding: 10,
+                                    borderWidth:3,
+                                    borderColor : 'rgb(118,172,255)',
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize:0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY'+'년'+'MM'+'월'+'DD'+'일 '+'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            callback: function(value) {
+                                                return value+'℃';
+                                            },
+                                            max: tempBrdMax,
+                                            min: tempBrdMin,
+                                            fontSize: 15
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    },{
+                                        ticks: {
+                                            callback: function(value) {
+                                                return value+'%';
+                                            },
+                                            max: humMaxVal,
+                                            min: humMinVal,
+                                            fontSize: 15
+                                        },
+                                        id: 'y',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right',
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+
+                        var chartData4 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: 'NH3',
+                                yAxisID: 'x',
+                                backgroundColor: "#29ff11",
+                                borderWidth: 2,
+                                borderColor: "#29ff11",
+                                data: nh3_arr,
+                                fill: false
+                            }]
+                        };
+                        myChart4 = new Chart(ctx4, {
+                            data: chartData4,
+                            options: {
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legend: {
+                                    posiont: 'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked: true,
+                                tooltips: { //팁(모드설정)
+                                    caretPadding: 10,
+                                    borderWidth: 3,
+                                    borderColor: 'rgb(118,172,255)',
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize: 0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: nh3MaxVal,
+                                            min: nh3MinVal,
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    },{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: nh3MaxVal,
+                                            min: nh3MinVal,
+                                        },
+                                        id: 'y',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right'
+                                    }]
+                                }
+                            }
+                        });
+
+                        var chartData3 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: '스모크',
+                                yAxisID: 'x',
+                                backgroundColor: "#ff2e57",
+                                borderWidth: 2,
+                                borderColor: "#ff2e57",
+                                data: red_arr,
+                                fill: false
+                            }]
+                        };
+                        myChart3 = new Chart(ctx3, {
+                            data: chartData3,
+                            options: {
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legend: {
+                                    posiont: 'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked: true,
+                                tooltips: { //팁(모드설정)
+                                    caretPadding: 10,
+                                    borderWidth: 3,
+                                    borderColor: 'rgb(118,172,255)',
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize: 0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: redMaxVal,
+                                            min: redMinVal,
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    },{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: redMaxVal,
+                                            min: redMinVal,
+                                        },
+                                        id: 'y',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right'
+                                    }]
+                                }
+                            }
+                        });
+
+                        var chartData2 = {
+                            labels: beaconTimeStamp_arr,
+                            datasets: [{
+                                type: 'line',
+                                label: 'TVOC',
+                                yAxisID: 'x',
+                                backgroundColor: "#8361fc",
+                                borderWidth: 2,
+                                borderColor: "#8361fc",
+                                data: tvoc_arr,
+                                fill: false
+                            }]
+                        };
+                        myChart2 = new Chart(ctx2, {
+                            data: chartData2,
+                            options: {
+                                elements: {
+                                    point: {
+                                        radius: 0
+                                    }
+                                },
+                                legend: {
+                                    posiont: 'top'
+                                },
+                                maintainAspectRatio: false,
+                                stacked: true,
+                                tooltips: { //팁(모드설정)
+                                    caretPadding: 10,
+                                    borderWidth: 3,
+                                    borderColor: 'rgb(118,172,255)',
+                                    mode: 'index',
+                                    intersect: false,
+                                    caretSize: 0
+                                },
+                                hover: { //점 나오기
+                                    mode: 'index',
+                                    intersect: false
+                                },
+                                scales: {
+                                    xAxes: [{
+                                        gridLines: {
+                                            drawOnChartArea: false
+                                        },
+                                        display: false,
+                                        type: 'time',
+                                        time: {
+                                            tooltipFormat: 'YYYY' + '년' + 'MM' + '월' + 'DD' + '일 ' + 'HH:mm:ss a',
+                                        }
+                                    }],
+                                    yAxes: [{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: tvocMaxVal,
+                                            min: tvocMinVal,
+                                        },
+                                        id: 'x',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'left'
+                                    },{
+                                        ticks: {
+                                            fontSize: 20,
+                                            max: tvocMaxVal,
+                                            min: tvocMinVal,
+                                        },
+                                        id: 'y',
+                                        type: 'linear',
+                                        display: true,
+                                        position: 'right'
+                                    }]
+                                }
+                            }
+                        });
+                    }
+                    $("div[name=beaconChartLoading]").css('display','none');
+                }
+            });
+        }
+
+    </script>
+</head>
+
+<div layout:fragment="content" class="contents-body">
+    <section class="section">
+        <article class="article">
+            <h2 class="article__heading">센서데이터 대역폭확인용(효율화)</h2>
+            <div class="l-float-heading">
+                <div class="l-float-heading--left">
+                    <h4 class="article__head">대상시간<span class="article__head-caption"> ex)2020.6.10 15:00 부터 2020.06.10 16:00 까지면 -> from.2020061015 - to.2020061016</span></h4>
+                </div>
+                <div class="l-float-heading--right"><button class="c-button c-button--small" id="btnReset">최소값/최대값 클리어</button></div>
+            </div>
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 120px;" />
+                    <col />
+                    <col style="width: 120px;" />
+                    <col />
+                    <col style="width: 120px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>장비아이디</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="s_deviceid" class="c-text__input" />
+                        </div>
+                    </td>
+                    <th>날짜시간 from.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="s_from" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>날짜시간 to.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="s_to" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" name="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 0 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='temphum_gra' width="250" height="250"></canvas>
+            </div>
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>TVOC 최소값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="tvoc_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>TVOC 최대값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="tvoc_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" name="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 30px 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='tvoc_gra' width="250" height="250"></canvas>
+            </div>
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>스모크 최소값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="red_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>스모크 최대값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="red_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" name="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 30px 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='red_gra' width="250" height="250"></canvas>
+            </div>
+            <table class="c-table">
+                <colgroup>
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 100px;" />
+                    <col />
+                    <col style="width: 62px;" />
+                </colgroup>
+                <tr>
+                    <th>NH3 최소값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="nh3_min" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <th>NH3 최대값.</th>
+                    <td>
+                        <div class="c-text">
+                            <input type="text" id="nh3_max" class="c-text__input" onkeypress="return isNumberKey(event)" onkeyup="return delHangle(event)" />
+                        </div>
+                    </td>
+                    <td>
+                        <button class="c-button c-button--point" name="btnSearch">조회</button>
+                    </td>
+                </tr>
+            </table>
+            <div style="margin: 30px 0 30px 0; position:relative;">
+                <div name="beaconChartLoading" style="display: none">
+                    <div class="c-loader__active c-loader__active--ring"></div>
+                </div>
+                <canvas id='nh3_gra' width="250" height="250"></canvas>
+            </div>
+        </article>
+    </section>
+</div>
+</html>

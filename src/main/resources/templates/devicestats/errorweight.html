@@ -42,15 +42,18 @@
 			sum += Number($("#err09Weight").val());
 			sum += Number($("#err10Weight").val());
 
+			var $sumAll = $('#sumAll');
 			if(num===1) {
 				if (sum > 100) {
-					$('#sumAll').val('');
-					alertCaution("총합 : " + sum + "<br>총합은 100을 넘길 수 없습니다.");
+					$sumAll.val(sum);
+					$sumAll.css("color","red");
 				} else {
-					$('#sumAll').val(sum);
+					$sumAll.val(sum);
+					$sumAll.css("color","black");
 				}
 			}else{
-				$('#sumAll').val(sum);
+				$sumAll.val(sum);
+				$sumAll.css("color","black");
 			}
 		}
 		// 가중치 셋팅

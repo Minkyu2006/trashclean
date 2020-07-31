@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Minkyu
@@ -74,65 +76,58 @@ public class ErrweightRestController {
     // 배출정보 리스트
     @PostMapping("list")
     public ResponseEntity<Map<String,Object>> list(@RequestParam(value="fromVal", defaultValue="") String fromVal,
-                                                   @RequestParam(value="toVal", defaultValue="") String toVal,
-                                                   @RequestParam(value="sumResultSelect", defaultValue="") String sumResultSelect){
+                                                   @RequestParam(value="toVal", defaultValue="") String toVal){
 
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
         ErrweightMapperDto errweightMapperDto = errweightService.findById2(Long.parseLong(String.valueOf(1)));
+//        log.info("errweightMapperDto : "+errweightMapperDto);
 
-        if(errweightMapperDto==null){
+        List<MasterCodeErrDto> masterRanks = masterCodeService.findCodeList2(CodeType.C0018);
+//        log.info("masterRanks : "+masterRanks);
+
+        if(masterRanks==null){
             data.put("errweightMapperDto",1);
+            res.addResponse("data", data);
+            return ResponseEntity.ok(res.success());
+        }else if(errweightMapperDto==null){
+            data.put("errweightMapperDto",2);
             res.addResponse("data", data);
             return ResponseEntity.ok(res.success());
         }else{
             List<ErrweightDataDto> errweightDataDtos = errweightService.findByErrweighttDataListQuerydsl(errweightMapperDto,fromVal,toVal);
-            log.info("errweightDataDtos : "+errweightDataDtos);
-
-            List<MasterCodeErrDto> masterRank = masterCodeService.findCodeList2(CodeType.C0018);
-//            log.info("masterRank : "+masterRank);
+//            log.info("errweightDataDtos : "+errweightDataDtos);
 
             List<Integer> sumResult = new ArrayList<>();
             List<String> sumRank = new ArrayList<>();
 
-            int ref1;
-            int ref2;
-            int ref3;
-            for(int i=0; i<errweightDataDtos.size(); i++){
-                Integer err01Cnt = errweightDataDtos.get(i).getErr01Cnt();
-                Integer err02Cnt = errweightDataDtos.get(i).getErr02Cnt();
-                Integer err03Cnt = errweightDataDtos.get(i).getErr03Cnt();
-                Integer err04Cnt = errweightDataDtos.get(i).getErr04Cnt();
-                Integer err05Cnt = errweightDataDtos.get(i).getErr05Cnt();
-                Integer err06Cnt = errweightDataDtos.get(i).getErr06Cnt();
-                Integer err07Cnt = errweightDataDtos.get(i).getErr07Cnt();
-                Integer err08Cnt = errweightDataDtos.get(i).getErr08Cnt();
-                Integer err09Cnt = errweightDataDtos.get(i).getErr09Cnt();
-                Integer err10Cnt = errweightDataDtos.get(i).getErr10Cnt();
-                int sumReseult = err01Cnt+err02Cnt+err03Cnt+err04Cnt+err05Cnt+err06Cnt+err07Cnt+err08Cnt+err09Cnt+err10Cnt;
-                sumResult.add(sumReseult);
+            for (ErrweightDataDto errweightDataDto : errweightDataDtos) {
+                Integer err01Cnt = errweightDataDto.getErr01Cnt();
+                Integer err02Cnt = errweightDataDto.getErr02Cnt();
+                Integer err03Cnt = errweightDataDto.getErr03Cnt();
+                Integer err04Cnt = errweightDataDto.getErr04Cnt();
+                Integer err05Cnt = errweightDataDto.getErr05Cnt();
+                Integer err06Cnt = errweightDataDto.getErr06Cnt();
+                Integer err07Cnt = errweightDataDto.getErr07Cnt();
+                Integer err08Cnt = errweightDataDto.getErr08Cnt();
+                Integer err09Cnt = errweightDataDto.getErr09Cnt();
+                Integer err10Cnt = errweightDataDto.getErr10Cnt();
+                int sumResultVal = err01Cnt + err02Cnt + err03Cnt + err04Cnt + err05Cnt + err06Cnt + err07Cnt + err08Cnt + err09Cnt + err10Cnt;
+                sumResult.add(sumResultVal);
 
-                ref1 = Integer.parseInt(masterRank.get(0).getBcRef2());
-                ref2 = Integer.parseInt(masterRank.get(1).getBcRef2());
-                ref3 = Integer.parseInt(masterRank.get(2).getBcRef2());
-
-                if(sumReseult<ref1){
-                    sumRank.add("정상");
-                }else if(sumReseult<ref2){
-                    sumRank.add("의심");
-                }else if(sumReseult<ref3){
-                    sumRank.add("점검요망");
-                }else{
-                    sumRank.add("오류");
+                for(MasterCodeErrDto v : masterRanks){
+                    if(Integer.parseInt(v.getBcRef1())<=sumResultVal && sumResultVal < Integer.parseInt(v.getBcRef2())){
+                        sumRank.add(v.getName());
+                        break;
+                    }
                 }
-
             }
+//            log.info("sumRank : "+sumRank);
 
             data.put("errweightDataDtos",errweightDataDtos);
             data.put("sumResult",sumResult);
             data.put("sumRank",sumRank);
-            data.put("errweightMapperDto",2);
 
             res.addResponse("data", data);
             return ResponseEntity.ok(res.success());

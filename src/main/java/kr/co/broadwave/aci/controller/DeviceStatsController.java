@@ -305,6 +305,7 @@ public class DeviceStatsController {
         ErrweightMapperDto errweightMapperDto;
         errweightMapperDto = errweightService.findById2(Long.parseLong(String.valueOf(1)));
 //        log.info("errweightMapperDto : "+errweightMapperDto);
+
         if(errweightMapperDto!=null){
             model.addAttribute("errweightMapperDto", errweightMapperDto);
         }else{
@@ -315,8 +316,20 @@ public class DeviceStatsController {
     }
 
     @RequestMapping("errorindices")
-    public String errorindices(){
+    public String errorindices(Model model) {
+        List<MasterCodeDto> masterCodeDtos = masterCodeService.findCodeList(CodeType.C0018);
+        model.addAttribute("masterCodeDtos", masterCodeDtos);
         return "devicestats/errorindices";
+    }
+
+    @RequestMapping("sensorall")
+    public String sensorall() {
+        return "devicestats/sensorall";
+    }
+
+    @RequestMapping("sensorefficiency")
+    public String sensorefficiency() {
+        return "devicestats/sensorefficiency";
     }
 
 }
