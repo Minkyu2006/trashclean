@@ -138,6 +138,8 @@
                     statuscode = res.data.statusCode;
 
                     if (statuscode === 200) {
+                        $("#datacounts").text(res.data.datacounts.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+
                         // console.log("타임스탬프 그래프 그리기 시작")
 
                         var beaconTimeStamp_arr = []; //타임스탬프
@@ -647,6 +649,9 @@
             <div class="l-float-heading">
                 <div class="l-float-heading--left">
                     <h4 class="article__head">대상시간<span class="article__head-caption"> ex)2020.6.10 15:00 부터 2020.06.10 16:00 까지면 -> from.2020061015 - to.2020061016</span></h4>
+                </div>
+                <div class="l-float-heading--right">
+                    <h4 class="article__head" style="position: absolute;right: 120px">총 데이터수 : <span id="datacounts"></span></h4>
                 </div>
                 <div class="l-float-heading--right"><button class="c-button c-button--small" id="btnReset">최소값/최대값 클리어</button></div>
             </div>

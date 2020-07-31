@@ -661,12 +661,15 @@ public class DeviestatsRestController {
 
             data.put("statusCode", resData.get("statusCode"));
             data.put("datarow", resData.get("data"));
+            data.put("datacounts", resData.get("datacounts"));
+
         }else{
             HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal,mode);
             System.out.println("resData : " + resData);
 
             data.put("statusCode", resData.get("statusCode"));
             data.put("datarow", resData.get("data"));
+            data.put("datacounts", resData.get("datacounts"));
         }
 
         res.addResponse("data", data);
