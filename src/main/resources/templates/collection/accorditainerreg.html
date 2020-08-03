@@ -221,8 +221,8 @@
 						html += '<td >'+ nvl(value.deviceid,"등록된 장비없음") +'</td>';
 						html += '<td >'+ lev($actuatorLevels[i],"")+'</td>';
 						html += '<td >'+ lev(parseInt($predictionList[i]["predictlevel"]),"")+'</td>';
-						html += '<td >'+ grm($disWeight[i],"")+'</td>';
-						html += '<td >'+ day(betweenDay,"설치되지 않음") +'</td>';
+						html += '<td >'+ grm($disWeight[i].toString().replace(/\B(?=(\d{3})+(?!\d))/g,","),"")+'</td>';
+						html += '<td >'+ day(betweenDay.toString().replace(/\B(?=(\d{3})+(?!\d))/g,","),"설치되지 않음") +'</td>';
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+ echoNull2Blank(value.id) + '\');">보기</button></td>';
 						html += '</tr>';
 						i++;
