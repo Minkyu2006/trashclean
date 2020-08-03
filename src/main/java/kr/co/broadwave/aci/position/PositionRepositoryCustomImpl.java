@@ -65,7 +65,7 @@ public class PositionRepositoryCustomImpl extends QuerydslRepositorySupport impl
     }
 
     @Override
-    public Page<PositionPopListDto> findByPositionPopSearch(Long psCountryId, Long psLocationId, String deviceid, Pageable pageable){
+    public Page<PositionPopListDto> findByPositionPopSearch(Long psCountryId, Long psLocationId, String deviceid, String division, Pageable pageable){
 
         QPosition position = QPosition.position;
 
@@ -73,15 +73,25 @@ public class PositionRepositoryCustomImpl extends QuerydslRepositorySupport impl
                 .select(Projections.constructor(PositionPopListDto.class,
                         position.id,
                         position.psBaseName,
-                        position.deviceid
+                        position.deviceid,
+                        position.installdate
                 ));
 
         // 검색조건필터
-        if (deviceid != null && !deviceid.isEmpty()) {
-            query.where(position.deviceid.likeIgnoreCase(deviceid.concat("%")));
-        }else if(deviceid == null){
+        if(division.equals("")){
+            if(deviceid != null && !deviceid.isEmpty()){
+                query.where(position.deviceid.likeIgnoreCase(deviceid.concat("%")));
+            }
+        }else if(division.equals("unoperation")){
             query.where(position.deviceid.isNull());
+        }else{
+            if(deviceid != null && !deviceid.isEmpty()){
+                query.where(position.deviceid.likeIgnoreCase(deviceid.concat("%")));
+            }else{
+                query.where(position.deviceid.isNotNull());
+            }
         }
+
         if (psCountryId != null ){
             query.where(position.psCountry.id.eq(psCountryId));
         }

@@ -195,21 +195,50 @@
 					}
 
 					var html = '';
+
+					var $actuatorLevels = res.data.actuatorLevels;
+					var $disWeight = res.data.disWeight;
+					var $predictionList = res.data.predictionList;
+
+					var installDayDatas = [];
+					var today = new Date();
+
+					//적재일구하기
+					$.each(res.data.datalist, function(key, value){
+						if(value.installdate !== null) {
+							// console.log("installdate :"+value.installdate);
+							var dateString = value.installdate;
+							var dateObj = new Date(dateString.substring(0, 4), Number(dateString.substring(4, 6)) - 1, dateString.substring(6, 8));
+							// console.log("dateObj :"+dateObj);
+							date1 = parseInt(today.getTime() / 1000);
+							date2 = parseInt(dateObj.getTime() / 1000);
+							var timeDifference = date1 - date2;
+							var timeDifferenceInHours = timeDifference / 60 / 60;
+							var betweenDay = timeDifferenceInHours / 24;
+							// console.log("betweenDay :"+betweenDay);
+							installDayDatas.push(parseInt(betweenDay));
+						}
+					});
+					// console.log("installDayDatas : "+installDayDatas);
+
+					var i=0;
 					$.each(res.data.datalist, function(key, value){
 						html += '<tr >';
 						html += '<td >'+ echoNull2Blank(value.psBaseName) +'</td>';
 						html += '<td >'+ nvl(value.deviceid,"등록된 장비없음") +'</td>';
-						html += '<td ></td>';
-						html += '<td ></td>';
-						html += '<td ></td>';
-						html += '<td ></td>';
+						html += '<td >'+ lev($actuatorLevels[i],"")+'</td>';
+						html += '<td >'+ lev(parseInt($predictionList[i]["predictlevel"]),"")+'</td>';
+						html += '<td >'+ grm($disWeight[i],"")+'</td>';
+						html += '<td >'+ day(installDayDatas[i],"설치되지 않음") +'</td>';
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+ echoNull2Blank(value.id) + '\');">보기</button></td>';
 						html += '</tr>';
+						i++;
 					});
 					$schList.html(html);
 				}
 			});
 		}
+
 		// 거점코드,거점명 넣기
 		function callInfo(id) {
 
@@ -616,6 +645,15 @@
 			});
 		}
 
+		function devisionChange(val){
+			var $sch_deviceid = $("#sch_deviceid");
+			if(val==="unoperation"){
+				$sch_deviceid.val('');
+				$sch_deviceid.attr('readonly',true);
+			}else{
+				$sch_deviceid.attr('readonly',false);
+			}
+		}
 	</script>
 </head>
 
@@ -672,7 +710,7 @@
 					<th>구분</th>
 					<td>
 						<div class="c-select">
-							<select id="sch_division" class="c-select__input">
+							<select id="sch_division" class="c-select__input" onchange="devisionChange(this.value)">
 								<option value="">전체</option>
 								<option value="operation">운영</option>
 								<option value="unoperation">비운영</option>
@@ -701,10 +739,10 @@
 				<tr>
 					<th>거점명</th>
 					<th>장비코드</th>
-					<th>적재부피</th>
-					<th>적재율</th>
-					<th>적재기간일</th>
-					<th>적재중량</th>
+					<th>배출량(%)</th>
+					<th>24시간후 예측배출량(%)</th>
+					<th>배출무게(g)</th>
+					<th>적재기간(일)</th>
 					<th></th>
 				</tr>
 				</thead>

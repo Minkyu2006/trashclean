@@ -74,7 +74,7 @@ public class PositionService {
         positionRepository.delete(position);
     }
 
-    public Page<PositionPopListDto> findByPositionPopSearch(Long psCountryId, Long psLocationId, String deviceid, Pageable pageable) {
-        return positionRepositoryCustom.findByPositionPopSearch(psCountryId,psLocationId,deviceid,pageable);
+    public Page<PositionPopListDto> findByPositionPopSearch(Long psCountryId, Long psLocationId, String deviceid,String division, Pageable pageable) {
+        return positionRepositoryCustom.findByPositionPopSearch(psCountryId,psLocationId,deviceid,division,pageable);
     }
 }

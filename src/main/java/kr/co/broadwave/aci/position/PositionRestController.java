@@ -2,14 +2,17 @@ package kr.co.broadwave.aci.position;
 
 import kr.co.broadwave.aci.accounts.Account;
 import kr.co.broadwave.aci.accounts.AccountService;
+import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.collection.iTainerCollection.CollectionTaskInstallCheckDto;
 import kr.co.broadwave.aci.collection.iTainerCollection.CollectionTaskInstallService;
 import kr.co.broadwave.aci.common.AjaxResponse;
 import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.common.ResponseErrorCode;
+import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,10 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Minkyu
@@ -41,18 +41,23 @@ public class PositionRestController {
     private final MasterCodeService masterCodeService;
     private final AccountService accountService;
     private final CollectionTaskInstallService collectionTaskInstallService;
-
+    private final DashboardService dashboardService;
+    private final ACIAWSLambdaService aciawsLambdaService;
     @Autowired
     public PositionRestController(ModelMapper modelMapper,
                                   PositionService positionService,
                                   MasterCodeService masterCodeService,
                                   AccountService accountService,
-                                  CollectionTaskInstallService collectionTaskInstallService) {
+                                  CollectionTaskInstallService collectionTaskInstallService,
+                                  DashboardService dashboardService,
+                                  ACIAWSLambdaService aciawsLambdaService) {
         this.modelMapper = modelMapper;
         this.positionService = positionService;
         this.masterCodeService = masterCodeService;
         this.accountService = accountService;
         this.collectionTaskInstallService = collectionTaskInstallService;
+        this.dashboardService = dashboardService;
+        this.aciawsLambdaService = aciawsLambdaService;
     }
 
     // 장비 저장
@@ -174,37 +179,89 @@ public class PositionRestController {
 
     // 업무지시 거점리스트 가져오기
     @PostMapping("popuplist")
-    public ResponseEntity<Map<String,Object>> popuplist(@RequestParam (value="psCountry", defaultValue="") String psCountry,
-                                                           @RequestParam (value="psLocation", defaultValue="")String psLocation,
-                                                           @RequestParam (value="deviceid", defaultValue="")String deviceid,
-                                                           @RequestParam (value="division", defaultValue="")String division,
-                                                           @PageableDefault Pageable pageable){
-        Long psCountryId = null;
-        Long psLocationId = null;
-//        log.info("division : "+division);
-        if(deviceid.equals("") && division.equals("operation")){
-            deviceid = "ITAI";
-        }else if(deviceid.equals("") && division.equals("unoperation")){
-            deviceid = null;
-        }else{
-            deviceid = "";
-        }
-//        log.info("deviceid : "+deviceid);
+        public ResponseEntity<Map<String,Object>> popuplist(@RequestParam (value="psCountry", defaultValue="") String psCountry,
+                                                               @RequestParam (value="psLocation", defaultValue="")String psLocation,
+                                                               @RequestParam (value="deviceid", defaultValue="")String deviceid,
+                                                               @RequestParam (value="division", defaultValue="")String division,
+                                                               @PageableDefault Pageable pageable){
 
-        if(!psCountry.equals("")){
-            Optional<MasterCode> emCountrys = masterCodeService.findByCode(psCountry);
-            psCountryId = emCountrys.map(MasterCode::getId).orElse(null);
-        }
-        if(!psLocation.equals("")){
-            Optional<MasterCode> emLocations = masterCodeService.findByCode(psLocation);
-            psLocationId = emLocations.map(MasterCode::getId).orElse(null);
-        }
+            AjaxResponse res = new AjaxResponse();
+            HashMap<String, Object> data = new HashMap<>();
 
-        Page<PositionPopListDto> positionListDtos = positionService.findByPositionPopSearch(psCountryId,psLocationId,deviceid,pageable);
-//        log.info("positionListDtos : "+positionListDtos.getContent());
+            Long psCountryId = null;
+            Long psLocationId = null;
 
-        return CommonUtils.ResponseEntityPage(positionListDtos);
-    }
+            if(!psCountry.equals("")){
+                Optional<MasterCode> emCountrys = masterCodeService.findByCode(psCountry);
+                psCountryId = emCountrys.map(MasterCode::getId).orElse(null);
+            }
+            if(!psLocation.equals("")){
+                Optional<MasterCode> emLocations = masterCodeService.findByCode(psLocation);
+                psLocationId = emLocations.map(MasterCode::getId).orElse(null);
+            }
+
+            Page<PositionPopListDto> positionListDtos = positionService.findByPositionPopSearch(psCountryId,psLocationId,deviceid,division,pageable);
+            log.info("positionListDtos : "+positionListDtos.getContent());
+
+            if(positionListDtos.getTotalElements()> 0 ){
+
+                List<String> emNumbers = new ArrayList<>();
+                HashMap<String,List<String>> deviceids = new HashMap<>();
+                List<String> actuatorLevels = new ArrayList<>();
+                List<String> disWeight = new ArrayList<>();
+                List<Object> predictionList = new ArrayList<>();
+                for (PositionPopListDto positionListDto : positionListDtos) {
+                    if(positionListDto.getDeviceid() != null) {
+                        emNumbers.add('"' + positionListDto.getDeviceid() + '"');
+                        deviceids.put('"' + "deviceids" + '"', emNumbers);
+                        String aswDeviceids = deviceids.toString().replace("=", ":").replace(" ", "");
+                        HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceids);
+    //                    log.info("resData : "+resData);
+                        emNumbers.remove(0);
+
+                        if (resData.get("data").size() == 0) {
+                            actuatorLevels.add("");
+                            disWeight.add("");
+                            predictionList.add("");
+                        } else {
+                            HashMap map = (HashMap) resData.get("data").get(0);
+                            actuatorLevels.add((String) map.get("actuator_level"));
+                            disWeight.add((String) map.get("dis_info_weight"));
+
+                            JSONObject params = new JSONObject();
+                            params.put("curlevel",map.get("actuator_level"));
+
+                            HashMap<String, Object> prediction = aciawsLambdaService.getDeviceLevelPrediction(params);
+                            Object map2 = prediction.get("data");
+                            predictionList.add(map2);
+                        }
+                    }else{
+                        actuatorLevels.add("");
+                        disWeight.add("");
+                        predictionList.add("");
+                    }
+                }
+
+                data.put("actuatorLevels",actuatorLevels);
+                data.put("disWeight",disWeight);
+                data.put("predictionList",predictionList);
+
+                data.put("datalist",positionListDtos.getContent());
+                data.put("total_page",positionListDtos.getTotalPages());
+                data.put("current_page",positionListDtos.getNumber() + 1);
+                data.put("total_rows",positionListDtos.getTotalElements());
+                data.put("current_rows",positionListDtos.getNumberOfElements());
+                res.addResponse("data",data);
+            }else{
+                data.put("total_page",positionListDtos.getTotalPages());
+                data.put("current_page",positionListDtos.getNumber() + 1);
+                data.put("total_rows",positionListDtos.getTotalElements());
+                data.put("current_rows",positionListDtos.getNumberOfElements());
+                res.addResponse("data",data);
+            }
+
+            return ResponseEntity.ok(res.success());
+        }
 
     // 거점코드 가져오기
     @PostMapping ("popupinfo")

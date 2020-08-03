@@ -6,18 +6,29 @@ function tem(str, defaultStr){
 		return str+'℃' ;
 	}
 }
+// %
 function lev(str, defaultStr){
-	if(typeof str == "undefined" || str == null || str === "") {
+	// console.log("str : "+str);
+	if(typeof str == "undefined" || str == null || str === "" || isNaN(str)) {
 		return defaultStr;
 	}else{
 		return str+'%' ;
 	}
 }
+// g
 function grm(str, defaultStr){
 	if(typeof str == "undefined" || str == null || str === "") {
 		return defaultStr;
 	}else{
 		return str+'g' ;
+	}
+}
+// 일
+function day(str, defaultStr){
+	if(typeof str == "undefined" || str == null || str === "") {
+		return defaultStr;
+	}else{
+		return str+'일' ;
 	}
 }
 

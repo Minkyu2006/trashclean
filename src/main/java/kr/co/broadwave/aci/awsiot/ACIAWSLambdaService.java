@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.co.broadwave.aci.equipment.Equipment;
 import kr.co.broadwave.aci.equipment.EquipmentRepository;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -416,6 +417,26 @@ public class ACIAWSLambdaService {
         headers.add("x-api-key",ACIAWSAPIKEY);
 
         HttpEntity<String> entity = new HttpEntity<>(params,headers);
+
+        ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+
+        return getHashMap(res);
+
+    }
+
+    // 24시간후 예측배출량 람다
+    public HashMap getDeviceLevelPrediction(JSONObject params){
+
+        final String url = ACIAWSAPIBASEURL + "/api/v1/itainer/predictlevel";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("x-api-key",ACIAWSAPIKEY);
+
+        HttpEntity<String> entity = new HttpEntity(params,headers);
 
         ResponseEntity<String> res = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 

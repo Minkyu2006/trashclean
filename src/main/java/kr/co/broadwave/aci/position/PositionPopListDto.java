@@ -3,6 +3,8 @@ package kr.co.broadwave.aci.position;
 import kr.co.broadwave.aci.mastercode.MasterCode;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Minkyu
  * Date : 2020-06-03
@@ -19,7 +21,7 @@ public class PositionPopListDto {
 
     private String psBaseName; // 거점명칭
     private String deviceid; // 우편번호
-
+    private LocalDateTime installdate; // 배치일자
 
     public Long getId() {
         return id;
@@ -31,5 +33,13 @@ public class PositionPopListDto {
 
     public String getDeviceid() {
         return deviceid;
+    }
+
+    public String getInstalldate() {
+        if(installdate != null) {
+            return installdate.toString().substring(0,4)+installdate.toString().substring(5, 7)+installdate.toString().substring(8, 10);
+        }else{
+            return null;
+        }
     }
 }
