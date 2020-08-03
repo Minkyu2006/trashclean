@@ -201,7 +201,7 @@ public class PositionRestController {
             }
 
             Page<PositionPopListDto> positionListDtos = positionService.findByPositionPopSearch(psCountryId,psLocationId,deviceid,division,pageable);
-            log.info("positionListDtos : "+positionListDtos.getContent());
+//            log.info("positionListDtos : "+positionListDtos.getContent());
 
             if(positionListDtos.getTotalElements()> 0 ){
 
