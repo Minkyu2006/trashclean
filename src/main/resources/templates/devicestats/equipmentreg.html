@@ -172,6 +172,10 @@
 				alertCaution("소속 운영사를 선택해주세요.");
 				return false;
 			}
+			if ($("#emLocation").val() === null) {
+				alertCaution("지역을 선택해주세요.");
+				return false;
+			}
 
 			var listsArr = [];
 			if ($("#check01").is(":checked") === true) {
@@ -924,7 +928,7 @@
 							<div class="c-select">
 								<select name="emDashboard" id="emDashboard" class="c-select__input">
 									<option value="Y">Y</option>
-									<option value="Y">N</option>
+									<option value="N">N</option>
 								</select>
 							</div>
 						</td>

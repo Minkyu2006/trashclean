@@ -31,6 +31,7 @@ public class EquipmentBaseDto {
 
     private String emAwsNumber; // AWS상 Device ID
     private String emEmbeddedNumber; // 임베디드 기판 번호
+    private String emDashboard; // 대시보드포함
 
     private Company company; // 소속운영사
     private IModel mdId; // 모델
@@ -43,6 +44,10 @@ public class EquipmentBaseDto {
 
     private LocalDateTime insertDateTime;
     private String insert_id;
+
+    public String getEmDashboard() {
+        return emDashboard;
+    }
 
     private String emCertificationNumber; // AWS보안인증서코드
 

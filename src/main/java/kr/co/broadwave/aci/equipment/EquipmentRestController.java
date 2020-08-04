@@ -237,23 +237,24 @@ public class EquipmentRestController {
         double vYellowstart;
         double vRedstart;
 
-        for(int i=0; i<equipmentBaseDto.size(); i++) {
-            equipment.setId(equipmentBaseDto.get(i).getId());
-            equipment.setEmNumber(equipmentBaseDto.get(i).getEmNumber());
-            equipment.setEmCerealNumber(equipmentBaseDto.get(i).getEmCerealNumber());
-            equipment.setEmDesignation(equipmentBaseDto.get(i).getEmDesignation());
-            equipment.setEmType(equipmentBaseDto.get(i).getEmTypeId());
-            equipment.setEmAwsNumber(equipmentBaseDto.get(i).getEmAwsNumber());
-            equipment.setEmInstallDate(equipmentBaseDto.get(i).getEmInstallDate());
-            equipment.setEmCountry(equipmentBaseDto.get(i).getEmCountryId());
-            equipment.setEmLocation(equipmentBaseDto.get(i).getEmLocationId());
-            equipment.setEmEmbeddedNumber(equipmentBaseDto.get(i).getEmEmbeddedNumber());
-            equipment.setCompany(equipmentBaseDto.get(i).getCompany());
-            equipment.setEmSubName(equipmentBaseDto.get(i).getEmSubName());
-            equipment.setMdId(equipmentBaseDto.get(i).getMdId());
-            equipment.setEmLatitude(equipmentBaseDto.get(i).getEmLatitude());
-            equipment.setEmLongitude(equipmentBaseDto.get(i).getEmLongitude());
-            equipment.setEmCertificationNumber(equipmentBaseDto.get(i).getEmCertificationNumber());
+        for (EquipmentBaseDto baseDto : equipmentBaseDto) {
+            equipment.setId(baseDto.getId());
+            equipment.setEmNumber(baseDto.getEmNumber());
+            equipment.setEmCerealNumber(baseDto.getEmCerealNumber());
+            equipment.setEmDesignation(baseDto.getEmDesignation());
+            equipment.setEmType(baseDto.getEmTypeId());
+            equipment.setEmAwsNumber(baseDto.getEmAwsNumber());
+            equipment.setEmInstallDate(baseDto.getEmInstallDate());
+            equipment.setEmCountry(baseDto.getEmCountryId());
+            equipment.setEmLocation(baseDto.getEmLocationId());
+            equipment.setEmEmbeddedNumber(baseDto.getEmEmbeddedNumber());
+            equipment.setCompany(baseDto.getCompany());
+            equipment.setEmDashboard(baseDto.getEmDashboard());
+            equipment.setEmSubName(baseDto.getEmSubName());
+            equipment.setMdId(baseDto.getMdId());
+            equipment.setEmLatitude(baseDto.getEmLatitude());
+            equipment.setEmLongitude(baseDto.getEmLongitude());
+            equipment.setEmCertificationNumber(baseDto.getEmCertificationNumber());
 
             if (equipment.getVInterval() == null) {
                 vInterval = Double.parseDouble(masterCodes.get(0).getName());
@@ -280,8 +281,8 @@ public class EquipmentRestController {
                 equipment.setVRedstart(vRedstart);
             }
 
-            equipment.setInsert_id(equipmentBaseDto.get(i).getInsert_id());
-            equipment.setInsertDateTime(equipmentBaseDto.get(i).getInsertDateTime());
+            equipment.setInsert_id(baseDto.getInsert_id());
+            equipment.setInsertDateTime(baseDto.getInsertDateTime());
             equipment.setModify_id(currentuserid);
             equipment.setModifyDateTime(LocalDateTime.now());
             equipmentService.save(equipment);
