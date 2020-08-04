@@ -28,6 +28,7 @@ public class EquipmentMapperDto {
     private Long emCountry; // 국가
     private Long emLocation; // 지역
     private String emAwsNumber; // AWS상 Device ID
+    private String emDashboard; // 대시보드가능여부
     private String emEmbeddedNumber; // 임베디드 기판 번호
     private String emSubName;
     private String operator;
@@ -60,6 +61,10 @@ public class EquipmentMapperDto {
     private String vPayUnitPrice; // 기준가격
     private String vPayUnitWeight; // 기준무게
     private String vPayMethod; //
+
+    public String getEmDashboard() {
+        return emDashboard;
+    }
 
     public String getvManager() {
         return vManager;

@@ -65,6 +65,7 @@ public class DashboardRepositoryCustomImp  extends QuerydslRepositorySupport imp
         if (emLocationId != null ){
             query.where(equipment.emLocation.id.eq(emLocationId));
         }
+        query.where(equipment.emDashboard.eq("Y"));
 
         query.orderBy(equipment.emNumber.asc());
 

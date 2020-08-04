@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface EquipmentRepositoryCustom {
 
-    Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation, Long emTypeId, Long emCountryId, Pageable pageable);
+    Page<EquipmentListDto> findByEquipmentSearch(String emNumber, String emDesignation, Long emTypeId, Long emCountryId,String emDashboard, Pageable pageable);
 
     List<EquipmentEmnumberDto> queryDslDeviceEmNumber(String emNumber, Long emTypeId, Long emCountryId, Long emLocationId);
 

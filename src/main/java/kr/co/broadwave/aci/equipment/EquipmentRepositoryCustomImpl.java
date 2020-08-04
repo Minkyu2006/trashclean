@@ -30,7 +30,7 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
 
     @Override
     public Page<EquipmentListDto> findByEquipmentSearch
-            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable){
+            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId,String emDashboard, Pageable pageable){
 
         QEquipment equipment = QEquipment.equipment;
 
@@ -46,7 +46,8 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
                         equipment.emAwsNumber,
                         equipment.emEmbeddedNumber,
                         equipment.company,
-                        equipment.mdId
+                        equipment.mdId,
+                        equipment.emDashboard
                 ));
 
         // 검색조건필터
@@ -61,6 +62,9 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         }
         if (emCountryId != null ){
             query.where(equipment.emCountry.id.eq(emCountryId));
+        }
+        if (emDashboard != null && !emDashboard.isEmpty() ){
+            query.where(equipment.emDashboard.eq(emDashboard));
         }
 
         query.orderBy(equipment.id.desc());

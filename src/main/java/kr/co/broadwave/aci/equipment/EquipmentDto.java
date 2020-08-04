@@ -30,6 +30,7 @@ public class EquipmentDto {
     private MasterCode emLocationName; // 지역(Name값)
 
     private String emAwsNumber; // AWS상 Device ID
+    private String emDashboard; // 대시보드가능여부
     private String emEmbeddedNumber; // 임베디드 기판 번호
 
     private Company company; // 소속운영사
@@ -63,6 +64,10 @@ public class EquipmentDto {
     private String vPayUnitPrice; // 기준가격
     private String vPayUnitWeight; // 기준무게
     private String vPayMethod; //
+
+    public String getEmDashboard() {
+        return emDashboard;
+    }
 
     public String getvManager() {
         return vManager;

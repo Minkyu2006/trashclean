@@ -32,6 +32,11 @@ public class EquipmentListDto {
     private Company company;
     private IModel iModel;
 
+    private String emDashboard; // 대시보드 포함
+
+    public String getEmDashboard() {
+        return emDashboard;
+    }
 
     public Long getId() {
         return id;

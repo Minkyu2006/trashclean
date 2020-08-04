@@ -96,10 +96,12 @@
 			$("#s_emDesignation").val('');
 			$("#s_emType").val('');
 			$("#s_emCountry").val('');
+			$("#s_emDashboard").val('');
 		}
 
 		// 신규작성
 		function init(){
+			$("#emDashboard").val('Y');
 			$("#emNumber").val('');
 			$("#emCerealNumber").val('');
 			$("#emDesignation").val('');
@@ -291,9 +293,10 @@
 				emDesignation:$('#s_emDesignation').val(),
 				emType:$('#s_emType').val(),
 				emCountry:$('#s_emCountry').val(),
+				emDashboard:$('#s_emDashboard').val()
 			};
 
-			$schList.empty().append('<tr ><td colspan="9" align = "center">조회 중</td></tr>');
+			$schList.empty().append('<tr ><td colspan="10" align = "center">조회 중</td></tr>');
 			$totalCnt.text('0');
 
 			var token = $("meta[name='_csrf']").attr("content");
@@ -317,7 +320,7 @@
 						pageTotal: totCnt,
 						clickEvent: 'callList'});
 					if (totCnt === 0) {
-						$schList.empty().append('<tr class="t-c"><td colspan="9" align="center">조회된 데이터가 없습니다.</td></tr>');
+						$schList.empty().append('<tr class="t-c"><td colspan="10" align="center">조회된 데이터가 없습니다.</td></tr>');
 						return;
 					}
 					$totalCnt.text(totCnt);
@@ -332,7 +335,7 @@
 						html += '<td >'+ echoNull2Blank(value.emCountry)+'/'+echoNull2Blank(value.emLocation)+'</td>';
 						html += '<td >'+ echoNull2Blank(value.emEmbeddedNumber) +'</td>';
 						html += '<td >'+ echoNull2Blank(value.company) +'</td>';
-
+						html += '<td >'+ echoNull2Blank(value.emDashboard) +'</td>';
 						html += '<td ><button class="c-button c-button--point c-button--small" onclick="callInfo(\''+ echoNull2Blank(value.id) +'\');">보기</button></td>';
 						html += '</tr>';
 					});
@@ -378,7 +381,7 @@
 					$("#vYellowstart").val(res.data.equipment.vYellowstart);
 					$("#vRedstart").val(res.data.equipment.vRedstart);
 					$("#emCertificationNumber").val(res.data.equipment.emCertificationNumber);
-
+					$("#emDashboard").val(res.data.equipment.emDashboard);
 					$("#vManager").val(res.data.equipment.vManager);
 					$("#vManagerCall").val(res.data.equipment.vManagerCall);
 					$("#vManagerid").val(res.data.equipment.vManagerid);
@@ -430,18 +433,6 @@
 					$("#emInstallDate").val(installArray);
 
 					var $emCountry = $("#emCountry");
-					var $emCountryView = $("#emCountryView");
-					var $emLocationView = $("#emLocationView");
-
-					$emCountry.hide();
-					$("#emLocation").hide();
-
-					$emCountryView.show();
-					$emLocationView.show();
-
-					// 보기버튼 클릭시 나라/지역 변경
-					$emCountryView.val(res.data.equipment.emCountryName);
-					$emLocationView.val(res.data.equipment.emLocationName);
 
 					$("#emType").val(res.data.equipment.emTypeId);
 					ModelChange(res.data.equipment.mdId.id);
@@ -691,21 +682,11 @@
 					<col />
 					<col style="width: 80px;" />
 					<col />
+					<col style="width: 80px;" />
+					<col />
 					<col style="width: 62px;" />
 				</colgroup>
 				<tr>
-					<th>장비 번호</th>
-					<td>
-						<div class="c-text">
-							<input type="text" id="s_emNumber" class="c-text__input" />
-						</div>
-					</td>
-					<th>장비 명칭</th>
-					<td>
-						<div class="c-text">
-							<input type="text" id="s_emDesignation" class="c-text__input" />
-						</div>
-					</td>
 					<th>모델 타입</th>
 					<td>
 						<div class="c-select">
@@ -730,6 +711,28 @@
 							</select>
 						</div>
 					</td>
+					<th>대시보드 포함여부</th>
+					<td>
+						<div class="c-select">
+							<select id="s_emDashboard" class="c-select__input">
+								<option value="">전체</option>
+								<option value="Y">Y</option>
+								<option value="N">N</option>
+							</select>
+						</div>
+					</td>
+					<th>장비 번호</th>
+					<td>
+						<div class="c-text">
+							<input type="text" id="s_emNumber" class="c-text__input" />
+						</div>
+					</td>
+					<th>장비 명칭</th>
+					<td>
+						<div class="c-text">
+							<input type="text" id="s_emDesignation" class="c-text__input" />
+						</div>
+					</td>
 					<td>
 						<button class="c-button c-button--point" id="btnSearch">조회</button>
 					</td>
@@ -739,14 +742,15 @@
 		<article class="article">
 			<table class="c-table">
 				<colgroup>
+					<col style="width: 140px" />
+					<col style="width: 140px" />
 					<col />
+					<col style="width: 100px" />
 					<col />
-					<col />
-					<col />
-					<col />
-					<col />
-					<col />
-					<col />
+					<col style="width: 120px" />
+					<col style="width: 140px" />
+					<col style="width: 100px" />
+					<col style="width: 90px" />
 					<col style="width: 50px;" />
 				</colgroup>
 				<thead>
@@ -759,6 +763,7 @@
 						<th>국가/지역</th>
 						<th>임베디드 기판 번호</th>
 						<th>소속운영사</th>
+						<th>대시보드포함</th>
 						<th></th>
 					</tr>
 				</thead>
@@ -914,8 +919,15 @@
 								<input type="text" name="emCertificationNumber" id="emCertificationNumber" class="c-text__input" />
 							</div>
 						</td>
-						<th></th>
-						<td></td>
+						<th>대시보드 포함</th>
+						<td>
+							<div class="c-select">
+								<select name="emDashboard" id="emDashboard" class="c-select__input">
+									<option value="Y">Y</option>
+									<option value="Y">N</option>
+								</select>
+							</div>
+						</td>
 					</tr>
 				</tbody>
 

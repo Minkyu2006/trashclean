@@ -328,10 +328,11 @@ public class EquipmentRestController {
     // 장비 리스트
     @PostMapping("list")
     public ResponseEntity<Map<String,Object>> equipmentList(@RequestParam (value="emNumber", defaultValue="") String emNumber,
-                                                        @RequestParam (value="emDesignation", defaultValue="") String  emDesignation,
-                                                        @RequestParam (value="emType", defaultValue="")String emType,
-                                                        @RequestParam (value="emCountry", defaultValue="")String emCountry,
-                                                        @PageableDefault Pageable pageable){
+                                                            @RequestParam (value="emDesignation", defaultValue="") String  emDesignation,
+                                                            @RequestParam (value="emType", defaultValue="")String emType,
+                                                            @RequestParam (value="emCountry", defaultValue="")String emCountry,
+                                                            @RequestParam (value="emDashboard", defaultValue="")String emDashboard,
+                                                            @PageableDefault Pageable pageable){
 
         Long emTypeId = null;
         Long emCountryId = null;
@@ -346,7 +347,7 @@ public class EquipmentRestController {
         }
 
         Page<EquipmentListDto> equipmentListDtos =
-                equipmentService.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,pageable);
+                equipmentService.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,emDashboard,pageable);
 
         return CommonUtils.ResponseEntityPage(equipmentListDtos);
     }

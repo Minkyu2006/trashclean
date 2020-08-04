@@ -54,6 +54,9 @@ public class Equipment {
     @Column(name="em_aws_number")
     private String emAwsNumber; // AWS상 Device ID
 
+    @Column(name="em_dashboard")
+    private String emDashboard; // 대시보드 포함
+
     @Column(name="em_embedded_number")
     private String emEmbeddedNumber; // 임베디드 기판 번호
 

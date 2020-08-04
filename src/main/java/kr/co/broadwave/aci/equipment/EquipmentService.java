@@ -79,8 +79,8 @@ public class EquipmentService {
     }
 
     public Page<EquipmentListDto> findByEquipmentSearch
-            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId, Pageable pageable) {
-        return equipmentRepositoryCustom.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,pageable);
+            (String emNumber, String emDesignation, Long emTypeId,Long emCountryId,String emDashboard, Pageable pageable) {
+        return equipmentRepositoryCustom.findByEquipmentSearch(emNumber,emDesignation,emTypeId,emCountryId,emDashboard,pageable);
     }
 
 
