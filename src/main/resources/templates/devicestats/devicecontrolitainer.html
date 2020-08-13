@@ -18,7 +18,341 @@
     <section class="section">
         <article class="article">
 			<h2 class="article__heading">장비 제어(iTainer)</h2>
-
+			<div class="control">
+				<div class="control__head">
+					<div class="control__head-item">
+						<div class="c-select">
+							<label for="" class="c-select__label">대상장비</label>
+							<select name="" id="" class="c-select__input">
+									<option>장비id</option>
+							</select>
+						</div>
+					</div>
+					<div class="control__head-item" style="padding-top: 15px;">
+						<button class="c-button c-button--point">장비상태조회</button>
+					</div>
+				</div>
+				<div class="control__body">
+					<ul class="control__list">
+						<li>
+							<div class="control__title">오존살포</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<div class="c-text">
+										<input type="text" class="c-text__input" placeholder="초" />
+										</div>
+									</li>
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">카드제거</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">결제도어</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<button class="c-button c-button--point">OPEN</button>
+									</li>
+									<li>
+										<button class="c-button">CLOSE</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">폐기물투입문</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<button class="c-button">OPEN</button>
+									</li>
+									<li>
+										<button class="c-button c-button--point">CLOSE</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">카드제거</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">화재제어</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<div class="c-select">
+											<select name="" id="" class="c-select__input">
+												<option value="">Nomal</option>
+												<option value="">Severe</option>
+											</select>
+										</div>
+									</li>
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">악취제어</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<div class="c-select">
+											<select name="" id="" class="c-select__input">
+												<option value="">Nomal</option>
+												<option value="">Severe</option>
+											</select>
+										</div>
+									</li>
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">비상정지</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<div class="c-select">
+											<select name="" id="" class="c-select__input">
+												<option value="">Clear</option>
+												<option value="">Emerg</option>
+											</select>
+										</div>
+									</li>
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">시스템제어</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<div class="c-select">
+											<select name="" id="" class="c-select__input">
+												<option value="">Shutdown_app</option>
+												<option value="">Shutdown_pc</option>
+												<toprion>Restart_app</toprion>
+												<toprion>Restart_pc</toprion>
+												<toprion>Parking</toprion>
+											</select>
+										</div>
+									</li>
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">엑추에이터제어</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<div class="c-select">
+											<select name="" id="" class="c-select__input">
+												<option value="">Back</option>
+												<option value="">Front</option>
+												<option value="">Compress</option>
+											</select>
+										</div>
+									</li>
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+						<li>
+							<div class="control__title">LED제어</div>
+							<div class="control__input">
+								<ul class="c-input-list">
+									<li>
+										<div class="c-select">
+											<select name="" id="" class="c-select__input">
+												<option value="">RED</option>
+												<option value="">YELLOW</option>
+												<option value="">GREEN</option>
+											</select>
+										</div>
+									</li>
+									<li>
+										<div class="c-select">
+											<select name="" id="" class="c-select__input">
+												<option value="">ON</option>
+												<option value="">OFF</option>
+												<option value="">Blink</option>
+											</select>
+										</div>
+									</li>
+									<li>
+										<button class="c-button">명령</button>
+									</li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+					
+					<ul class="control__list">
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li><li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li><li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<ul class="control__list">
+								<li>
+									<div class="control__result-title">요청상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+								<li>
+									<div class="control__result-title">처리상태</div>
+									<div class="control__result">1574390017363</div>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</div>
         </article>
     </section>
 

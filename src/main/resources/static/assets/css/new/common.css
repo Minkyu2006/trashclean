@@ -2157,6 +2157,15 @@ h4.article__heading {
 	width: 100%;
 	margin-top: 20px;
 }
+.control__body:before {
+	content: " ";
+	display: table;
+}
+.control__body:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
 .control__section {
 	overflow: hidden;
 	position: relative;
@@ -2176,6 +2185,72 @@ h4.article__heading {
 }
 .control__box:last-child {
 	padding-right: 0;
+}
+.control__list {
+	float: left;
+	width: 400px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.control__list:before {
+	content: " ";
+	display: table;
+}
+.control__list:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.control__list + .control__list {
+	width: calc(100% - 420px);
+	margin-left: 20px;
+	padding-left: 20px;
+	border-left: 1px solid #ddd;
+}
+.control__list .control__list {
+	width: 100%;
+}
+.control__list li {
+	overflow: hidden;
+}
+.control__list li + li {
+	margin-top: 5px;
+}
+.control__list li .control__list li {
+	float: left;
+	width: 50%;
+	line-height: 30px;
+}
+.control__list li .control__list li + li,
+.control__list .c-input-list li + li {
+	margin-top: 0;
+}
+.control__title {
+	float: left;
+	width: 100px;
+	color: #787a7d;
+	font-size: 14px;
+	line-height: 30px;
+}
+.control__input {
+	float: left;
+	width: calc(100% - 100px);
+}
+.control__input:before {
+	content: " ";
+	display: table;
+}
+.control__input:after {
+	content: " ";
+	display: table;
+	clear: both;
+}
+.control__input .c-input-list {
+	float: right;
+}
+.control__input .c-button {
+	margin-top: 1px;
 }
 .control__results {
 	
@@ -2204,6 +2279,10 @@ h4.article__heading {
 	font-size: 14px;
 	line-height: 26px;
 }
+.control__list .control__result-title {
+	width: 80px;
+	line-height: 30px;
+}
 .control__result-title:after {
 	content: ":";
 	position: absolute;
@@ -2224,6 +2303,10 @@ h4.article__heading {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
+}
+.control__list .control__result {
+	padding: 0 10px;
+	line-height: 28px;
 }
 .control__result.open {
 	background-color: #007e37;
