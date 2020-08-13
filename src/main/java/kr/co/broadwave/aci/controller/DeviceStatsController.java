@@ -71,6 +71,11 @@ public class DeviceStatsController {
         return "devicestats/devicecontrol";
     }
 
+    @RequestMapping("devicecontrolitainer")
+    public String devicecontrolitainer(){
+        return "devicestats/devicecontrolitainer";
+    }
+
     @RequestMapping("daysdevice")
     public String daysdevice(Model model){
         List<MasterCodeDto> equipdTypes = masterCodeService.findCodeList(CodeType.C0003);
