@@ -102,7 +102,7 @@
 							$("#reported_led_ctrl").html(nvl(devicestate.reported.led_ctrl, "미처리"));
 						}
 					}
-					alertSuccess($("#deviceid").val()+" 조회완료");
+					// alertSuccess($("#deviceid").val()+" 조회완료");
 					// console.log("장비상태조회 완료");
 				}
 			});
@@ -140,12 +140,16 @@
 						doorVal : 'open'
 					};
 					resultStr="결제도어 열기완료";
+					$("#doorPayOpen").addClass("c-button--point");
+					$("#doorPayClose").removeClass("c-button--point");
 				}else{
 					params = {
 						deviceid : deviceid,
 						doorVal : 'close'
 					};
 					resultStr="결제도어 닫기완료";
+					$("#doorPayClose").addClass("c-button--point");
+					$("#doorPayOpen").removeClass("c-button--point");
 				}
 			}else if(num===4){
 				url = '/api/equipment/doorinput';
@@ -154,12 +158,16 @@
 						deviceid : deviceid,
 						doorVal : 'open'
 					};
+					$("#doorInputOpen").addClass("c-button--point");
+					$("#doorInputClose").removeClass("c-button--point");
 					resultStr="폐기물투입문 열기완료";
 				}else{
 					params = {
 						deviceid : deviceid,
 						doorVal : 'close'
 					};
+					$("#doorInputClose").addClass("c-button--point");
+					$("#doorInputOpen").removeClass("c-button--point");
 					resultStr="폐기물투입문 닫기완료";
 				}
 			}else if(num===5 && state===null){
@@ -233,6 +241,7 @@
 				},
 				success: function () {
 					alertSuccess(resultStr);
+					deviceCheck();
 				}
 			});
 		}
@@ -300,10 +309,10 @@
 							<div class="control__input">
 								<ul class="c-input-list">
 									<li>
-										<button onclick="shadow(3,'open')" class="c-button c-button--point">OPEN</button>
+										<button id="doorPayOpen" onclick="shadow(3,'open')" class="c-button c-button--point">OPEN</button>
 									</li>
 									<li>
-										<button onclick="shadow(3,'close')" class="c-button">CLOSE</button>
+										<button id="doorPayClose" onclick="shadow(3,'close')" class="c-button">CLOSE</button>
 									</li>
 								</ul>
 							</div>
@@ -313,10 +322,10 @@
 							<div class="control__input">
 								<ul class="c-input-list">
 									<li>
-										<button onclick="shadow(4,'open')" class="c-button">OPEN</button>
+										<button id="doorInputOpen" onclick="shadow(4,'open')" class="c-button">OPEN</button>
 									</li>
 									<li>
-										<button onclick="shadow(4,'close')" class="c-button c-button--point">CLOSE</button>
+										<button id="doorInputClose" onclick="shadow(4,'close')" class="c-button c-button--point">CLOSE</button>
 									</li>
 								</ul>
 							</div>
