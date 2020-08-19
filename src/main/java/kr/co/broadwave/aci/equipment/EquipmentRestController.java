@@ -452,11 +452,11 @@ public class EquipmentRestController {
 
     //장비 고유아이디값 리스트부르기
     @PostMapping("devicelist")
-    public ResponseEntity<Map<String,Object>> devicelist() {
+    public ResponseEntity<Map<String,Object>> devicelist(@RequestParam(value="codeType", defaultValue="") String codeType) {
         AjaxResponse res = new AjaxResponse();
         HashMap<String, Object> data = new HashMap<>();
 
-        List<Equipment> equipment = dashboardService.findAll();
+        List<EquipmentEmNumberListDto> equipment = equipmentService.findByDeviceNumber(codeType);
 
         data.put("equipment",equipment);
 
@@ -473,7 +473,7 @@ public class EquipmentRestController {
         try{
             HashMap deviceList = aciawsIoTDeviceService.getDeviceStatus(deviceid);
             dataLocal.put("datastate",deviceList.get("state"));
-//            log.info("deviceList : "+deviceList);
+            log.info("deviceList : "+deviceList);
             resLocal.addResponse("data",dataLocal);
             return ResponseEntity.ok(resLocal.success());
         }catch(Exception e){
@@ -495,7 +495,6 @@ public class EquipmentRestController {
         }catch(Exception e){
             return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
         }
-
     }
 
     //Shadow 데이터 요청
@@ -542,6 +541,193 @@ public class EquipmentRestController {
         aciawsIoTDeviceService.setRegComplete(deviceid,timestamp);
 
         return ResponseEntity.ok(res.success());
+    }
+
+    //Shadow 아이테이너 오존살포
+    @PostMapping("ozone")
+    public ResponseEntity<Map<String,Object>> ozone(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                    @RequestParam(value="timestamp", defaultValue="") String timestamp,
+                                                    @RequestParam(value="ozoneVal", defaultValue="") String ozoneVal) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+        if(ozoneVal.equals("")){
+            ozoneVal="0";
+        }
+
+        try{
+            aciawsIoTDeviceService.setOzone(deviceid,timestamp,ozoneVal);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 카드제거
+    @PostMapping("cardremove")
+    public ResponseEntity<Map<String,Object>> cardremove(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                    @RequestParam(value="timestamp", defaultValue="") String timestamp) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setCardremove(deviceid,timestamp);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 결제도어
+    @PostMapping("doorpay")
+    public ResponseEntity<Map<String,Object>> doorpay(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                         @RequestParam(value="doorVal", defaultValue="") String doorVal) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setDoorpay(deviceid,doorVal);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 폐기물투입문
+    @PostMapping("doorinput")
+    public ResponseEntity<Map<String,Object>> doorinput(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                         @RequestParam(value="doorVal", defaultValue="") String doorVal) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setDoorinput(deviceid,doorVal);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 저울뒤집기
+    @PostMapping("saleTurn")
+    public ResponseEntity<Map<String,Object>> saleTurn(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                         @RequestParam(value="timestamp", defaultValue="") String timestamp) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setSaleTurn(deviceid,timestamp);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 화재제어
+    @PostMapping("firlCtrl")
+    public ResponseEntity<Map<String,Object>> firlCtrl(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                       @RequestParam(value="timestamp", defaultValue="") String timestamp,
+                                                       @RequestParam(value="firl_ctrl", defaultValue="") String firl_ctrl) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setFirlCtrl(deviceid,timestamp,firl_ctrl);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 악취제어
+    @PostMapping("stinkCtrl")
+    public ResponseEntity<Map<String,Object>> stinkCtrl(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                       @RequestParam(value="timestamp", defaultValue="") String timestamp,
+                                                       @RequestParam(value="stink_ctrl", defaultValue="") String stink_ctrl) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setStinkCtrl(deviceid,timestamp,stink_ctrl);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 비상정지
+    @PostMapping("emergCtrl")
+    public ResponseEntity<Map<String,Object>> emergCtrl(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                       @RequestParam(value="timestamp", defaultValue="") String timestamp,
+                                                       @RequestParam(value="emerg_ctrl", defaultValue="") String emerg_ctrl) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setEmergCtrl(deviceid,timestamp,emerg_ctrl);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 시스템제어
+    @PostMapping("systemCtrl")
+    public ResponseEntity<Map<String,Object>> systemCtrl(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                       @RequestParam(value="timestamp", defaultValue="") String timestamp,
+                                                       @RequestParam(value="system_ctrl", defaultValue="") String system_ctrl) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setSystemCtrl(deviceid,timestamp,system_ctrl);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 엑추에이터제어
+    @PostMapping("actuatorAct")
+    public ResponseEntity<Map<String,Object>> actuatorAct(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                       @RequestParam(value="timestamp", defaultValue="") String timestamp,
+                                                       @RequestParam(value="actuator_act", defaultValue="") String actuator_act) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setActuatorAct(deviceid,timestamp,actuator_act);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
+    }
+
+    //Shadow 아이테이너 LED제어
+    @PostMapping("ledCtrl")
+    public ResponseEntity<Map<String,Object>> ledCtrl(@RequestParam(value="deviceid", defaultValue="") String deviceid,
+                                                       @RequestParam(value="timestamp", defaultValue="") String timestamp,
+                                                       @RequestParam(value="led_type", defaultValue="") String led_type,
+                                                       @RequestParam(value="led_ctrl", defaultValue="") String led_ctrl) {
+        AjaxResponse resLocal = new AjaxResponse();
+        HashMap<String, Object> dataLocal = new HashMap<>();
+
+        try{
+            aciawsIoTDeviceService.setLedCtrl(deviceid,timestamp,led_type,led_ctrl);
+            resLocal.addResponse("data",dataLocal);
+            return ResponseEntity.ok(resLocal.success());
+        }catch(Exception e){
+            return ResponseEntity.ok(resLocal.fail(ResponseErrorCode.E020.getCode(),ResponseErrorCode.E020.getDesc()));
+        }
     }
 
 }

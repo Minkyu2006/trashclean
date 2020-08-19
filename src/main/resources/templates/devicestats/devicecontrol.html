@@ -72,15 +72,20 @@
 		function deviceList() {
 			var token = $("meta[name='_csrf']").attr("content");
 			var header = $("meta[name='_csrf_header']").attr("content");
-			$(document).ajaxSend(function(e, xhr, options) { xhr.setRequestHeader(header, token); });
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
 
 			var $deviceid = $('#deviceid');
+
+			var params = {
+				codeType : "ISOL"
+			};
 
 			$.ajax({
 				url:'/api/equipment/devicelist',
 				type : 'post',
+				data : params,
 				cache:false,
-				error:function(request,status,error){
+				error:function(request){
 					ajaxErrorMsg(request);
 				},
 				success: function(res){

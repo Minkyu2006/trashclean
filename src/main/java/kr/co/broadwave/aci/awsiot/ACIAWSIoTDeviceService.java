@@ -127,7 +127,6 @@ public class ACIAWSIoTDeviceService {
         log.info("장비 Shadow 장비 등록확인 요청 :'" + deviceid +"'");
         //device 상태가져오기
         aciIoTService.shadowNonblockingSend(deviceid,"devicereg",timestamp);
-
     }
 
     // 모뎀리셋
@@ -135,7 +134,82 @@ public class ACIAWSIoTDeviceService {
         log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
         //device 상태가져오기
         aciIoTService.shadowNonblockingSend(deviceid,"modemreset",ts);
-
     }
 
+    // 오존살포
+    public void setOzone(String deviceid,String ts,String ozoneVal) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"ozone_act",ts+"$@"+ozoneVal);
+    }
+
+    // 카드제거
+    public void setCardremove(String deviceid,String ts) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"card_remove",ts);
+    }
+
+    // 결제도어
+    public void setDoorpay(String deviceid,String doorVal) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"doorpay",doorVal);
+    }
+
+    // 폐기물투입문
+    public void setDoorinput(String deviceid,String doorVal) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"doorinput",doorVal);
+    }
+
+    // 저울뒤집기
+    public void setSaleTurn(String deviceid,String ts) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"scale_turn",ts);
+    }
+
+    // 화재제어
+    public void setFirlCtrl(String deviceid,String ts,String firl_ctrl) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"fire_ctrl",ts+"$@"+firl_ctrl);
+    }
+
+    // 악취제어
+    public void setStinkCtrl(String deviceid,String ts,String stink_ctrl) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"stink_ctrl",ts+"$@"+stink_ctrl);
+    }
+
+    // 비상정지
+    public void setEmergCtrl(String deviceid,String ts,String emerg_ctrl) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"emerg_ctrl",ts+"$@"+emerg_ctrl);
+    }
+
+    // 시스템제어
+    public void setSystemCtrl(String deviceid,String ts,String system_ctrl) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"system_ctrl",ts+"$@"+system_ctrl);
+    }
+
+    // 엑추에이터제어
+    public void setActuatorAct(String deviceid,String ts,String actuator_act) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"actuator_act",ts+"$@"+actuator_act);
+    }
+
+    // LED제어
+    public void setLedCtrl(String deviceid,String ts,String led_type,String led_ctrl) throws Exception {
+        log.info("장비 Shadow 데이터 요청 :'" + deviceid +"'");
+        //device 상태가져오기
+        aciIoTService.shadowNonblockingSend(deviceid,"led_ctrl",ts+"$@"+led_type+"$@"+led_ctrl);
+    }
 }

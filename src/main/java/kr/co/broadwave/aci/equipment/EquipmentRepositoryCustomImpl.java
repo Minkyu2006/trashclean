@@ -283,4 +283,24 @@ public class EquipmentRepositoryCustomImpl extends QuerydslRepositorySupport imp
         return query.fetchOne();
     }
 
+    @Override
+    public List<EquipmentEmNumberListDto> findByDeviceNumber(String code){
+
+        QEquipment equipment = QEquipment.equipment;
+
+        JPQLQuery<EquipmentEmNumberListDto> query = from(equipment)
+                .select(Projections.constructor(EquipmentEmNumberListDto.class,
+                        equipment.emNumber
+                ));
+
+        // 검색조건필터
+        if (code != null && !code.isEmpty()){
+            query.where(equipment.emType.code.eq(code));
+        }
+
+        query.orderBy(equipment.id.desc());
+
+        return query.fetch();
+    }
+
 }

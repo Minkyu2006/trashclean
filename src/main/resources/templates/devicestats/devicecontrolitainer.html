@@ -6,8 +6,245 @@
     <script>
 
         $(function(){
+			if($("#headerMode").val()==="1"){
+				$("#default_wrap").addClass('wrap');
+				$("#header_device").css('display','block');
+			}else{
+				$("#default_wrap").addClass('wrap nav--small');
+				$("#header_device").css('display','none');
+			}
 
+			deviceList();
 		});
+
+        // 아이테이너 장비리스트
+		function deviceList() {
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			var $deviceid = $('#deviceid');
+
+			var params = {
+				codeType : "ITAI"
+			};
+
+			$.ajax({
+				url:'/api/equipment/devicelist',
+				type : 'post',
+				data : params,
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					var html = '';
+					$.each(res.data.equipment, function(key, value){
+						html +=  '<option value='+value.emNumber+'>'+value.emNumber+'</option>'
+					});
+					$deviceid.html(html);
+				}
+			});
+		}
+
+		// 조회버튼
+		function deviceCheck() {
+
+			var params = {
+				deviceid:$("#deviceid").val(),
+			};
+
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			$(document).ajaxSend(function(e, xhr) { xhr.setRequestHeader(header, token); });
+
+			$.ajax({
+				url:'/api/equipment/awsdevicestatus',
+				data : params,
+				type : 'post',
+				cache:false,
+				error:function(request){
+					ajaxErrorMsg(request);
+				},
+				success: function(res){
+					statuscode= res.status;
+					// console.log("statuscode : "+statuscode);
+					if (statuscode===200) {
+						devicestate = res.data.datastate;
+						// console.log("devicestate : "+devicestate);
+						//요청상태
+						if (devicestate.desired) {
+							$("#desired_ozone_act").html(nvl(devicestate.desired.ozone_act, "미요청"));
+							$("#desired_card_remove").html(nvl(devicestate.desired.card_remove, "미요청"));
+							$("#desired_doorpay").html(nvl(devicestate.desired.doorpay, "미요청"));
+							$("#desired_doorinput").html(nvl(devicestate.desired.doorinput, "미요청"));
+							$("#desired_sale_turn").html(nvl(devicestate.desired.scale_turn, "미요청"));
+							$("#desired_fire_ctrl").html(nvl(devicestate.desired.fire_ctrl, "미요청"));
+							$("#desired_stink_ctrl").html(nvl(devicestate.desired.stink_ctrl, "미요청"));
+							$("#desired_emerg_ctrl").html(nvl(devicestate.desired.emerg_ctrl, "미요청"));
+							$("#desired_system_ctrl").html(nvl(devicestate.desired.system_ctrl, "미요청"));
+							$("#desired_actuator_act").html(nvl(devicestate.desired.actuator_act, "미요청"));
+							$("#desired_led_ctrl").html(nvl(devicestate.desired.led_ctrl, "미요청"));
+						}
+						//처리상태
+						if (devicestate.reported) {
+							// console.log("reported_ozone_act : "+devicestate.reported.ozone_act);
+							$("#reported_ozone_act").html(nvl(devicestate.reported.ozone_act, "미처리"));
+							$("#reported_card_remove").html(nvl(devicestate.reported.card_remove, "미처리"));
+							$("#reported_doorpay").html(nvl(devicestate.reported.doorpay, "미처리"));
+							$("#reported_doorinput").html(nvl(devicestate.reported.doorinput, "미처리"));
+							$("#reported_sale_turn").html(nvl(devicestate.reported.scale_turn, "미처리"));
+							$("#reported_fire_ctrl").html(nvl(devicestate.reported.fire_ctrl, "미처리"));
+							$("#reported_stink_ctrl").html(nvl(devicestate.reported.stink_ctrl, "미처리"));
+							$("#reported_emerg_ctrl").html(nvl(devicestate.reported.emerg_ctrl, "미처리"));
+							$("#reported_system_ctrl").html(nvl(devicestate.reported.system_ctrl, "미처리"));
+							$("#reported_actuator_act").html(nvl(devicestate.reported.actuator_act, "미처리"));
+							$("#reported_led_ctrl").html(nvl(devicestate.reported.led_ctrl, "미처리"));
+						}
+					}
+					alertSuccess($("#deviceid").val()+" 조회완료");
+					// console.log("장비상태조회 완료");
+				}
+			});
+		}
+
+		function shadow(num,state) {
+			// console.log("num : "+num);
+			// console.log("state : "+state);
+
+			var url;
+			var resultStr;
+			var params;
+			timestamp = + new Date();
+			var deviceid = $("#deviceid").val();
+			if(num===1 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp,
+					ozoneVal : $("#ozoneVal").val()
+				};
+				url = '/api/equipment/ozone';
+				resultStr="오존살포 명령완료";
+			}else if(num===2 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp
+				};
+				url = '/api/equipment/cardremove';
+				resultStr="카드제거 명령완료";
+			}else if(num===3){
+				url = '/api/equipment/doorpay';
+				if(state==='open'){
+					params = {
+						deviceid : deviceid,
+						doorVal : 'open'
+					};
+					resultStr="결제도어 열기완료";
+				}else{
+					params = {
+						deviceid : deviceid,
+						doorVal : 'close'
+					};
+					resultStr="결제도어 닫기완료";
+				}
+			}else if(num===4){
+				url = '/api/equipment/doorinput';
+				if(state==='open'){
+					params = {
+						deviceid : deviceid,
+						doorVal : 'open'
+					};
+					resultStr="폐기물투입문 열기완료";
+				}else{
+					params = {
+						deviceid : deviceid,
+						doorVal : 'close'
+					};
+					resultStr="폐기물투입문 닫기완료";
+				}
+			}else if(num===5 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp
+				};
+				url = '/api/equipment/saleTurn';
+				resultStr="저울뒤집기 명령완료";
+			}else if(num===6 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp,
+					firl_ctrl : $("#firl_ctrl").val()
+				};
+				url = '/api/equipment/firlCtrl';
+				resultStr="화재제어 명령완료";
+			}else if(num===7 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp,
+					stink_ctrl : $("#stink_ctrl").val()
+				};
+				url = '/api/equipment/stinkCtrl';
+				resultStr="악취제어 명령완료";
+			}else if(num===8 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp,
+					emerg_ctrl : $("#emerg_ctrl").val()
+				};
+				url = '/api/equipment/emergCtrl';
+				resultStr="비상정지 명령완료";
+			}else if(num===9 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp,
+					system_ctrl : $("#system_ctrl").val()
+				};
+				url = '/api/equipment/systemCtrl';
+				resultStr="시스템제어 명령완료";
+			}else if(num===10 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp,
+					actuator_act : $("#actuator_act").val()
+				};
+				url = '/api/equipment/actuatorAct';
+				resultStr="엑추에이터제어 명령완료";
+			}else if(num===11 && state===null){
+				params = {
+					deviceid : deviceid,
+					timestamp : timestamp,
+					led_type : $("#led_type").val(),
+					led_ctrl : $("#led_ctrl").val()
+				};
+				url = '/api/equipment/ledCtrl';
+				resultStr="LED제어 명령완료";
+			}else{
+				alertCancel("선택이 잘못되었습니다.");
+				return false;
+			}
+
+			$.ajax({
+				url: url,
+				data: params,
+				type: 'post',
+				cache: false,
+				error: function (request) {
+					ajaxErrorMsg(request);
+				},
+				success: function () {
+					alertSuccess(resultStr);
+				}
+			});
+		}
+
+		//숫자만입력가능
+		function delstr(evt){
+			var objTarget = evt.srcElement || evt.target;
+			var _value = event.srcElement.value;
+			if(!/^[0-9]+$/g.test(_value)) {
+				objTarget.value = null;
+			}
+		}
 
     </script>
 
@@ -22,14 +259,13 @@
 				<div class="control__head">
 					<div class="control__head-item">
 						<div class="c-select">
-							<label for="" class="c-select__label">대상장비</label>
-							<select name="" id="" class="c-select__input">
-									<option>장비id</option>
+							<label for="deviceid" class="c-select__label">대상장비</label>
+							<select name="deviceid" id="deviceid" class="c-select__input">
 							</select>
 						</div>
 					</div>
 					<div class="control__head-item" style="padding-top: 15px;">
-						<button class="c-button c-button--point">장비상태조회</button>
+						<button onclick="deviceCheck()" class="c-button c-button--point">장비상태조회</button>
 					</div>
 				</div>
 				<div class="control__body">
@@ -40,11 +276,11 @@
 								<ul class="c-input-list">
 									<li>
 										<div class="c-text">
-										<input type="text" class="c-text__input" placeholder="초" />
+											<input type="text" id="ozoneVal" class="c-text__input" placeholder="초" onkeyup="return delstr(event)" />
 										</div>
 									</li>
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(1,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -54,7 +290,7 @@
 							<div class="control__input">
 								<ul class="c-input-list">
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(2,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -64,10 +300,10 @@
 							<div class="control__input">
 								<ul class="c-input-list">
 									<li>
-										<button class="c-button c-button--point">OPEN</button>
+										<button onclick="shadow(3,'open')" class="c-button c-button--point">OPEN</button>
 									</li>
 									<li>
-										<button class="c-button">CLOSE</button>
+										<button onclick="shadow(3,'close')" class="c-button">CLOSE</button>
 									</li>
 								</ul>
 							</div>
@@ -77,20 +313,20 @@
 							<div class="control__input">
 								<ul class="c-input-list">
 									<li>
-										<button class="c-button">OPEN</button>
+										<button onclick="shadow(4,'open')" class="c-button">OPEN</button>
 									</li>
 									<li>
-										<button class="c-button c-button--point">CLOSE</button>
+										<button onclick="shadow(4,'close')" class="c-button c-button--point">CLOSE</button>
 									</li>
 								</ul>
 							</div>
 						</li>
 						<li>
-							<div class="control__title">카드제거</div>
+							<div class="control__title">저울뒤집기</div>
 							<div class="control__input">
 								<ul class="c-input-list">
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(5,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -101,14 +337,14 @@
 								<ul class="c-input-list">
 									<li>
 										<div class="c-select">
-											<select name="" id="" class="c-select__input">
-												<option value="">Nomal</option>
-												<option value="">Severe</option>
+											<select id="firl_ctrl" class="c-select__input">
+												<option value="nomal">Nomal</option>
+												<option value="severe">Severe</option>
 											</select>
 										</div>
 									</li>
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(6,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -119,14 +355,14 @@
 								<ul class="c-input-list">
 									<li>
 										<div class="c-select">
-											<select name="" id="" class="c-select__input">
-												<option value="">Nomal</option>
-												<option value="">Severe</option>
+											<select id="stink_ctrl" class="c-select__input">
+												<option value="nomal">Nomal</option>
+												<option value="severe">Severe</option>
 											</select>
 										</div>
 									</li>
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(7,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -137,14 +373,14 @@
 								<ul class="c-input-list">
 									<li>
 										<div class="c-select">
-											<select name="" id="" class="c-select__input">
-												<option value="">Clear</option>
-												<option value="">Emerg</option>
+											<select id="emerg_ctrl" class="c-select__input">
+												<option value="clear">Clear</option>
+												<option value="emerg">Emerg</option>
 											</select>
 										</div>
 									</li>
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(8,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -155,17 +391,17 @@
 								<ul class="c-input-list">
 									<li>
 										<div class="c-select">
-											<select name="" id="" class="c-select__input">
-												<option value="">Shutdown_app</option>
-												<option value="">Shutdown_pc</option>
-												<toprion>Restart_app</toprion>
-												<toprion>Restart_pc</toprion>
-												<toprion>Parking</toprion>
+											<select id="system_ctrl" class="c-select__input">
+												<option value="shutdown_app">Shutdown_app</option>
+												<option value="shutdown_pc">Shutdown_pc</option>
+												<option value="restart_app">Restart_app</option>
+												<option value="restart_pc">Restart_pc</option>
+												<option value="parking">Parking</option>
 											</select>
 										</div>
 									</li>
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(9,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -176,15 +412,15 @@
 								<ul class="c-input-list">
 									<li>
 										<div class="c-select">
-											<select name="" id="" class="c-select__input">
-												<option value="">Back</option>
-												<option value="">Front</option>
-												<option value="">Compress</option>
+											<select id="actuator_act" class="c-select__input">
+												<option value="back">Back</option>
+												<option value="front">Front</option>
+												<option value="compress">Compress</option>
 											</select>
 										</div>
 									</li>
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(10,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -195,24 +431,24 @@
 								<ul class="c-input-list">
 									<li>
 										<div class="c-select">
-											<select name="" id="" class="c-select__input">
-												<option value="">RED</option>
-												<option value="">YELLOW</option>
-												<option value="">GREEN</option>
+											<select id="led_type" class="c-select__input">
+												<option value="red">RED</option>
+												<option value="yellow">YELLOW</option>
+												<option value="green">GREEN</option>
 											</select>
 										</div>
 									</li>
 									<li>
 										<div class="c-select">
-											<select name="" id="" class="c-select__input">
-												<option value="">ON</option>
-												<option value="">OFF</option>
-												<option value="">Blink</option>
+											<select id="led_ctrl" class="c-select__input">
+												<option value="off">OFF</option>
+												<option value="on">ON</option>
+												<option value="blink">Blink</option>
 											</select>
 										</div>
 									</li>
 									<li>
-										<button class="c-button">명령</button>
+										<button onclick="shadow(11,null)" class="c-button">명령</button>
 									</li>
 								</ul>
 							</div>
@@ -224,11 +460,11 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_ozone_act" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_ozone_act" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>
@@ -236,11 +472,11 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_card_remove" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_card_remove" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>
@@ -248,11 +484,11 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_doorpay" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_doorpay" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>
@@ -260,11 +496,11 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_doorinput" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_doorinput" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>
@@ -272,11 +508,11 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_sale_turn" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_sale_turn" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>
@@ -284,22 +520,22 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_fire_ctrl" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_fire_ctrl" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li><li>
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_stink_ctrl" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_stink_ctrl" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>
@@ -307,11 +543,11 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_emerg_ctrl" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_emerg_ctrl" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>
@@ -319,22 +555,22 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_system_ctrl" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_system_ctrl" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li><li>
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_actuator_act" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_actuator_act" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>
@@ -342,11 +578,11 @@
 							<ul class="control__list">
 								<li>
 									<div class="control__result-title">요청상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="desired_led_ctrl" class="control__result">미확인</div>
 								</li>
 								<li>
 									<div class="control__result-title">처리상태</div>
-									<div class="control__result">1574390017363</div>
+									<div id="reported_led_ctrl" class="control__result">미확인</div>
 								</li>
 							</ul>
 						</li>

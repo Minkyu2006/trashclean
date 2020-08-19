@@ -1,5 +1,6 @@
 package kr.co.broadwave.aci.equipment;
 
+import kr.co.broadwave.aci.mastercode.MasterCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -28,4 +29,6 @@ public interface EquipmentRepositoryCustom {
     EquipmentCollectionTypeDto findByRoutingEmTypeQuerydsl(String streetdevice);
 
     Page<EquipmentWaitingCollectionListDto> findByWaitingEquipmentCollectionQuerydsl(String emType, Long emCountryId, Long emLocationId, String emNumber, String emState, Pageable pageable);
+
+    List<EquipmentEmNumberListDto> findByDeviceNumber(String code);
 }

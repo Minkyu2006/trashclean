@@ -129,4 +129,8 @@ public class EquipmentService {
     public Page<EquipmentWaitingCollectionListDto> findByWaitingEquipmentCollectionQuerydsl(String emType, Long emCountryId, Long emLocationId, String emNumber, String emState, Pageable pageable) {
         return equipmentRepositoryCustom.findByWaitingEquipmentCollectionQuerydsl(emType,emCountryId,emLocationId,emNumber,emState,pageable);
     }
+
+    public List<EquipmentEmNumberListDto> findByDeviceNumber(String code) {
+        return equipmentRepositoryCustom.findByDeviceNumber(code);
+    }
 }

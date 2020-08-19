@@ -3,6 +3,7 @@ package kr.co.broadwave.aci.dashboard;
 import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.equipment.Equipment;
 import kr.co.broadwave.aci.equipment.EquipmentDto;
+import kr.co.broadwave.aci.equipment.EquipmentListDto;
 import kr.co.broadwave.aci.equipment.EquipmentRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -76,4 +77,5 @@ public class DashboardService {
 //            return null;
 //        }
     }
+
 }

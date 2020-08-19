@@ -119,14 +119,14 @@
 
 					var $allErrorReport = $('#allErrorReport');
 
-					var stateNameList = ['터치스크린','키패드','임베디드 디바이스 상태','임베디드 에러','결제 도어','폐기물 도어','오존 살포','폐기물 압축',
-						'저울 디바이스','저울 데이터','긴급 버튼','결제 디바이스','이지 카드','이지 게이트웨이','티머니 결제','신용카드 결제','로라 디바이스',
+					var stateNameList = ['터치스크린','키패드','임베디드 디바이스 상태','결제 도어','폐기물 도어','오존 살포','폐기물 압축',
+						'저울 디바이스','저울 데이터','긴급 버튼','결제 디바이스','티머니 결제','신용카드 결제','로라 디바이스',
 						'센서 메인','온도, 습도','ECO2, TVOC','NH3','RED, IR, GREEN','아두이노 NH3','GPS 디바이스','GPS 데이터'];
-					var keyList = ['td001s','kd001s','ed001s','ed002s','ed003s','ed006s','ed009c','ed010s',
-						'ed011s','ed012s','ed014s','pi001s','pi002s','pi003s','pi004c','pi005c','ld001c',
+					var keyList = ['td001s','kd001s','ed001s','ed003s','ed006s','ed009c','ed010s',
+						'ed011s','ed012s','ed014s','pi001s','pi004c','pi005c','ld001c',
 						'sd001c','sd002c','sd003c','sd004c','sd005c','sd006c','di001c','di002c'];
 
-					var deviceid = jsonParse['deviceid'];
+					// var deviceid = jsonParse['deviceid'];
 					// console.log("deviceid : " + deviceid);
 
 					reportTime(jsonParse['data']['error_time'],0);
@@ -414,12 +414,12 @@
 											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
-									<div class="eq__item">
-										<div class="eq__item-inner">
-											<div class="eq__title">임베디드 에러</div>
-											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
-										</div>
-									</div>
+<!--									<div class="eq__item">-->
+<!--										<div class="eq__item-inner">-->
+<!--											<div class="eq__title">임베디드 에러</div>-->
+<!--											<div class="eq__status"><button class="eq__btn eq__btn&#45;&#45;none">미확인</button></div>-->
+<!--										</div>-->
+<!--									</div>-->
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">결제 도어</div>
@@ -468,18 +468,18 @@
 											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
 										</div>
 									</div>
-									<div class="eq__item">
-										<div class="eq__item-inner">
-											<div class="eq__title">이지 카드</div>
-											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
-										</div>
-									</div>
-									<div class="eq__item">
-										<div class="eq__item-inner">
-											<div class="eq__title">이지 게이트웨이</div>
-											<div class="eq__status"><button class="eq__btn eq__btn--none">미확인</button></div>
-										</div>
-									</div>
+<!--									<div class="eq__item">-->
+<!--										<div class="eq__item-inner">-->
+<!--											<div class="eq__title">이지 카드</div>-->
+<!--											<div class="eq__status"><button class="eq__btn eq__btn&#45;&#45;none">미확인</button></div>-->
+<!--										</div>-->
+<!--									</div>-->
+<!--									<div class="eq__item">-->
+<!--										<div class="eq__item-inner">-->
+<!--											<div class="eq__title">이지 게이트웨이</div>-->
+<!--											<div class="eq__status"><button class="eq__btn eq__btn&#45;&#45;none">미확인</button></div>-->
+<!--										</div>-->
+<!--									</div>-->
 									<div class="eq__item">
 										<div class="eq__item-inner">
 											<div class="eq__title">티머니 결제</div>
