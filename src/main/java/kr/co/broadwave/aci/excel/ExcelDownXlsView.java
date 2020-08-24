@@ -17,10 +17,6 @@ import java.util.Map;
 public class ExcelDownXlsView extends AbstractXlsView{
     @Override
     protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-
         new ExcelWriter(workbook, model, response).create();
-
-
     }
 }

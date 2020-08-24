@@ -657,7 +657,7 @@ public class DeviestatsRestController {
 //        System.out.println("timeVal : "+timeVal);
         if(mode==2) {
             HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal,mode);
-            System.out.println("resData : " + resData);
+//            System.out.println("resData : " + resData);
 
             data.put("statusCode", resData.get("statusCode"));
             data.put("datarow", resData.get("data"));
@@ -665,7 +665,7 @@ public class DeviestatsRestController {
 
         }else{
             HashMap<String, Object> resData = aciawsLambdaService.getDeviceMl(timeVal,mode);
-            System.out.println("resData : " + resData);
+//            System.out.println("resData : " + resData);
 
             data.put("statusCode", resData.get("statusCode"));
             data.put("datarow", resData.get("data"));

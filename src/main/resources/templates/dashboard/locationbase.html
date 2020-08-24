@@ -101,7 +101,7 @@
 						}
 						// 맵에 장치보기
 						mapDeviceId(res.data.deviceIdNames,res.data.map_data_columns,res.data.bar_data_columns,res.data.statusDatas,
-								res.data.temp_brd,res.data.batt_voltage,res.data.solar_current,res.data.solar_voltage,res.data.rsrp,res.data.frontDoor_sol,res.data.inputDoor);
+								res.data.temp_brd,res.data.batt_voltage,res.data.solar_current,res.data.solar_voltage,res.data.rsrp,res.data.frontDoor_sol,res.data.inputDoor,res.data.s_fire,res.data.s_stink);
 
 						$("#mapLoaging").hide();
 					}
@@ -109,7 +109,7 @@
 			}
 
 			// 장비상태정보 리스트 보내기
-			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_voltage,solar_current,solar_voltage,rsrp,frontDoor_sol,inputDoor) {
+			function mapDeviceId(deviceId,mapGps,level,status,temp_brd,batt_voltage,solar_current,solar_voltage,rsrp,frontDoor_sol,inputDoor,s_fire,s_stink) {
 				var locations = mapGps;
 
 				var map;
@@ -157,7 +157,7 @@
 							infowindow.open(map, marker);
 							$("#deviceDetail").show();
 
-							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_voltage[i],solar_current[i],solar_voltage[i],rsrp[i],mapGps[i][1],mapGps[i][2],frontDoor_sol[i],inputDoor[i]);
+							deviceDetail(deviceId[i],level[i+1],status[i],temp_brd[i],batt_voltage[i],solar_current[i],solar_voltage[i],rsrp[i],mapGps[i][1],mapGps[i][2],frontDoor_sol[i],inputDoor[i],s_fire[i],s_stink[i]);
 
 							if (marker.getAnimation() != null) {
 								marker.setAnimation(null);
@@ -175,7 +175,7 @@
 			}
 
 			// 장치리스트 출력
-			function deviceDetail(pushValue,level,state,temp_brd,batt_voltage,solar_current,solar_voltage,rsrp,gps_la,gps_lo,frontDoor_sol,inputDoor) {
+			function deviceDetail(pushValue,level,state,temp_brd,batt_voltage,solar_current,solar_voltage,rsrp,gps_la,gps_lo,frontDoor_sol,inputDoor,s_fire,s_stink) {
 				var $deviceDetail = $('#deviceDetail');
 				console.log("pushValue : "+pushValue);
 
@@ -439,6 +439,22 @@
 								html += '<span class="equipment__info-value">' + "영어" +'</span>';
 							}else{
 								html += '<span class="equipment__info-value">' + "중국어" +'</span>';
+							}
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '화재 : ' + '</span>';
+							if(s_fire==="normal"){
+								html += '<span style="color:#00ac23" class="equipment__info-value">' + "정상" +'</span>';
+							}else{
+								html += '<span style="color:#ff2020" class="equipment__info-value">' + "심각" +'</span>';
+							}
+							html += '</li>';
+							html += '<li class="equipment__info-item">';
+							html += '<span class="equipment__info-title">' + '악취 : ' + '</span>';
+							if(s_stink==="normal"){
+								html += '<span style="color:#00ac23" class="equipment__info-value">' + "정상" +'</span>';
+							}else{
+								html += '<span style="color:#ff2020" class="equipment__info-value">' + "심각" +'</span>';
 							}
 							html += '</li>';
 						}

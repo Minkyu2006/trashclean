@@ -2,10 +2,13 @@ package kr.co.broadwave.aci.controller;
 
 import kr.co.broadwave.aci.awsiot.ACIAWSLambdaService;
 import kr.co.broadwave.aci.bscodes.CodeType;
+import kr.co.broadwave.aci.common.CommonUtils;
 import kr.co.broadwave.aci.dashboard.DashboardDeviceListViewDto;
 import kr.co.broadwave.aci.dashboard.DashboardService;
+import kr.co.broadwave.aci.devicestats.DevicestatusService;
 import kr.co.broadwave.aci.devicestats.errweight.ErrweightMapperDto;
 import kr.co.broadwave.aci.devicestats.errweight.ErrweightService;
+import kr.co.broadwave.aci.devicestats.payment.PaymentListDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeDto;
 import kr.co.broadwave.aci.mastercode.MasterCodeService;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -38,16 +43,18 @@ public class DeviceStatsController {
     private final ACIAWSLambdaService aciawsLambdaService;
     private final DashboardService dashboardService;
     private final ErrweightService errweightService;
-
+    private final DevicestatusService devicestatusService;
     @Autowired
     public DeviceStatsController(MasterCodeService masterCodeService,
                                  DashboardService dashboardService,
                                  ACIAWSLambdaService aciawsLambdaService,
-                                 ErrweightService errweightService) {
+                                 ErrweightService errweightService,
+                                 DevicestatusService devicestatusService) {
         this.masterCodeService = masterCodeService;
         this.dashboardService = dashboardService;
         this.aciawsLambdaService = aciawsLambdaService;
         this.errweightService = errweightService;
+        this.devicestatusService = devicestatusService;
     }
 
     //장비등록
@@ -160,6 +167,20 @@ public class DeviceStatsController {
                 model.addAttribute("level",awsData.get("actuator_level")+"%");
                 model.addAttribute("batt_voltage",awsData.get("dis_info_level")+"%");
                 model.addAttribute("solar_current",awsData.get("dis_info_weight")+"g");
+
+                model.addAttribute("solar_current", awsData.get("s_fire") + "A");
+                model.addAttribute("solar_voltage", awsData.get("solar_voltage") + "V");
+
+                if(awsData.get("fire_level").equals("normal")){
+                    model.addAttribute("fire_level", "정상");
+                }else{
+                    model.addAttribute("fire_level", "심각");
+                }
+                if(awsData.get("stink_level").equals("normal")){
+                    model.addAttribute("stink_level", "정상");
+                }else{
+                    model.addAttribute("stink_level", "심각");
+                }
 
                 String language = (String)awsData.get("language");
                 if(language.equals("ko")){
@@ -335,6 +356,24 @@ public class DeviceStatsController {
     @RequestMapping("sensorefficiency")
     public String sensorefficiency() {
         return "devicestats/sensorefficiency";
+    }
+
+    @RequestMapping(value="/patmentList.xls" , params = {"dateFrom","dateTo","deviceid","basename"})
+    public String getExcelByExt(Model model, HttpServletRequest request,
+                                @RequestParam(value="fromVal", defaultValue="") String fromVal,
+                                @RequestParam(value="toVal", defaultValue="") String toVal,
+                                @RequestParam (value="deviceid", defaultValue="")String deviceid,
+                                @RequestParam (value="basename", defaultValue="")String basename) {
+
+        //엑셀헤더
+        List<String> header = Arrays.asList("장비코드","결제처리코드","발생시간","거점명","배출결과","배출시작시간","배출종료시간","결제방법","카드번호(뒷번호4자리)","폐기물 무게","결제금액","선결제금액","취소금액");
+        //엑셀전환할 자료
+        List<PaymentListDto> paymentListDtos = devicestatusService.findByPaymentListQuerydsl(fromVal,toVal,deviceid,basename);
+
+        //엑셀전황
+        CommonUtils.exceldataModel(model,header,paymentListDtos,"PaymentList");
+
+        return "excelDownXls";
     }
 
 }

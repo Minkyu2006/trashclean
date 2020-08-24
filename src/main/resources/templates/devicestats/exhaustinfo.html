@@ -27,7 +27,20 @@
 				infoList();
 			});
 
+			$("#btnExcelDown").on('click',function(){
+				exceldown();
+			});
+
 		});
+
+		function exceldown(){
+			var dateFrom = $("#s_dateFrom").val();
+			var dateTo = $("#s_dateTo").val();
+			var deviceid = $("#deviceid").val();
+			var basename = $("#basename").val();
+
+			document.location.href = '/devicestats/patmentList.xls?dateFrom=' + dateFrom +"&dateTo=" + dateTo+"&deviceid=" + deviceid+"&basename=" + basename;
+		}
 
 		//배출시간,배출시작시간,배출종료시간 출력
 		function levelTime(errorTime) {
@@ -246,6 +259,7 @@
 				<div class="l-float-heading--left">
 					<h4 class="article__hading">검색조건</h4>
 				</div>
+				<div class="l-float-heading--right"><button id="btnExcelDown" class="c-button">XLS 다운로드</button></div>
 			</div>
 			<table class="c-table">
 				<colgroup>

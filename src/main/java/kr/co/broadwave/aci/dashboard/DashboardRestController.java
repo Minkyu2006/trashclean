@@ -195,11 +195,13 @@ public class DashboardRestController {
         List<String> s_dis_info_level = new ArrayList<>(); // ITAI 배출무게(%)
         List<String> s_dis_info_weight = new ArrayList<>(); // ITAI 배출무게(g)
         List<String> s_language = new ArrayList<>();// ITAI 사용언어
+        List<String> s_fire = new ArrayList<>(); // ITAI 화재
+        List<String> s_stink = new ArrayList<>();// ITAI 악취
 
 //        log.info("deviceids : " + deviceids);
 //        log.info("deviceIdList : " + deviceIdList);
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids);
-//        log.info("resData : " + resData);
+        log.info("resData : " + resData);
         List<String> sortDevice = new ArrayList<>();
 
         Object datacounts = resData.get("datacounts");
@@ -319,6 +321,9 @@ public class DashboardRestController {
                             s_dis_info_level.add((String) map.get("dis_info_level")); // 배출무게(%)
                             s_dis_info_weight.add((String) map.get("dis_info_weight")); // 배출무게(g)
                             s_language.add((String) map.get("language")); // 사용언어
+                            s_fire.add((String) map.get("fire_level"));
+                            s_stink.add((String) map.get("stink_level"));
+
                             gps_laDatas.add((String) map.get("gps_la")); // 위도값넣기
                             gps_loDatas.add((String) map.get("gps_lo")); // 경도값넣기
 
@@ -425,6 +430,8 @@ public class DashboardRestController {
         data.put("s_dis_info_level",s_dis_info_level);
         data.put("s_dis_info_weight",s_dis_info_weight);
         data.put("s_language",s_language);
+        data.put("s_fire",s_fire);
+        data.put("s_stink",s_stink);
 
         res.addResponse("data",data);
 
@@ -971,6 +978,8 @@ public class DashboardRestController {
         List<String> s_dis_info_level = new ArrayList<>(); // ITAI 배출무게(%)
         List<String> s_dis_info_weight = new ArrayList<>(); // ITAI 배출무게(g)
         List<String> s_language = new ArrayList<>();// ITAI 사용언어
+        List<String> s_fire = new ArrayList<>(); // ITAI 화재
+        List<String> s_stink = new ArrayList<>();// ITAI 악취
 
         HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(deviceids); //AWS상 데이터리스트
 //        log.info("AWS 장치 data : "+resData.get("data"));
@@ -1002,7 +1011,8 @@ public class DashboardRestController {
                 batt_voltage.add((String) map.get("batt_voltage")); //배터리잔량 리스트
                 solar_current.add((String) map.get("solar_current")); //전류 리스트
                 solar_voltage.add((String) map.get("solar_voltage")); //전압 리스트
-
+                s_fire.add(null);
+                s_stink.add(null);
                 if(!String.valueOf(map.get("rsrp")).equals("")) {
                     rsrp.add(Integer.parseInt(String.valueOf(map.get("rsrp"))));
                 }else{
@@ -1050,11 +1060,13 @@ public class DashboardRestController {
                 }
 
             }else if(emType.equals("ITAI")){
-                temp_brd.add((String) map.get("s_tmp2")); //온도 리스트
-                barDataColumns.add((String) map.get("actuator_level")); //배출량 리스트
-                batt_voltage.add((String) map.get("dis_info_level")); //배터리잔량 리스트
-                solar_current.add((String) map.get("dis_info_weight")); //전류 리스트
-                solar_voltage.add((String) map.get("language")); //전압 리스트
+                temp_brd.add((String) map.get("s_tmp2"));
+                barDataColumns.add((String) map.get("actuator_level"));
+                batt_voltage.add((String) map.get("dis_info_level"));
+                solar_current.add((String) map.get("dis_info_weight"));
+                solar_voltage.add((String) map.get("language"));
+                s_fire.add((String) map.get("fire_level"));
+                s_stink.add((String) map.get("stink_level"));
             }
         }
 
@@ -1100,6 +1112,8 @@ public class DashboardRestController {
         data.put("bar_data_columns",barDataColumns);
         data.put("frontDoor_sol",frontDoor_sol);
         data.put("inputDoor",inputDoor);
+        data.put("s_fire",s_fire);
+        data.put("s_stink",s_stink);
 
         res.addResponse("data",data);
         return ResponseEntity.ok(res.success());

@@ -94,8 +94,12 @@
 
 			 if($("#emType").text()==="iSolarbin"){
 				 $("#resetBtn").show();
+				 $("#fireList").hide();
+				 $("#stinkList").hide();
 			 }else{
 				 $("#resetBtn").hide();
+				 $("#fireList").show();
+				 $("#stinkList").show();
 			 }
 
 		 });
@@ -316,6 +320,14 @@
 					<li class="equipment__info-item">
 						<span class="equipment__info-title">설치일자 : </span>
 						<span class="equipment__info-value" th:text="${instalDate}"></span>
+					</li>
+					<li id="fireList" class="equipment__info-item" style="display: none">
+						<span class="equipment__info-title">화재 : </span>
+						<span style="color:#00ac23" class="equipment__info-value" th:text="${fire_level}"></span>
+					</li>
+					<li id="stinkList" class="equipment__info-item" style="display: none">
+						<span class="equipment__info-title">악취 : </span>
+						<span style="color:#ff2020" class="equipment__info-value" th:text="${stink_level}"></span>
 					</li>
 					<li id="resetBtn" class="equipment__info-item" style="display: none">
 						<input type="button" class="c-button c-button--point" value="모뎀리셋" onclick="modemReset()" />

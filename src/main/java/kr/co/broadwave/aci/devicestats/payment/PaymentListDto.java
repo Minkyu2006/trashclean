@@ -1,6 +1,11 @@
 package kr.co.broadwave.aci.devicestats.payment;
 
+import kr.co.broadwave.aci.excel.DtoExcel;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Minkyu
@@ -8,12 +13,13 @@ import lombok.*;
  * Time :
  * Remark :  iTainer 결제 데이타 ListDto
  */
+@Slf4j
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @Setter
-public class PaymentListDto {
+public class PaymentListDto implements DtoExcel {
 
     private String deviceid; // 장비코드
     private String eventTrid; // 이벤트 아이디
@@ -80,5 +86,23 @@ public class PaymentListDto {
 
     public Double getDisCancelAmt() {
         return disCancelAmt;
+    }
+
+    @Override
+    public List<String> toArray() {
+
+        String disMethod;
+        if(this.disMethod.equals("CC")){
+            disMethod = "신용카드";
+        }else if(this.disMethod.equals("TM")){
+            disMethod = "티머니";
+        }else if(this.disMethod.equals("FR")){
+            disMethod = "무료";
+        }else{
+            disMethod = "확 인 불 가";
+        }
+
+        return Arrays.asList(this.deviceid, this.eventTrid,this.eventTime,this.baseName,this.disStime,this.disEtime
+                ,disMethod,this.disCardno,String.valueOf(this.disWeight),String.valueOf(this.disPayAmt),String.valueOf(this.disPreAmt),String.valueOf(this.disCancelAmt));
     }
 }

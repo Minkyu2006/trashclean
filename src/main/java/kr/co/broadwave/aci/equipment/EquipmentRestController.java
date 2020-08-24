@@ -11,7 +11,6 @@ import kr.co.broadwave.aci.company.Company;
 import kr.co.broadwave.aci.company.CompanyDto;
 import kr.co.broadwave.aci.company.CompanyListDto;
 import kr.co.broadwave.aci.company.CompanyService;
-import kr.co.broadwave.aci.dashboard.DashboardService;
 import kr.co.broadwave.aci.imodel.IModel;
 import kr.co.broadwave.aci.imodel.IModelChangeDto;
 import kr.co.broadwave.aci.imodel.IModelService;
@@ -29,7 +28,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Minkyu
@@ -42,7 +44,6 @@ import java.util.*;
 @RequestMapping("/api/equipment")
 public class EquipmentRestController {
 
-    private final DashboardService dashboardService;
     private final ModelMapper modelMapper;
     private final EquipmentService equipmentService;
     private final AccountService accountService;
@@ -56,11 +57,9 @@ public class EquipmentRestController {
                                    AccountService accountService,
                                    IModelService iModelService,
                                    CompanyService companyService,
-                                   DashboardService dashboardService,
                                    MasterCodeService masterCodeService,
                                    EquipmentService equipmentService, ACIAWSIoTDeviceService aciawsIoTDeviceService) {
         this.accountService = accountService;
-        this.dashboardService = dashboardService;
         this.companyService = companyService;
         this.iModelService = iModelService;
         this.masterCodeService = masterCodeService;
