@@ -88,10 +88,10 @@
 				alertCaution("운행시작일을 선택해주세요.");
 				return false;
 			}
-			if ($("#vcEndDate").val().trim() === '') {
-				alertCaution("운행종료일을 선택해주세요.");
-				return false;
-			}
+			// if ($("#vcEndDate").val().trim() === '') {
+			// 	alertCaution("운행종료일을 선택해주세요.");
+			// 	return false;
+			// }
 			if ($("#operator").val().trim() === '') {
 				alertCaution("소속 운영사를 선택해주세요.");
 				return false;
@@ -180,7 +180,11 @@
 						html += '<td >'+ nvl(value.vcShape,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.vcUsage,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.vcStartDate,"확 인 불 가") +'</td>';
-						html += '<td >'+ nvl(value.vcEndDate,"확 인 불 가") +'</td>';
+						if(value.vcEndDate!==""){
+							html += '<td >'+ nvl(value.vcEndDate,"확 인 불 가") +'</td>';
+						}else{
+							html += '<td ></td>';
+						}
 						html += '<td >'+ nvl(value.company,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.vcState,"확 인 불 가") +'</td>';
 						html += '<td >'+ nvl(value.vcManagement,"확 인 불 가") +'</td>';

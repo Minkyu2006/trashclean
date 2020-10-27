@@ -56,11 +56,15 @@ public class VehicleListDto {
         return startDate;
     }
 
-    public StringBuffer getVcEndDate() {
-        StringBuffer endDate = new StringBuffer(vcEndDate);
-        endDate.insert(4,'-');
-        endDate.insert(7,'-');
-        return endDate;
+    public Object getVcEndDate() {
+        if(!vcEndDate.equals("")){
+            StringBuffer endDate = new StringBuffer(vcEndDate);
+            endDate.insert(4,'-');
+            endDate.insert(7,'-');
+            return endDate;
+        }else{
+            return "";
+        }
     }
 
     public String getVcManagement() {

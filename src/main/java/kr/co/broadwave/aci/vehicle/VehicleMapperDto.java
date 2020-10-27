@@ -61,8 +61,12 @@ public class VehicleMapperDto {
     }
 
     public String getVcEndDate() {
-        String endDate = vcEndDate.replaceAll("-", "");
-        return endDate;
+        if(vcEndDate.equals("")){
+            return vcEndDate;
+        }else{
+            String endDate = vcEndDate.replaceAll("-", "");
+            return endDate;
+        }
     }
 
     public String getVcManagement() {
