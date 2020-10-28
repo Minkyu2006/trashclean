@@ -1264,13 +1264,15 @@
 							}
 						});
 
-						console.log("temp_brd : " + temp_brd);
-						console.log("level : " + level);
-						console.log("batt_voltage : " + batt_voltage);
-						console.log("temp_brd.length : " + temp_brd.length);
-						console.log("level.length : " + level.length);
-						console.log("batt_voltage.length : " + batt_voltage.length);
-						console.log("");
+						// console.log("testTimeStamp : " + testTimeStamp);
+						// console.log("temp_brd : " + temp_brd);
+						// console.log("level : " + level);
+						// console.log("temp_brd : " + batt_voltage);
+						// console.log("");
+						// console.log("testTimeStamp.length : " + testTimeStamp.length);
+						// console.log("temp_brd.length : " + temp_brd.length);
+						// console.log("level.length : " + level.length);
+						// console.log("batt_voltage.length : " + batt_voltage.length);
 
 						if(emType==="ITAI") {
 							barChartData = {
@@ -1396,9 +1398,6 @@
 										}],
 										yAxes: [{
 											ticks: {
-												// callback: function(value) {
-												// 	return value+'%';
-												// },
 												max: 100,
 												min: 0,
 												stepSize: 20
@@ -1409,11 +1408,9 @@
 											position: 'left'
 										}, {
 											ticks: {
-												// callback: function(value) {
-												// 	return value+'℃';
-												// },
-												max: 10,
-												min: 0
+												max: 100,
+												min: 0,
+												stepSize: 20
 											},
 											id: 'y',
 											type: 'linear',
