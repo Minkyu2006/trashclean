@@ -202,7 +202,7 @@ public class PositionRestController {
 //        log.info("division : "+division);
 //        log.info("deviceid : "+deviceid);
             Page<PositionPopListDto> positionListDtos = positionService.findByPositionPopSearch(psCountryId,psLocationId,deviceid,division,pageable);
-            log.info("positionListDtos : "+positionListDtos.getContent());
+//            log.info("positionListDtos : "+positionListDtos.getContent());
 
             if(positionListDtos.getTotalElements()> 0 ){
                 List<String> emNumbers = new ArrayList<>();
@@ -215,7 +215,7 @@ public class PositionRestController {
                     if(positionListDto.getDeviceid() != null) {
                         if (!positionListDto.getDeviceid().equals("")) {
                             emNumbers.add('"' + positionListDto.getDeviceid() + '"');
-                            log.info("emNumbers : " + emNumbers);
+//                            log.info("emNumbers : " + emNumbers);
 //                        if(!emNumbers.get(i).equals("''")) {
                             deviceids.put('"' + "deviceids" + '"', Collections.singletonList(String.valueOf(emNumbers.get(0))));
                             String aswDeviceids = deviceids.toString().replace("=", ":").replace(" ", "");
