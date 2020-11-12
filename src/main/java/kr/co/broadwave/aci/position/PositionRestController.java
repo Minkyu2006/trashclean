@@ -199,43 +199,51 @@ public class PositionRestController {
                 Optional<MasterCode> emLocations = masterCodeService.findByCode(psLocation);
                 psLocationId = emLocations.map(MasterCode::getId).orElse(null);
             }
-
+//        log.info("division : "+division);
+//        log.info("deviceid : "+deviceid);
             Page<PositionPopListDto> positionListDtos = positionService.findByPositionPopSearch(psCountryId,psLocationId,deviceid,division,pageable);
-//            log.info("positionListDtos : "+positionListDtos.getContent());
+            log.info("positionListDtos : "+positionListDtos.getContent());
 
             if(positionListDtos.getTotalElements()> 0 ){
-
                 List<String> emNumbers = new ArrayList<>();
                 HashMap<String,List<String>> deviceids = new HashMap<>();
                 List<String> actuatorLevels = new ArrayList<>();
                 List<String> disWeight = new ArrayList<>();
                 List<Object> predictionList = new ArrayList<>();
+
                 for (PositionPopListDto positionListDto : positionListDtos) {
                     if(positionListDto.getDeviceid() != null) {
-                        emNumbers.add('"' + positionListDto.getDeviceid() + '"');
-                        deviceids.put('"' + "deviceids" + '"', emNumbers);
-                        String aswDeviceids = deviceids.toString().replace("=", ":").replace(" ", "");
-                        HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceids);
-    //                    log.info("resData : "+resData);
-                        emNumbers.remove(0);
+                        if (!positionListDto.getDeviceid().equals("")) {
+                            emNumbers.add('"' + positionListDto.getDeviceid() + '"');
+                            log.info("emNumbers : " + emNumbers);
+//                        if(!emNumbers.get(i).equals("''")) {
+                            deviceids.put('"' + "deviceids" + '"', Collections.singletonList(String.valueOf(emNumbers.get(0))));
+                            String aswDeviceids = deviceids.toString().replace("=", ":").replace(" ", "");
+                            HashMap<String, ArrayList> resData = dashboardService.getDeviceLastestState(aswDeviceids);
+//                        log.info("resData : "+resData);
+                            emNumbers.remove(0);
+                            if (resData.get("data").size() == 0) {
+                                actuatorLevels.add("");
+                                disWeight.add("");
+                                predictionList.add("");
+                            } else {
+                                HashMap map = (HashMap) resData.get("data").get(0);
+                                actuatorLevels.add((String) map.get("actuator_level"));
+                                disWeight.add((String) map.get("dis_info_weight"));
 
-                        if (resData.get("data").size() == 0) {
+                                JSONObject params = new JSONObject();
+                                params.put("curlevel", map.get("actuator_level"));
+
+                                HashMap<String, Object> prediction = aciawsLambdaService.getDeviceLevelPrediction(params);
+                                Object map2 = prediction.get("data");
+                                predictionList.add(map2);
+                            }
+                        }else {
                             actuatorLevels.add("");
                             disWeight.add("");
                             predictionList.add("");
-                        } else {
-                            HashMap map = (HashMap) resData.get("data").get(0);
-                            actuatorLevels.add((String) map.get("actuator_level"));
-                            disWeight.add((String) map.get("dis_info_weight"));
-
-                            JSONObject params = new JSONObject();
-                            params.put("curlevel",map.get("actuator_level"));
-
-                            HashMap<String, Object> prediction = aciawsLambdaService.getDeviceLevelPrediction(params);
-                            Object map2 = prediction.get("data");
-                            predictionList.add(map2);
                         }
-                    }else{
+                    }else {
                         actuatorLevels.add("");
                         disWeight.add("");
                         predictionList.add("");

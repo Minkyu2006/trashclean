@@ -80,15 +80,15 @@ public class PositionRepositoryCustomImpl extends QuerydslRepositorySupport impl
         // 검색조건필터
         if(division.equals("")){
             if(deviceid != null && !deviceid.isEmpty()){
-                query.where(position.deviceid.likeIgnoreCase(deviceid.concat("%")));
+                query.where(position.deviceid.containsIgnoreCase(deviceid));
             }
         }else if(division.equals("unoperation")){
-            query.where(position.deviceid.isNull());
+            query.where(position.deviceid.isNull().or(position.deviceid.isEmpty()));
         }else{
             if(deviceid != null && !deviceid.isEmpty()){
-                query.where(position.deviceid.likeIgnoreCase(deviceid.concat("%")));
+                query.where(position.deviceid.containsIgnoreCase(deviceid));
             }else{
-                query.where(position.deviceid.isNotNull());
+                query.where(position.deviceid.notEqualsIgnoreCase(""));
             }
         }
 

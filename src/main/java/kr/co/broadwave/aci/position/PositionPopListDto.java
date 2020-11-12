@@ -31,7 +31,11 @@ public class PositionPopListDto {
     }
 
     public String getDeviceid() {
-        return deviceid;
+        if(deviceid != null) {
+            return deviceid;
+        }else{
+            return null;
+        }
     }
 
     public String getInstalldate() {
